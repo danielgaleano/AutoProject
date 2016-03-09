@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>proyecto</artifactId>
+    <groupId>com.sistem</groupId>
+    <version>1</version>
+  </parent>
+
+  <groupId>com.sistem</groupId>
+  <artifactId>proyecto-ear</artifactId>
+  <version>1</version>
+  <packaging>ear</packaging>
+
+  <name>proyecto-ear</name>
+
+
+<!--  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-ear-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+            <version>6</version>
+            <defaultLibBundleDir>lib</defaultLibBundleDir>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>-->
+  <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+                <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-ear-plugin</artifactId>
+                        <version>${version.ear.plugin}</version>
+                        <configuration>
+                                <!-- Tell Maven we are using Java EE 6 -->
+                                <version>6</version>
+                                <!-- Use Java EE ear libraries as needed. Java EE ear libraries are 
+                                        in easy way to package any libraries needed in the ear, and automatically 
+                                        have any modules (EJB-JARs and WARs) use them -->
+                                <defaultLibBundleDir>lib</defaultLibBundleDir>
+                                <modules>
+                                        <webModule>
+                                                <groupId>com.sistem</groupId>
+                                                <artifactId>proyecto-web</artifactId>
+                                                <contextRoot>proyecto</contextRoot>
+                                        </webModule>
+                                </modules>
+                                <fileNameMapping>no-version</fileNameMapping>
+                        </configuration>
+                </plugin>
+                <!-- The JBoss AS plugin deploys your ear to a local JBoss AS container -->
+                <!-- Due to Maven's lack of intelligence with EARs we need to configure 
+                        the jboss-as maven plugin to skip deployment for all modules. We then enable 
+                        it specifically in the ear module. -->
+                <plugin>
+                        <groupId>org.jboss.as.plugins</groupId>
+                        <artifactId>jboss-as-maven-plugin</artifactId>
+                        <configuration>
+                                <filename>${project.artifactId}.ear</filename>
+                                <skip>false</skip>
+                        </configuration>
+                </plugin>
+        </plugins>
+</build>
+    <dependencies>
+        <dependency>
+            <groupId>com.sistem</groupId>
+            <artifactId>proyecto-ejb</artifactId>
+            <version>1</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>com.sistem</groupId>
+            <artifactId>proyecto-web</artifactId>
+            <version>1</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+    <profiles>
+            <profile>
+                    <!-- When built in OpenShift the 'openshift' profile will be used when 
+                            invoking mvn. -->
+                    <!-- Use this profile for any OpenShift specific customization your app 
+                            will need. -->
+                    <!-- By default that is to put the resulting archive into the 'deployments' 
+                            folder. -->
+                    <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
+                    <id>openshift</id>
+                    <build>
+                            <plugins>
+                                    <plugin>
+                                            <artifactId>maven-ear-plugin</artifactId>
+                                            <version>${version.ear.plugin}</version>
+                                            <configuration>
+                                                    <outputDirectory>deployments</outputDirectory>
+                                            </configuration>
+                                    </plugin>
+                            </plugins>
+                    </build>
+            </profile>
+    </profiles>
+</project>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+   <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Home</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+    <!-- Bootstrap 3.3.5 -->
+    <link rel="stylesheet" href="resources/bootstrap/css/bootstrap.min.css"/>
+    
+    <link rel="stylesheet" href="resources/bootstrap/css/bootstrap-theme.min.css"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
+    <!-- Theme style -->
+    <link rel="stylesheet" href="resources/dist/css/AdminLTE.css"/>
+    <link rel="stylesheet" href="resources/dist/css/skins/skin-blue.min.css" type="text/css"/>
+    <script th:inline="javascript">  
+        var CONTEXT_ROOT = /*[[${#httpServletRequest.getContextPath()}]]*/'';
+            
+    </script>
+  </head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div th:replace="include/header :: header">&nbsp;</div>
+<div class="content-wrapper">
+    
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Empresas
+        <small>Lista de empresas del sistema.</small>
+      </h1>
+      <ol class="breadcrumb">
+        <a href="empresas/crear" class="btn btn-primary" role="button">Crear</a>
+        <a href="empresas" class="btn btn-info" role="button">Cancelar</a>
+      </ol>
+    </section>
+    <hr/>
+    <!-- Main content -->
+    <section class="content">
+            <div class="row-fluid">
+                <div id="mensaje"/>
+                    <div class="span12">
+                            <table class="table table-striped table-bordered table-hover" id="table_bug_report">
+                                    <thead>
+                                            <tr>
+
+                                                    <th>NOMBRE</th>
+                                                    <th>RUC</th>
+                                                    <th class="hidden-480">DESCRIPCION</th>
+                                                    <th class="hidden-480">DIRECCION</th>
+                                                    <th class="hidden-480">TELEFONO</th>
+                                                    <th class="hidden-480">STATUS</th>
+                                                    <th>ACCIONES</th>
+                                            </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <th:block th:each='empresa : ${empresas}'>
+                                            <tr>
+                                                <td class="hidden-480" th:text="${empresa.nombre}"></td>
+                                                <td class="hidden-480" th:text="${empresa.ruc}"></td>
+                                                <td class="hidden-480" th:text="${empresa.descripcion}"></td>
+                                                <td class="hidden-480" th:text="${empresa.direccion}"></td>
+                                                <td class="hidden-480" th:text="${empresa.telefono}"></td>
+                                                <td class="hidden-480">
+                                                    <span th:if="${empresa.activo} == 'S'" class="label label-success">Activo</span>
+                                                    <span th:if="${empresa.activo} == 'N'" class="label label-danger">Inactivo</span>
+                                                </td>
+                                                <td>
+                                                    <a th:if="${empresa.activo} == 'S'" class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/editar'}"><i class="ace-icon fa fa-pencil bigger-120"></i></a>
+                                                    
+                                                    <a class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/visualizar'}"><i class="ace-icon fa fa-external-link"></i></a>
+                                                    
+                                                    <button th:if="${empresa.activo} == 'N'" th:onclick="'activar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-success" title="Activar">
+                                                            <i class="ace-icon fa fa-check bigger-120"></i>
+                                                    </button>
+                                                    <button th:if="${empresa.activo} == 'S'" th:onclick="'desactivar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-danger" title="Desactivar">
+                                                            <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </th:block>
+
+                                    </tbody>
+                            </table>
+                    </div><!--/span-->
+        </div>
+      <!-- Your Page Content Here -->
+
+    </section><!-- /.content -->
+  </div>
+    <div th:replace="include/footer :: footer">&copy; 2013 The Static Templates</div>
+<!-- REQUIRED JS SCRIPTS -->
+
+    <!-- jQuery 2.1.4 -->
+    <script src="resources/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+    <!-- Bootstrap 3.3.5 -->
+    <script src="resources/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Slimscroll -->
+    <script src="resources/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="resources/plugins/fastclick/fastclick.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="resources/dist/js/app.min.js"></script>
+    <script th:src="@{/resources/js/empresas.js}"></script> 
+</body>
+</html>

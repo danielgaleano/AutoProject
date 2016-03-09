@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<logging xmlns="urn:jboss:logging:6.0" xmlns:b="urn:jboss:bean-deployer:2.0">
+
+   <define-context name="proyecto" />
+   
+   <periodic-rotating-file-handler
+         file-name="${jboss.server.log.dir}/proyecto.log"
+         name="PROYECTOFILE"
+         autoflush="true"
+         append="true"
+         suffix=".yyyy-MM-dd">  <!-- To roll over at the top of each hour, use ".yyyy-MM-dd-HH" instead -->
+
+      <error-manager>
+         <only-once/>
+      </error-manager>
+
+      <formatter>
+         <pattern-formatter pattern="%d %-5p [%c] (%t) %s%E%n"/>
+      </formatter>
+      
+   </periodic-rotating-file-handler>
+   
+   <!-- Limit the springframework category to WARN-->
+<!--   <logger category="org.springframework">
+      <level name="WARN"/>
+      <handlers>
+         <handler-ref name="ROOTFILE"/>
+      </handlers>
+   </logger>-->
+   
+   <!--Dejar esta línea si queremos incluir información de hibernate en el log-->
+<!--   <logger category="org.hibernate">
+     <level name="INFO" />
+     <handlers>
+         <handler-ref name="ROOTFILE"/>
+      </handlers>
+   </logger>-->
+
+   <!--Logueando la categoría principal-->
+   <logger category="proyecto">
+      <level name="ALL"/>
+      <handlers>
+         <handler-ref name="PROYECTOFILE"/>
+      </handlers>
+   </logger>
+   
+</logging>

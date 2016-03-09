@@ -1,0 +1,77 @@
+body{
+
+width:80%;
+
+margin:0 auto;
+
+}
+
+
+
+header {
+
+background-color:rgb(231,231,231);
+
+padding: 1em;
+
+border:ridge 3px silver;
+
+margin:19px auto;
+
+}
+
+
+
+h1 {
+
+text-align:center;
+
+}
+
+
+
+nav{
+
+background-color:rgb(19,19,19);
+
+color:white;
+
+padding:0.5em 2em;
+
+border:dashed 2px white;
+
+margin:3px auto;
+
+}
+
+
+
+section#contenido{
+
+width:88%;
+
+margin:1em auto;
+
+padding:0.6em 1.6em;
+
+border:solid 1px rgb(209,209,210);
+
+text-alig:justify;
+
+}
+
+
+
+footer#piepag{
+
+padding: 1em;
+
+text-align:center;
+
+border-top:ridge 3px silver;
+
+margin:1em auto;
+
+
+}
+

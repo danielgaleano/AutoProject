@@ -40,6 +40,18 @@ public class Empresa extends Base{
 
     @Column(name = "telefono")
     private String telefono;
+    
+    @Column(name = "telefono_movil")
+    private String telefonoMovil;
+    
+    @Column(name = "nombre_contacto")
+    private String NombreContacto;
+    
+    @Column(name = "telefono_contacto")
+    private String telefonoContacto;
+    
+    @Column(name = "telefono_movil_contacto")
+    private String telefonoMovilContacto;
 
     @Column(name = "email")
     private String email;

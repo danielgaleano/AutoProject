@@ -1,10 +1,53 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <link rel="stylesheet" href="resources/css/skin-blue.min.css" type="text/css"/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Home</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+    <!-- Bootstrap 3.3.5 -->
+    <link rel="stylesheet" th:href="@{/resources/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/resources/bootstrap/css/bootstrap-theme.min.css}"/>
+    <link rel="stylesheet" th:href="@{/resources/bootstrap/css/bootstrap-formhelpers.min.css}"/>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
+    <!-- Theme style -->
+    <link rel="stylesheet" th:href="@{/resources/dist/css/AdminLTE.css}"/>
+    
+    <link th:href="@{/resources/css/bootstrap-responsive.min.css}" rel="stylesheet" />
+    <!--[if IE 7]>
+      <link rel="stylesheet" href="css/font-awesome-ie7.min.css" />
+    <![endif]-->
+    <!-- page specific plugin styles -->
+
+    <!-- ace styles -->
+    <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+          page. However, you can choose any other skin. Make sure you
+          apply the skin class to the body tag so the changes take effect.
+    -->
+    <link rel="stylesheet" th:href="@{/resources/dist/css/skins/skin-blue.min.css}" type="text/css"/>
+    
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script th:inline="javascript">  
+        var CONTEXT_ROOT = /*[[${#httpServletRequest.getContextPath()}]]*/'';
+        var editar = /*[[${editar}]]*/'';
+        var visualizar = /*[[${visualizar}]]*/'';
+        var empresa = /*[[${empresa}]]*/'';
+    </script>
 </head>
 <body>
-<div class="wrapper" th:fragment="header">
+<div class="hold-transition skin-blue sidebar-mini">
 
       <!-- Main Header -->
       <header class="main-header">
@@ -37,15 +80,26 @@
                   <!-- The user image in the navbar-->
                   <img th:src="@{/resources/img/user2-160x160.jpg}" class="user-image" alt="User Image"/>
                   <!-- hidden-xs hides the username on small devices so only the image appears. -->
-                  <span class="hidden-xs">Juan Perez</span>
+                  <span class="hidden-xs" th:text="${#authentication.principal.nombre}"/>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- The user image in the menu -->
                   <li class="user-header">
                     <img th:src="@{/resources/img/user2-160x160.jpg}" class="img-circle" alt="User Image"/>
-                    <p>
-                      Juan Perez - Web Developer
-                    </p>
+                    <p th:text="${#authentication.principal.nombre}"/>
+                      
+                  </li>
+                  
+                  <li class="user-body">
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Followers</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Sales</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                      <a href="#">Friends</a>
+                    </div>
                   </li>
                   
                   <!-- Menu Footer-->
@@ -54,13 +108,14 @@
                       <a href="#" class="btn btn-default btn-flat">Perfil</a>
                     </div>
                     <div class="pull-right">
-                      <a href="#" class="btn btn-default btn-flat">Cerrar sesión</a>
+                      <a href="logout" class="btn btn-default btn-flat">Cerrar sesión</a>
                     </div>
                   </li>
+                  
                 </ul>
               </li>
-              
             </ul>
+              
           </div>
         </nav>
       </header>
@@ -76,7 +131,7 @@
               <img th:src="@{/resources/img/user2-160x160.jpg}" class="img-circle" alt="User Image"/>
             </div>
             <div class="pull-left info">
-              <p>Juan Perez</p>
+              <p th:text="${#authentication.principal.nombre}"/>
               <!-- Status -->
               <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
@@ -115,6 +170,30 @@
       </aside>
     
     </div><!-- ./wrapper -->
+    <div class="content-wrapper">
+        <div id="view-holder">
+            <div layout:fragment="body"/>
+        </div>
+         
+    </div>
+    <div class="main-footer">
+        To the right 
+       <div class="pull-right hidden-xs">
+         Anything you want
+       </div>
+        Default to the left 
+       <strong>FPUNA &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
+   </div>
+    <div class="control-sidebar-bg"></div>
+    <script th:src="@{~/proyecto/resources/plugins/jQuery/jQuery-2.1.4.min.js}"></script>
+    <!-- Bootstrap 3.3.5 -->
+    <script th:src="@{~/proyecto/resources/bootstrap/js/bootstrap.min.js}"></script>
+    <!-- Slimscroll -->
+    <script th:src="@{~/proyecto/resources/plugins/slimScroll/jquery.slimscroll.min.js}"></script>
+    <!-- FastClick -->
+    <script th:src="@{'${pagecontext.request.contextpath}/resources/plugins/fastclick/fastclick.min.js'}"></script>
+    <!-- AdminLTE App -->
+    <script th:src="@{~/proyecto/resources/dist/js/app.min.js}"></script>
 
     
 </body>

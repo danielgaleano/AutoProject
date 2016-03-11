@@ -6,10 +6,13 @@
 package com.sistem.proyecto.web.controller;
 
 import com.sistem.proyecto.entity.Empresa;
+import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.MensajeDTO;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,9 +35,12 @@ public class EmpresaController extends BaseController{
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcomePage(Model model) {
             ModelAndView retorno = new ModelAndView();
+            Authentication autentication = SecurityContextHolder.getContext().getAuthentication();
+            UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         try{
             inicializarEmpresaManager();
-
+            System.out.println(autentication.getName());
+            System.out.println(userDetail.getNombre());
             Empresa ejemplo = new Empresa();
 
             List<Map<String, Object>> listMapEmpresas = empresaManager.listAtributos(ejemplo, atributos.split(","), true);

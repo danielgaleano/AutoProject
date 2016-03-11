@@ -11,12 +11,13 @@
     
     <link rel="stylesheet" href="resources/bootstrap/css/bootstrap-theme.min.css"/>
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="resources/dist/font-awesome/css/font-awesome.min.css" type="text/css"/>
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
     <!-- Theme style -->
     <link rel="stylesheet" href="resources/dist/css/AdminLTE.css"/>
     <link rel="stylesheet" href="resources/dist/css/skins/skin-blue.min.css" type="text/css"/>
+    <link rel="stylesheet" href="resources/dist/css/dataTables.bootstrap.css" type="text/css"/>
     <script th:inline="javascript">  
         var CONTEXT_ROOT = /*[[${#httpServletRequest.getContextPath()}]]*/'';
             
@@ -105,6 +106,10 @@
     <script src="resources/plugins/fastclick/fastclick.min.js"></script>
     <!-- AdminLTE App -->
     <script src="resources/dist/js/app.min.js"></script>
-    <script th:src="@{/resources/js/empresas.js}"></script> 
+    <script th:src="@{/resources/js/empresas.js}"></script>
+    
+    <script src="resources/dist/js/jquery.dataTables.min.js"></script>
+    <script src="resources/dist/js/dataTables.bootstrap.min.js"></script>
+    <script src="resources/dist/js/empresas.table.js" charset="utf-8"></script>
 </body>
 </html>

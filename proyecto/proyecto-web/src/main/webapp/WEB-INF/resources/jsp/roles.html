@@ -9,12 +9,12 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Empresas
-                <small>Lista de empresas del sistema.</small>
+                Roles
+                <small>Lista de roles de la empresa.</small>
             </h1>
             <ol class="breadcrumb">
-                <a href="empresas/crear" class="btn btn-primary" role="button">Crear</a>
-                <a href="empresas" class="btn btn-info" role="button">Cancelar</a>
+                <a href="roles/crear" class="btn btn-primary" role="button">Crear</a>
+                <a href="roles" class="btn btn-info" role="button">Cancelar</a>
             </ol>
         </section>
         <hr/>
@@ -28,38 +28,27 @@
                             <tr>
 
                                 <th>NOMBRE</th>
-                                <th>RUC</th>
-                                <th class="hidden-480">DESCRIPCION</th>
-                                <th class="hidden-480">DIRECCION</th>
-                                <th class="hidden-480">TELEFONO</th>
                                 <th class="hidden-480">STATUS</th>
                                 <th>ACCIONES</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            <th:block th:each='empresa : ${empresas}'>
+                            <th:block th:each='rol : ${roles}'>
                                 <tr>
-                                    <td class="hidden-480" th:text="${empresa.nombre}"></td>
-                                    <td class="hidden-480" th:text="${empresa.ruc}"></td>
-                                    <td class="hidden-480" th:text="${empresa.descripcion}"></td>
-                                    <td class="hidden-480" th:text="${empresa.direccion}"></td>
-                                    <td class="hidden-480" th:text="${empresa.telefono}"></td>
+                                    <td class="hidden-480" th:text="${rol.nombre}"></td>
                                     <td class="hidden-480">
-                                        <span th:if="${empresa.activo} == 'S'" class="label label-success">Activo</span>
-                                        <span th:if="${empresa.activo} == 'N'" class="label label-danger">Inactivo</span>
+                                        <span th:if="${rol.activo} == 'S'" class="label label-success">Activo</span>
+                                        <span th:if="${rol.activo} == 'N'" class="label label-danger">Inactivo</span>
                                     </td>
                                     <td>
-                                        <a th:if="${empresa.activo} == 'S'" class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/editar'}"> <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                        <a th:if="${rol.activo} == 'S'" class="btn btn-xs btn-info" th:href="@{'/roles/'+${rol.id}+'/editar'}"> <i class="ace-icon fa fa-pencil bigger-120"></i>
                                         </a>
 
-                                        <a class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/visualizar'}"> <i class="ace-icon fa fa-external-link"></i>
-                                        </a>
-
-                                        <button th:if="${empresa.activo} == 'N'" th:onclick="'activar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-success" title="Activar">
+                                        <button th:if="${rol.activo} == 'N'" th:onclick="'activar(\'' + ${rol.id} + '\');'" class="btn btn-xs btn-success" title="Activar">
                                             <i class="ace-icon fa fa-check bigger-120"></i>
                                         </button>
-                                        <button th:if="${empresa.activo} == 'S'" th:onclick="'desactivar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-danger" title="Desactivar">
+                                        <button th:if="${rol.activo} == 'S'" th:onclick="'desactivar(\'' + ${rol.id} + '\');'" class="btn btn-xs btn-danger" title="Desactivar">
                                             <i class="ace-icon fa fa-trash-o bigger-120"></i>
                                         </button>
                                     </td>

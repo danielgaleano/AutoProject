@@ -20,4 +20,6 @@ public class RolManagerImpl extends GenericDaoImpl<Rol, Long>
 	protected Class<Rol> getEntityBeanType() {
 		return Rol.class;
 	}
+        
+        
 }

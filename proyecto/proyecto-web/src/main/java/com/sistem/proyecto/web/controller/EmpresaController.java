@@ -67,19 +67,37 @@ public class EmpresaController extends BaseController{
     @RequestMapping(value = "/guardar", method = RequestMethod.POST)
    public @ResponseBody MensajeDTO guardar(@ModelAttribute("Empresa") Empresa empresaRecibido) {
        MensajeDTO mensaje = new MensajeDTO();
+       Empresa ejEmpresa = new Empresa();
        try{
            inicializarEmpresaManager();
            
-           Empresa ejEmpresa = new Empresa();
-           ejEmpresa.setActivo("S");
-           ejEmpresa.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-           ejEmpresa.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-           ejEmpresa.setDescripcion(empresaRecibido.getDescripcion());
-           ejEmpresa.setDireccion(empresaRecibido.getDireccion());
-           ejEmpresa.setRuc(empresaRecibido.getRuc());
-           ejEmpresa.setEmail(empresaRecibido.getEmail());
-           ejEmpresa.setNombre(empresaRecibido.getNombre());
-           ejEmpresa.setTelefono(empresaRecibido.getTelefono());  
+           if(empresaRecibido != null && empresaRecibido.getRuc() != null){
+               ejEmpresa.setRuc(empresaRecibido.getRuc());
+               
+               ejEmpresa = empresaManager.get(ejEmpresa);
+               if(ejEmpresa != null){
+                   mensaje.setError(true);
+                   mensaje.setMenasje("El numero de ruc ya se encuentra registrado.");
+                   return mensaje;
+               }else{
+                    ejEmpresa = new Empresa();
+                    ejEmpresa.setActivo("S");
+                    ejEmpresa.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                    ejEmpresa.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    ejEmpresa.setDescripcion(empresaRecibido.getDescripcion());
+                    ejEmpresa.setDireccion(empresaRecibido.getDireccion());
+                    ejEmpresa.setRuc(empresaRecibido.getRuc());
+                    ejEmpresa.setEmail(empresaRecibido.getEmail());
+                    ejEmpresa.setNombre(empresaRecibido.getNombre());
+                    ejEmpresa.setTelefono(empresaRecibido.getTelefono());
+               }
+               
+           }else{
+                mensaje.setError(true);
+                mensaje.setMenasje("Debe ingresar numero de ruc.");
+                return mensaje;
+           }
+             
            
            if(empresaRecibido.getId() != null){
                Empresa ejEmpresaUp = new Empresa();

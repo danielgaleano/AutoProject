@@ -55,6 +55,8 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/usuarios**").access("permitAll")
                 .antMatchers("/home/**").access("isAuthenticated()")
                 .antMatchers("/home**").access("isAuthenticated()")
+                //------roles----//
+                .antMatchers("/roles**").access("isAuthenticated()")
                 //------Empresa----//
                 .antMatchers("/empresas**").access("isAuthenticated()")
                 .antMatchers("/empresas/crear**").access("isAuthenticated()")

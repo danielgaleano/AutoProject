@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class UserDetail implements UserDetails {
     private static final long serialVersionUID = 1L;
     private Long id;
+    private Long idEmpresa;
     private String username;
     private String password;
     private String nombre;
@@ -40,6 +41,15 @@ public class UserDetail implements UserDetails {
         return password;
     }
 
+    public Long getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(Long idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
+    
+    
     public Long getId() {
         return id;
     }

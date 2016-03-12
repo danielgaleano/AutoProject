@@ -16,7 +16,7 @@ import java.util.Map;
  * type domain object. A single instance implementing this interface can be used
  * only for the type of domain object specified in the type parameters.
  * 
- * @author dwolverton
+ * 
  * 
  * @param <T>
  *            The type of the domain object for which this instance is to be

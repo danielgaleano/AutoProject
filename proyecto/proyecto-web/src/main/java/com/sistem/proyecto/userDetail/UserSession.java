@@ -59,23 +59,23 @@ public class UserSession implements AuthenticationProvider {
         this.serviceLogin = serviceLogin;
     }
 
-    public boolean userExist(Usuario user) {
+    public Usuario userExist(Usuario user) {
+        Usuario ejUsuario = new Usuario();
         try {
-            inicializarUsuarioManager();
-            Usuario ejUsuario = new Usuario();
+            inicializarUsuarioManager();           
             ejUsuario.setAlias(user.getAlias());
             ejUsuario.setClaveAcceso(user.getClaveAcceso());
 
             ejUsuario =  usuarioManager.get(ejUsuario);
             if(ejUsuario != null && ejUsuario.getId() != null) {
-                return true;
+                return ejUsuario;
             } else {
-                return false;
+                return ejUsuario;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
             System.out.println("Error" + ex);
-            return false;
+            return ejUsuario;
         }
     }
 
@@ -88,7 +88,9 @@ public class UserSession implements AuthenticationProvider {
         Usuario user = new Usuario();
         user.setAlias(userLogin);
         user.setClaveAcceso(passwordLogin);
-        if(userExist(user)) {
+        user = userExist(user);
+        
+        if(user.getId() != 0) {
             List<GrantedAuthority> autoridades = new ArrayList<GrantedAuthority>();
             autoridades.add(new SimpleGrantedAuthority("ROLE_USER"));
             autoridades.add(new SimpleGrantedAuthority("ROLE_VIP"));
@@ -96,9 +98,11 @@ public class UserSession implements AuthenticationProvider {
             autoridades.add(new SimpleGrantedAuthority("ROLE_VENDEDOR"));
             autoridades.add(new SimpleGrantedAuthority("ROLE_ALUMNO"));
             UserDetail userDetails = new UserDetail();
-            userDetails.setUsername(userLogin);
+            userDetails.setUsername(user.getAlias());
             userDetails.setPassword(passwordLogin);
-            userDetails.setNombre(userLogin);
+            userDetails.setNombre(user.getNombre()+" "+user.getApellido());
+            userDetails.setId(user.getId());
+            
             Authentication customAuthentication = new UsernamePasswordAuthenticationToken(userDetails, 
                     passwordLogin, autoridades);           
             return customAuthentication;

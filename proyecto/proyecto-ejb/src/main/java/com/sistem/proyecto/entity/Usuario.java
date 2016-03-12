@@ -27,6 +27,11 @@ public class Usuario extends Base{
     @NotEmpty
     @Column(name = "nombre")
     private String nombre;
+    
+    @NotNull
+    @NotEmpty
+    @Column(name = "apellido")
+    private String apellido;
 
     @NotNull
     @NotEmpty
@@ -117,6 +122,14 @@ public class Usuario extends Base{
 
     public void setNombreRol(String nombreRol) {
         this.nombreRol = nombreRol;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
         
         

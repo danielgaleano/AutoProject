@@ -1,32 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      layout:decorator="header.html">
    <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <title>Home</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
-    <!-- Bootstrap 3.3.5 -->
-    <link rel="stylesheet" href="resources/bootstrap/css/bootstrap.min.css"/>
-    
-    <link rel="stylesheet" href="resources/bootstrap/css/bootstrap-theme.min.css"/>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="resources/dist/font-awesome/css/font-awesome.min.css" type="text/css"/>
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
-    <!-- Theme style -->
-    <link rel="stylesheet" href="resources/dist/css/AdminLTE.css"/>
-    <link rel="stylesheet" href="resources/dist/css/skins/skin-blue.min.css" type="text/css"/>
-    <link rel="stylesheet" href="resources/dist/css/dataTables.bootstrap.css" type="text/css"/>
-    <script th:inline="javascript">  
-        var CONTEXT_ROOT = /*[[${#httpServletRequest.getContextPath()}]]*/'';
-            
-    </script>
   </head>
-<body class="hold-transition skin-blue sidebar-mini">
-<div th:replace="include/header :: header">&nbsp;</div>
-<div class="content-wrapper">
-    
+<body>
+<div layout:fragment="body">  
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
@@ -93,23 +73,13 @@
 
     </section><!-- /.content -->
   </div>
-    <div th:replace="include/footer :: footer">&copy; 2013 The Static Templates</div>
-<!-- REQUIRED JS SCRIPTS -->
 
-    <!-- jQuery 2.1.4 -->
-    <script src="resources/plugins/jQuery/jQuery-2.1.4.min.js"></script>
-    <!-- Bootstrap 3.3.5 -->
-    <script src="resources/bootstrap/js/bootstrap.min.js"></script>
-    <!-- Slimscroll -->
-    <script src="resources/plugins/slimScroll/jquery.slimscroll.min.js"></script>
-    <!-- FastClick -->
-    <script src="resources/plugins/fastclick/fastclick.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="resources/dist/js/app.min.js"></script>
-    <script th:src="@{/resources/js/empresas.js}"></script>
+    <script th:src="@{/resources/js/empresas.js}"></script> 
+
     
-    <script src="resources/dist/js/jquery.dataTables.min.js"></script>
-    <script src="resources/dist/js/dataTables.bootstrap.min.js"></script>
-    <script src="resources/dist/js/empresas.table.js" charset="utf-8"></script>
+    <script src="/proyecto/resources/dist/js/jquery.dataTables.min.js"></script>
+    <script src="/proyecto/resources/dist/js/dataTables.bootstrap.min.js"></script>
+    <script src="/proyecto/resources/dist/js/empresas.table.js" charset="utf-8"></script> 
+
 </body>
 </html>

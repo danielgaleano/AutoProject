@@ -3,83 +3,85 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
       layout:decorator="header.html">
-   <head>
-  </head>
+<head></head>
 <body>
-<div layout:fragment="body">  
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Empresas
-        <small>Lista de empresas del sistema.</small>
-      </h1>
-      <ol class="breadcrumb">
-        <a href="empresas/crear" class="btn btn-primary" role="button">Crear</a>
-        <a href="empresas" class="btn btn-info" role="button">Cancelar</a>
-      </ol>
-    </section>
-    <hr/>
-    <!-- Main content -->
-    <section class="content">
+    <div layout:fragment="body">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Empresas
+                <small>Lista de empresas del sistema.</small>
+            </h1>
+            <ol class="breadcrumb">
+                <a href="empresas/crear" class="btn btn-primary" role="button">Crear</a>
+                <a href="empresas" class="btn btn-info" role="button">Cancelar</a>
+            </ol>
+        </section>
+        <hr/>
+        <!-- Main content -->
+        <section class="content">
             <div class="row-fluid">
-                <div id="mensaje"/>
-                    <div class="span12">
-                            <table class="table table-striped table-bordered table-hover" id="table_bug_report">
-                                    <thead>
-                                            <tr>
+                <div id="mensaje"></div>
+                <div class="span12">
+                    <table class="table table-striped table-bordered table-hover" id="table_bug_report">
+                        <thead>
+                            <tr>
 
-                                                    <th>NOMBRE</th>
-                                                    <th>RUC</th>
-                                                    <th class="hidden-480">DESCRIPCION</th>
-                                                    <th class="hidden-480">DIRECCION</th>
-                                                    <th class="hidden-480">TELEFONO</th>
-                                                    <th class="hidden-480">STATUS</th>
-                                                    <th>ACCIONES</th>
-                                            </tr>
-                                    </thead>
+                                <th>NOMBRE</th>
+                                <th>RUC</th>
+                                <th class="hidden-480">DESCRIPCION</th>
+                                <th class="hidden-480">DIRECCION</th>
+                                <th class="hidden-480">TELEFONO</th>
+                                <th class="hidden-480">STATUS</th>
+                                <th>ACCIONES</th>
+                            </tr>
+                        </thead>
 
-                                    <tbody>
-                                        <th:block th:each='empresa : ${empresas}'>
-                                            <tr>
-                                                <td class="hidden-480" th:text="${empresa.nombre}"></td>
-                                                <td class="hidden-480" th:text="${empresa.ruc}"></td>
-                                                <td class="hidden-480" th:text="${empresa.descripcion}"></td>
-                                                <td class="hidden-480" th:text="${empresa.direccion}"></td>
-                                                <td class="hidden-480" th:text="${empresa.telefono}"></td>
-                                                <td class="hidden-480">
-                                                    <span th:if="${empresa.activo} == 'S'" class="label label-success">Activo</span>
-                                                    <span th:if="${empresa.activo} == 'N'" class="label label-danger">Inactivo</span>
-                                                </td>
-                                                <td>
-                                                    <a th:if="${empresa.activo} == 'S'" class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/editar'}"><i class="ace-icon fa fa-pencil bigger-120"></i></a>
-                                                    
-                                                    <a class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/visualizar'}"><i class="ace-icon fa fa-external-link"></i></a>
-                                                    
-                                                    <button th:if="${empresa.activo} == 'N'" th:onclick="'activar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-success" title="Activar">
-                                                            <i class="ace-icon fa fa-check bigger-120"></i>
-                                                    </button>
-                                                    <button th:if="${empresa.activo} == 'S'" th:onclick="'desactivar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-danger" title="Desactivar">
-                                                            <i class="ace-icon fa fa-trash-o bigger-120"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </th:block>
+                        <tbody>
+                            <th:block th:each='empresa : ${empresas}'>
+                                <tr>
+                                    <td class="hidden-480" th:text="${empresa.nombre}"></td>
+                                    <td class="hidden-480" th:text="${empresa.ruc}"></td>
+                                    <td class="hidden-480" th:text="${empresa.descripcion}"></td>
+                                    <td class="hidden-480" th:text="${empresa.direccion}"></td>
+                                    <td class="hidden-480" th:text="${empresa.telefono}"></td>
+                                    <td class="hidden-480">
+                                        <span th:if="${empresa.activo} == 'S'" class="label label-success">Activo</span>
+                                        <span th:if="${empresa.activo} == 'N'" class="label label-danger">Inactivo</span>
+                                    </td>
+                                    <td>
+                                        <a th:if="${empresa.activo} == 'S'" class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/editar'}"> <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                        </a>
 
-                                    </tbody>
-                            </table>
-                    </div><!--/span-->
-        </div>
-      <!-- Your Page Content Here -->
+                                        <a class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/visualizar'}"> <i class="ace-icon fa fa-external-link"></i>
+                                        </a>
 
-    </section><!-- /.content -->
-  </div>
+                                        <button th:if="${empresa.activo} == 'N'" th:onclick="'activar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-success" title="Activar">
+                                            <i class="ace-icon fa fa-check bigger-120"></i>
+                                        </button>
+                                        <button th:if="${empresa.activo} == 'S'" th:onclick="'desactivar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-danger" title="Desactivar">
+                                            <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </th:block>
 
-    <script th:src="@{/resources/js/empresas.js}"></script> 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
 
-    
+    </div>    
+    <!-- /.content -->
+    <div layout:fragment="scripts">
+    <script th:src="@{/resources/js/empresas.js}"></script>
+
     <script src="/proyecto/resources/dist/js/jquery.dataTables.min.js"></script>
     <script src="/proyecto/resources/dist/js/dataTables.bootstrap.min.js"></script>
-    <script src="/proyecto/resources/dist/js/empresas.table.js" charset="utf-8"></script> 
+    <script src="/proyecto/resources/dist/js/empresas.table.js" charset="utf-8"></script>
+
+    </div>
 
 </body>
 </html>

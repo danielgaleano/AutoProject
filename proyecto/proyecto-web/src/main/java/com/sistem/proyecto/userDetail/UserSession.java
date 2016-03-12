@@ -90,7 +90,7 @@ public class UserSession implements AuthenticationProvider {
         user.setClaveAcceso(passwordLogin);
         user = userExist(user);
         
-        if(user.getId() != 0) {
+        if(user != null) {
             List<GrantedAuthority> autoridades = new ArrayList<GrantedAuthority>();
             autoridades.add(new SimpleGrantedAuthority("ROLE_USER"));
             autoridades.add(new SimpleGrantedAuthority("ROLE_VIP"));

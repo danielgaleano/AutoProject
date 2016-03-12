@@ -28,6 +28,7 @@
                 </div>
                 <div id="mensaje"/> 
                <form id="formUsuario" class="form-horizontal">
+                  <div class="box-body"> 
                        <input id="idEmpresa" type="hidden" placeholder="Nombre" class="form-control"/>  
                        <div class="form-group"><label class="col-lg-2 control-label">Ruc</label>
 
@@ -70,8 +71,8 @@
                          </h2>
                        <div class="form-group"><label class="col-lg-2 control-label">Nombre del Contacto</label>
 
-                           <div class="col-lg-6"><input id="nombreContacto" type="text" placeholder="Nombre" class="form-control"> 
-                               </input>
+                           <div class="col-lg-6"><input id="nombreContacto" type="text" placeholder="Nombre" class="form-control"/> 
+                               
                                </div>
                        </div>
                        <div class="form-group"><label class="col-lg-2 control-label">Telefono</label>
@@ -84,15 +85,16 @@
                            <div class="col-lg-6"><input id="telefonoMovilContacto" type="text" placeholder="Telefono" class="input-medium bfh-phone" data-format="+595 0ddd dd dd dd"/>
                                </div>
                        </div>
-                       <div class="clearfix form-actions">
+                  </div>
+                       <div class="clearfix form-actions box-footer">
                            <div class="col-md-offset-3 col-md-9">
-                                   <button id="aceptar" class="btn btn-info" type="button" onclick="javascript:sendData();">
+                                   <button id="aceptar" class="btn btn-primary" type="button" onclick="javascript:sendData();">
                                            <i class="ace-icon fa fa-check bigger-110"></i>
                                            Guardar
                                    </button>
 
                                    &nbsp; &nbsp; &nbsp;
-                                   <button id="cancelar" class="btn btn-primary" type="reset" >
+                                   <button id="cancelar" class="btn btn-default" type="reset" >
                                            <i class="ace-icon fa fa-undo bigger-110"></i>
                                            Cancelar
                                    </button>
@@ -104,7 +106,11 @@
 
     </section><!-- /.content -->
   </div>
-    <script th:src="@{~/proyecto/resources/js/empresa.js}"></script> 
+    <div layout:fragment="scripts">
+      <script th:src="@{~/proyecto/resources/js/empresa.js}"></script>
+    </div>
+  
+     
     
 </body>
 </html>

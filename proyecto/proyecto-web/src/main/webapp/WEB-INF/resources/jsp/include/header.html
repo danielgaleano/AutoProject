@@ -10,11 +10,10 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
     <!-- Bootstrap 3.3.5 -->
     <link rel="stylesheet" th:href="@{/resources/bootstrap/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" th:href="@{/resources/bootstrap/css/bootstrap-theme.min.css}"/>
-    <link rel="stylesheet" th:href="@{/resources/bootstrap/css/bootstrap-formhelpers.min.css}"/>
+    
     <!-- Font Awesome -->
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="resources/dist/font-awesome/css/font-awesome.min.css" type="text/css"/>    <!-- Ionicons -->
+    <link rel="stylesheet" th:href="@{/resources/dist/font-awesome/css/font-awesome.min.css}"/>    
+    <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
     <!-- Theme style -->
     <link rel="stylesheet" th:href="@{/resources/dist/css/AdminLTE.css}"/>
@@ -176,14 +175,7 @@
         </div>
          
     </div>
-    <div class="main-footer">
-        To the right 
-       <div class="pull-right hidden-xs">
-         Anything you want
-       </div>
-        Default to the left 
-       <strong>FPUNA &copy; 2016 <a href="#">Company</a>.</strong> All rights reserved.
-   </div>
+    
     <div class="control-sidebar-bg"></div>
     <script th:src="@{~/proyecto/resources/plugins/jQuery/jQuery-2.1.4.min.js}"></script>
     <!-- Bootstrap 3.3.5 -->
@@ -195,7 +187,7 @@
     <!-- AdminLTE App -->
     <script th:src="@{~/proyecto/resources/dist/js/app.min.js}"></script>
 
-      
+    <div layout:fragment="scripts"/>  
     
 </body>
 </html>

@@ -16,4 +16,5 @@ import javax.ejb.Local;
 @Local
 public interface UsuarioManager extends GenericDao<Usuario, Long>{
     
+    public Usuario loginSistema(String alias, String paswword);
 }

@@ -8,6 +8,8 @@ package com.sistem.proyecto.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -45,15 +47,26 @@ public class Usuario extends Base{
 
     @Column(name = "documento")
     private String documento;
+    
+    @Column(name = "direccion")
+    private String direccion;
 
     @Column(name = "telefono")
     private String telefono;
+    
+    @Column(name = "telefono_movil")
+    private String telefonoMovil;
 
     @Column(name = "email")
     private String email;
-
-    @Column(name = "nombre_rol")
-    private String nombreRol;
+    
+    @ManyToOne
+    @JoinColumn
+    private Empresa empresa;
+    
+    @ManyToOne
+    @JoinColumn
+    private Rol rol;
     
     public Usuario() {
 
@@ -116,13 +129,6 @@ public class Usuario extends Base{
         this.email = email;
     }
 
-    public String getNombreRol() {
-        return nombreRol;
-    }
-
-    public void setNombreRol(String nombreRol) {
-        this.nombreRol = nombreRol;
-    }
 
     public String getApellido() {
         return apellido;
@@ -131,6 +137,39 @@ public class Usuario extends Base{
     public void setApellido(String apellido) {
         this.apellido = apellido;
     }
-        
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getTelefonoMovil() {
+        return telefonoMovil;
+    }
+
+    public void setTelefonoMovil(String telefonoMovil) {
+        this.telefonoMovil = telefonoMovil;
+    }
+     
+    
         
 }

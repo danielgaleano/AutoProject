@@ -3,7 +3,17 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
       layout:decorator="header.html">
-<head></head>
+    <head>
+    <meta layout:fragment="meta"> 
+      <meta charset="utf-8"/>
+    </meta>
+    <title layout:fragment="title"> 
+      Empresas
+    </title>
+        <div layout:fragment="styles">
+            <link rel="stylesheet" th:href="@{/resources/dist/css/dataTables.bootstrap.css}" type="text/css"/>
+        </div>
+    </head>
 <body>
     <div layout:fragment="body">
         <!-- Content Header (Page header) -->
@@ -14,12 +24,13 @@
             </h1>
             <ol class="breadcrumb">
                 <a href="empresas/crear" class="btn btn-primary" role="button">Crear</a>
-                <a href="empresas" class="btn btn-info" role="button">Cancelar</a>
+                
             </ol>
         </section>
         <hr/>
         <!-- Main content -->
         <section class="content">
+
             <div class="row">
                 <div class="col-xs-12">
                     <div class="dataTables_wrapper form-inline no-footer">

@@ -3,7 +3,17 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
       layout:decorator="header.html">
-<head></head>
+    <head>
+    <meta layout:fragment="meta"> 
+      <meta charset="utf-8"/>
+    </meta>
+    <title layout:fragment="title"> 
+      Empresas
+    </title>
+        <div layout:fragment="styles">
+            <link rel="stylesheet" th:href="@{/resources/dist/css/dataTables.bootstrap.css}" type="text/css"/>
+        </div>
+    </head>
 <body>
     <div layout:fragment="body">
         <!-- Content Header (Page header) -->
@@ -14,25 +24,26 @@
             </h1>
             <ol class="breadcrumb">
                 <a href="empresas/crear" class="btn btn-primary" role="button">Crear</a>
-                <a href="empresas" class="btn btn-info" role="button">Cancelar</a>
+                
             </ol>
         </section>
         <hr/>
         <!-- Main content -->
         <section class="content">
-            <div class="row-fluid">
+            <div class="box">
                 <div id="mensaje"></div>
-                <div class="span12">
+                <div class="box-body"> 
+                    
                     <table class="table table-striped table-bordered table-hover" id="table_bug_report">
                         <thead>
                             <tr>
 
                                 <th>NOMBRE</th>
                                 <th>RUC</th>
-                                <th class="hidden-480">DESCRIPCION</th>
-                                <th class="hidden-480">DIRECCION</th>
-                                <th class="hidden-480">TELEFONO</th>
-                                <th class="hidden-480">STATUS</th>
+                                <th>DESCRIPCION</th>
+                                <th>DIRECCION</th>
+                                <th>TELEFONO</th>
+                                <th>STATUS</th>
                                 <th>ACCIONES</th>
                             </tr>
                         </thead>
@@ -40,12 +51,12 @@
                         <tbody>
                             <th:block th:each='empresa : ${empresas}'>
                                 <tr>
-                                    <td class="hidden-480" th:text="${empresa.nombre}"></td>
-                                    <td class="hidden-480" th:text="${empresa.ruc}"></td>
-                                    <td class="hidden-480" th:text="${empresa.descripcion}"></td>
-                                    <td class="hidden-480" th:text="${empresa.direccion}"></td>
-                                    <td class="hidden-480" th:text="${empresa.telefono}"></td>
-                                    <td class="hidden-480">
+                                    <td th:text="${empresa.nombre}"></td>
+                                    <td th:text="${empresa.ruc}"></td>
+                                    <td th:text="${empresa.descripcion}"></td>
+                                    <td th:text="${empresa.direccion}"></td>
+                                    <td th:text="${empresa.telefono}"></td>
+                                    <td>
                                         <span th:if="${empresa.activo} == 'S'" class="label label-success">Activo</span>
                                         <span th:if="${empresa.activo} == 'N'" class="label label-danger">Inactivo</span>
                                     </td>
@@ -68,6 +79,7 @@
 
                         </tbody>
                     </table>
+                    
                 </div>
             </div>
         </section>

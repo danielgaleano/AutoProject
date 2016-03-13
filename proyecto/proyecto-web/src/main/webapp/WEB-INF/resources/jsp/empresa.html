@@ -4,8 +4,16 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
       layout:decorator="header.html">
-   <head>  
-
+   <head>
+   <meta layout:fragment="meta"> 
+      <meta charset="utf-8"/>
+    </meta>
+   <title layout:fragment="title"> 
+      Crear Empresa
+    </title>
+  <div layout:fragment="styles">
+    <link rel="stylesheet" th:href="@{/resources/dist/css/style.css}" type="text/css"/>
+  </div>  
   </head>
 <body >
 
@@ -27,75 +35,125 @@
                   <h3 class="box-title">Insertar Datos</h3>
                 </div>
                 <div id="mensaje"/> 
-               <form id="formUsuario" class="form-horizontal">
+               <form id="formUsuario" class="form-horizontal" data-toggle="validator" role="form">
                   <div class="box-body"> 
-                       <input id="idEmpresa" type="hidden" placeholder="Nombre" class="form-control"/>  
-                       <div class="form-group"><label class="col-lg-2 control-label">Ruc</label>
+                       <input id="idEmpresa" type="hidden" placeholder="Nombre" class="form-control" />
 
-                           <div class="col-lg-6"><input id="ruc" type="text" placeholder="RUC" class="form-control"/>
-                               </div>
+                       
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Ruc</label>
+
+                          <!-- <div class="col-lg-2 input-group">
+                            <input id="ruc" type="text" placeholder="RUC" class="form-control" data-error="Ingrese un numero de RUC." required="required" pattern="^[0-9]+-[0-9]$"/>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <div class="help-block with-errors">Por ej. '1234567-8'</div>
+                          </div> -->
+                          <div class="col-lg-2 input-group">
+                            <input id="ruc" type="text" placeholder="RUC" class="form-control" data-error="Ingrese un numero de RUC." required="required" data-mask="" data-inputmask="'mask': '99999[999]-9'" pattern="^[0-9]+-[0-9]$"/>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <div class="help-block with-errors"></div>
+                          </div>
+                          
                        </div>
-                       <div class="form-group"><label class="col-lg-2 control-label">Nombre</label>
+                       <div class="form-group has-feedback">
+                            <label class="col-lg-3 control-label">Nombre</label>
 
-                           <div class="col-lg-6"><input id="nombre" type="text" placeholder="Nombre" class="form-control"> 
-                               </input>
-                               </div>
+                            <div class="col-lg-4 input-group">
+                              <input id="nombre" type="text" placeholder="Nombre" class="form-control" data-error="Ingrese un nombre." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
                        </div>
-                       <div class="form-group"><label class="col-lg-2 control-label">Direccion</label>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Direccion</label>
 
-                           <div class="col-lg-6"><input id="direccion" type="text" placeholder="Direccion" class="input-group"/>
-                               </div>
+                            <div class="col-lg-6 input-group">
+                              <input id="direccion" type="text" placeholder="Direccion" class="form-control" data-error="Ingrese una direccion." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
                        </div>
-                       <div class="form-group"><label class="col-lg-2 control-label">Descrpcion</label>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Descripcion</label>
 
-                           <div class="col-lg-6"><input id="descripcion" type="text" placeholder="Descripcion" class="form-control"/>
-                               </div>
+                            <div class="col-lg-6 input-group">
+                              <input id="descripcion" type="text" placeholder="Descripcion" class="form-control" data-error="Ingrese una descripcion de la empresa." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
                        </div>
-                       <div class="form-group"><label class="col-lg-2 control-label">Telefono</label>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Telefono</label>
 
-                           <div class="col-lg-6"><input id="telefono" type="text" placeholder="Telefono" class="input-medium bfh-phone" data-format="+595 (ddd) ddd-dddd"/>
-                               </div>
+                            <div class="col-lg-2 input-group">
+                              <input id="telefono" type="text" placeholder="Telefono" class="form-control" data-mask="" data-inputmask="'mask': '+5\\95 (999) 999 999'" pattern="^\+595 \(\d{3}\) \d{3} \d{3}|\+595 \(\_\_\_\) \_\_\_ \_\_\_$" data-error="Ingrese un telefono." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
                        </div>
-                       <div class="form-group"><label class="col-lg-2 control-label">Telefono Movil</label>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Telefono Movil</label>
 
-                           <div class="col-lg-6"><input id="telefonoMovil" type="text" placeholder="Telefono" class="input-medium bfh-phone" data-format="+595 0ddd dd dd dd"/>
-                               </div>
+                           <div class="col-lg-2 input-group">
+                              <input id="telefonoMovil" type="text" placeholder="Telefono" class="form-control" data-mask="" data-inputmask="'mask': '+5\\95 0\\999 999 999'" pattern="^\+595 09\d{2} \d{3} \d{3}|\+595 09\_\_ \_\_\_ \_\_\_$" data-error="Ingrese un telefono movil." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
                        </div>
-                       <div class="form-group"><label  class="col-lg-2 control-label">Email</label>
+                       <div class="form-group has-feedback">
+                          <label  class="col-lg-3 control-label">Email</label>
 
-                               <div class="col-lg-6"><input id="email" type="email" placeholder="Email" class="form-control"/>
-                               </div>
+                           <div class="col-lg-4 input-group">
+                            <input id="email" type="email" placeholder="Email" class="form-control" data-error="Ingrese un email correctamente." required="required"/>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <div class="help-block with-errors"></div>
+                           </div>
                        </div>
-                       <h2>
-                           Contacto
-                         </h2>
-                       <div class="form-group"><label class="col-lg-2 control-label">Nombre del Contacto</label>
+                       <div class="row">
+                          <div class="col-lg-2">
+                           <h4 class="pull-right">
+                               Contacto
+                             </h4>
+                          </div>
+                        </div>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Nombre del Contacto</label>
 
-                           <div class="col-lg-6"><input id="nombreContacto" type="text" placeholder="Nombre" class="form-control"/> 
-                               
-                               </div>
+                           <div class="col-lg-4 input-group">
+                              <input id="nombreContacto" type="text" placeholder="Nombre" class="form-control" data-error="Ingrese un nombre de contacto." required="required"/> 
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
                        </div>
-                       <div class="form-group"><label class="col-lg-2 control-label">Telefono</label>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Telefono</label>
 
-                           <div class="col-lg-6"><input id="telefonoContacto" type="text" placeholder="Telefono" class="input-medium bfh-phone" data-format="+595 (ddd) ddd-dddd"/>
-                               </div>
+                           <div class="col-lg-2 input-group">
+                              <input id="telefonoContacto" type="text" placeholder="Telefono" class="form-control" data-mask="" data-inputmask="'mask': '+5\\95 (999) 999 999'" pattern="^\+595 \(\d{3}\) \d{3} \d{3}|\+595 \(\_\_\_\) \_\_\_ \_\_\_$" data-error="Ingrese un numero de telefono del contacto." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
                        </div>
-                       <div class="form-group"><label class="col-lg-2 control-label">Telefono Movil</label>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Telefono Movil</label>
 
-                           <div class="col-lg-6"><input id="telefonoMovilContacto" type="text" placeholder="Telefono" class="input-medium bfh-phone" data-format="+595 0ddd dd dd dd"/>
-                               </div>
+                           <div class="col-lg-2 input-group">
+                              <input id="telefonoMovilContacto" type="text" placeholder="Telefono" class="form-control" data-mask="" data-inputmask="'mask': '+5\\95 0\\999 999 999'" pattern="^\+595 09\d{2} \d{3} \d{3}|\+595 09\_\_ \_\_\_ \_\_\_$" data-error="Ingrese un numero de telefono movil del contacto." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
                        </div>
                   </div>
                        <div class="clearfix form-actions box-footer">
                            <div class="col-md-offset-3 col-md-9">
-                                   <button id="aceptar" class="btn btn-primary" type="button" onclick="javascript:sendData();">
-                                           <i class="ace-icon fa fa-check bigger-110"></i>
+                                   <button id="aceptar" class="btn btn-primary" type="button" onclick="javascript:sendData();" data-disable="true">
+                                           <i class="fa fa-check bigger-110"></i>
                                            Guardar
                                    </button>
 
                                    &nbsp; &nbsp; &nbsp;
                                    <button id="cancelar" class="btn btn-default" type="reset" >
-                                           <i class="ace-icon fa fa-undo bigger-110"></i>
+                                           <i class="fa fa-undo bigger-110"></i>
                                            Cancelar
                                    </button>
                            </div>
@@ -108,6 +166,9 @@
   </div>
     <div layout:fragment="scripts">
       <script th:src="@{~/proyecto/resources/js/empresa.js}"></script>
+      <script th:src="@{~/proyecto/resources/dist/js/jquery.inputmask.bundle.js}"></script>
+      <script th:src="@{~/proyecto/resources/dist/js/validator.js}"></script>
+      <script th:src="@{~/proyecto/resources/dist/js/empresa.validation.js}"></script>
     </div>
   
      

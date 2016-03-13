@@ -59,6 +59,7 @@ function sendData() {
                                     +'<strong>Error! </strong>'
                                     + data.menasje
                                     + '</div>');
+                $('html, body').animate({ scrollTop: 0 }, 0);
 
             }else{
                 $('#mensaje').before('<div class="alert alert-info alert-dismissible fade in">'
@@ -67,6 +68,7 @@ function sendData() {
                                     +'<strong>Exito! </strong>'
                                     + data.menasje
                                     + '</div>');
+                $('html, body').animate({ scrollTop: 0 }, 0);
             }
          },
         async: false

@@ -3,7 +3,13 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
       layout:decorator="header.html">
-   <head>   
+   <head>
+   <meta layout:fragment="meta"> 
+      <meta charset="utf-8"/>
+    </meta>
+    <title layout:fragment="title"> 
+      Home
+    </title>   
   </head>
 <body>
     <div layout:fragment="body">

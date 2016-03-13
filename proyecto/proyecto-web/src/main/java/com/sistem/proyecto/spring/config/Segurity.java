@@ -51,10 +51,16 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/login**").permitAll()
                 .antMatchers("/login/*").permitAll()
                 .antMatchers("/logout*").access("isAuthenticated()")
-                .antMatchers("/usuarios/**").access("permitAll")
-                .antMatchers("/usuarios**").access("permitAll")
-                .antMatchers("/home/**").access("isAuthenticated()")
+                                .antMatchers("/home/**").access("isAuthenticated()")
                 .antMatchers("/home**").access("isAuthenticated()")
+                //------usuarios----//
+                .antMatchers("/usuarios**").access("isAuthenticated()")
+                .antMatchers("/usuarios/crear**").access("isAuthenticated()")
+                .antMatchers("/usuarios/guardar**").access("isAuthenticated()")
+                .antMatchers("/usuarios/*/activar**").access("isAuthenticated()")
+                .antMatchers("/usuarios/*/desactivar**").access("isAuthenticated()")
+                .antMatchers("/usuarios/*/editar**").access("isAuthenticated()")
+                .antMatchers("/usuarios/*/visualizar**").access("isAuthenticated()")
                 //------roles----//
                 .antMatchers("/roles**").access("isAuthenticated()")
                 //------Empresa----//

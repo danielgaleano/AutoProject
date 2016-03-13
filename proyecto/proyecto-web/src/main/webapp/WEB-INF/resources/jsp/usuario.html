@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      layout:decorator="header.html">
+   <head>  
+
+  </head>
+<body >
+
+<div layout:fragment="body">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+       <h1>
+        
+      </h1>
+      <ol class="breadcrumb">
+        <a id="botonEditar" th:if="${tipo} == 'Visualizar'" th:href="@{'/empresas/'+${empresa.id}+'/editar'}" class="btn btn-primary" role="button">Editar</a>
+        <a th:if="${tipo} == 'Visualizar'" th:href="@{/empresas}" class="btn btn-primary" role="button">Volver</a>
+      </ol>
+    </section> 
+    <!-- Main content -->
+    <section class="content">
+            <div class="box box-info">
+                <div id="mensaje"/> 
+                <div class="box-header with-border">
+                  <h3 class="box-title">Insertar Datos</h3>
+                </div>
+               <form id="formUsuario" class="form-horizontal">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div>
+                                <div id="user-profile-1" class="user-profile row">
+                                    <div class="col-xs-12 col-sm-3 center">
+                                        <div>
+                                            <span class="profile-picture">
+                                                    <img id="avatar" class="editable img-responsive editable-click editable-empty editable-open" alt="Alex's Avatar" src="assets/avatars/profile-pic.jpg" style="display: none;"></img>
+                                                    <span class="editable-container editable-inline">
+                                                        <div>
+                                                            <div class="editableform-loading" style="display: none;">
+                                                                <i class="ace-icon fa fa-spinner fa-spin fa-2x light-blue"></i>
+                                                            </div>
+                                                            <form class="form-inline editableform" style="">
+                                                                <div class="control-group form-group">
+                                                                    <div>
+                                                                        <div class="editable-input editable-image">
+                                                                            <span>
+                                                                                <input type="hidden" name="avatar-hidden" value=""/>
+                                                                            </span>
+                                                                            <span>
+                                                                                <label class="ace-file-input ace-file-multiple" style="width: 150px;">
+                                                                                    <input type="file" name="avatar"/>
+                                                                                    <span class="ace-file-container" data-title="Ingrese Imagen">
+                                                                                        <span class="ace-file-name" data-title="No File ...">
+                                                                                            <i class=" ace-icon fa fa-picture-o"></i>
+                                                                                        </span>
+                                                                                    </span>
+                                                                                    <a class="remove" href="#">
+                                                                                        <i class=" ace-icon fa fa-times"></i>
+                                                                                    </a>
+                                                                                </label>
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="editable-buttons">
+                                                                            <button type="submit" class="btn btn-info editable-submit">
+                                                                                <i class="ace-icon fa fa-check"></i>
+                                                                            </button>
+                                                                            <button type="button" class="btn editable-cancel">
+                                                                                <i class="ace-icon fa fa-times"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="editable-error-block help-block" style="display: none;">
+                                                                        
+                                                                    </div>
+                                                                        
+                                                                </div>
+                                                            </form>
+                                                                
+                                                        </div>
+                                                    </span>
+                                            </span>
+
+                                            <div class="space-4"></div>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-xs-12 col-sm-9">
+                                        <h4 class="blue">
+                                            <span class="middle">Usuario</span>
+                                        </h4>
+                                        <div class="hr dotted"></div>
+                                        <div class="form-group"><label class="col-lg-2 control-label">Documento</label>
+
+                                            <div class="col-lg-6"><input id="nombre" type="text" placeholder="Documento" class="form-control"> 
+                                                </input>
+                                            </div>
+                                        </div>
+                                        <div class="form-group"><label class="col-lg-2 control-label">Alias</label>
+
+                                            <div class="col-lg-6"><input id="nombre" type="text" placeholder="Alias" class="form-control"> 
+                                                </input>
+                                            </div>
+                                        </div>
+                                        <div class="form-group"><label class="col-lg-2 control-label">Contraseña</label>
+
+                                            <div class="col-lg-6"><input id="nombre" type="password" placeholder="Contraseña" class="form-control"> 
+                                                </input>
+                                            </div>
+                                        </div>
+                                        <div class="form-group"><label class="col-lg-2 control-label">Nombre</label>
+
+                                            <div class="col-lg-6"><input id="nombre" type="text" placeholder="Nombre" class="form-control"> 
+                                                </input>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group"><label class="col-lg-2 control-label">Apellido</label>
+
+                                            <div class="col-lg-6"><input id="nombre" type="text" placeholder="Apellido" class="form-control"> 
+                                                </input>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-12">
+                                            <div class="hr dotted"></div>
+                                            <div class="form-group"><label class="col-lg-2 control-label">Telefono</label>
+                                                <div class="col-lg-6"><input id="nombre" type="text" placeholder="Telefono" class="form-control"> 
+                                                    </input>
+                                                </div>
+                                            </div>
+                                            <div class="form-group"><label class="col-lg-2 control-label">Telefono Movil</label>
+                                                <div class="col-lg-6"><input id="nombre" type="text" placeholder="Telefono Movil" class="form-control"> 
+                                                    </input>
+                                                </div>
+                                            </div>
+                                            <div class="form-group"><label class="col-lg-2 control-label">Direccion</label>
+                                                <div class="col-lg-6"><input id="nombre" type="text" placeholder="Direccion" class="form-control"> 
+                                                    </input>
+                                                </div>
+                                            </div>
+                                            <div class="form-group"><label class="col-lg-2 control-label">Email</label>
+                                                <div class="col-lg-6"><input id="nombre" type="text" placeholder="Email" class="form-control"> 
+                                                    </input>
+                                                </div>
+                                            </div>
+                                            <div class="form-group"><label class="col-lg-2 control-label">Rol</label>
+                                                <select class="col-lg-3">
+                                                    <option>Seleccione Rol</option>
+                                                    <option>option 2</option>
+                                                    <option>option 3</option>
+                                                    <option>option 4</option>
+                                                    <option>option 5</option>
+                                                  </select>
+                                            </div>
+                                            <div class="form-group"><label class="col-lg-2 control-label">Empresa</label>
+                                                <select class="col-lg-3" data-placeholder="Seleccione Empresa">
+                                                    <option>Seleccione Empresa</option>
+                                                    <option>option 2</option>
+                                                    <option>option 3</option>
+                                                    <option>option 4</option>
+                                                    <option>option 5</option>
+                                                  </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+               </form>
+           </div>
+      <!-- Your Page Content Here -->
+
+    </section><!-- /.content -->
+</div>
+    <div layout:fragment="scripts">
+      <script th:src="@{~/proyecto/resources/js/empresa.js}"></script>
+    </div>
+  
+     
+    
+</body>
+</html>

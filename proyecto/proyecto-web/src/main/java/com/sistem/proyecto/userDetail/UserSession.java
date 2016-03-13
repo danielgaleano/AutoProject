@@ -83,16 +83,15 @@ public class UserSession implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        inicializarUsuarioManager();
         String userLogin = authentication.getPrincipal().toString();
         String passwordLogin = authentication.getCredentials().toString();
         System.out.println("User: " + userLogin);
         System.out.println("Password: " + passwordLogin);
         Usuario user = new Usuario();
-        user.setAlias(userLogin);
-        user.setClaveAcceso(passwordLogin);
-        user = userExist(user);
-        exiteUsuario();
-        if(user != null) {
+        user = usuarioManager.loginSistema(userLogin,passwordLogin);
+
+        if(user != null && user.getId() != null) {
             List<GrantedAuthority> autoridades = new ArrayList<GrantedAuthority>();
             autoridades.add(new SimpleGrantedAuthority("ROLE_USER"));
             autoridades.add(new SimpleGrantedAuthority("ROLE_VIP"));
@@ -136,64 +135,5 @@ public class UserSession implements AuthenticationProvider {
 			}
 		}
 	}
-    private boolean exiteUsuario(){
-        Usuario ejUsuario = new Usuario();
-        try{
-            inicializarUsuarioManager();
-            List<Map<String, Object>> usuarios = usuarioManager.listAtributos(ejUsuario,"id".split(","));
-            if(usuarios.size() == 0 || usuarios == null){
-                ejUsuario.setNombre("Ramon Daniel");
-                ejUsuario.setApellido("Galeano Bate");
-                ejUsuario.setDocumento("4576708");
-                ejUsuario.setAlias("dbate");
-                ejUsuario.setClaveAcceso("12345678");
-                ejUsuario.setActivo("S");
-                ejUsuario.setEmail("daniel@gamil.com");
-                ejUsuario.setTelefono("0981777201");
-                ejUsuario.setNombreRol("Administrador");
-                ejUsuario.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejUsuario.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                
-                usuarioManager.save(ejUsuario);
-                
-                ejUsuario = new Usuario();
-
-                ejUsuario.setDocumento("45376535");
-                ejUsuario.setNombre("Victor Poro");
-                ejUsuario.setApellido("Santos");
-                ejUsuario.setAlias("vsantos");
-                ejUsuario.setClaveAcceso("12345678");
-                ejUsuario.setActivo("S");
-                ejUsuario.setEmail("santos@gamil.com");
-                ejUsuario.setTelefono("0981999999");
-                ejUsuario.setNombreRol("Administrador");
-                ejUsuario.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejUsuario.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                
-                usuarioManager.save(ejUsuario);
-                
-                ejUsuario = new Usuario();
-                
-                ejUsuario.setNombre("Miguel Angel");
-                ejUsuario.setDocumento("45356575");
-                ejUsuario.setApellido("Ojeda Avalos");
-                ejUsuario.setAlias("mojeda");
-                ejUsuario.setClaveAcceso("12345678");
-                ejUsuario.setActivo("S");
-                ejUsuario.setEmail("miguel@gamil.com");
-                ejUsuario.setTelefono("0981999999");
-                ejUsuario.setNombreRol("Administrador");
-                ejUsuario.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejUsuario.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                
-                usuarioManager.save(ejUsuario);
-                
-            }
-            
-        }catch (Exception ex){
-            return false;
-        }
-        return true;
-        
-    }
+    
 }

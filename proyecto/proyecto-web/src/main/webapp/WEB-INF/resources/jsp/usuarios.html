@@ -3,34 +3,22 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
       layout:decorator="header.html">
-    <head>
-    <meta layout:fragment="meta"> 
-      <meta charset="utf-8"/>
-    </meta>
-    <title layout:fragment="title"> 
-      Empresas
-    </title>
-        <div layout:fragment="styles">
-            <link rel="stylesheet" th:href="@{/resources/dist/css/dataTables.bootstrap.css}" type="text/css"/>
-        </div>
-    </head>
+<head></head>
 <body>
     <div layout:fragment="body">
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Empresas
-                <small>Lista de empresas del sistema.</small>
+                Usuarios
+                <small>Lista de usuarios del sistema.</small>
             </h1>
             <ol class="breadcrumb">
-                <a href="empresas/crear" class="btn btn-primary" role="button">Crear</a>
-                
+                <a href="usuarios/crear" class="btn btn-primary" role="button">Crear</a>
             </ol>
         </section>
         <hr/>
         <!-- Main content -->
         <section class="content">
-
             <div class="row">
                 <div class="col-xs-12">
                     <div class="dataTables_wrapper form-inline no-footer">
@@ -41,45 +29,45 @@
                                     <tr>
 
                                         <th>NOMBRE</th>
-                                        <th>RUC</th>
-                                        <th class="hidden-480">DESCRIPCION</th>
+                                        <th>APELLIDO</th>
+                                        <th class="hidden-480">DOCUMENTO</th>
                                         <th class="hidden-480">DIRECCION</th>
                                         <th class="hidden-480">TELEFONO</th>
+                                        <th class="hidden-480">ROL</th>
                                         <th class="hidden-480">STATUS</th>
                                         <th>ACCIONES</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
-                                    <th:block th:each='empresa : ${empresas}'>
+                                    <th:block th:each='usuario : ${usuarios}'>
                                         <tr>
-                                            <td class="hidden-480" th:text="${empresa.nombre}"></td>
-                                            <td class="hidden-480" th:text="${empresa.ruc}"></td>
-                                            <td class="hidden-480" th:text="${empresa.descripcion}"></td>
-                                            <td class="hidden-480" th:text="${empresa.direccion}"></td>
-                                            <td class="hidden-480" th:text="${empresa.telefono}"></td>
+                                            <td class="hidden-480" th:text="${usuario.nombre}"></td>
+                                            <td class="hidden-480" th:text="${usuario.apellido}"></td>
+                                            <td class="hidden-480" th:text="${usuario.documento}"></td>
+                                            <td class="hidden-480" th:text="${usuario.direccion}"></td>
+                                            <td class="hidden-480" th:text="${usuario.telefono}"></td>
+                                            <td class="hidden-480" th:text="${usuario.rolNombre}"></td> 
                                             <td class="hidden-480">
-                                                <span th:if="${empresa.activo} == 'S'" class="label label-success">Activo</span>
-                                                <span th:if="${empresa.activo} == 'N'" class="label label-danger">Inactivo</span>
+                                                <span th:if="${usuario.activo} == 'S'" class="label label-success">Activo</span>
+                                                <span th:if="${usuario.activo} == 'N'" class="label label-danger">Inactivo</span>
                                             </td>
                                             <td>
-                                                <a th:if="${empresa.activo} == 'S'" class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/editar'}"> <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                                <a th:if="${usuario.activo} == 'S'" class="btn btn-xs btn-info" th:href="@{'/usuarios/'+${usuario.id}+'/editar'}"> <i class="ace-icon fa fa-pencil bigger-120"></i>
                                                 </a>
 
-
-                                                <a class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/visualizar'}"> <i class="ace-icon fa fa-external-link"></i>
+                                                <a class="btn btn-xs btn-info" th:href="@{'/usuarios/'+${usuario.id}+'/visualizar'}"> <i class="ace-icon fa fa-external-link"></i>
                                                 </a>
 
-                                                <button th:if="${empresa.activo} == 'N'" th:onclick="'activar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-success" title="Activar">
+                                                <button th:if="${usuario.activo} == 'N'" th:onclick="'activar(\'' + ${usuario.id} + '\');'" class="btn btn-xs btn-success" title="Activar">
                                                     <i class="ace-icon fa fa-check bigger-120"></i>
                                                 </button>
-                                                <button th:if="${empresa.activo} == 'S'" th:onclick="'desactivar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-danger" title="Desactivar">
+                                                <button th:if="${usuario.activo} == 'S'" th:onclick="'desactivar(\'' + ${usuario.id} + '\');'" class="btn btn-xs btn-danger" title="Desactivar">
                                                     <i class="ace-icon fa fa-trash-o bigger-120"></i>
                                                 </button>
                                             </td>
                                         </tr>
                                     </th:block>
-
 
                                 </tbody>
                             </table>

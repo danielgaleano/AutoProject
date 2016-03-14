@@ -11,6 +11,10 @@ $(document).ready(function(data) {
         $('input[id="telefono"]').val(empresa.telefono);
         $('input[id="ruc"]').val(empresa.ruc);
         $('input[id="descripcion"]').val(empresa.descripcion);
+
+        //para la visualizacion en editar de campo RUC
+        $("#ruc").inputmask("Regex");
+
     }else if(visualizar){
         $('h1').append('Visualizar Empresa');
         $('input[type="text"]').prop('disabled', true);

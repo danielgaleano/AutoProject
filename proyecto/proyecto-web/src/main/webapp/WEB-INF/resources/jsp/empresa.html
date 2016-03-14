@@ -27,7 +27,8 @@
         <a id="botonEditar" th:if="${tipo} == 'Visualizar'" th:href="@{'/empresas/'+${empresa.id}+'/editar'}" class="btn btn-primary" role="button">Editar</a>
         <a th:if="${tipo} == 'Visualizar'" th:href="@{/empresas}" class="btn btn-primary" role="button">Volver</a>
       </ol>
-    </section> 
+    </section>
+    <hr/> 
     <!-- Main content -->
     <section class="content">
             <div class="box box-info">
@@ -53,8 +54,20 @@
                             <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             <div class="help-block with-errors">Por ej. '1234567-8'</div>
                           </div> -->
-                          <div class="col-lg-2 input-group">
+                          <div class="col-lg-2 input-group" th:if="${tipo} == 'Crear'">
                             <input id="ruc" type="text" placeholder="RUC" class="form-control" data-error="Ingrese un numero de RUC." required="required" data-mask="" data-inputmask="'mask': '99999[999]-9'" pattern="^[0-9]+-[0-9]$"/>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <div class="help-block with-errors"></div>
+                          </div>
+
+                          <div class="col-lg-2 input-group" th:if="${tipo} == 'Editar'">
+                            <input id="ruc" type="text" placeholder="RUC" class="form-control" data-error="Ingrese un numero de RUC." required="required" data-mask="" data-inputmask-regex="^\d{5,8}\-\d{1}$" pattern="^[0-9]+-[0-9]$"/>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <div class="help-block with-errors"></div>
+                          </div>
+
+                          <div class="col-lg-2 input-group" th:if="${tipo} == 'Visualizar'">
+                            <input id="ruc" type="text" placeholder="RUC" class="form-control" data-error="Ingrese un numero de RUC." required="required" data-mask="" data-inputmask-regex="^\d{5,8}\-\d{1}$" pattern="^[0-9]+-[0-9]$"/>
                             <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
                             <div class="help-block with-errors"></div>
                           </div>

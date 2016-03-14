@@ -1,5 +1,6 @@
 $(document).ready(function(){
   $(":input").inputmask();
+  //$("#ruc").inputmask("Regex");
   /*$("#telefono").inputmask("phone", {
   url: "resources/dist/js/phone-codes/phone-codes.js",
   onKeyValidation: function () { //show some metadata in the console

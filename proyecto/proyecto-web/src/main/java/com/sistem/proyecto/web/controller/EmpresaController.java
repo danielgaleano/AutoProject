@@ -30,7 +30,8 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/empresas")
 public class EmpresaController extends BaseController{
     
-    String atributos = "id,nombre,descripcion,email,ruc,telefono,direccion,activo";
+    String atributos = "id,nombre,descripcion,email,ruc,telefono,telefonoMovil,"
+            + "nombreContacto,telefonoContacto,telefonoMovilContacto,direccion,activo";
     
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView welcomePage(Model model) {
@@ -90,6 +91,9 @@ public class EmpresaController extends BaseController{
                     ejEmpresa.setEmail(empresaRecibido.getEmail());
                     ejEmpresa.setNombre(empresaRecibido.getNombre());
                     ejEmpresa.setTelefono(empresaRecibido.getTelefono());
+                    ejEmpresa.setNombreContacto(empresaRecibido.getNombreContacto());
+                    ejEmpresa.setTelefonoContacto(empresaRecibido.getTelefonoContacto());
+                    ejEmpresa.setTelefonoMovilContacto(empresaRecibido.getTelefonoMovilContacto());
                }
                
            }else{

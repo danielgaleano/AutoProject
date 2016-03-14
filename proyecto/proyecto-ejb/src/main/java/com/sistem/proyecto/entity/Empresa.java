@@ -45,7 +45,7 @@ public class Empresa extends Base{
     private String telefonoMovil;
     
     @Column(name = "nombre_contacto")
-    private String NombreContacto;
+    private String nombreContacto;
     
     @Column(name = "telefono_contacto")
     private String telefonoContacto;
@@ -112,5 +112,38 @@ public class Empresa extends Base{
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getTelefonoMovil() {
+        return telefonoMovil;
+    }
+
+    public void setTelefonoMovil(String telefonoMovil) {
+        this.telefonoMovil = telefonoMovil;
+    }
+
+    public String getNombreContacto() {
+        return nombreContacto;
+    }
+
+    public void setNombreContacto(String nombreContacto) {
+        this.nombreContacto = nombreContacto;
+    }
+
+    public String getTelefonoContacto() {
+        return telefonoContacto;
+    }
+
+    public void setTelefonoContacto(String telefonoContacto) {
+        this.telefonoContacto = telefonoContacto;
+    }
+
+    public String getTelefonoMovilContacto() {
+        return telefonoMovilContacto;
+    }
+
+    public void setTelefonoMovilContacto(String telefonoMovilContacto) {
+        this.telefonoMovilContacto = telefonoMovilContacto;
+    }
+    
     
 }

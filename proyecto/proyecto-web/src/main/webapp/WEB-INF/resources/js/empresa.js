@@ -11,6 +11,10 @@ $(document).ready(function(data) {
         $('input[id="telefono"]').val(empresa.telefono);
         $('input[id="ruc"]').val(empresa.ruc);
         $('input[id="descripcion"]').val(empresa.descripcion);
+        $('input[id="telefonoMovil"]').val(empresa.telefonoMovil);
+        $('input[id="nombreContacto"]').val(empresa.nombreContacto);
+        $('input[id="telefonoContacto"]').val(empresa.telefonoContacto);
+        $('input[id="telefonoMovilContacto"]').val(empresa.telefonoMovilContacto);
     }else if(visualizar){
         $('h1').append('Visualizar Empresa');
         $('input[type="text"]').prop('disabled', true);
@@ -20,6 +24,10 @@ $(document).ready(function(data) {
         $('input[id="telefono"]').val(empresa.telefono);
         $('input[id="ruc"]').val(empresa.ruc);
         $('input[id="descripcion"]').val(empresa.descripcion);
+        $('input[id="telefonoMovil"]').val(empresa.telefonoMovil);
+        $('input[id="nombreContacto"]').val(empresa.nombreContacto);
+        $('input[id="telefonoContacto"]').val(empresa.telefonoContacto);
+        $('input[id="telefonoMovilContacto"]').val(empresa.telefonoMovilContacto);
         if(empresa.activo == 'S'){
             $("#botonEditar").show();
         } 
@@ -38,6 +46,10 @@ function sendData() {
         var ruc = document.getElementById("ruc");
         var descripcion = document.getElementById("descripcion");
         var telefono = document.getElementById("telefono");
+        var telefonoMovil = document.getElementById("telefonoMovil");
+        var nombreContacto = document.getElementById("nombreContacto");
+        var telefonoContacto = document.getElementById("telefonoContacto");
+        var telefonoMovilContacto = document.getElementById("telefonoMovilContacto");
         var email = document.getElementById("email");
         $.ajax({
         type:'POST',
@@ -49,6 +61,10 @@ function sendData() {
                 ruc: ruc.value,
                 direccion: direccion.value,
                 telefono: telefono.value,
+                telefonoMovil: telefonoMovil.value,
+                nombreContacto: nombreContacto.value,
+                telefonoContacto: telefonoContacto.value,
+                telefonoMovilContacto: telefonoMovilContacto.value,
                 email: email.value
         },
         success: function(data){ 

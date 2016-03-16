@@ -27,7 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/roles")
 public class RolController extends BaseController{
     
-    String atributos = "id,nombre,activo,empresa.id";
+    String atributos = "id,nombre,activo,empresa.id,empresa.nombre";
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listarRoles(Model model) {
             ModelAndView retorno = new ModelAndView();
@@ -35,16 +35,24 @@ public class RolController extends BaseController{
             UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         try{
             inicializarRolManager();
+            inicializarEmpresaManager();
             System.out.println(userDetail.getNombre());
             
             Rol ejemplo = new Rol();
-            ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            //ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
             
             List<Map<String, Object>> listMapRoles = rolManager.listAtributos(ejemplo, atributos.split(","), true);
-
+            
+            for(Map<String, Object> rpm : listMapRoles){
+                rpm.put("rolEmpresa", rpm.get("empresa.nombre"));
+            }
+            
+            Empresa ejEmpresa = new Empresa();
+            List<Map<String, Object>> listMapEmpresas = empresaManager.listAtributos(ejEmpresa, "id,nombre".split(","), true);
 
             model.addAttribute("roles", listMapRoles);
-
+            model.addAttribute("empresas", listMapEmpresas);
+            
             retorno.setViewName("roles");
             
         }catch (Exception ex){

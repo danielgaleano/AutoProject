@@ -93,16 +93,23 @@ public class UserSession implements AuthenticationProvider {
 
         if(user != null && user.getId() != null) {
             List<GrantedAuthority> autoridades = new ArrayList<GrantedAuthority>();
+            UserDetail userDetails = new UserDetail();
+            if(user.getRol().getNombre().compareToIgnoreCase("Super Usuario") == 0){
+                userDetails.setSuperUsuario(true);
+                autoridades.add(new SimpleGrantedAuthority("Super_Usuario"));
+            }
+            
             autoridades.add(new SimpleGrantedAuthority("ROLE_USER"));
             autoridades.add(new SimpleGrantedAuthority("ROLE_VIP"));
             autoridades.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
             autoridades.add(new SimpleGrantedAuthority("ROLE_VENDEDOR"));
             autoridades.add(new SimpleGrantedAuthority("ROLE_ALUMNO"));
-            UserDetail userDetails = new UserDetail();
+            
             userDetails.setUsername(user.getAlias());
             userDetails.setPassword(passwordLogin);
             userDetails.setNombre(user.getNombre()+" "+user.getApellido());
             userDetails.setId(user.getId());
+            userDetails.setSuperUsuario(false);
             //userDetails.setIdEmpresa(user.);
             
             Authentication customAuthentication = new UsernamePasswordAuthenticationToken(userDetails, 

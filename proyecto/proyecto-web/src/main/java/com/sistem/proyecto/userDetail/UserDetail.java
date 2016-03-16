@@ -23,6 +23,7 @@ public class UserDetail implements UserDetails {
     private String username;
     private String password;
     private String nombre;
+    private boolean superUsuario;
     private BigInteger entidad;
     private Date fecha;
     private String url;
@@ -106,6 +107,14 @@ public class UserDetail implements UserDetails {
         return hash;
     }
 
+    public boolean isSuperUsuario() {
+        return superUsuario;
+    }
+
+    public void setSuperUsuario(boolean superUsuario) {
+        this.superUsuario = superUsuario;
+    }
+    
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set

@@ -91,6 +91,7 @@ public class EmpresaController extends BaseController{
                     ejEmpresa.setEmail(empresaRecibido.getEmail());
                     ejEmpresa.setNombre(empresaRecibido.getNombre());
                     ejEmpresa.setTelefono(empresaRecibido.getTelefono());
+                    ejEmpresa.setTelefonoMovil(empresaRecibido.getTelefonoMovil());
                     ejEmpresa.setNombreContacto(empresaRecibido.getNombreContacto());
                     ejEmpresa.setTelefonoContacto(empresaRecibido.getTelefonoContacto());
                     ejEmpresa.setTelefonoMovilContacto(empresaRecibido.getTelefonoMovilContacto());
@@ -109,10 +110,14 @@ public class EmpresaController extends BaseController{
                ejEmpresaUp.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                ejEmpresaUp.setDescripcion(empresaRecibido.getDescripcion());
                ejEmpresaUp.setDireccion(empresaRecibido.getDireccion());
-               ejEmpresaUp.setRuc(empresaRecibido.getRuc());
+               //ejEmpresaUp.setRuc(empresaRecibido.getRuc());
                ejEmpresaUp.setEmail(empresaRecibido.getEmail());
                ejEmpresaUp.setNombre(empresaRecibido.getNombre());
-               ejEmpresaUp.setTelefono(empresaRecibido.getTelefono()); 
+               ejEmpresaUp.setTelefono(empresaRecibido.getTelefono());
+               ejEmpresa.setTelefonoMovil(empresaRecibido.getTelefonoMovil());
+               ejEmpresa.setNombreContacto(empresaRecibido.getNombreContacto());
+               ejEmpresa.setTelefonoContacto(empresaRecibido.getTelefonoContacto());
+               ejEmpresa.setTelefonoMovilContacto(empresaRecibido.getTelefonoMovilContacto());
                empresaManager.update(ejEmpresaUp);  
            }else{
               empresaManager.save(ejEmpresa); 

@@ -68,13 +68,62 @@
 
                                                 <a class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/visualizar'}"> <i class="ace-icon fa fa-external-link"></i>
                                                 </a>
-
-                                                <button th:if="${empresa.activo} == 'N'" th:onclick="'activar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-success" title="Activar">
+                                                
+                                                <!-- <button th:if="${empresa.activo} == 'N'" th:onclick="'activar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-success" title="Activar">
                                                     <i class="ace-icon fa fa-check bigger-120"></i>
                                                 </button>
                                                 <button th:if="${empresa.activo} == 'S'" th:onclick="'desactivar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-danger" title="Desactivar">
                                                     <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                                </button> -->
+
+                                                <button th:if="${empresa.activo} == 'N'" class="btn btn-xs btn-success" title="Activar" data-toggle="modal" data-target="#activarModal">
+                                                    <i class="ace-icon fa fa-check bigger-120"></i>
                                                 </button>
+                                                <button th:if="${empresa.activo} == 'S'" class="btn btn-xs btn-danger" title="Desactivar" data-toggle="modal" data-target="#desactivarModal">
+                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                                                </button>
+
+                                                
+                                                <!-- Modal Activar-->
+                                                <div class="modal fade" id="activarModal" tabindex="-1" role="dialog" aria-labelledby="activarModal">
+                                                  <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                      <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <h4 class="modal-title" id="activarModal">Activar</h4>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                        <p>¿Está seguro que desea activar la empresa <span th:text="${empresa.nombre}"></span>?</p>
+                                                      </div>
+                                                      <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                                        <button data-dismiss="modal" th:onclick="'activar(\'' + ${empresa.id} + '\');'" type="button" class="btn btn-success" >Activar</button>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                
+                                                    <!-- Modal Desactivar-->
+                                                <div class="modal fade" id="desactivarModal" tabindex="-1" role="dialog" aria-labelledby="desactivarModal">
+                                                  <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                      <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                        <h4 class="modal-title" id="desactivarModal">Desactivar</h4>
+                                                      </div>
+                                                      <div class="modal-body">
+                                                        <p>¿Está seguro que desea desactivar la empresa <span th:text="${empresa.nombre}">?</span></p>
+                                                      </div>
+                                                      <div class="modal-footer">
+                                                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                                        <button data-dismiss="modal" th:onclick="'desactivar(\'' + ${empresa.id} + '\');'" type="button" class="btn btn-danger">Desactivar</button>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+
+
+
                                             </td>
                                         </tr>
                                     </th:block>
@@ -90,6 +139,9 @@
 
     </div>    
     <!-- /.content -->
+        
+        
+
     <div layout:fragment="scripts">
     <script th:src="@{/resources/js/empresas.js}"></script>
 

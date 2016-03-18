@@ -91,7 +91,7 @@ public class UsuarioController extends BaseController{
                ejEmpresa = empresaManager.get(ejEmpresa);
                if(ejEmpresa != null){
                    mensaje.setError(true);
-                   mensaje.setMenasje("El numero de ruc ya se encuentra registrado.");
+                   mensaje.setMensaje("El numero de ruc ya se encuentra registrado.");
                    return mensaje;
                }else{
                     ejEmpresa = new Empresa();
@@ -108,7 +108,7 @@ public class UsuarioController extends BaseController{
                
            }else{
                 mensaje.setError(true);
-                mensaje.setMenasje("Debe ingresar numero de ruc.");
+                mensaje.setMensaje("Debe ingresar numero de ruc.");
                 return mensaje;
            }
              
@@ -130,11 +130,11 @@ public class UsuarioController extends BaseController{
            
            
            mensaje.setError(false);
-           mensaje.setMenasje("La empresa "+empresaRecibido.getNombre()+" se guardo exitosamente.");
+           mensaje.setMensaje("La empresa "+empresaRecibido.getNombre()+" se guardo exitosamente.");
            
        }catch(Exception e){
            mensaje.setError(true);
-           mensaje.setMenasje("Error a guardar la empresa");
+           mensaje.setMensaje("Error a guardar la empresa");
            System.out.println("Error");
        }
            
@@ -161,7 +161,7 @@ public class UsuarioController extends BaseController{
                     if (empresa != null && empresa.getActivo().toString()
                                                     .compareToIgnoreCase("N") == 0) {
                         retorno.setError(true);
-                        retorno.setMenasje("La empresa "+ nombre+" ya se encuentra desactivada.");
+                        retorno.setMensaje("La empresa "+ nombre+" ya se encuentra desactivada.");
                     }
                     empresa.setActivo("N");
                     empresa.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
@@ -170,11 +170,11 @@ public class UsuarioController extends BaseController{
                     empresaManager.update(empresa);
 
                     retorno.setError(false);
-                    retorno.setMenasje("La empresa "+ nombre+" se desactivo exitosamente.");
+                    retorno.setMensaje("La empresa "+ nombre+" se desactivo exitosamente.");
 
             } catch (Exception e) {
                     retorno.setError(true);
-                    retorno.setMenasje("Error al tratar de desactivar la empresa.");
+                    retorno.setMensaje("Error al tratar de desactivar la empresa.");
             }
 
             return retorno;
@@ -200,7 +200,7 @@ public class UsuarioController extends BaseController{
                     if (empresa != null && empresa.getActivo().toString()
                                                     .compareToIgnoreCase("N") == 0) {
                         retorno.setError(true);
-                        retorno.setMenasje("La empresa "+ nombre+" ya se encuentra activada.");
+                        retorno.setMensaje("La empresa "+ nombre+" ya se encuentra activada.");
                     }
                     empresa.setActivo("S");
                     empresa.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
@@ -209,11 +209,11 @@ public class UsuarioController extends BaseController{
                     empresaManager.update(empresa);
 
                     retorno.setError(false);
-                    retorno.setMenasje("La empresa "+ nombre+" se activo exitosamente.");
+                    retorno.setMensaje("La empresa "+ nombre+" se activo exitosamente.");
 
             } catch (Exception e) {
                     retorno.setError(true);
-                    retorno.setMenasje("Error al tratar de activar la empresa.");
+                    retorno.setMensaje("Error al tratar de activar la empresa.");
             }
 
             return retorno;

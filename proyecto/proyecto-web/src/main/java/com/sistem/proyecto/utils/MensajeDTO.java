@@ -13,7 +13,7 @@ public class MensajeDTO {
     
     private boolean error;
     
-    private String menasje;
+    private String mensaje;
     
     public MensajeDTO() {
             super();
@@ -33,19 +33,16 @@ public class MensajeDTO {
         this.error = error;
     }
 
-    /**
-     * @return the menasje
-     */
-    public String getMenasje() {
-        return menasje;
+    public String getMensaje() {
+        return mensaje;
     }
 
     /**
-     * @param menasje the menasje to set
+     * @param mensaje the mensaje to set
      */
-    public void setMenasje(String menasje) {
-        this.menasje = menasje;
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
     }
-    
+
     
 }

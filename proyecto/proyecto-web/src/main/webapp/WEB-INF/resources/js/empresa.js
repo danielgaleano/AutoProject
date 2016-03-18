@@ -22,6 +22,7 @@ $(document).ready(function(data) {
     }else if(visualizar){
         $('h1').append('Visualizar Empresa');
         $('input[type="text"]').prop('disabled', true);
+        $('input[type="email"]').prop('disabled', true);
         $('input[id="nombre"]').val(empresa.nombre);
         $('input[id="direccion"]').val(empresa.direccion);
         $('input[id="email"]').val(empresa.email);

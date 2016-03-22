@@ -93,6 +93,7 @@ public class UserSession implements AuthenticationProvider {
 
         if(user != null && user.getId() != null) {
             List<GrantedAuthority> autoridades = new ArrayList<GrantedAuthority>();
+            
             UserDetail userDetails = new UserDetail();
             if(user.getRol().getNombre().compareToIgnoreCase("Super Usuario") == 0){
                 userDetails.setSuperUsuario(true);
@@ -101,9 +102,9 @@ public class UserSession implements AuthenticationProvider {
             
             autoridades.add(new SimpleGrantedAuthority("ROLE_USER"));
             autoridades.add(new SimpleGrantedAuthority("ROLE_VIP"));
-            autoridades.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-            autoridades.add(new SimpleGrantedAuthority("ROLE_VENDEDOR"));
-            autoridades.add(new SimpleGrantedAuthority("ROLE_ALUMNO"));
+            autoridades.add(new SimpleGrantedAuthority("Rol.Editar"));
+            autoridades.add(new SimpleGrantedAuthority("Rol.Activar"));
+            autoridades.add(new SimpleGrantedAuthority("Rol.Desactivar"));
             
             userDetails.setUsername(user.getAlias());
             userDetails.setPassword(passwordLogin);

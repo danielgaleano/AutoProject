@@ -27,6 +27,7 @@ if (typeof jQuery === 'undefined') {
             url: window.location.href,
             urlDelete:window.location.href,
             urlActivate:window.location.href,
+            tableId:'',
             inputClass: 'form-control input-sm',
             toolbarClass: 'btn-toolbar',
             groupClass: 'btn-group btn-group-sm',
@@ -40,6 +41,12 @@ if (typeof jQuery === 'undefined') {
             mensajeErrorActivar:'Error al activar el registro. ',
             eventType: 'click',
             rowIdentifier: 'id',
+            buttonEditPermiso:'',
+            buttonDeletePermiso:'',
+            buttonActivatePermiso:'',
+            buttonVisualizarPermiso:'',
+            buttonAsignarPermiso:'',
+            isStatus:false,
             hideIdentifier: false,
             autoFocus: true,
             editButton: true,
@@ -47,6 +54,7 @@ if (typeof jQuery === 'undefined') {
             saveButton: true,
             restoreButton: true,
             asignarButton: true,
+            activarButton: true,
             buttons: {
                 edit: {
                     class: 'btn btn-xs btn-info',
@@ -57,6 +65,11 @@ if (typeof jQuery === 'undefined') {
                     class: 'btn btn-xs btn-danger',
                     html: '<span class="glyphicon glyphicon-trash"></span>',
                     action: 'delete'
+                },
+                activar: {
+                    class: 'btn btn-xs btn-success',
+                    html: '<span class="ace-icon fa fa-check bigger-120"></span>',
+                    action: 'activar'
                 },
                 save: {
                     class: 'btn btn-sm btn-success',
@@ -88,6 +101,7 @@ if (typeof jQuery === 'undefined') {
 
         var $lastEditedRow = 'undefined';
         var $lastDeletedRow = 'undefined';
+        var $lastActivarRow = 'undefined';
         var $lastRestoredRow = 'undefined';
 
         /**
@@ -104,8 +118,9 @@ if (typeof jQuery === 'undefined') {
                     }
 
                     var $td = $table.find('tbody td:nth-child(' + (parseInt(settings.columns.identifier[0]) + 1) + ')');
-
+                    console.log("identific",$td);
                     $td.each(function() {
+                        console.log($(this).text());
                         // Create hidden input with row identifier.
                         var span = '<span class="tabledit-span tabledit-identifier">'+$(this).text().trim()+'</span>';
                         var input = '<input class="tabledit-input tabledit-identifier" type="hidden" name="' + settings.columns.identifier[1] + '" value="'+$(this).text().trim()+'" disabled>';
@@ -118,9 +133,10 @@ if (typeof jQuery === 'undefined') {
                     });
                 },
                 editable: function() {
+                    console.log("leng ",settings.columns.editable.length);
                     for (var i = 0; i < settings.columns.editable.length; i++) {
                         var $td = $table.find('tbody td:nth-child(' + (parseInt(settings.columns.editable[i][0]) + 1) + ')');
-                        
+                       
                         $td.each(function() {
                             // Get text of this cell.
                             var text = $(this).text();
@@ -129,9 +145,19 @@ if (typeof jQuery === 'undefined') {
                             if (!settings.editButton) {
                                 $(this).css('cursor', 'pointer');
                             }
-
-                            // Create span element.
-                            var span = '<span class="tabledit-span">'+text.trim()+'</span>';
+                            if(text === "Activo" || text === "ACTIVO"
+                                           || text === "Activo" || text === "S"){
+                                // Create span element.
+                                var span = '<span class="label label-success">'+text.trim()+'</span>';       
+                            }else  if(text === "Inactivo" || text === "INACTIVO"
+                                           || text === "inactivo" || text === "N"){
+                                // Create span element.
+                                var span = '<span class="label label-danger">'+text.trim()+'</span>';
+                            }else{
+                                // Create span element.
+                                var span = '<span class="tabledit-span">'+text.trim()+'</span>';
+                            }
+                            
 
                             // Check if exists the third parameter of editable array.
                             if (typeof settings.columns.editable[i][2] !== 'undefined') {
@@ -163,69 +189,237 @@ if (typeof jQuery === 'undefined') {
                     }
                 },
                 toolbar: function() {
-                    var accion =  $('#estado').text();
-                    console.log(accion);
-                    if (settings.editButton || settings.deleteButton) {
-                        var editButton = '';
-                        var deleteButton = '';
-                        var saveButton = '';
-                        var restoreButton = '';
-                        var confirmButton = '';
-                        var asignarButton = '';
+					//Se verifica si existe el campo ACTIVO
+					if(settings.isStatus){
+						var $td = $table.find('.tabledit-estado');
+						var botones = $table.find('.tabledit-buttons');
+						$td.each(function(index,value) {
+							var status = botones[index];
+							var text = $(this).find('span').text();
+							if (settings.editButton || settings.deleteButton) {
+								var editButton = '';
+								var deleteButton = '';
+								var saveButton = '';
+								var restoreButton = '';
+								var confirmButton = '';
+								var confirmActivarButton = '';
+								var asignarButton = '';
+								var activarButton = '';
+								var toolbar = '';
+								var permisoDelete = '';
+                                                       
+								// Add toolbar column header if not exists.
+								if ($table.find('th.tabledit-toolbar-column').length === 0) {
+									$table.find('tr:first').append('<th class="tabledit-toolbar-column"></th>');
+								}
+								if(text === "Activo" || text === "ACTIVO"
+									   || text === "Activo" || text === "S"){
+									
+									// Create edit button.
+									if (settings.editButton) {
+                                                                            //Control de Permisos
+										
+                                                                            editButton = '<button type="button" class="tabledit-edit-button ' 
+                                                                            + settings.buttons.edit.class + '" style="float: none;" title="Editar">' 
+                                                                            + settings.buttons.edit.html 
+                                                                            + '</button>';
+										
+									}
+									 // Create asignar button.
+									if (settings.asignarButton) {
+										
+                                                                            asignarButton = '<button type="button" class="tabledit-asignar-button ' 
+                                                                            + settings.buttons.asignar.class + '" style="float: none;" title="Asignar Permisos">' 
+                                                                            + settings.buttons.asignar.html 
+                                                                            + '</button>';
+										
+									}
+									// Create delete button.
+									if (settings.deleteButton) {
+                                                                            console.log("settings.deleteButton");
+                                                                            deleteButton = '<button  type="button" class="tabledit-delete-button ' 
+                                                                            + settings.buttons.delete.class + '" style="float: none;" title="Desactivar">' 
+                                                                            + settings.buttons.delete.html 
+                                                                            + '</button>';
+                                                                            confirmButton = '<button  type="button" class="tabledit-confirm-button ' 
+                                                                            + settings.buttons.confirm.class + '" style="display: none; float: none;">' 
+                                                                            + settings.buttons.confirm.html 
+                                                                            + '</button>';
+										
+									}
 
-                        // Add toolbar column header if not exists.
-                        if ($table.find('th.tabledit-toolbar-column').length === 0) {
-                            $table.find('tr:first').append('<th class="tabledit-toolbar-column"></th>');
-                        }
+									 // Create asignar button.
+									if (settings.activarButton) {
+                                                                            activarButton = '<button sec:authorize="hasRole('+settings.buttonActivatePermiso+')" type="button" class="tabledit-activar-button ' 
+                                                                            + settings.buttons.activar.class + '" style="display: none; float: none;" title="Activar">' 
+                                                                            + settings.buttons.activar.html 
+                                                                            + '</button>';
+                                                                            confirmActivarButton = '<button type="button" class="tabledit-confirm-activar-button ' 
+                                                                            + settings.buttons.confirm.class + '" style="display: none; float: none;">' 
+                                                                            + settings.buttons.confirm.html 
+                                                                            + '</button>';
+										
+									}
 
-                        // Create edit button.
-                        if (settings.editButton) {
-                            editButton = '<button type="button" class="tabledit-edit-button ' + settings.buttons.edit.class + '" style="float: none;" title="Editar">' + settings.buttons.edit.html + '</button>';
-                        }
-                        
-                        // Create asignar button.
-                        if (settings.asignarButton) {
-                            asignarButton = '<button type="button" class="tabledit-asignar-button ' + settings.buttons.asignar.class + '" style="float: none;" title="Asignar Permisos">' + settings.buttons.asignar.html + '</button>';
-                        }
+								}else{
+									
+									// Create edit button.
+									if (settings.editButton) {
+                                                                            editButton = '<button type="button" class="tabledit-edit-button ' 
+                                                                            + settings.buttons.edit.class + '" style="display: none; float: none;" title="Editar">' 
+                                                                            + settings.buttons.edit.html 
+                                                                            + '</button>';
+										
+										
+									}
+									 // Create asignar button.
+									if (settings.asignarButton) {
+										
+                                                                            asignarButton = '<button type="button" class="tabledit-asignar-button ' 
+                                                                            + settings.buttons.asignar.class + '" style="display: none; float: none;" title="Asignar Permisos">' 
+                                                                            + settings.buttons.asignar.html 
+                                                                            + '</button>';
+										
+										
+									}
+									// Create delete button.
+									if (settings.deleteButton) {
+										
+                                                                            deleteButton = '<button type="button" class="tabledit-delete-button ' 
+                                                                            + settings.buttons.delete.class + '" style="display: none; float: none;" title="Desactivar">' 
+                                                                            + settings.buttons.delete.html 
+                                                                            + '</button>';
+                                                                            confirmButton = '<button type="button" class="tabledit-confirm-button ' 
+                                                                            + settings.buttons.confirm.class + '" style="display: none; float: none;">' 
+                                                                            + settings.buttons.confirm.html 
+                                                                            + '</button>';
+																				
+									}
 
-                        // Create delete button.
-                        if (settings.deleteButton) {
-                            deleteButton = '<button type="button" class="tabledit-delete-button ' + settings.buttons.delete.class + '" style="float: none;" title="Desactivar">' + settings.buttons.delete.html + '</button>';
-                            confirmButton = '<button type="button" class="tabledit-confirm-button ' + settings.buttons.confirm.class + '" style="display: none; float: none;">' + settings.buttons.confirm.html + '</button>';
-                        }
+									 // Create asignar button.
+									if (settings.activarButton) {
+										
+                                                                            activarButton = '<button type="button" class="tabledit-activar-button ' 
+                                                                            + settings.buttons.activar.class + '" style="float: none;" title="Activar">' 
+                                                                            + settings.buttons.activar.html 
+                                                                            + '</button>';
+                                                                            confirmActivarButton = '<button type="button" class="tabledit-confirm-activar-button ' 
+                                                                            + settings.buttons.confirm.class + '" style="display: none; float: none;">' 
+                                                                            + settings.buttons.confirm.html 
+                                                                            + '</button>';
 
-                        // Create save button.
-                        if (settings.editButton && settings.saveButton) {
-                            saveButton = '<button type="button" class="tabledit-save-button ' + settings.buttons.save.class + '" style="display: none; float: none;">' + settings.buttons.save.html + '</button>';
-                        }
+										
+										
+									}
+								}
 
-                        // Create restore button.
-                        if (settings.deleteButton && settings.restoreButton) {
-                            restoreButton = '<button type="button" class="tabledit-restore-button ' + settings.buttons.restore.class + '" style="display: none; float: none;" title="Activar">' + settings.buttons.restore.html + '</button>';
-                        }
-                        if(accion === "Activo"){
-                            var toolbar = '<div class="tabledit-toolbar ' + settings.toolbarClass + '" style="text-align: left;">\n\
-                                           <div class="' + settings.groupClass + '" style="float: none;">' + restoreButton + '</div>\n\
-                                           ' + saveButton + '\n\
-                                           ' + confirmButton + '\n\
-                                           ' + restoreButton + '\n\
-                                       </div></div>';
-                        }else{
-                            var toolbar = '<div class="tabledit-toolbar ' + settings.toolbarClass + '" style="text-align: left;">\n\
-                                           <div class="' + settings.groupClass + '" style="float: none;">' + editButton + asignarButton + deleteButton + '</div>\n\
-                                           ' + saveButton + '\n\
-                                           ' + confirmButton + '\n\
-                                           ' + restoreButton + '\n\
-                                       </div></div>';
-                        }
-                        var mansaje = '<button type="button" class="close" data-dismiss="alert"'
-                                    +'aria-label="Close"><span aria-hidden="true">&times;</span></button>';
-                        
-                        
-                        $('#mensaje').append(mansaje);
-                        // Add toolbar column cells.
-                        //$table.find('tr:gt(0)').append('<td style="white-space: nowrap; width: 1%;">' + toolbar + '</td>');
-                    }
+								// Create save button.
+								if (settings.editButton && settings.saveButton) {
+									saveButton = '<button type="button" class="tabledit-save-button ' + settings.buttons.save.class + '" style="display: none; float: none;">' + settings.buttons.save.html + '</button>';
+								}
+
+								// Create restore button.
+								if (settings.deleteButton && settings.restoreButton) {
+									restoreButton = '<button type="button" class="tabledit-restore-button ' + settings.buttons.restore.class + '" style="display: none; float: none;" title="Activar">' + settings.buttons.restore.html + '</button>';
+								}
+
+								toolbar = '<div class="tabledit-toolbar ' + settings.toolbarClass + '" style="text-align: left;">\n\
+											   <div class="' + settings.groupClass + '" style="float: none;">' + editButton + asignarButton + deleteButton + activarButton +'</div>\n\
+											   ' + saveButton + '\n\
+											   ' + confirmButton + '\n\
+											   ' + confirmActivarButton + '\n\
+											   ' + restoreButton + '\n\
+										   </div></div>';
+
+								var mansaje = '<button type="button" class="close" data-dismiss="alert"'
+											+'aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+
+
+								$('#mensaje').append(mansaje);
+								
+								// Add elements and class "view" to table cell.
+							   
+								$(status).html(toolbar);
+								
+							}
+						  
+						});
+					}else{
+						if (settings.editButton || settings.deleteButton) {
+							var editButton = '';
+							var deleteButton = '';
+							var saveButton = '';
+							var restoreButton = '';
+							var confirmButton = '';
+							var confirmActivarButton = '';
+							var asignarButton = '';
+							var activarButton = '';
+							var toolbar = '';
+
+							// Add toolbar column header if not exists.
+							if ($table.find('th.tabledit-toolbar-column').length === 0) {
+								$table.find('tr:first').append('<th class="tabledit-toolbar-column"></th>');
+							}
+							
+								
+							// Create edit button.
+							if (settings.editButton) {
+								//Control de Permisos
+								if(buttonEditPermiso != "" && buttonEditPermiso != null){
+									editButton = '<button sec:authorize="hasRole('+buttonEditPermiso+')" type="button" class="tabledit-edit-button ' 
+									+ settings.buttons.edit.class + '" style="float: none;" title="Editar">' 
+									+ settings.buttons.edit.html 
+									+ '</button>';
+								}else{
+									editButton = '<button type="button" class="tabledit-edit-button ' 
+									+ settings.buttons.edit.class + '" style="float: none;" title="Editar">' 
+									+ settings.buttons.edit.html 
+									+ '</button>';
+								}
+							}
+							 // Create asignar button.
+							if (settings.asignarButton) {
+								if(buttonAsignarPermiso != "" && buttonAsignarPermiso != null){
+									asignarButton = '<button sec:authorize="hasRole('+buttonAsignarPermiso+')" type="button" class="tabledit-asignar-button ' 
+									+ settings.buttons.asignar.class + '" style="float: none;" title="Asignar Permisos">' 
+									+ settings.buttons.asignar.html 
+									+ '</button>';
+								}else{
+									asignarButton = '<button type="button" class="tabledit-asignar-button ' 
+									+ settings.buttons.asignar.class + '" style="float: none;" title="Asignar Permisos">' 
+									+ settings.buttons.asignar.html 
+									+ '</button>';
+								}
+							}
+							
+
+							// Create save button.
+							if (settings.editButton && settings.saveButton) {
+								saveButton = '<button type="button" class="tabledit-save-button ' + settings.buttons.save.class + '" style="display: none; float: none;">' + settings.buttons.save.html + '</button>';
+							}
+
+							// Create restore button.
+							if (settings.deleteButton && settings.restoreButton) {
+								restoreButton = '<button type="button" class="tabledit-restore-button ' + settings.buttons.restore.class + '" style="display: none; float: none;" title="Activar">' + settings.buttons.restore.html + '</button>';
+							}
+
+							toolbar = '<div class="tabledit-toolbar ' + settings.toolbarClass + '" style="text-align: left;">\n\
+										   <div class="' + settings.groupClass + '" style="float: none;">' + editButton + asignarButton +'</div>\n\
+										   ' + saveButton + '\n\
+										   ' + restoreButton + '\n\
+									   </div></div>';
+
+							var mansaje = '<button type="button" class="close" data-dismiss="alert"'
+										+'aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+
+
+							$('#mensaje').append(mansaje);
+							//Add toolbar column cells.
+						    $table.find('tr:gt(0)').append('<td style="white-space: nowrap; width: 1%;">' + toolbar + '</td>');
+							
+						}
+					}
+					
                 }
             }
         };
@@ -314,6 +508,7 @@ if (typeof jQuery === 'undefined') {
                 $(td).each(function() {
                     // Get input element.
                     var $input = $(this).find('.tabledit-input');
+                    console.log($input);
                     // Set span text with input/select new value.
                     if ($input.is('select')) {
                         $(this).find('.tabledit-span').text($input.find('option:selected').text().trim());
@@ -353,10 +548,11 @@ if (typeof jQuery === 'undefined') {
                 if (ajaxResult === false) {
                     return;
                 }
+                console.log('roeeeee');
                 // Add class "deleted" to row.
                 $(td).parent('tr').addClass('tabledit-deleted-row');
                 // Hide table row.
-                $(td).parent('tr').addClass(settings.mutedClass).find('.tabledit-toolbar button:not(.tabledit-restore-button)').attr('disabled', true);
+                //$(td).parent('tr').addClass(settings.mutedClass).find('.tabledit-toolbar button:not(.tabledit-restore-button)').attr('disabled', true);
                 
                 $(td).find('.tabledit-edit-button').hide();
                 
@@ -365,7 +561,7 @@ if (typeof jQuery === 'undefined') {
                 $(td).find('.tabledit-asignar-button').hide();
                 
                 // Show restore button.
-                $(td).find('.tabledit-restore-button').show();
+                $(td).find('.tabledit-activar-button').show();
                 // Set last deleted row.
                 $lastDeletedRow = $(td).parent('tr');
             },
@@ -399,9 +595,9 @@ if (typeof jQuery === 'undefined') {
                 // Remove class "deleted" to row.
                 $(td).parent('tr').removeClass('tabledit-deleted-row');
                 // Hide table row.
-                $(td).parent('tr').removeClass(settings.mutedClass).find('.tabledit-toolbar button').attr('disabled', false);
+                //$(td).parent('tr').removeClass(settings.mutedClass).find('.tabledit-toolbar button').attr('disabled', false);
                 // Hide restore button.
-                $(td).find('.tabledit-restore-button').hide();
+                $(td).find('.tabledit-activar-button').hide();
                 // Set last restored row.
                 $lastRestoredRow = $(td).parent('tr');
             }
@@ -412,34 +608,36 @@ if (typeof jQuery === 'undefined') {
         var Activar = {
             reset: function(td) {
                 // Reset delete button to initial status.
-                $table.find('.tabledit-confirm-button').hide();
+                $table.find('.tabledit-confirm-activar-button').hide();
                 // Remove "active" class in delete button.
-                $table.find('.tabledit-delete-button').removeClass('active').blur();
+                $table.find('.tabledit-activar-button').removeClass('active').blur();
             },
             submit: function(td) {
-                Delete.reset(td);
+                Activar.reset(td);
                 // Enable identifier hidden input.
                 $(td).parent('tr').find('input.tabledit-identifier').attr('disabled', false);
                 // Send AJAX request to server.
-                var ajaxResult = ajax(settings.buttons.delete.action);
+                var ajaxResult = ajax(settings.buttons.activar.action);
                 // Disable identifier hidden input.
                 $(td).parents('tr').find('input.tabledit-identifier').attr('disabled', true);
 
                 if (ajaxResult === false) {
                     return;
                 }
-                // Add class "deleted" to row.
-                //$(td).parent('tr').addClass('tabledit-deleted-row');
+                //addd class "deleted" to row.
+                $(td).parent('tr').addClass('tabledit-deleted-row');
                 // Hide table row.
                 //$(td).parent('tr').addClass(settings.mutedClass).find('.tabledit-toolbar button:not(.tabledit-restore-button)').attr('disabled', true);
                 
-                //$(td).find('.tabledit-edit-button').hide();
+                $(td).find('.tabledit-activar-button').hide();
                 
-                //$(td).find('.tabledit-delete-button').hide();
-                // Show restore button.
-                //$(td).find('.tabledit-restore-button').show();
+                $(td).find('.tabledit-edit-button').show();
+                
+                $(td).find('.tabledit-delete-button').show();
+                
+                $(td).find('.tabledit-asignar-button').show();
                 // Set last deleted row.
-                $lastDeletedRow = $(td).parent('tr');
+                $lastActivarRow = $(td).parent('tr');
             },
             confirm: function(td) {
                 // Reset all cells in edit mode.
@@ -449,7 +647,7 @@ if (typeof jQuery === 'undefined') {
                 // Add "active" class in delete button.
                 $(td).find('.tabledit-delete-button').addClass('active');
                 // Show confirm button.
-                $(td).find('.tabledit-confirm-button').show();
+                $(td).find('.tabledit-confirm-activar-button').show();
             },
             restore: function(td) {
                 // Enable identifier hidden input.
@@ -500,15 +698,15 @@ if (typeof jQuery === 'undefined') {
                         $('#mensaje').addClass(settings.mensajeClass);   
                         $('#mensaje').append(data.mensaje);
                         $('#mensaje').show();
-                        setTimeout(function() {
-                            //$lastEditedRow.removeClass(settings.warningClass);
-                            location.reload();
-                        }, 7000);
+//                        setTimeout(function() {
+//                            //$lastEditedRow.removeClass(settings.warningClass);
+//                            location.reload();
+//                        }, 7000);
                     }
 
                     settings.onSuccess(data, textStatus, jqXHR);
                 }); 
-            }else if(action === "restore"){
+            }else if(action === "activar"){
                 var valores = serialize.split("id=");
                 var id = valores[1];
                 var jqXHR = $.get(settings.urlActivate+id, function(data, textStatus, jqXHR) {
@@ -522,10 +720,10 @@ if (typeof jQuery === 'undefined') {
                         $('#mensaje').addClass(settings.mensajeClass);   
                         $('#mensaje').append(data.mensaje);
                         $('#mensaje').show();
-                        setTimeout(function() {
-                            //$lastEditedRow.removeClass(settings.warningClass);
-                            location.reload();
-                        }, 7000);
+//                        setTimeout(function() {
+//                            //$lastEditedRow.removeClass(settings.warningClass);
+//                            location.reload();
+//                        }, 7000);
                          
                     }
                     
@@ -574,30 +772,32 @@ if (typeof jQuery === 'undefined') {
 
         Draw.columns.identifier();
         Draw.columns.editable();
+        console.log("toolbarrr 111");
         Draw.columns.toolbar();
 
         settings.onDraw();
         
         
-        if (settings.asignarButton) {
+        if (settings.activarButton) {
             /**
-             * Delete one row.
+             * Activar one row.
              *
              * @param {object} event
              */
-            $table.on('click', 'button.tabledit-delete-button', function(event) {
+            $table.on('click', 'button.tabledit-activar-button', function(event) {
                 if (event.handled !== true) {
                     event.preventDefault();
-
+                    console.log('entro activar');
                     // Get current state before reset to view mode.
                     var activated = $(this).hasClass('active');
-
+                    console.log(activated);
                     var $td = $(this).parents('td');
-
-                    Delete.reset($td);
+                    console.log($td);
+                    Activar.reset($td);
 
                     if (!activated) {
-                        Delete.confirm($td);
+                        console.log("confirm");
+                        Activar.confirm($td);
                     }
 
                     event.handled = true;
@@ -605,17 +805,17 @@ if (typeof jQuery === 'undefined') {
             });
 
             /**
-             * Delete one row (confirm).
+             * Activar one row (confirm).
              *
              * @param {object} event
              */
-            $table.on('click', 'button.tabledit-confirm-button', function(event) {
+            $table.on('click', 'button.tabledit-confirm-activar-button', function(event) {
                 if (event.handled !== true) {
                     event.preventDefault();
 
                     var $td = $(this).parents('td');
 
-                    Delete.submit($td);
+                    Activar.submit($td);
 
                     event.handled = true;
                 }
@@ -623,12 +823,14 @@ if (typeof jQuery === 'undefined') {
         }
 
         if (settings.deleteButton) {
+            console.log('desactivarrr');
             /**
              * Delete one row.
              *
              * @param {object} event
              */
             $table.on('click', 'button.tabledit-delete-button', function(event) {
+                console.log('entro desactivar');
                 if (event.handled !== true) {
                     event.preventDefault();
 
@@ -653,6 +855,7 @@ if (typeof jQuery === 'undefined') {
              * @param {object} event
              */
             $table.on('click', 'button.tabledit-confirm-button', function(event) {
+                console.log('confirmacion delete')
                 if (event.handled !== true) {
                     event.preventDefault();
 
@@ -663,6 +866,8 @@ if (typeof jQuery === 'undefined') {
                     event.handled = true;
                 }
             });
+			
+			
         }
 
         if (settings.restoreButton) {

@@ -360,13 +360,7 @@ if (typeof jQuery === 'undefined') {
 											   ' + confirmButton + '\n\
 											   ' + confirmActivarButton + '\n\
 											   ' + restoreButton + '\n\
-										   </div></div>';
-
-								var mansaje = '<button type="button" class="close" data-dismiss="alert"'
-											+'aria-label="Close"><span aria-hidden="true">&times;</span></button>';
-
-
-								$('#mensaje').append(mansaje);
+										   </div></div>';						
 								
 								// Add elements and class "view" to table cell.
 							   
@@ -440,6 +434,11 @@ if (typeof jQuery === 'undefined') {
 							
 						}
 					}
+                                        var mansaje = '<button type="button" class="close" data-dismiss="alert"'
+											+'aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+
+
+                                        $('#mensaje').append(mansaje);
 					
                 }
             }

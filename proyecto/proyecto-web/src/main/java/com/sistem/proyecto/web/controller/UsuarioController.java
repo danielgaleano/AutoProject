@@ -141,7 +141,7 @@ public class UsuarioController extends BaseController{
            return mensaje;
    }
    
-    @RequestMapping(value = "/{id}/desactivar", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO desactivar(@PathVariable("id") Long id) {
             MensajeDTO retorno = new MensajeDTO();
@@ -149,39 +149,39 @@ public class UsuarioController extends BaseController{
 
             try {
 
-                    inicializarEmpresaManager();
+                    inicializarUsuarioManager();
 
-                    Empresa empresa = empresaManager.get(id);
+                    Usuario usuario = usuarioManager.get(id);
                     
 
-                    if (empresa != null) {
-                            nombre = empresa.getNombre().toString();
+                    if (usuario != null) {
+                            nombre = usuario.getNombre().toString();
                     }
 
-                    if (empresa != null && empresa.getActivo().toString()
+                    if (usuario != null && usuario.getActivo().toString()
                                                     .compareToIgnoreCase("N") == 0) {
                         retorno.setError(true);
-                        retorno.setMensaje("La empresa "+ nombre+" ya se encuentra desactivada.");
+                        retorno.setMensaje("El usuario "+ nombre+" ya se encuentra desactivada.");
                     }
-                    empresa.setActivo("N");
-                    empresa.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                    empresa.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
+                    usuario.setActivo("N");
+                    usuario.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    usuario.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
                     
-                    empresaManager.update(empresa);
+                    usuarioManager.update(usuario);
 
                     retorno.setError(false);
-                    retorno.setMensaje("La empresa "+ nombre+" se desactivo exitosamente.");
+                    retorno.setMensaje("El Usuario "+ nombre+" se desactivo exitosamente.");
 
             } catch (Exception e) {
                     retorno.setError(true);
-                    retorno.setMensaje("Error al tratar de desactivar la empresa.");
+                    retorno.setMensaje("Error al tratar de desactivar el usuario.");
             }
 
             return retorno;
 
     }
     
-    @RequestMapping(value = "/{id}/activar", method = RequestMethod.GET)
+    @RequestMapping(value = "/activar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO activar(@PathVariable("id") Long id) {
             MensajeDTO retorno = new MensajeDTO();
@@ -189,31 +189,31 @@ public class UsuarioController extends BaseController{
 
             try {
 
-                    inicializarEmpresaManager();
+                    inicializarUsuarioManager();
 
-                    Empresa empresa = empresaManager.get(id);
+                    Usuario usuario = usuarioManager.get(id);
 
-                    if (empresa != null) {
-                            nombre = empresa.getNombre().toString();
+                    if (usuario != null) {
+                            nombre = usuario.getNombre().toString();
                     }
 
-                    if (empresa != null && empresa.getActivo().toString()
+                    if (usuario != null && usuario.getActivo().toString()
                                                     .compareToIgnoreCase("N") == 0) {
                         retorno.setError(true);
-                        retorno.setMensaje("La empresa "+ nombre+" ya se encuentra activada.");
+                        retorno.setMensaje("El usuario "+ nombre+" ya se encuentra activo.");
                     }
-                    empresa.setActivo("S");
-                    empresa.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                    empresa.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
+                    usuario.setActivo("S");
+                    usuario.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    usuario.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
                     
-                    empresaManager.update(empresa);
+                    usuarioManager.update(usuario);
 
                     retorno.setError(false);
-                    retorno.setMensaje("La empresa "+ nombre+" se activo exitosamente.");
+                    retorno.setMensaje("El usuario "+ nombre+" se activo exitosamente.");
 
             } catch (Exception e) {
                     retorno.setError(true);
-                    retorno.setMensaje("Error al tratar de activar la empresa.");
+                    retorno.setMensaje("Error al tratar de activar el usuario.");
             }
 
             return retorno;

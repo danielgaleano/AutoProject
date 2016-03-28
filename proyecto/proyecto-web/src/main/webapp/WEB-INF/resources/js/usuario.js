@@ -1,5 +1,61 @@
 
 $(document).ready(function(data) {
+   
+    $("#formUsuario").validate({
+    
+        // Specify the validation rules
+        rules: {
+            documento:{ 
+                required: true,
+                minlength: 6
+            },
+            alias: {
+               required: true, 
+               minlength: 4
+            },
+            nombre: {
+               required: true,
+               minlength: 2
+            },
+            apellido:{
+               required: true 
+            },
+            telefono: {
+                required: true
+            },
+            email: {
+                required: true,
+                email: true
+            },
+            password: {
+                required: true,
+                minlength: 5
+            },
+            agree: "required"
+        },
+        
+        // Specify the validation error messages
+        messages: {
+            documento: "Por Favor ingrese numero de documento.",
+            alias: "Por Favor ingrese alias del usuario.",
+            nombre: "Por Favor ingrese nombre del usuario.",
+            apellido: "Please enter your last name",
+            telefono: "Please enter your last name",
+            password: {
+                required: "Please provide a password",
+                minlength: "Your password must be at least 5 characters long"
+            },
+            email: "Please enter a valid email address",
+            agree: "Please accept our policy"
+        },
+        
+        submitHandler: function(form) {
+            console.log(form);
+            //form.submit();
+        }
+    });
+    
+    
     $("#botonEditar").hide();
     if(editar){
         $('h1').append('Editar Empresa');

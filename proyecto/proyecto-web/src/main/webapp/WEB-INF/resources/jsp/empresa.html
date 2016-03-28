@@ -2,22 +2,17 @@
 
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
-      layout:decorator="header.html">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
    <head>
-   <meta layout:fragment="meta"> 
-      <meta charset="utf-8"/>
-    </meta>
-   <title layout:fragment="title"> 
-      Crear Empresa
-    </title>
-  <div layout:fragment="styles">
-    <link rel="stylesheet" th:href="@{/resources/dist/css/style.css}" type="text/css"/>
-  </div>  
+        <div th:include="include/head :: head" th:remove="tag"></div>
+        <title>Empresas</title>
+
+        <link rel="stylesheet" th:href="@{/resources/dist/css/style.css}" type="text/css"/>
+  
   </head>
 <body >
-
-<div layout:fragment="body">
+    <nav th:replace="include/navbar :: navbar"></nav>
+    <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
        <h1>
@@ -182,12 +177,12 @@
 
     </section><!-- /.content -->
   </div>
-    <div layout:fragment="scripts">
-      <script th:src="@{~/proyecto/resources/js/empresa.js}"></script>
-      <script th:src="@{~/proyecto/resources/dist/js/jquery.inputmask.bundle.js}"></script>
-      <script th:src="@{~/proyecto/resources/dist/js/validator.js}"></script>
-      <script th:src="@{~/proyecto/resources/dist/js/empresa.validation.js}"></script>
-    </div>
+    <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{~/proyecto/resources/js/empresa.js}"></script>
+    <script th:src="@{~/proyecto/resources/dist/js/jquery.inputmask.bundle.js}"></script>
+    <script th:src="@{~/proyecto/resources/dist/js/validator.js}"></script>
+    <script th:src="@{~/proyecto/resources/dist/js/empresa.validation.js}"></script>
+    
   
      
     

@@ -6,8 +6,12 @@
 
 package com.sistem.proyecto.web.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sistem.proyecto.entity.Empresa;
+import com.sistem.proyecto.entity.Permiso;
 import com.sistem.proyecto.entity.Rol;
+import com.sistem.proyecto.entity.RolPermiso;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.DatosDTO;
 import com.sistem.proyecto.utils.MensajeDTO;
@@ -169,5 +173,80 @@ public class RolController extends BaseController{
             view = listarRoles(model);
             return retorno;
 
+    }
+    
+    @RequestMapping(value = "/asignar/permisos", method = RequestMethod.POST)
+    public @ResponseBody
+    MensajeDTO asignarPermisos(@ModelAttribute("RolPermiso") RolPermiso rolPermisos,Model model) {
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        ModelAndView view = new ModelAndView();
+        MensajeDTO retorno = new MensajeDTO();
+        String nombre = "";
+
+        try {
+
+                inicializarRolPermisoManager();
+                
+                Gson gson = new GsonBuilder().create();
+
+		
+
+                if (rolPermisos != null && rolPermisos.getRol() != null
+                        && rolPermisos.getRol().getId() != null
+                        && rolPermisos.getPermisos() != null) {
+                    
+                    RolPermiso ejRolPer = new RolPermiso();
+                    ejRolPer.setRol(new Rol(rolPermisos.getRol().getId()));
+                    ejRolPer.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+                    
+                    List<Map<String, Object>> listMapRolPermisos = rolPermisoManager.listAtributos(ejRolPer, "id,rol.id,empresa.id".split(","), true);
+    
+                    if(listMapRolPermisos.size() != 0)  {
+                        for(Map<String, Object> rpm : listMapRolPermisos){
+                            rolPermisoManager.delete(Long.parseLong(rpm.get("id").toString()));
+                        }
+                    }else{
+//                        for(String rpm : rolPermisos.getPermisos()){
+//                            ejRolPer.setPermiso(new Permiso(Long.parseLong(rpm)));
+//                            rolPermisoManager.save(ejRolPer);
+//                        }
+                    } 
+                }
+                retorno.setError(false);
+                retorno.setMensaje("El rol "+ nombre+" se desactivo exitosamente.");
+
+        } catch (Exception e) {
+            System.out.println("Error " + e);
+            retorno.setError(true);
+            retorno.setMensaje("Error al tratar de desactivar el rol.");
+        }
+        view = listarRoles(model);
+        return retorno;
+
+    }
+    
+    
+    @RequestMapping(value = "/asignar/{id}",method = RequestMethod.GET)
+    public @ResponseBody
+        ModelAndView listarPermisos(@PathVariable("id") Long id,Model model) {
+            ModelAndView retorno = new ModelAndView();
+
+            UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        try{
+            inicializarPermisoManager();
+            
+            Permiso ejemplo = new Permiso();
+            //ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));            
+            List<Map<String, Object>> listMapPermisos = permisoManager.listAtributos(ejemplo, "id,nombre".split(","), true);            
+            
+            model.addAttribute("permisos", listMapPermisos);
+            model.addAttribute("id", id);
+            retorno.setViewName("permisos"); 
+            
+        }catch (Exception ex){
+            System.out.println("Error " + ex);
+        }
+        
+        return retorno;
     }
 }

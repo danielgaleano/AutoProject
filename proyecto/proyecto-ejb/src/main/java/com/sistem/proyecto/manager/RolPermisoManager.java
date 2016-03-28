@@ -6,6 +6,7 @@
 package com.sistem.proyecto.manager;
 
 import com.sistem.proyecto.entity.Rol;
+import com.sistem.proyecto.entity.RolPermiso;
 import javax.ejb.Local;
 
 /**
@@ -13,6 +14,6 @@ import javax.ejb.Local;
  * @author Miguel
  */
 @Local
-public interface RolManager extends GenericDao<Rol, Long>{
+public interface RolPermisoManager extends GenericDao<RolPermiso, Long>{
     
 }

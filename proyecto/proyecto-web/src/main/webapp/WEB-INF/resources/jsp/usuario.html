@@ -16,8 +16,8 @@
         
       </h1>
       <ol class="breadcrumb">
-        <a id="botonEditar" th:if="${tipo} == 'Visualizar'" th:href="@{'/empresas/'+${empresa.id}+'/editar'}" class="btn btn-primary" role="button">Editar</a>
-        <a th:if="${tipo} == 'Visualizar'" th:href="@{/empresas}" class="btn btn-primary" role="button">Volver</a>
+        <a id="botonEditar" th:if="${tipo} == 'Visualizar'" th:href="@{'/usuarios/'+${usuario.id}+'/editar'}" class="btn btn-primary" role="button">Editar</a>
+        <a th:if="${tipo} == 'Visualizar'" th:href="@{/usuarios}" class="btn btn-primary" role="button">Volver</a>
       </ol>
     </section> 
     <!-- Main content -->
@@ -87,6 +87,8 @@
                                         </div>
 
                                     </div>
+                                    <input id="idUsuario" type="hidden" placeholder="Nombre" class="form-control" />
+
                                     <div class="col-xs-12 col-sm-9">
                                         <h4 class="blue">
                                             <span class="middle">Usuario</span>
@@ -94,19 +96,19 @@
                                         <div class="hr dotted"></div>
                                         <div class="form-group"><label class="col-lg-2 control-label">Documento</label>
 
-                                            <div class="col-lg-6"><input id="nombre" type="text" placeholder="Documento" class="form-control"> 
+                                            <div class="col-lg-6"><input id="documento" type="text" placeholder="Documento" class="form-control"> 
                                                 </input>
                                             </div>
                                         </div>
                                         <div class="form-group"><label class="col-lg-2 control-label">Alias</label>
 
-                                            <div class="col-lg-6"><input id="nombre" type="text" placeholder="Alias" class="form-control"> 
+                                            <div class="col-lg-6"><input id="alias" type="text" placeholder="Alias" class="form-control"> 
                                                 </input>
                                             </div>
                                         </div>
                                         <div class="form-group"><label class="col-lg-2 control-label">Contraseña</label>
 
-                                            <div class="col-lg-6"><input id="nombre" type="password" placeholder="Contraseña" class="form-control"> 
+                                            <div class="col-lg-6"><input id="claveAcceso" type="password" placeholder="Contraseña" class="form-control"> 
                                                 </input>
                                             </div>
                                         </div>
@@ -119,7 +121,7 @@
                                         
                                         <div class="form-group"><label class="col-lg-2 control-label">Apellido</label>
 
-                                            <div class="col-lg-6"><input id="nombre" type="text" placeholder="Apellido" class="form-control"> 
+                                            <div class="col-lg-6"><input id="apellido" type="text" placeholder="Apellido" class="form-control"> 
                                                 </input>
                                             </div>
                                         </div>
@@ -130,34 +132,26 @@
                                             <div class="col-xs-12 col-sm-12">
                                                 <div class="hr dotted"></div>
                                                 <div class="form-group"><label class="col-lg-2 control-label">Telefono</label>
-                                                    <div class="col-lg-6"><input id="nombre" type="text" placeholder="Telefono" class="form-control"> 
+                                                    <div class="col-lg-6"><input id="telefono" type="text" placeholder="Telefono" class="form-control"> 
                                                         </input>
                                                     </div>
                                                 </div>
                                                 <div class="form-group"><label class="col-lg-2 control-label">Telefono Movil</label>
-                                                    <div class="col-lg-6"><input id="nombre" type="text" placeholder="Telefono Movil" class="form-control"> 
+                                                    <div class="col-lg-6"><input id="telefonoMovil" type="text" placeholder="Telefono Movil" class="form-control"> 
                                                         </input>
                                                     </div>
                                                 </div>
                                                 <div class="form-group"><label class="col-lg-2 control-label">Direccion</label>
-                                                    <div class="col-lg-6"><input id="nombre" type="text" placeholder="Direccion" class="form-control"> 
+                                                    <div class="col-lg-6"><input id="direccion" type="text" placeholder="Direccion" class="form-control"> 
                                                         </input>
                                                     </div>
                                                 </div>
                                                 <div class="form-group"><label class="col-lg-2 control-label">Email</label>
-                                                    <div class="col-lg-6"><input id="nombre" type="text" placeholder="Email" class="form-control"> 
+                                                    <div class="col-lg-6"><input id="email" type="text" placeholder="Email" class="form-control"> 
                                                         </input>
                                                     </div>
                                                 </div>
-                                                <div class="form-group"><label class="col-lg-2 control-label">Rol</label>
-                                                    <select class="col-lg-3">
-                                                        <option>Seleccione Rol</option>
-                                                        <option>option 2</option>
-                                                        <option>option 3</option>
-                                                        <option>option 4</option>
-                                                        <option>option 5</option>
-                                                      </select>
-                                                </div>
+                                                
                                                 <div sec:authorize="hasRole('Super_Usuario')">
                                                     <div class="form-group"><label class="col-lg-2 control-label">Empresa</label>
                                                         <select class="col-lg-3" data-placeholder="Seleccione Empresa" th:field="*{empresas}">

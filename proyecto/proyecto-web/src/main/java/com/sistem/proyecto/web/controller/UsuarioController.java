@@ -7,6 +7,7 @@ package com.sistem.proyecto.web.controller;
 
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Usuario;
+import com.sistem.proyecto.entity.Rol;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.MensajeDTO;
 import java.sql.Timestamp;
@@ -65,76 +66,88 @@ public class UsuarioController extends BaseController{
     
     @RequestMapping(value = "/crear", method = RequestMethod.GET)
     public ModelAndView crear(Model model) {
-        
-        try{
-            inicializarEmpresaManager();
-            model.addAttribute("tipo", "Crear");           
-            List<Map<String, Object>> listMapEmpresas = empresaManager.listAtributos(new Empresa(), "id,nombre".split(","), true);
-            model.addAttribute("empresas", listMapEmpresas);
-        }catch (Exception ex){
+        model.addAttribute("tipo", "Crear");
+        return new ModelAndView("usuario");
+        //try{
+            //inicializarEmpresaManager();
+            //model.addAttribute("tipo", "Crear");           
+            //List<Map<String, Object>> listMapEmpresas = usuarioManager.listAtributos(new Empresa(), "id,nombre".split(","), true);
+            //model.addAttribute("empresas", listMapEmpresas);
+        //}catch (Exception ex){
             
-        }
+        //}
             
-            return new ModelAndView("usuario");
+            //return new ModelAndView("usuario");
     }
     
     @RequestMapping(value = "/guardar", method = RequestMethod.POST)
-   public @ResponseBody MensajeDTO guardar(@ModelAttribute("Empresa") Empresa empresaRecibido) {
+   public @ResponseBody MensajeDTO guardar(@ModelAttribute("Usuario") Usuario usuarioRecibido) {
        MensajeDTO mensaje = new MensajeDTO();
-       Empresa ejEmpresa = new Empresa();
+       Usuario ejUsuario = new Usuario();
        try{
-           inicializarEmpresaManager();
+           inicializarUsuarioManager();
            
-           if(empresaRecibido != null && empresaRecibido.getRuc() != null){
-               ejEmpresa.setRuc(empresaRecibido.getRuc());
+           if(usuarioRecibido != null && usuarioRecibido.getDocumento() != null){
+               ejUsuario.setDocumento(usuarioRecibido.getDocumento());
                
-               ejEmpresa = empresaManager.get(ejEmpresa);
-               if(ejEmpresa != null){
+               ejUsuario = usuarioManager.get(ejUsuario);
+               if(ejUsuario != null){
                    mensaje.setError(true);
-                   mensaje.setMensaje("El numero de ruc ya se encuentra registrado.");
+                   mensaje.setMensaje("El numero de documento ya se encuentra registrado.");
                    return mensaje;
                }else{
-                    ejEmpresa = new Empresa();
-                    ejEmpresa.setActivo("S");
-                    ejEmpresa.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                    ejEmpresa.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                    ejEmpresa.setDescripcion(empresaRecibido.getDescripcion());
-                    ejEmpresa.setDireccion(empresaRecibido.getDireccion());
-                    ejEmpresa.setRuc(empresaRecibido.getRuc());
-                    ejEmpresa.setEmail(empresaRecibido.getEmail());
-                    ejEmpresa.setNombre(empresaRecibido.getNombre());
-                    ejEmpresa.setTelefono(empresaRecibido.getTelefono());
+                    ejUsuario = new Usuario();
+                    ejUsuario.setActivo("S");
+                    ejUsuario.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                    ejUsuario.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    ejUsuario.setAlias(usuarioRecibido.getAlias());
+                    ejUsuario.setClaveAcceso(usuarioRecibido.getClaveAcceso());
+                    ejUsuario.setDireccion(usuarioRecibido.getDireccion());
+                    ejUsuario.setDocumento(usuarioRecibido.getDocumento());
+                    ejUsuario.setEmail(usuarioRecibido.getEmail());
+                    ejUsuario.setNombre(usuarioRecibido.getNombre());
+                    ejUsuario.setApellido(usuarioRecibido.getApellido());
+                    ejUsuario.setTelefono(usuarioRecibido.getTelefono());
+                    ejUsuario.setTelefonoMovil(usuarioRecibido.getTelefonoMovil());
+                    ejUsuario.setEmpresa(new Empresa(Long.valueOf(usuarioRecibido.getEmpresa().getId())));
+                    ejUsuario.setRol(new Rol(Long.valueOf(usuarioRecibido.getRol().getId())));
                }
                
            }else{
                 mensaje.setError(true);
-                mensaje.setMensaje("Debe ingresar numero de ruc.");
+                mensaje.setMensaje("Debe ingresar numero de documento.");
                 return mensaje;
            }
              
            
-           if(empresaRecibido.getId() != null){
-               Empresa ejEmpresaUp = new Empresa();
-               ejEmpresaUp = empresaManager.get(empresaRecibido.getId());
-               ejEmpresaUp.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-               ejEmpresaUp.setDescripcion(empresaRecibido.getDescripcion());
-               ejEmpresaUp.setDireccion(empresaRecibido.getDireccion());
-               ejEmpresaUp.setRuc(empresaRecibido.getRuc());
-               ejEmpresaUp.setEmail(empresaRecibido.getEmail());
-               ejEmpresaUp.setNombre(empresaRecibido.getNombre());
-               ejEmpresaUp.setTelefono(empresaRecibido.getTelefono()); 
-               empresaManager.update(ejEmpresaUp);  
+           if(usuarioRecibido.getId() != null){
+               Usuario ejUsuarioUp = new Usuario();
+               ejUsuarioUp = usuarioManager.get(usuarioRecibido.getId());
+               ejUsuarioUp.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+               ejUsuarioUp.setAlias(usuarioRecibido.getAlias());
+               ejUsuarioUp.setClaveAcceso(usuarioRecibido.getClaveAcceso());
+               ejUsuarioUp.setDireccion(usuarioRecibido.getDireccion());
+               ejUsuarioUp.setDocumento(usuarioRecibido.getDocumento());
+               ejUsuarioUp.setEmail(usuarioRecibido.getEmail());
+               ejUsuarioUp.setNombre(usuarioRecibido.getNombre());
+               ejUsuarioUp.setApellido(usuarioRecibido.getApellido());
+               ejUsuarioUp.setTelefono(usuarioRecibido.getTelefono());
+               ejUsuarioUp.setTelefonoMovil(usuarioRecibido.getTelefonoMovil());
+               ejUsuarioUp.setEmpresa(usuarioRecibido.getEmpresa());
+               ejUsuarioUp.setEmpresa(new Empresa(Long.valueOf(usuarioRecibido.getEmpresa().getId())));
+               ejUsuarioUp.setRol(new Rol(Long.valueOf(usuarioRecibido.getRol().getId())));
+               usuarioManager.update(ejUsuarioUp);  
            }else{
-              empresaManager.save(ejEmpresa); 
+              usuarioManager.save(ejUsuario); 
            }       
            
            
            mensaje.setError(false);
-           mensaje.setMensaje("La empresa "+empresaRecibido.getNombre()+" se guardo exitosamente.");
+           mensaje.setMensaje("El usuario "+usuarioRecibido.getAlias()+" se guardo exitosamente.");
            
        }catch(Exception e){
            mensaje.setError(true);
-           mensaje.setMensaje("Error a guardar la empresa");
+           mensaje.setMensaje("Error a guardar el usuario");
            System.out.println("Error");
        }
            
@@ -149,9 +162,9 @@ public class UsuarioController extends BaseController{
 
             try {
 
-                    inicializarEmpresaManager();
+                    inicializarUsuarioManager();
 
-                    Empresa empresa = empresaManager.get(id);
+                    Usuario empresa = usuarioManager.get(id);
                     
 
                     if (empresa != null) {
@@ -167,7 +180,7 @@ public class UsuarioController extends BaseController{
                     empresa.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                     empresa.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
                     
-                    empresaManager.update(empresa);
+                    usuarioManager.update(empresa);
 
                     retorno.setError(false);
                     retorno.setMensaje("La empresa "+ nombre+" se desactivo exitosamente.");
@@ -189,9 +202,9 @@ public class UsuarioController extends BaseController{
 
             try {
 
-                    inicializarEmpresaManager();
+                    inicializarUsuarioManager();
 
-                    Empresa empresa = empresaManager.get(id);
+                    Usuario empresa = usuarioManager.get(id);
 
                     if (empresa != null) {
                             nombre = empresa.getNombre().toString();
@@ -206,7 +219,7 @@ public class UsuarioController extends BaseController{
                     empresa.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                     empresa.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
                     
-                    empresaManager.update(empresa);
+                    usuarioManager.update(empresa);
 
                     retorno.setError(false);
                     retorno.setMensaje("La empresa "+ nombre+" se activo exitosamente.");
@@ -228,10 +241,10 @@ public class UsuarioController extends BaseController{
 
             try {
 
-                    inicializarEmpresaManager();
+                    inicializarUsuarioManager();
 
-                    Map<String, Object> empresa = empresaManager.getAtributos(
-					new Empresa(id), atributos.split(","), false, true);
+                    Map<String, Object> empresa = usuarioManager.getAtributos(
+					new Usuario(id), atributos.split(","), false, true);
 
                     model.addAttribute("empresa", empresa);
                     

@@ -39,6 +39,140 @@
 
 
                 <div id="mensaje"/> 
+                <!-- <form id="formUsuario" class="form-horizontal" role="form" onsubmit="javascript:sendData();" novalidate="novalidate">
+
+
+                  <div class="box-body"> 
+                       <input id="idEmpresa" type="hidden" placeholder="Nombre" class="form-control" />
+
+                       
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Ruc</label>
+
+                          
+                          <div class="col-lg-2 input-group" th:if="${tipo} == 'Crear'">
+                            <input id="ruc" type="text" placeholder="RUC" class="form-control" data-parsley-error-message="Ingrese un numero de RUC." required="required" data-mask="" data-inputmask="'mask': '99999[999]-9'" pattern="^[0-9]+-[0-9]$"/>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <div class="help-block with-errors"></div>
+                          </div>
+
+                          <div class="col-lg-2 input-group" th:if="${tipo} == 'Editar'">
+                            <input id="ruc" type="text" placeholder="RUC" class="form-control" data-parsley-error-message="Ingrese un numero de RUC." required="required" data-mask="" data-inputmask-regex="^\d{5,8}\-\d{1}$" pattern="^[0-9]+-[0-9]$"/>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <div class="help-block with-errors"></div>
+                          </div>
+
+                          <div class="col-lg-2 input-group" th:if="${tipo} == 'Visualizar'">
+                            <input id="ruc" type="text" placeholder="RUC" class="form-control" data-parsley-error-message="Ingrese un numero de RUC." required="required" data-mask="" data-inputmask-regex="^\d{5,8}\-\d{1}$" pattern="^[0-9]+-[0-9]$"/>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <div class="help-block with-errors"></div>
+                          </div>
+                          
+                       </div>
+                       <div class="form-group has-feedback">
+                            <label class="col-lg-3 control-label">Nombre</label>
+
+                            <div class="col-lg-4 input-group">
+                              <input id="nombre" type="text" placeholder="Nombre" class="form-control" data-parsley-error-message="Ingrese un nombre." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
+                       </div>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Direccion</label>
+
+                            <div class="col-lg-4 input-group">
+                              <input id="direccion" type="text" placeholder="Direccion" class="form-control" data-parsley-error-message="Ingrese una direccion." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
+                       </div>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Descripcion</label>
+
+                            <div class="col-lg-4 input-group">
+                              <input id="descripcion" type="text" placeholder="Descripcion" class="form-control" data-parsley-error-message="Ingrese una descripcion de la empresa." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
+                       </div>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Telefono</label>
+
+                            <div class="col-lg-2 input-group">
+                              <input id="telefono" type="text" placeholder="Telefono" class="form-control" data-mask="" data-inputmask="'mask': '(999) 999 999'" pattern="^\(\d{3}\) \d{3} \d{3}|\(\_\_\_\) \_\_\_ \_\_\_$" data-parsley-error-message="Ingrese un numero de telefono." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
+                       </div>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Telefono Movil</label>
+
+                           <div class="col-lg-2 input-group">
+                              <input id="telefonoMovil" type="text" placeholder="Telefono" class="form-control" data-mask="" data-inputmask="'mask': '0\\999 999 999'" pattern="^09\d{2} \d{3} \d{3}|09\_\_ \_\_\_ \_\_\_$" data-parsley-error-message="Ingrese un numero telefono movil." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
+                       </div>
+                       <div class="form-group has-feedback">
+                          <label  class="col-lg-3 control-label">Email</label>
+
+                           <div class="col-lg-4 input-group">
+                            <input id="email" type="email" placeholder="Email" class="form-control" data-parsley-error-message="Ingrese un email correctamente." required="required"/>
+                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                            <div class="help-block with-errors"></div>
+                           </div>
+                       </div>
+                       <div class="row">
+                          <div class="col-lg-2">
+                           <h4 class="pull-right">
+                               Contacto
+                             </h4>
+                          </div>
+                        </div>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Nombre del Contacto</label>
+
+                           <div class="col-lg-4 input-group">
+                              <input id="nombreContacto" type="text" placeholder="Nombre" class="form-control" data-parsley-error-message="Ingrese un nombre de contacto." required="required"/> 
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
+                       </div>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Telefono</label>
+
+                           <div class="col-lg-2 input-group">
+                              <input id="telefonoContacto" type="text" placeholder="Telefono" class="form-control" data-mask="" data-inputmask="'mask': '(999) 999 999'" pattern="^\(\d{3}\) \d{3} \d{3}|\(\_\_\_\) \_\_\_ \_\_\_$" data-parsley-error-message="Ingrese un numero de telefono del contacto." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
+                       </div>
+                       <div class="form-group has-feedback">
+                          <label class="col-lg-3 control-label">Telefono Movil</label>
+
+                           <div class="col-lg-2 input-group">
+                              <input id="telefonoMovilContacto" type="text" placeholder="Telefono" class="form-control" data-mask="" data-inputmask="'mask': '0\\999 999 999'" pattern="^09\d{2} \d{3} \d{3}|09\_\_ \_\_\_ \_\_\_$" data-parsley-error-message="Ingrese un numero de telefono movil del contacto." required="required"/>
+                              <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+                              <div class="help-block with-errors"></div>
+                            </div>
+                       </div>
+                  </div>
+                       <div class="clearfix form-actions box-footer">
+                           <div class="col-md-offset-3 col-md-9">
+                                   <button id="aceptar" class="btn btn-primary" type="submit">
+                                           <i class="fa fa-check bigger-110"></i>
+                                           Guardar
+                                   </button>
+
+                                   &nbsp; &nbsp; &nbsp;
+                                   <button id="cancelar" class="btn btn-default" type="reset" >
+                                           <i class="fa fa-undo bigger-110"></i>
+                                           Cancelar
+                                   </button>
+                           </div>
+                       </div>                   
+               </form> -->
                <form id="formUsuario" class="form-horizontal" data-toggle="validator" role="form">
 
 
@@ -49,11 +183,7 @@
                        <div class="form-group has-feedback">
                           <label class="col-lg-3 control-label">Ruc</label>
 
-                          <!-- <div class="col-lg-2 input-group">
-                            <input id="ruc" type="text" placeholder="RUC" class="form-control" data-error="Ingrese un numero de RUC." required="required" pattern="^[0-9]+-[0-9]$"/>
-                            <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
-                            <div class="help-block with-errors">Por ej. '1234567-8'</div>
-                          </div> -->
+                          
                           <div class="col-lg-2 input-group" th:if="${tipo} == 'Crear'">
                             <input id="ruc" type="text" placeholder="RUC" class="form-control" data-error="Ingrese un numero de RUC." required="required" data-mask="" data-inputmask="'mask': '99999[999]-9'" pattern="^[0-9]+-[0-9]$"/>
                             <span class="glyphicon form-control-feedback" aria-hidden="true"></span>
@@ -187,6 +317,29 @@
       <script th:src="@{~/proyecto/resources/dist/js/jquery.inputmask.bundle.js}"></script>
       <script th:src="@{~/proyecto/resources/dist/js/validator.js}"></script>
       <script th:src="@{~/proyecto/resources/dist/js/empresa.validation.js}"></script>
+      <!--
+      <script th:src="@{~/proyecto/resources/dist/js/parsley.js}"></script>
+      <script th:src="@{~/proyecto/resources/dist/js/i18n/es.js}"></script>
+      <script th:src="@{~/proyecto/resources/dist/js/empresa.parsley.js}"></script>
+      <script type="text/javascript">
+      $(document).ready(function(){
+        $("#formUsuario").parsley({
+          trigger: 'change',
+          successClass: "has-success",
+          errorClass: "has-error",
+          errors:{
+            classHandler: function (el) {
+                return el.$element.closest(".form-group");
+            },
+            errorsContainer: function (el) {
+                return el.$element.closest(".form-group");
+            },
+            errorsWrapper: "<span class='help-block'></span>",
+            errorTemplate: "<span></span>"
+          }
+        });
+      });
+      </script>-->
     </div>
   
      

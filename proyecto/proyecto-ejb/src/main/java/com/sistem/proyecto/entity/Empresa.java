@@ -22,7 +22,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 public class Empresa extends Base{
     
-    private static final long serialVersionUID = 7986185608L;
+    private static final long serialVersionUID = 79861856088L;
 
     @NotNull
     @NotEmpty

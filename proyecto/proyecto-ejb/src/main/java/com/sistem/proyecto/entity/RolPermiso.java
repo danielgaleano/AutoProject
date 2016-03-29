@@ -39,10 +39,23 @@ public class RolPermiso{
     
     @ManyToOne(optional = false)
     @JoinColumn(name = "rol", referencedColumnName = "id")
-    private Rol rol; 
+    private Rol rol;
     
     @Transient
-    private List<String> permisos;
+    private String idRol;
+    
+    @Transient
+    private List<Integer> permisos;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
+    
 
     /**
      * @return the empresa
@@ -86,17 +99,27 @@ public class RolPermiso{
         this.rol = rol;
     }
 
+    public String getIdRol() {
+        return idRol;
+    }
+
+    public void setIdRol(String idRol) {
+        this.idRol = idRol;
+    }
+    
+    
+
     /**
      * @return the permisos
      */
-    public List<String> getPermisos() {
+    public List<Integer> getPermisos() {
         return permisos;
     }
 
     /**
      * @param permisos the permisos to set
      */
-    public void setPermisos(List<String> permisos) {
+    public void setPermisos(List<Integer> permisos) {
         this.permisos = permisos;
     }
     

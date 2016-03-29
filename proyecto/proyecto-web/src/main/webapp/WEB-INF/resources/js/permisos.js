@@ -1,5 +1,33 @@
 
 $(document).ready(function(data) { 
+    var registros = $('.checkbox-identifier');
+    $.ajax({
+        type:'GET',
+        url: CONTEXT_ROOT+'/roles/'+idRol+'/permisos',        
+        success: function(data){ 
+            console.log(data);
+            if(data.error == true){
+                $('#mensaje').before('<div class="alert alert-danger alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    +'aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+                                    +'<strong>Error! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
+                $('html, body').animate({ scrollTop: 0 }, 0);
+
+            }else{
+                for(i=0; i<data.permisos.length; i++){
+                    $.each(registros, function(index, el) {
+                        if(data.permisos[i] === parseInt($(el).val())){
+                            $(this).attr('checked', true);
+                        }
+                   });
+                }
+            }
+         },
+        async: false
+    });
+    
     var permisos = []; 
     $("#selectall").click(function () {
         var els = $('.checkbox-identifier');
@@ -58,16 +86,15 @@ function asignarPermisos(){
     els.each(function(index, el) {
         if(this.checked){
             per += $(el).val()+",";
-             permisos.push( $(el).val() );
+             permisos.push(parseInt($(el).val()));
          }
     });
     console.log(permisos);
     $.ajax({
-        type:'POST',
-        url: CONTEXT_ROOT+'/roles/asignar/permisos', 
-        data: JSON.create({
-                rol: idRol,
-                permisos: permisos,
+        type:'PUT',
+        url: CONTEXT_ROOT+'/roles/asignar/'+idRol+'/permisos', 
+        data: JSON.stringify({
+                permisos: permisos
         }),
         success: function(data){ 
             if(data.error == true){
@@ -75,7 +102,7 @@ function asignarPermisos(){
                                     + '<button type="button" class="close" data-dismiss="alert"'
                                     +'aria-label="Close"><span aria-hidden="true">&times;</span></button>'
                                     +'<strong>Error! </strong>'
-                                    + data.menasje
+                                    + data.mensaje
                                     + '</div>');
                 $('html, body').animate({ scrollTop: 0 }, 0);
 
@@ -84,7 +111,7 @@ function asignarPermisos(){
                                     + '<button type="button" class="close" data-dismiss="alert"'
                                     +'aria-label="Close"><span aria-hidden="true">&times;</span></button>'
                                     +'<strong>Exito! </strong>'
-                                    + data.menasje
+                                    + data.mensaje
                                     + '</div>');
                 $('html, body').animate({ scrollTop: 0 }, 0);
             }

@@ -113,6 +113,7 @@ public class UserSession implements AuthenticationProvider {
             userDetails.setPassword(passwordLogin);
             userDetails.setNombre(user.getNombre()+" "+user.getApellido());
             userDetails.setId(user.getId());
+            userDetails.setIdEmpresa(user.getEmpresa().getId());
             userDetails.setSuperUsuario(false);
             //userDetails.setIdEmpresa(user.);
             

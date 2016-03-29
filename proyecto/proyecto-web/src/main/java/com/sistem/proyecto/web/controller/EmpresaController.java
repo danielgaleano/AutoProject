@@ -72,6 +72,41 @@ public class EmpresaController extends BaseController{
        try{
            inicializarEmpresaManager();
            
+           if(empresaRecibido != null && (empresaRecibido.getRuc()== null 
+                   || empresaRecibido.getRuc().compareToIgnoreCase("") == 0) ){
+                mensaje.setError(true);
+                mensaje.setMensaje("El RUC de la empresa no puede estar vacio.");
+                return mensaje;
+           }
+           
+           if(empresaRecibido != null && (empresaRecibido.getNombre() == null 
+                   || empresaRecibido.getNombre().compareToIgnoreCase("") == 0) ){
+                mensaje.setError(true);
+                mensaje.setMensaje("El nombre de la empresa no puede estar vacio.");
+                return mensaje;
+           }
+           
+           if(empresaRecibido != null && (empresaRecibido.getDireccion()== null 
+                   || empresaRecibido.getDireccion().compareToIgnoreCase("") == 0) ){
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar una direccion para la empresa.");
+                return mensaje;
+           }
+           
+           if(empresaRecibido != null && (empresaRecibido.getEmail()== null 
+                   || empresaRecibido.getEmail().compareToIgnoreCase("") == 0) ){
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar un email para la empresa.");
+                return mensaje;
+           }
+           
+           if(empresaRecibido != null && (empresaRecibido.getNombreContacto()== null 
+                   || empresaRecibido.getNombreContacto().compareToIgnoreCase("") == 0) ){
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar un contacto para la empresa.");
+                return mensaje;
+           }
+           
            if(empresaRecibido != null && empresaRecibido.getRuc() != null){
                ejEmpresa.setRuc(empresaRecibido.getRuc());
                

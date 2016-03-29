@@ -15,6 +15,7 @@ $(document).ready(function(data) {
         deleteButton: permisoDesactivar,
         activarButton:permisoActivar,
         asignarButton:true,
+        visualizarButton:false,
         columns: {
             identifier: [0, 'id'],
             editable: [

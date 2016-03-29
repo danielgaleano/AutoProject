@@ -3,31 +3,27 @@ $(document).ready(function(data) {
   var permisoActivar = parseBolean($(this).find('.tablactivate-permiso').text());
   var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
   var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
+  var permisoVisualizar = parseBolean($(this).find('.tablvisualizar-permiso').text());
 
   $('#example1').Tabledit({
         url: CONTEXT_ROOT+'/roles/guardar',
-        urlDelete: CONTEXT_ROOT+'/roles/desactivar/',
-        urlActivate: CONTEXT_ROOT+'/roles/activar/',
-        urlAsignar: CONTEXT_ROOT+'/roles/asignar',
+        urlDelete: CONTEXT_ROOT+'/usuarios/desactivar/',
+        urlActivate: CONTEXT_ROOT+'/usuarios/activar/',
+        urlVisualizar: CONTEXT_ROOT+'/usuarios',
         tableId:'example1',
         isStatus:true,
-        editButton: permisoEditar,
         deleteButton: permisoDesactivar,
         activarButton:permisoActivar,
-        asignarButton:true,
-        visualizarButton:false,
+        visualizarButton:permisoVisualizar,
+        asignarButton:false,
         columns: {
             identifier: [0, 'id'],
-            editable: [
-                [1, 'nombre'],
-                [2, 'empresa',datosEmpresa]
-            ]
+            editable: []
         },
          onDraw: function() {
             console.log('onDraw()');
         },
         onSuccess: function(data, textStatus, jqXHR) {
-            window.location = window.location +"#success";
 
             console.log('onSuccess(data, textStatus, jqXHR)');
             console.log(data);
@@ -50,6 +46,7 @@ $(document).ready(function(data) {
         }
 
     }); 
+    
     $('#example1').DataTable( {
         "order": [[ 0, "asc" ]],
         "pageLength": 10,

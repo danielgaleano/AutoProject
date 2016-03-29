@@ -105,7 +105,10 @@ public class UserSession implements AuthenticationProvider {
             autoridades.add(new SimpleGrantedAuthority("Rol.Editar"));
             autoridades.add(new SimpleGrantedAuthority("Rol.Activar"));
             autoridades.add(new SimpleGrantedAuthority("Rol.Desactivar"));
-            
+            autoridades.add(new SimpleGrantedAuthority("Usuario.Editar"));
+            autoridades.add(new SimpleGrantedAuthority("Usuario.Activar"));
+            autoridades.add(new SimpleGrantedAuthority("Usuario.Desactivar"));
+            autoridades.add(new SimpleGrantedAuthority("Usuario.Visualizar"));
             userDetails.setUsername(user.getAlias());
             userDetails.setPassword(passwordLogin);
             userDetails.setNombre(user.getNombre()+" "+user.getApellido());

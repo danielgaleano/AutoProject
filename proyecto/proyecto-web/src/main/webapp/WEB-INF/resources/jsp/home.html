@@ -1,33 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
-      layout:decorator="header.html">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
    <head>
-   <meta layout:fragment="meta"> 
-      <meta charset="utf-8"/>
-    </meta>
-    <title layout:fragment="title"> 
-      Home
-    </title>   
+        <div th:include="include/head :: head" th:remove="tag"></div>
+        <title>Home</title>
   </head>
 <body>
-    <div layout:fragment="body">
-        <section class="content-header">
-            <h1>
-              Page Header
-              <small>Optional description</small>
-            </h1>
-            <ol class="breadcrumb">
-              <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-              <li class="active">Here</li>
-            </ol>
-        </section>
-        <section class="content">
+    <nav th:replace="include/navbar :: navbar"></nav>
+    <div class="content-wrapper">
+            <section class="content-header">
+                <h1>
+                  Page Header
+                  <small>Optional description</small>
+                </h1>
+                <ol class="breadcrumb">
+                  <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                  <li class="active">Here</li>
+                </ol>
+            </section>
+            <section class="content">
 
-        <!-- Your Page Content Here -->
+            <!-- Your Page Content Here -->
 
-        </section>
+            </section>  
+
     </div>
+    <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
 </body>
 </html>

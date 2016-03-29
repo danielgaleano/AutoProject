@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
-      layout:decorator="header.html">
-<head></head>
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <div th:include="include/head :: head" th:remove="tag"></div>
+        <title>Usuarios</title>
+
+        <link rel="stylesheet" th:href="@{/resources/dist/css/dataTables.bootstrap.css}" type="text/css"/>
+     
+    </head>
 <body>
-    <div layout:fragment="body">
+    <nav th:replace="include/navbar :: navbar"></nav>
+    <div class="content-wrapper">
+        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Usuario.Agregar'')')}"/>
+        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Usuario.Editar'')')}"/>
+        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Usuario.Activar'')')}"/>
+        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Usuario.Desactivar'')')}"/>
+        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Usuario.Visualizar'')')}"/>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
@@ -24,7 +35,7 @@
                     <div class="dataTables_wrapper form-inline no-footer">
                         <div id="mensaje"></div>
                        
-                            <table class="table table-striped table-bordered table-hover dataTable no-footer DTTT_selectable" id="table_bug_report">
+                            <table class="table table-striped table-bordered table table-striped table-bordered table-hover dataTable no-footer DTTT_selectable" id="example1">
                                 <thead>
                                     <tr>
 
@@ -35,36 +46,45 @@
                                         <th class="hidden-480">TELEFONO</th>
                                         <th class="hidden-480">ROL</th>
                                         <th class="hidden-480">STATUS</th>
-                                        <th>ACCIONES</th>
+                                        <th class="tabledit-toolbar-column">ACCIONES</th>
                                     </tr>
                                 </thead>
 
                                 <tbody>
                                     <th:block th:each='usuario : ${usuarios}'>
                                         <tr>
-                                            <td class="hidden-480" th:text="${usuario.nombre}"></td>
-                                            <td class="hidden-480" th:text="${usuario.apellido}"></td>
-                                            <td class="hidden-480" th:text="${usuario.documento}"></td>
-                                            <td class="hidden-480" th:text="${usuario.direccion}"></td>
-                                            <td class="hidden-480" th:text="${usuario.telefono}"></td>
-                                            <td class="hidden-480" th:text="${usuario.rolNombre}"></td> 
-                                            <td class="hidden-480">
-                                                <span th:if="${usuario.activo} == 'S'" class="label label-success">Activo</span>
-                                                <span th:if="${usuario.activo} == 'N'" class="label label-danger">Inactivo</span>
+                                            <input class="tabledit-input tabledit-identifier" type="hidden" th:name="id" th:value="${usuario.id}" disabled=""/>
+                                           
+                                            <td class="tabledit-view-mode">
+                                                <span  style="display: inline;"  th:text="${usuario.nombre}"></span>
+                                                <input class="tabledit-input form-control input-sm" type="text" th:name="nombre" th:value="${usuario.nombre}" style="display: none;" disabled=""/>
                                             </td>
-                                            <td>
-                                                <a th:if="${usuario.activo} == 'S'" class="btn btn-xs btn-info" th:href="@{'/usuarios/'+${usuario.id}+'/editar'}"> <i class="ace-icon fa fa-pencil bigger-120"></i>
-                                                </a>
+                                            <td class="tabledit-view-mode">
+                                                <span  style="display: inline;"  th:text="${usuario.apellido}"></span>
+                                                <input class="tabledit-input form-control input-sm" type="text" th:name="apellido" th:value="${usuario.apellido}" style="display: none;" disabled=""/>
+                                            </td>
+                                            <td class="tabledit-view-mode">
+                                                <span  style="display: inline;"  th:text="${usuario.documento}"></span>
+                                                <input class="tabledit-input form-control input-sm" type="text" th:name="documento" th:value="${usuario.documento}" style="display: none;" disabled=""/>
+                                            </td>
+                                            <td class="tabledit-view-mode">
+                                                <span  style="display: inline;"  th:text="${usuario.direccion}"></span>
+                                                <input class="tabledit-input form-control input-sm" type="text" th:name="direccion" th:value="${usuario.direccion}" style="display: none;" disabled=""/>
+                                            </td>
+                                            <td class="tabledit-view-mode">
+                                                <span  style="display: inline;"  th:text="${usuario.telefono}"></span>
+                                                <input class="tabledit-input form-control input-sm" type="text" th:name="telefono" th:value="${usuario.telefono}" style="display: none;" disabled=""/>
+                                            </td>
+                                            <td class="tabledit-view-mode">
+                                                <span  style="display: inline;"  th:text="${usuario.rolNombre}"></span>
+                                                <input class="tabledit-input form-control input-sm" type="text" th:name="rolNombre" th:value="${usuario.rolNombre}" style="display: none;" disabled=""/>
+                                            </td>            
+                                            <td class="tabledit-estado">
+                                                <span class="label label-success" th:if="${usuario.activo} == 'S'"  th:value="S" th:text="Activo"/>
+                                                <span class="label label-danger" th:if="${usuario.activo} == 'N'"  th:value="N" th:text="Inactivo"/> 
+                                            </td>
+                                            <td style="white-space: nowrap; width: 1%;" class="tabledit-buttons">
 
-                                                <a class="btn btn-xs btn-info" th:href="@{'/usuarios/'+${usuario.id}+'/visualizar'}"> <i class="ace-icon fa fa-external-link"></i>
-                                                </a>
-
-                                                <button th:if="${usuario.activo} == 'N'" th:onclick="'activar(\'' + ${usuario.id} + '\');'" class="btn btn-xs btn-success" title="Activar">
-                                                    <i class="ace-icon fa fa-check bigger-120"></i>
-                                                </button>
-                                                <button th:if="${usuario.activo} == 'S'" th:onclick="'desactivar(\'' + ${usuario.id} + '\');'" class="btn btn-xs btn-danger" title="Desactivar">
-                                                    <i class="ace-icon fa fa-trash-o bigger-120"></i>
-                                                </button>
                                             </td>
                                         </tr>
                                     </th:block>
@@ -80,14 +100,12 @@
 
     </div>    
     <!-- /.content -->
-    <div layout:fragment="scripts">
-    <script th:src="@{/resources/js/empresas.js}"></script>
-
+    <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{/resources/js/usuarios.js}"></script>
+    <script src="/proyecto/resources/dist/js/jquery.tabledit.js"></script>
     <script src="/proyecto/resources/dist/js/jquery.dataTables.min.js"></script>
     <script src="/proyecto/resources/dist/js/dataTables.bootstrap.min.js"></script>
-    <script src="/proyecto/resources/dist/js/empresas.table.js" charset="utf-8"></script>
 
-    </div>
 
 </body>
 </html>

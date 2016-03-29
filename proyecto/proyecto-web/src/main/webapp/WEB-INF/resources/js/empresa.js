@@ -44,69 +44,36 @@ $(document).ready(function(data) {
     //do 
     //jQuery stuff when DOM is ready
 })
-function sendData() {
-    console.log($('#formUsuario').serialize());
-        var id = document.getElementById("idEmpresa");
-        var nombre = document.getElementById("nombre");
-        var direccion = document.getElementById("direccion");
-        var ruc = document.getElementById("ruc");
-        var descripcion = document.getElementById("descripcion");
-        var telefono = document.getElementById("telefono");
-        var telefonoMovil = document.getElementById("telefonoMovil");
-        var nombreContacto = document.getElementById("nombreContacto");
-        var telefonoContacto = document.getElementById("telefonoContacto");
-        var telefonoMovilContacto = document.getElementById("telefonoMovilContacto");
-        var email = document.getElementById("email");
 
-        if(nombre.value===""||ruc.value===""||direccion.value===""||email.value===""||nombreContacto.value===""){
-            $('#mensaje').before('<div class="alert alert-danger alert-dismissible fade in">'
-                                            + '<button type="button" class="close" data-dismiss="alert"'
-                                            +'aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                                            +'<strong>Error! </strong>'
-                                            + 'Fuck the world'
-                                            + '</div>');
-            $('html, body').animate({ scrollTop: 0 }, 0);
+//function sendData() {
+//    var datos = $("#formUsuario").serialize();
+//        $.ajax({
+//        type:'POST',
+//        url: CONTEXT_ROOT+'/empresas/guardar', 
+//        data: datos ,
+//        success: function(data){ 
+//            if(data.error == true){
+//                $('#mensaje').before('<div class="alert alert-danger alert-dismissible fade in">'
+//                                    + '<button type="button" class="close" data-dismiss="alert"'
+//                                    +'aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+//                                    +'<strong>Error! </strong>'
+//                                    + data.menasje
+//                                    + '</div>');
+//                $('html, body').animate({ scrollTop: 0 }, 0);
+//
+//            }else{
+//                $('#mensaje').before('<div class="alert alert-info alert-dismissible fade in">'
+//                                    + '<button type="button" class="close" data-dismiss="alert"'
+//                                    +'aria-label="Close"><span aria-hidden="true">&times;</span></button>'
+//                                    +'<strong>Exito! </strong>'
+//                                    + data.menasje
+//                                    + '</div>');
+//                $('html, body').animate({ scrollTop: 0 }, 0);
+//            }
+//         },
+//        async: false
+//    });
 
-        }
-        else{
-                $.ajax({
-                type:'POST',
-                url: CONTEXT_ROOT+'/empresas/guardar', 
-                data: {
-                        id:id.value,
-                        nombre: nombre.value,
-                        descripcion: descripcion.value,
-                        ruc: ruc.value,
-                        direccion: direccion.value,
-                        telefono: telefono.value,
-                        telefonoMovil: telefonoMovil.value,
-                        nombreContacto: nombreContacto.value,
-                        telefonoContacto: telefonoContacto.value,
-                        telefonoMovilContacto: telefonoMovilContacto.value,
-                        email: email.value
-                },
-                success: function(data){ 
-                    if(data.error == true){
-                        $('#mensaje').before('<div class="alert alert-danger alert-dismissible fade in">'
-                                            + '<button type="button" class="close" data-dismiss="alert"'
-                                            +'aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                                            +'<strong>Error! </strong>'
-                                            + data.mensaje
-                                            + '</div>');
-                        $('html, body').animate({ scrollTop: 0 }, 0);
 
-                    }else{
-                        $('#mensaje').before('<div class="alert alert-info alert-dismissible fade in">'
-                                            + '<button type="button" class="close" data-dismiss="alert"'
-                                            +'aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                                            +'<strong>Exito! </strong>'
-                                            + data.mensaje
-                                            + '</div>');
-                        $('html, body').animate({ scrollTop: 0 }, 0);
-                    }
-                 },
-                async: false
-            });
-        }
+//}
 
-}

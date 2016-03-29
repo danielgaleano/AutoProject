@@ -251,10 +251,10 @@ public class UsuarioController extends BaseController{
 
                     inicializarUsuarioManager();
 
-                    Map<String, Object> empresa = usuarioManager.getAtributos(
+                    Map<String, Object> usuario = usuarioManager.getAtributos(
 					new Usuario(id), atributos.split(","), false, true);
 
-                    model.addAttribute("empresa", empresa);
+                    model.addAttribute("usuario", usuario);
                     
                     if(tipo.compareToIgnoreCase("editar") == 0){
                         model.addAttribute("editar", true);
@@ -264,7 +264,7 @@ public class UsuarioController extends BaseController{
                         model.addAttribute("tipo", "Visualizar");
                     }
 
-                    retorno.setViewName("empresa");
+                    retorno.setViewName("usuario");
             } catch (Exception e) {
                     
             }

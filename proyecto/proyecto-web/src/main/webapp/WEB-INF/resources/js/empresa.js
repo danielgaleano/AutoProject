@@ -44,6 +44,7 @@ $(document).ready(function(data) {
     //do 
     //jQuery stuff when DOM is ready
 })
+
 //function sendData() {
 //    var datos = $("#formUsuario").serialize();
 //        $.ajax({
@@ -75,3 +76,4 @@ $(document).ready(function(data) {
 
 
 //}
+

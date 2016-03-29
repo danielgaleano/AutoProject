@@ -58,31 +58,37 @@ $(document).ready(function(data) {
     
     $("#botonEditar").hide();
     if(editar){
-        $('h1').append('Editar Empresa');
-        $('input[id="idEmpresa"]').val(empresa.id);
-        $('input[id="ruc"]').prop('disabled', true);
-        $('input[id="nombre"]').val(empresa.nombre);
-        $('input[id="direccion"]').val(empresa.direccion);
-        $('input[id="email"]').val(empresa.email);
-        $('input[id="telefono"]').val(empresa.telefono);
-        $('input[id="ruc"]').val(empresa.ruc);
-        $('input[id="descripcion"]').val(empresa.descripcion);
+        $('h1').append('Editar Usuario');
+        $('input[id="idUsuario"]').val(usuario.id);
+        $('input[id="documento"]').prop('disabled', true);
+        $('input[id="alias"]').val(usuario.alias);
+        $('input[id="claveAcceso"]').val(usuario.claveAcceso);
+        $('input[id="nombre"]').val(usuario.nombre);
+        $('input[id="apellido"]').val(usuario.apellido);
+        $('input[id="direccion"]').val(usuario.direccion);
+        $('input[id="email"]').val(usuario.email);
+        $('input[id="telefono"]').val(usuario.telefono);
+        $('input[id="documento"]').val(usuario.documento);
+        
     }else if(visualizar){
-        $('h1').append('Visualizar Empresa');
+        $('h1').append('Visualizar Usuario');
         $('input[type="text"]').prop('disabled', true);
-        $('input[id="nombre"]').val(empresa.nombre);
-        $('input[id="direccion"]').val(empresa.direccion);
-        $('input[id="email"]').val(empresa.email);
-        $('input[id="telefono"]').val(empresa.telefono);
-        $('input[id="ruc"]').val(empresa.ruc);
-        $('input[id="descripcion"]').val(empresa.descripcion);
-        if(empresa.activo == 'S'){
+        $('input[id="alias"]').val(usuario.alias);
+        $('input[id="claveAcceso"]').val(usuario.claveAcceso);
+        $('input[id="nombre"]').val(usuario.nombre);
+        $('input[id="apellido"]').val(usuario.apellido);
+        $('input[id="direccion"]').val(usuario.direccion);
+        $('input[id="email"]').val(usuario.email);
+        $('input[id="telefono"]').val(usuario.telefono);
+        $('input[id="documento"]').val(usuario.documento);
+        
+        if(usuario.activo == 'S'){
             $("#botonEditar").show();
         } 
         $("#aceptar").hide();
         $("#cancelar").hide();
     }else{
-        $('h1').append('Crear Empresa');
+        $('h1').append('Crear Usuario');
     }
     //do 
     //jQuery stuff when DOM is ready
@@ -176,21 +182,21 @@ $(document).ready(function(data) {
     }catch(e) {}
 })
 function sendData() {
-        var id = document.getElementById("idEmpresa");
+        var id = document.getElementById("idUsuario");
         var nombre = document.getElementById("nombre");
         var direccion = document.getElementById("direccion");
-        var ruc = document.getElementById("ruc");
+        var documento = document.getElementById("documento");
         var descripcion = document.getElementById("descripcion");
         var telefono = document.getElementById("telefono");
         var email = document.getElementById("email");
         $.ajax({
         type:'POST',
-        url: CONTEXT_ROOT+'/empresas/guardar', 
+        url: CONTEXT_ROOT+'/usuarios/guardar', 
         data: {
                 id:id.value,
                 nombre: nombre.value,
                 descripcion: descripcion.value,
-                ruc: ruc.value,
+                documento: documento.value,
                 direccion: direccion.value,
                 telefono: telefono.value,
                 email: email.value

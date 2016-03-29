@@ -61,8 +61,8 @@ public class EmpresaController extends BaseController{
     
     @RequestMapping(value = "/crear", method = RequestMethod.GET)
     public ModelAndView crear(Model model) {
-            model.addAttribute("tipo", "Crear");
-            return new ModelAndView("empresa");
+        model.addAttribute("tipo", "Crear");
+        return new ModelAndView("empresa");
     }
     
     @RequestMapping(value = "/guardar", method = RequestMethod.POST)

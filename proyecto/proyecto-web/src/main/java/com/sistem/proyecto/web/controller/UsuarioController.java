@@ -66,18 +66,16 @@ public class UsuarioController extends BaseController{
     
     @RequestMapping(value = "/crear", method = RequestMethod.GET)
     public ModelAndView crear(Model model) {
+        try{
+        inicializarEmpresaManager();
         model.addAttribute("tipo", "Crear");
+        List<Map<String, Object>> listMapEmpresas = empresaManager.listAtributos(new Empresa(), "id,nombre".split(","), true);
+        model.addAttribute("empresas", listMapEmpresas);
+        }catch(Exception ex){
+        
+        }
         return new ModelAndView("usuario");
-        //try{
-            //inicializarEmpresaManager();
-            //model.addAttribute("tipo", "Crear");           
-            //List<Map<String, Object>> listMapEmpresas = usuarioManager.listAtributos(new Empresa(), "id,nombre".split(","), true);
-            //model.addAttribute("empresas", listMapEmpresas);
-        //}catch (Exception ex){
-            
-        //}
-            
-            //return new ModelAndView("usuario");
+        
     }
     
     @RequestMapping(value = "/guardar", method = RequestMethod.POST)

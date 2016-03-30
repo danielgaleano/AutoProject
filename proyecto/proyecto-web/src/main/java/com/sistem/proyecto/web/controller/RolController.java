@@ -84,13 +84,23 @@ public class RolController extends BaseController{
         try{
             inicializarRolManager();
 
-            
-            Rol rol = rolManager.get(rolRecibido.getId());
-            rol.setNombre(rolRecibido.getNombre());
-            rol.setEmpresa(new Empresa(Long.valueOf(rolRecibido.getEmpresa())));
-            rolManager.update(rol);
-            retorno.setError(false);
-            retorno.setMensaje("El rol se modifico exitosamente.");
+            if(rolRecibido.getId() == null || rolRecibido.getId() != null && rolRecibido.getId().toString().compareToIgnoreCase("") == 0){
+                Rol rol = new Rol();
+                rol.setNombre(rolRecibido.getNombre());
+                rol.setActivo("S");
+                rol.setEmpresa(new Empresa(Long.valueOf(rolRecibido.getEmpresa())));
+                rol.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                rol.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                rolManager.save(rol);
+                retorno.setMensaje("El rol se creo exitosamente.");
+            }else{
+                Rol rol = rolManager.get(rolRecibido.getId());
+                rol.setNombre(rolRecibido.getNombre());
+                rol.setEmpresa(new Empresa(Long.valueOf(rolRecibido.getEmpresa())));
+                rolManager.update(rol);
+                retorno.setError(false);
+                retorno.setMensaje("El rol se modifico exitosamente.");
+            }      
                 
             
             

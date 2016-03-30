@@ -64,9 +64,64 @@ $(document).ready(function(data) {
             "search": "Buscar:"
         }
     } );  
+    
+    var $table = $('#example1');
+    
+    $('#crear').on('click',function (){
+        $('#crear').attr('disabled','disabled');
+        var input = '<input class="tabledit-input form-control input-sm" type="text" name="nombre" value="" style="">';
+        
+        var select = '<select class="tabledit-input form-control input-sm" name="empresa" style="">';
+        select += '<option value="" selected>Seleccione Empresa</option>';    
+        
+        $.each(datosEmpresa, function(index, value) {
+                    select += '<option value="' + value.id + '">' + value.nombre + '</option>';
+            });
+        input += '</select>';
+
+        $table.append($('<tr class="odd" role="row">\n')
+                .append('<input class="tabledit-input tabledit-identifier" type="hidden" value="" name="id">\n')
+                .append('<th class="sorting_1 tabledit-edit-mode">'+ input+'</th>\n')
+                .append('<th class="tabledit-edit-mode">'+ select+'</th>\n')
+                .append('<th class="tabledit-estado"></th>\n')
+                .append('<th class="tabledit-buttons" style="white-space: nowrap; width: 1%;">'
+                +'<div class="btn-group btn-group-sm" style="float: none;">\n'
+                +'<button id="guardar" style="float: none;" class="tabledit-guardar-registro-button btn btn-sm btn-success">Guardar</button>\n'
+                +'<button id="cancelar" title="Cancelar" style="float: none;" class="btn btn-xs btn-danger">'
+                +'<span class="glyphicon glyphicon-remove"></span></button>'
+                +'</div>'
+                +'</th>\n')
+                .append('</tr>'));
+        
+        
+    });
+        
+   $table.on('click','button.tabledit-guardar-registro-button',function (){
+       $('#crear').removeAttr('disabled');
+        var serialize = $table.find('.tabledit-input').serialize();
+        
+        var jqXHR = $.post(CONTEXT_ROOT+'/roles/guardar', serialize, function(data, textStatus, jqXHR) {
+            location.reload();
+        });
+        
+        jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
+
+        });
+            
+            
+   }); 
+    
+    
 });
 
+function guardarRegistro(){
+    if(val.toLowerCase() === 'true'){
+        return true;
+    }else if (val.toLowerCase() === 'false' || val.toLowerCase() === ''){
+        return false;
+    }
 
+}
 
 function parseBolean(val){
     if(val.toLowerCase() === 'true'){

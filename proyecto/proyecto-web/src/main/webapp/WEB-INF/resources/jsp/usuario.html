@@ -8,6 +8,9 @@
         <script th:src="@{~/proyecto/resources/js/lib/jquery-1.9.1.min.js}"></script>
         <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}"></script>
         <title>Usuarios</title>
+        <script th:inline="javascript">  
+            var usuario = /*[[${usuario}]]*/'';
+        </script>
   </head>
 <body >
     <nav th:replace="include/navbar :: navbar"></nav>

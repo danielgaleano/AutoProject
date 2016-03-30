@@ -93,7 +93,7 @@ and open the template in the editor.
                     <img th:src="@{/resources/img/user2-160x160.jpg}" class="img-circle" alt="User Image"/>
                   </div>
                   <div class="pull-left info">
-                    <p th:text="${#authentication.principal.nombre}"/>
+                    <p th:text="${#authentication.principal.nombreRol}"/>
                     <!-- Status -->
                     <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                   </div>
@@ -116,16 +116,21 @@ and open the template in the editor.
                   <!-- Optionally, you can add icons to the links -->
                   <li><a th:href="@{/empresas}"><i class="fa fa-suitcase"></i> <span>Empresas</span></a></li>
                   <li><a th:href="@{/usuarios}"><i class="fa fa-user"></i> <span>Usuarios</span></a></li>
-                  <li><a th:href="@{/roles}"><i class="fa fa-users"></i> <span>Roles</span></a></li>
-                  <li><a th:href="@{/permisos}"><i class="fa fa-key"></i> <span>Permisos</span></a></li>
-
                   <li class="treeview">
                     <a href="#"><i class="fa fa-car"></i> <span>Vehículos</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
-                      <li><a href="#">Automóviles</a></li>
+                      <li><a href="#">Automoviles</a></li>
                       <li><a href="#">Camionetas</a></li>
                     </ul>
                   </li>
+                  <li class="treeview">
+                    <a href="#"><i class="fa fa-cog"></i> <span>Datos de Acceso</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    <ul class="treeview-menu">
+                        <li><a th:href="@{/roles}"><i class="fa fa-users"></i> <span>Roles</span></a></li>
+                        <li><a th:href="@{/permisos}"><i class="fa fa-key"></i> <span>Permisos</span></a></li>
+                    </ul>
+                  </li>
+                  
                 </ul><!-- /.sidebar-menu -->
               </section>
               <!-- /.sidebar -->

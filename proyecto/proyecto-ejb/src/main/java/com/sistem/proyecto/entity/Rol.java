@@ -19,7 +19,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 public class Rol extends Base {
-    private static long serialVersionUID = 8538760347986185608L;
+    private static long serialVersionUID = 85387603479861808L;
 
     @NotNull
     @NotEmpty
@@ -43,6 +43,7 @@ public class Rol extends Base {
             super(id);
     }
 
+    
     
     /**
      * @return the nombre

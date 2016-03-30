@@ -4,12 +4,8 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
         <div th:include="include/head :: head" th:remove="tag"></div>
-
         <link rel="stylesheet" th:href="@{/resources/dist/css/dataTables.bootstrap.css}" type="text/css"/>
-        <script th:inline="javascript">  
-            var idRol = /*[[${id}]]*/'';
-        </script>
-        
+      
     </head>
 <body>
     <nav th:replace="include/navbar :: navbar"></nav>
@@ -19,11 +15,8 @@
         <section class="content-header">
             <h1>
                 Permisos
-                <small>Asignar permisos al rol.</small>
+                <small>Lista de permisos del sistema.</small>
             </h1>
-            <ol class="breadcrumb">
-                <button data-dismiss="modal" th:onclick="'asignarPermisos();'" type="button" class="btn btn-info">Asignar</button>    
-            </ol>
         </section>
         <hr/>
         <!-- Main content -->
@@ -33,16 +26,12 @@
                     <div class="" id="mensaje" style="display: none; float: none;"></div>
                     <thead>
                         <tr>
-                            <td><input  type="checkbox" id="selectall"/></td>
                             <th>Nombre</th>
                         </tr>
                     </thead>
                     <tbody>
                         <th:block th:each='permiso : ${permisos}'>
                             <tr>
-                                <td>
-                                    <input class="checkbox-identifier" type="checkbox" th:name="id" th:value="${permiso.id}"/>
-                                </td>
                                 <td class="tabledit-view-mode">
                                     <span  style="display: inline;"  th:text="${permiso.nombre}"></span>
                                     <input class="tabledit-input form-control input-sm" type="text" th:name="nombre" th:value="${permiso.nombre}" style="display: none;" disabled=""/>
@@ -58,7 +47,7 @@
     </div>    
     <!-- /.content -->
     <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
-    <script src="/proyecto/resources/js/permisos.js"></script>  
+    <script src="/proyecto/resources/js/permisosLista.js"></script>  
     <script src="/proyecto/resources/dist/js/jquery.dataTables.js"></script>
     <script src="/proyecto/resources/dist/js/dataTables.bootstrap.min.js"></script>
     

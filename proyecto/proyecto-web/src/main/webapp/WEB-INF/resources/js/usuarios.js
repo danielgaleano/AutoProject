@@ -53,9 +53,9 @@ $(document).ready(function(data) {
         "autoWidth": false,
 
         "language": {
-            "lengthMenu": "Mostrar _MENU_ resultados por página",
+            "lengthMenu": "Mostrar _MENU_ resultados por pagina",
             "zeroRecords": "No se encontraron resultados",
-            "info": "Página _PAGE_ de _PAGES_",
+            "info": "Pagina _PAGE_ de _PAGES_",
             "infoEmpty": "No hay resultados disponibles",
             "infoFiltered": "(filtrado de un total de _MAX_ )",
             "search": "Buscar:"

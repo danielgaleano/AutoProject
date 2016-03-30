@@ -69,6 +69,8 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/roles/guardar**").access("isAuthenticated()")
                 .antMatchers("/roles/activar/**").hasAnyAuthority("Rol.Activar")
                 .antMatchers("/roles/desactivar/**").hasAnyAuthority("Rol.Desactivar")
+                //------Permisos----//
+                .antMatchers("/permisos**").access("isAuthenticated()")
                 //------Empresa----//
                 .antMatchers("/empresas**").access("isAuthenticated()")
                 .antMatchers("/empresas/crear**").access("isAuthenticated()")

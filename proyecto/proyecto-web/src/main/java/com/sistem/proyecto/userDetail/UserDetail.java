@@ -23,6 +23,7 @@ public class UserDetail implements UserDetails {
     private String username;
     private String password;
     private String nombre;
+    private String nombreRol;
     private boolean superUsuario;
     private BigInteger entidad;
     private Date fecha;
@@ -78,6 +79,14 @@ public class UserDetail implements UserDetails {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getNombreRol() {
+        return nombreRol;
+    }
+
+    public void setNombreRol(String nombreRol) {
+        this.nombreRol = nombreRol;
     }
 
     

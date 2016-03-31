@@ -83,6 +83,19 @@ public class RolController extends BaseController{
         MensajeDTO retorno = new MensajeDTO();
         try{
             inicializarRolManager();
+            if(rolRecibido.getNombre() == null || rolRecibido.getNombre() != null
+                    && rolRecibido.getNombre().compareToIgnoreCase("") == 0){
+                retorno.setError(true);
+                retorno.setMensaje("El campo nombre no puede estar vacio.");
+                return retorno;
+            }
+            
+            if(rolRecibido.getEmpresa() == null || rolRecibido.getEmpresa() != null
+                    && rolRecibido.getEmpresa().compareToIgnoreCase("") == 0){
+                retorno.setError(true);
+                retorno.setMensaje("Debe seleccionar una empresa para el rol.");
+                return retorno;
+            }
 
             if(rolRecibido.getId() == null || rolRecibido.getId() != null && rolRecibido.getId().toString().compareToIgnoreCase("") == 0){
                 Rol rol = new Rol();
@@ -93,6 +106,7 @@ public class RolController extends BaseController{
                 rol.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 rolManager.save(rol);
                 retorno.setMensaje("El rol se creo exitosamente.");
+                return retorno;
             }else{
                 Rol rol = rolManager.get(rolRecibido.getId());
                 rol.setNombre(rolRecibido.getNombre());
@@ -100,11 +114,15 @@ public class RolController extends BaseController{
                 rolManager.update(rol);
                 retorno.setError(false);
                 retorno.setMensaje("El rol se modifico exitosamente.");
+                return retorno;
             }      
                 
             
             
         }catch (Exception ex){
+            System.out.println("Error " + ex);
+            retorno.setError(true);
+            retorno.setMensaje("Error al modificar/crear el rol.");
             
         }
         return retorno;

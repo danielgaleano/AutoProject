@@ -65,9 +65,10 @@ $(document).ready(function(data) {
         }
     } );  
     
-    var $table = $('#example1');
+    var $table = $('#example1 > tbody');
     
     $('#crear').on('click',function (){
+        console.log($('#example1 > tbodyt'));
         $('#crear').attr('disabled','disabled');
         var input = '<input class="tabledit-input form-control input-sm" type="text" name="nombre" value="" style="">';
         
@@ -79,7 +80,7 @@ $(document).ready(function(data) {
             });
         input += '</select>';
 
-        $table.append($('<tr class="odd" role="row">\n')
+        $('#example1 > tbody').prepend($('<tr class="odd" role="row">\n')
                 .append('<input class="tabledit-input tabledit-identifier" type="hidden" value="" name="id">\n')
                 .append('<th class="sorting_1 tabledit-edit-mode">'+ input+'</th>\n')
                 .append('<th class="tabledit-edit-mode">'+ select+'</th>\n')
@@ -87,7 +88,7 @@ $(document).ready(function(data) {
                 .append('<th class="tabledit-buttons" style="white-space: nowrap; width: 1%;">'
                 +'<div class="btn-group btn-group-sm" style="float: none;">\n'
                 +'<button id="guardar" style="float: none;" class="tabledit-guardar-registro-button btn btn-sm btn-success">Guardar</button>\n'
-                +'<button id="cancelar" title="Cancelar" style="float: none;" class="btn btn-xs btn-danger">'
+                +'<button id="cancelar" title="Cancelar" style="float: none;" class="remover_celda btn btn-xs btn-danger">'
                 +'<span class="glyphicon glyphicon-remove"></span></button>'
                 +'</div>'
                 +'</th>\n')
@@ -101,7 +102,14 @@ $(document).ready(function(data) {
         var serialize = $table.find('.tabledit-input').serialize();
         
         var jqXHR = $.post(CONTEXT_ROOT+'/roles/guardar', serialize, function(data, textStatus, jqXHR) {
-            location.reload();
+            if(data.error){
+                $('#mensaje').addClass('alert alert-danger alert-dismissible fade in');   
+                $('#mensaje').append(data.mensaje);
+                $('#mensaje').show();
+            }else{
+                location.reload();
+            }
+            
         });
         
         jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
@@ -110,6 +118,11 @@ $(document).ready(function(data) {
             
             
    }); 
+   
+   $table.on('click','button.remover_celda',function (){
+       $('#crear').removeAttr('disabled');
+       $(this).closest('tr').remove();
+   });
     
     
 });

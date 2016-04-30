@@ -4568,6 +4568,34 @@ img.editable-click{
  .editable-buttons{
  margin-left:1px
  }
+ .input-mini{
+width:60px;
+max-width:100%
+}
+.input-small{
+width:90px;
+max-width:100%
+}
+.input-medium,
+.input-md{
+width:150px;
+max-width:100%
+}
+.input-large{
+width:210px;
+max-width:100%
+}
+.input-xlarge{
+width:270px;
+max-width:100%
+}
+.input-xxlarge{
+width:530px;
+max-width:100%
+}
+input.input-lg{
+font-size:18px
+}
  .editable-buttons .btn{
  padding:0;
  width:28px;

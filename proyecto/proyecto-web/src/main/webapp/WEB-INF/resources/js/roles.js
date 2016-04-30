@@ -3,6 +3,7 @@ $(document).ready(function(data) {
   var permisoActivar = parseBolean($(this).find('.tablactivate-permiso').text());
   var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
   var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
+  var permisoAsignar = parseBolean($(this).find('.tablasignar-permiso').text());
 
   $('#example1').Tabledit({
         url: CONTEXT_ROOT+'/roles/guardar',
@@ -14,7 +15,7 @@ $(document).ready(function(data) {
         editButton: permisoEditar,
         deleteButton: permisoDesactivar,
         activarButton:permisoActivar,
-        asignarButton:true,
+        asignarButton:permisoAsignar,
         visualizarButton:false,
         columns: {
             identifier: [0, 'id'],

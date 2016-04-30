@@ -1,6 +1,5 @@
 
 function desactivar(data) {
-        console.log(data);
         $.ajax({
         type:'DELETE',
         url: CONTEXT_ROOT+'/empresas/'+data+'/desactivar', 

@@ -20,6 +20,7 @@
         <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Rol.Editar'')')}"/>
         <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Rol.Activar'')')}"/>
         <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Rol.Desactivar'')')}"/>
+        <div class="tablasignar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Rol.Asignar'')')}"/>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>

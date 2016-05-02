@@ -68,9 +68,13 @@ $(document).ready(function(data) {
 
 
     $('#example1').DataTable( {
-        "order": [[ 0, "asc" ]],
+        "order": [[ 1, "asc" ]],
         "pageLength": 10,
         "autoWidth": false,
+        "scrollY": "360px",
+        "scrollCollapse": true,
+        "paging": false,
+        "bInfo": false,
 
         "language": {
             "lengthMenu": "Mostrar _MENU_ resultados por pagina",

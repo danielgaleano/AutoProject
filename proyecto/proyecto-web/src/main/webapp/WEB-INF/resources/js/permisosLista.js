@@ -4,6 +4,10 @@ $(document).ready(function(data) {
         "order": [[ 0, "asc" ]],
         "pageLength": 10,
         "autoWidth": false,
+        "scrollY": "400px",
+        "scrollCollapse": true,
+        "paging": false,
+        "bInfo": false,
 
         "language": {
             "lengthMenu": "Mostrar _MENU_ resultados por pagina",

@@ -12,6 +12,7 @@
 <body>
     <nav th:replace="include/navbar :: navbar"></nav>
     <div class="content-wrapper">
+       
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
@@ -59,27 +60,31 @@
                                                 <span th:if="${empresa.activo} == 'N'" class="label label-danger">Inactivo</span>
                                             </td>
                                             <td>
-                                                <a th:if="${empresa.activo} == 'S'" class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/editar'}"> <i class="ace-icon fa fa-pencil bigger-120"></i>
-                                                </a>
-
-                                                <a class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/visualizar'}"> <i class="ace-icon fa fa-external-link"></i>
-                                                </a>
-                                                
+                                                <div th:if ="${#authorization.expression('hasAnyAuthority(''Empresa.Editar'')')}">
+                                                    <a th:if="${empresa.activo} == 'S'" class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/editar'}"> <i class="ace-icon fa fa-pencil bigger-120"></i>
+                                                    </a>
+                                                </div>
+                                                <div th:if ="${#authorization.expression('hasAnyAuthority(''Empresa.Visualizar'')')}">
+                                                   <a class="btn btn-xs btn-info" th:href="@{'/empresas/'+${empresa.id}+'/visualizar'}"> <i class="ace-icon fa fa-external-link"></i>
+                                                    </a> 
+                                                </div>
                                                 <!-- <button th:if="${empresa.activo} == 'N'" th:onclick="'activar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-success" title="Activar">
                                                     <i class="ace-icon fa fa-check bigger-120"></i>
                                                 </button>
                                                 <button th:if="${empresa.activo} == 'S'" th:onclick="'desactivar(\'' + ${empresa.id} + '\');'" class="btn btn-xs btn-danger" title="Desactivar">
                                                     <i class="ace-icon fa fa-trash-o bigger-120"></i>
                                                 </button> -->
-
-                                                <button th:if="${empresa.activo} == 'N'" class="btn btn-xs btn-success" title="Activar" data-toggle="modal" th:attr="data-target='#activarModal'+${empresa.id}">
+                                                <div th:if ="${#authorization.expression('hasAnyAuthority(''Empresa.Activar'')')}">
+                                                    <button th:if="${empresa.activo} == 'N'" class="btn btn-xs btn-success" title="Activar" data-toggle="modal" th:attr="data-target='#activarModal'+${empresa.id}">
                                                     <i class="ace-icon fa fa-check bigger-120"></i>
-                                                </button>
-                                                <button th:if="${empresa.activo} == 'S'" class="btn btn-xs btn-danger" title="Desactivar" data-toggle="modal" th:attr="data-target='#desactivarModal'+${empresa.id}">
+                                                    </button>
+                                                </div>
+                                                <div th:if ="${#authorization.expression('hasAnyAuthority(''Empresa.Desactivar'')')}">
+                                                    <button th:if="${empresa.activo} == 'S'" class="btn btn-xs btn-danger" title="Desactivar" data-toggle="modal" th:attr="data-target='#desactivarModal'+${empresa.id}">
                                                     <i class="ace-icon fa fa-trash-o bigger-120"></i>
-                                                </button>
+                                                    </button>
+                                                </div>
 
-                                                
                                                 <!-- Modal Activar-->
                                                 <div class="modal fade" th:id="'activarModal'+${empresa.id}" tabindex="-1" role="dialog" aria-labelledby="activarModal">
                                                   <div class="modal-dialog" role="document">

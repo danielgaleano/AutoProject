@@ -208,7 +208,7 @@ if (typeof jQuery === 'undefined') {
                                                         
                                                         console.log(ids);
 							var text = $(this).find('span').text();
-							if (settings.editButton || settings.deleteButton) {
+							if (settings.editButton || settings.deleteButton || settings.asignarButton) {
 								var editButton = '';
 								var deleteButton = '';
 								var saveButton = '';

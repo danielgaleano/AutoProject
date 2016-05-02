@@ -20,6 +20,7 @@
         <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Rol.Editar'')')}"/>
         <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Rol.Activar'')')}"/>
         <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Rol.Desactivar'')')}"/>
+        <div class="tablasignar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Rol.Asignar'')')}"/>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
@@ -27,7 +28,10 @@
                 <small>Lista de roles de la empresa.</small>
             </h1>
             <ol class="breadcrumb">
-                <a href="roles/crear" class="btn btn-primary" role="button">Crear</a>
+                <button id="crear" class="btn btn-primary" >
+                        <i class="fa fa-check bigger-110"></i>
+                        Crear
+                </button>
                 <a href="roles" class="btn btn-info" role="button">Cancelar</a>
             </ol>
         </section>

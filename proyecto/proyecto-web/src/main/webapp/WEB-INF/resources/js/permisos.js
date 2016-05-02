@@ -65,6 +65,8 @@ $(document).ready(function(data) {
 //        }
 //    });
 
+
+
     $('#example1').DataTable( {
         "order": [[ 0, "asc" ]],
         "pageLength": 10,

@@ -30,7 +30,16 @@ $(document).ready(function(data) {
     
     var permisos = []; 
     $("#selectall").click(function () {
-        var els = $('.checkbox-identifier');
+        if(this.checked) { //chequear status del select
+            $('.checkbox-identifier').each(function() { //recorrer cada checkbox
+                this.checked = true;  //seleccionar todos los checkboxes con clase "checkbox-identifier"               
+            });
+        }else{
+            $('.checkbox-identifier').each(function() { //recorrer cada checkbox
+                this.checked = false; //deseleccionar todos los checkboxes con clase "checkbox-identifier"                      
+            });         
+        }
+        /*var els = $('.checkbox-identifier');
         console.log(els);
         
         if (!this.checked) {
@@ -48,7 +57,7 @@ $(document).ready(function(data) {
             console.log(permisos);
 //            $('#arrayContent').empty();
 //            $('#arrayContent').append(permisos.join( ', ' ) );
-        }
+        }*/
         //contacts.push($('#tbody').children(tr > td > input).val();)
     });
 

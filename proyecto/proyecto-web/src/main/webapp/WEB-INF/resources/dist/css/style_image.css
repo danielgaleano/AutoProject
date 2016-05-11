@@ -1,0 +1,7 @@
+.dropzone.dz-started .dz-message {
+  opacity: 1; /* Don't let it disappear */
+}
+.dropzone.dz-max-files-reached .dz-message {
+  opacity: 0; /* Make it disappear */
+  display: none;
+}

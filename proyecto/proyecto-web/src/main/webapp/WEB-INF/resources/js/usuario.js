@@ -94,8 +94,9 @@ $(document).ready(function(data) {
 		submitHandler: function (form) {
                     console.log("exitoooo");
                     var $form = $('#validation-form');
-                    var serialize = $form.find('.tabledit-input').serialize();
-                    var jqXHR = $.post(CONTEXT_ROOT+'/servicios/guardar', serialize, function(data, textStatus, jqXHR) {
+                    var serialize = $form.find('.tableusuario-input').serialize();
+                    
+                    var jqXHR = $.post(CONTEXT_ROOT+'/usuarios/guardar', serialize, function(data, textStatus, jqXHR) {
                         if(data.error){
                             $('#mensaje').addClass('alert alert-danger alert-dismissible fade in');   
                             $('#mensaje').append(data.descripcion);
@@ -155,7 +156,7 @@ $(document).ready(function(data) {
         $("#aceptar").hide();
         $("#cancelar").hide();
     }else{
-        $('h1').append('Crear Usuario');
+//        $('h1').append('Crear Usuario');
     }
            
     

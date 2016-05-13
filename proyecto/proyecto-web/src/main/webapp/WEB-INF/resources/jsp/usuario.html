@@ -18,9 +18,7 @@
     <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-       <h1>
-        
-      </h1>
+      
       <ol class="breadcrumb">
         <a id="botonEditar" th:if="${tipo} == 'Visualizar'" th:href="@{'/usuarios/'+${usuario.id}+'/editar'}" class="btn btn-primary" role="button">Editar</a>
         <a th:if="${tipo} == 'Visualizar'" th:href="@{/usuarios}" class="btn btn-primary" role="button">Volver</a>
@@ -31,7 +29,7 @@
             <div class="box box-info">
                 <div id="mensaje"/> 
                 <div class="box-header with-border">
-                  <h3 class="box-title">Insertar Datos</h3>
+                  <h3 class="box-title"><span class="middle">Crear Usuario</span></h3>
                 </div>
                 <!-- <form:input path="fichero" type="file" class="hidden" />
                 <form:input path="nuevoFichero" type="boolean" class="hidden" /> -->
@@ -43,10 +41,10 @@
                                     <div class="col-xs-12 col-sm-3 center">
                                         <div>
                                             <div id="img-boton">
-                                                <div class="thumbnail">
-                                                 <img id="imgPortada" style="width: 300px; height: auto" th:src="@{/resources/img/user2-160x160.jpg}" alt="Seleccione una nueva imagen"/>
+                                                <div class="profile-picture">
+                                                 <img id="imgPortada" style="width: 200px; height: auto" th:src="@{/resources/img/user2-160x160.jpg}" alt="Seleccione una nueva imagen"/>
                                                  <div class="caption">
-                                                   <a class="btn btn-warning boton-imagen" role="button" data-campo="imagenPort" data-ancho="300" data-alto="400" data-img="imgPortada">Elegir imagen</a>
+                                                   <a class="btn btn-warning boton-imagen" role="button" data-campo="imagenPort" data-ancho="200" data-alto="400" data-img="imgPortada">Elegir imagen</a>
                                                    <input class="hidden" id="imagenPortInput" type="file"/>
                                                  </div>
                                                </div>
@@ -70,54 +68,50 @@
                                                    
                                             </span>-->
 
-                                            <div class="space-4"></div>
-
                                         </div>
 
                                     </div>
-                                    <input id="idUsuario" type="hidden" placeholder="Nombre" class="form-control" />
+                                    <input id="idUsuario" type="hidden" placeholder="Nombre" class="form-control tableusuario-input" />
 
                                     <div class="col-xs-12 col-sm-9">
-                                        <h4 class="blue">
-                                            <span class="middle">Usuario</span>
-                                        </h4>
+                                        
                                         <div class="hr dotted"></div>
                                         <div class="form-group"><label class="col-lg-2 control-label">Documento</label>
 
 
-                                            <div class="col-lg-6"><input id="documento" name="documento" type="text" placeholder="Documento" class="form-control input-large"/> 
-                                                <br/>
+                                            <div class="col-lg-6"><input id="documento" name="documento" type="text" placeholder="Documento" class="form-control tableusuario-input input-large"/> 
+                                                
 
                                             </div>
                                         </div>
                                         <div class="form-group"><label class="col-lg-2 control-label">Alias</label>
 
 
-                                            <div class="col-lg-6"><input id="alias" name="alias"  type="text" placeholder="Alias" class="form-control input-large"/> 
-                                                <br/>
+                                            <div class="col-lg-6"><input id="alias" name="alias"  type="text" placeholder="Alias" class="form-control tableusuario-input input-large"/> 
+                                               
 
                                             </div>
                                         </div>
                                         <div class="form-group"><label class="col-lg-2 control-label">Contraseña</label>
 
 
-                                            <div class="col-lg-6"><input id="contrasena" name="contrasena" type="password" placeholder="Contraseña" class="form-control input-large"/> 
-                                                <br/>
+                                            <div class="col-lg-6"><input id="contrasena" name="contrasena" type="password" placeholder="Contraseña" class="form-control tableusuario-input input-large"/> 
+                                                
 
                                             </div>
                                         </div>
                                         <div class="form-group"><label class="col-lg-2 control-label">Nombre</label>
 
-                                            <div class="col-lg-6"><input id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control input-xlarge"/> 
-                                                <br/>
+                                            <div class="col-lg-6"><input id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input input-xlarge"/> 
+                                                
                                             </div>
                                         </div>
                                         
                                         <div class="form-group"><label class="col-lg-2 control-label">Apellido</label>
 
 
-                                            <div class="col-lg-6"><input id="apellido" name="apellido" type="text" placeholder="Apellido" class="form-control input-xlarge"/> 
-                                                <br/>
+                                            <div class="col-lg-6"><input id="apellido" name="apellido" type="text" placeholder="Apellido" class="form-control tableusuario-input input-xlarge"/> 
+                                                
 
                                             </div>
                                         </div>
@@ -126,33 +120,33 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="col-xs-12 col-sm-12">
-                                                <div class="hr dotted"></div>
+            
                                                 <div class="form-group"><label class="col-lg-2 control-label">Telefono</label>
 
 
-                                                    <div class="col-lg-3"><input id="telefono" name="telefono" type="text" placeholder="Telefono" class="form-control input-large"/> 
-                                                        <br/>
+                                                    <div class="col-lg-6"><input id="telefono" name="telefono" type="text" placeholder="Telefono" class="form-control tableusuario-input input-large"/> 
+                                                        
                                                     </div>
                                                 </div>
                                                 <div class="form-group"><label class="col-lg-2 control-label">Telefono Movil</label>
-                                                    <div class="col-lg-3"><input id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" class="form-control" /> 
-                                                        <br/>
+                                                    <div class="col-lg-6"><input id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" class="form-control tableusuario-input input-large" /> 
+                                                       
                                                     </div>
                                                 </div>
                                                 <div class="form-group"><label class="col-lg-2 control-label">Direccion</label>
-                                                    <div class="col-lg-6"><input id="direccion" type="text" placeholder="Direccion" class="form-control input-xlarge" /> 
-                                                        <br/>
+                                                    <div class="col-lg-6"><input id="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input input-xlarge" /> 
+                                                        
                                                     </div>
                                                 </div>
                                                 <div class="form-group"><label class="col-lg-2 control-label">Email</label>
-                                                    <div class="col-lg-6"><input id="email" name="email" type="text" placeholder="Email" class="form-control input-xlarge"/> 
-                                                        <br/>
+                                                    <div class="col-lg-6"><input id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input input-xlarge"/> 
+                                                        
                                                     </div>
                                                 </div>
 
                                                 <div sec:authorize="hasRole('Super_Usuario')">
                                                     <div class="form-group"><label class="col-lg-2 control-label">Empresa</label>
-                                                        <select class="col-lg-3" data-placeholder="Seleccione Empresa" th:field="*{empresas}">
+                                                        <select class="col-lg-3 tableusuario-input" data-placeholder="Seleccione Empresa" th:field="*{empresas}">
                                                             <option value="">Seleccione Empresa</option>
                                                             <option th:each="empresa : ${empresas}" name="empresa" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
                                                           </select>

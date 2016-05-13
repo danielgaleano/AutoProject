@@ -42,8 +42,17 @@
                                 <div id="user-profile-1" class="user-profile row">
                                     <div class="col-xs-12 col-sm-3 center">
                                         <div>
-                                            <span class="profile-picture">
-                                                    <!-- <img id="avatar" class="editable img-responsive" alt="Alex's Avatar" th:src="@{~/proyecto/resources/img/user2-160x160.jpg}"></img> -->
+                                            <div id="img-boton">
+                                                <div class="thumbnail">
+                                                 <img id="imgPortada" style="width: 300px; height: auto" th:src="@{/resources/img/user2-160x160.jpg}" alt="Seleccione una nueva imagen"/>
+                                                 <div class="caption">
+                                                   <a class="btn btn-warning boton-imagen" role="button" data-campo="imagenPort" data-ancho="300" data-alto="400" data-img="imgPortada">Elegir imagen</a>
+                                                   <input class="hidden" id="imagenPortInput" type="file"/>
+                                                 </div>
+                                               </div>
+                                           </div>
+<!--                                            <span class="profile-picture">
+                                                     <img id="avatar" class="editable img-responsive" alt="Alex's Avatar" th:src="@{~/proyecto/resources/img/user2-160x160.jpg}"></img> 
 
                                                 <div class="dz-default dz-clickable dropzone-previews">
 
@@ -52,14 +61,14 @@
                                                         <i class="fa fa-camera-retro fa-4x"></i>
                                                         <div><span>Agregar imagen</span></div>
                                                     </div>
-                                                    <!-- <div id="image_upload_text">
+                                                     <div id="image_upload_text">
                                                         <span class="glyphicon glyphicon-paperclip"></span> 
                                                         
-                                                    </div> -->
+                                                    </div> 
                                                     
                                                 </div> 
                                                    
-                                            </span>
+                                            </span>-->
 
                                             <div class="space-4"></div>
 
@@ -181,8 +190,8 @@
     <script th:src="@{~/proyecto/resources/js/usuario.js}"></script>
     <script th:src="@{~/proyecto/resources/js/base.js}"></script>
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}"></script>
-    <script th:src="@{~/proyecto/resources/js/lib/dropzone.js}"></script>
-    <script th:src="@{~/proyecto/resources/js/upload_image.js}"></script> 
+<!--    <script th:src="@{~/proyecto/resources/js/lib/dropzone.js}"></script>
+    <script th:src="@{~/proyecto/resources/js/upload_image.js}"></script> -->
   
 </body>
 </html>

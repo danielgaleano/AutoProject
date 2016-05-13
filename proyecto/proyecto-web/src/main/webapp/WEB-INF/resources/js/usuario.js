@@ -1,5 +1,33 @@
 
+$('#imgPortada').on('error', function(){
+  if(this.naturalWidth == 0){
+    $(this).attr('alt', 'Imagen con errores, vuelva a subir.');
+  }
+});
+
 $(document).ready(function(data) {
+    
+    
+    $('.boton-imagen').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var boton = $(this);
+        var campo = boton.data('campo');
+        var imagen = boton.data('img');
+        var alto = boton.data('alto');
+        var ancho = boton.data('ancho');
+        $('#' + campo + 'Input').click().change(function() {
+          var input = this
+          if (input.files && input.files[0]) {
+            var FR = new FileReader();
+            FR.onload = function(e) {
+              $('#' + imagen).attr("src", e.target.result);
+              $('input[name="' + campo + '"]').val(e.target.result);
+            };
+            FR.readAsDataURL(input.files[0]);
+          }
+        });
+      });
    
     $('#validation-form').validate({
 		errorElement: 'span',

@@ -6,7 +6,7 @@ $('#imgPortada').on('error', function(){
 });
 
 $(document).ready(function(data) {
-    
+    $(":input").inputmask();
     
     $('.boton-imagen').on('click', function(e) {
         e.preventDefault();

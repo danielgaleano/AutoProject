@@ -124,12 +124,12 @@
                                                 <div class="form-group"><label class="col-lg-2 control-label">Telefono</label>
 
 
-                                                    <div class="col-lg-6"><input id="telefono" name="telefono" type="text" placeholder="Telefono" class="form-control tableusuario-input input-large"/> 
+                                                    <div class="col-lg-6"><input id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999) 999 999'" class="form-control tableusuario-input input-large"/> 
                                                         
                                                     </div>
                                                 </div>
                                                 <div class="form-group"><label class="col-lg-2 control-label">Telefono Movil</label>
-                                                    <div class="col-lg-6"><input id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" class="form-control tableusuario-input input-large" /> 
+                                                    <div class="col-lg-6"><input id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '0\\999 999 999'" class="form-control tableusuario-input input-large" /> 
                                                        
                                                     </div>
                                                 </div>
@@ -181,8 +181,10 @@
 </div>
     <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
     <script th:src="@{~/proyecto/resources/js/lib/bootstrap-editable.min.js}"></script>
+    <script th:src="@{~/proyecto/resources/dist/js/jquery.inputmask.bundle.js}"></script>
     <script th:src="@{~/proyecto/resources/js/usuario.js}"></script>
     <script th:src="@{~/proyecto/resources/js/base.js}"></script>
+
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}"></script>
 <!--    <script th:src="@{~/proyecto/resources/js/lib/dropzone.js}"></script>
     <script th:src="@{~/proyecto/resources/js/upload_image.js}"></script> -->

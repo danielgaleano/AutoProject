@@ -16,6 +16,8 @@ $(document).ready(function(data) {
         var imagen = boton.data('img');
         var alto = boton.data('alto');
         var ancho = boton.data('ancho');
+        console.log(campo);
+        console.log(imagen);
         $('#' + campo + 'Input').click().change(function() {
           var input = this
           if (input.files && input.files[0]) {
@@ -94,12 +96,14 @@ $(document).ready(function(data) {
 		submitHandler: function (form) {
                     console.log("exitoooo");
                     var $form = $('#validation-form');
+                    var imagen = $('#imagenPortInput').val();
+                    console.log(imagen);
                     var serialize = $form.find('.tableusuario-input').serialize();
                     
                     var jqXHR = $.post(CONTEXT_ROOT+'/usuarios/guardar', serialize, function(data, textStatus, jqXHR) {
                         if(data.error){
                             $('#mensaje').addClass('alert alert-danger alert-dismissible fade in');   
-                            $('#mensaje').append(data.descripcion);
+                            $('#mensaje').append(data.mensaje);
                             $('#mensaje').show();
                         }else{
                             $('#buttonServicio').attr('disabled','disabled');                           
@@ -107,7 +111,7 @@ $(document).ready(function(data) {
                             $input.attr('disabled','disabled');
                             $('#subServicio').show();
                             $('#mensaje').addClass('alert alert-block alert-success');   
-                            $('#mensaje').append(data.descripcion);
+                            $('#mensaje').append(data.mensaje);
                             $('#mensaje').show();
                             setTimeout(function() {
                                 window.location = CONTEXT_ROOT+"/servicios/"+data.id+"/subServicios";

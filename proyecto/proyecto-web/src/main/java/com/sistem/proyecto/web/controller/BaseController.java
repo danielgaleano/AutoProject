@@ -6,10 +6,13 @@
 package com.sistem.proyecto.web.controller;
 
 import com.sistem.proyecto.manager.EmpresaManager;
+import com.sistem.proyecto.manager.ImagenManager;
 import com.sistem.proyecto.manager.PermisoManager;
 import com.sistem.proyecto.manager.RolManager;
 import com.sistem.proyecto.manager.RolPermisoManager;
 import com.sistem.proyecto.manager.UsuarioManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -33,6 +36,28 @@ public class BaseController {
     protected PermisoManager permisoManager;
     
     protected RolPermisoManager rolPermisoManager;
+    
+    protected ImagenManager imagenManager;
+    
+    public static final Logger logger = LoggerFactory
+			.getLogger("proyecto");
+    
+    protected void inicializarImagenManager() throws Exception{
+        if (context == null)
+                try {
+                        context = new InitialContext();
+                } catch (NamingException e1) {
+                        throw new RuntimeException("No se puede inicializar el contexto", e1);
+                }
+        if (imagenManager == null) {
+                try {
+
+                        imagenManager = (ImagenManager) context.lookup("java:app/proyecto-ejb/ImagenManagerImpl");
+                } catch (NamingException ne) {
+                        throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+                }
+        }
+    }
     
     
     protected void inicializarRolPermisoManager() throws Exception{

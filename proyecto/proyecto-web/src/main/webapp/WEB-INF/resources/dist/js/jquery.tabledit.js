@@ -29,6 +29,7 @@ if (typeof jQuery === 'undefined') {
             urlActivate:window.location.href,
             urlAsignar:window.location.href,
             urlVisualizar:window.location.href,
+            urlEditar:window.location.href,
             tableId:'',
             inputClass: 'form-control input-sm',
             toolbarClass: 'btn-toolbar',
@@ -58,6 +59,7 @@ if (typeof jQuery === 'undefined') {
             asignarButton: false,
             activarButton: true,
             visualizarButton: true,
+            editarFormButton: true,
             buttons: {
                 edit: {
                     class: 'btn btn-xs btn-info',
@@ -200,16 +202,16 @@ if (typeof jQuery === 'undefined') {
 						var $td = $table.find('.tabledit-estado');
 						var botones = $table.find('.tabledit-buttons');
                                                 var id = $table.find('.tabledit-identifier');
-                                                console.log("iddd",id);
+                  
 						$td.each(function(index,value) {
 							var status = botones[index];
                                                         var id1 = id[index];
                                                         var ids = $(id1).val();
-                                                        
-                                                        console.log(ids);
+                              
 							var text = $(this).find('span').text();
-							if (settings.editButton || settings.deleteButton || settings.asignarButton) {
+							if (settings.editButton || settings.deleteButton || settings.asignarButton || settings.editarFormButton) {
 								var editButton = '';
+                                                                var editarFormButton = '';
 								var deleteButton = '';
 								var saveButton = '';
 								var restoreButton = '';
@@ -229,6 +231,17 @@ if (typeof jQuery === 'undefined') {
 									   || text === "Activo" || text === "S"){
 									
 									// Create edit button.
+									if (settings.editarFormButton) {
+                                                                            //Control de Permisos
+										
+                                                                            editarFormButton = '<button type="button" class="tabledit-editar-button ' 
+                                                                            + settings.buttons.edit.class + '" style="float: none;" title="Editar">' 
+                                                                            + settings.buttons.edit.html 
+                                                                            + '</button>';
+										
+									}
+                                                                        
+                                                                        // Create edit button.
 									if (settings.editButton) {
                                                                             //Control de Permisos
 										
@@ -251,10 +264,10 @@ if (typeof jQuery === 'undefined') {
                                                                         // Create visualizar button.
 									if (settings.visualizarButton) {
 										
-                                                                            visualizarButton = '<a class="tabledit-visualizar-button btn btn-xs btn-info" href="'+settings.urlVisualizar+'/'+ids +'/visualizar'
+                                                                            visualizarButton = '<button class="tabledit-visualizar-button btn btn-xs btn-info"'
                                                                             +'" title="Visualizar" style="float: none;">' 
                                                                             + settings.buttons.visualizar.html 
-                                                                            + '</a>';
+                                                                            + '</button>';
 										
 									}
 									// Create delete button.
@@ -355,7 +368,7 @@ if (typeof jQuery === 'undefined') {
 								}
 
 								toolbar = '<div class="tabledit-toolbar ' + settings.toolbarClass + '" style="text-align: left;">\n\
-											   <div class="' + settings.groupClass + '" style="float: none;">' + editButton + visualizarButton + asignarButton +  deleteButton + activarButton +'</div>\n\
+											   <div class="' + settings.groupClass + '" style="float: none;">' + editButton + editarFormButton + visualizarButton + asignarButton +  deleteButton + activarButton +'</div>\n\
 											   ' + saveButton + '\n\
 											   ' + confirmButton + '\n\
 											   ' + confirmActivarButton + '\n\
@@ -1013,6 +1026,69 @@ if (typeof jQuery === 'undefined') {
         }
 
         if (settings.restoreButton) {
+            /**
+             * Restore one row.
+             *
+             * @param {object} event
+             */
+            $table.on('click', 'button.tabledit-restore-button', function(event) {
+                if (event.handled !== true) {
+                    event.preventDefault();
+
+                    Delete.restore($(this).parents('td'));
+
+                    event.handled = true;
+                }
+            });
+        }
+        
+        if (settings.editarFormButton) {
+            /**
+             * Restore one row.
+             *
+             * @param {object} event
+             */
+            $table.on('click', 'button.tabledit-editar-button', function(event) {
+                
+                var td = $(this).parents('td');
+                
+                $(td).parent('tr').find('input.tabledit-identifier').attr('disabled',false);
+                
+                var id = $(td).parent('tr').find('input.tabledit-identifier').val();
+                
+                $(td).parent('tr').find('input.tabledit-identifier').attr('disabled',true);
+                
+                if(id !== null){
+                   window.location = settings.urlEditar +"/"+id.valueOf(); 
+                }
+                
+            });
+        }
+        
+        if (settings.visualizarButton) {
+            /**
+             * Restore one row.
+             *
+             * @param {object} event
+             */
+            $table.on('click', 'button.tabledit-visualizar-button', function(event) {
+                
+                var td = $(this).parents('td');
+                
+                $(td).parent('tr').find('input.tabledit-identifier').attr('disabled',false);
+                
+                var id = $(td).parent('tr').find('input.tabledit-identifier').val();
+                
+                $(td).parent('tr').find('input.tabledit-identifier').attr('disabled',true);
+                
+                if(id !== null){
+                   window.location = settings.urlVisualizar +"/"+id.valueOf(); 
+                }
+                
+            });
+        }
+        
+        if (settings.visualizarButton) {
             /**
              * Restore one row.
              *

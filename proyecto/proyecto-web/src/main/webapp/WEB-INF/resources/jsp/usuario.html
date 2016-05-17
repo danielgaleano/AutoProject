@@ -42,10 +42,14 @@
                                         <div>
                                             <div id="img-boton">
                                                 <div class="profile-picture">
-                                                 <img id="imgPortada" style="width: 200px; height: auto" th:src="@{/resources/img/user2-160x160.jpg}" alt="Seleccione una nueva imagen"/>
+                                                 <input  name="imagenPort" type="hidden"  class="form-control tableusuario-input" />
+                                                 <img th:if="${usuario} == null" id="imgPortada" style="width: 200px; height: auto" th:src="@{/resources/img/usuario.jpg}" alt="Seleccione una nueva imagen"/>
+
+                                                 <img th:if="${usuario} != null" id="imgPortada" style="width: 200px; height: auto" th:src="@{'/obtenerImagen/usuario/'+${usuario.id}}" alt="Seleccione una nueva imagen"/>
+                                                 
                                                  <div class="caption">
                                                    <a class="btn btn-warning boton-imagen" role="button" data-campo="imagenPort" data-ancho="200" data-alto="400" data-img="imgPortada">Elegir imagen</a>
-                                                   <input class="hidden" id="imagenPortInput" type="file"/>
+                                                   <input class="form-control tableusuario-input hidden" name="imagenPortInput" id="imagenPortInput" type="file"/>
                                                  </div>
                                                </div>
                                            </div>
@@ -71,7 +75,7 @@
                                         </div>
 
                                     </div>
-                                    <input id="idUsuario" type="hidden" placeholder="Nombre" class="form-control tableusuario-input" />
+                                    <input id="idUsuario" name="idUsuario" type="hidden" placeholder="Nombre" class="form-control tableusuario-input" />
 
                                     <div class="col-xs-12 col-sm-9">
                                         
@@ -95,7 +99,7 @@
                                         <div class="form-group"><label class="col-lg-2 control-label">Contraseña</label>
 
 
-                                            <div class="col-lg-6"><input id="contrasena" name="contrasena" type="password" placeholder="Contraseña" class="form-control tableusuario-input input-large"/> 
+                                            <div class="col-lg-6"><input id="contrasena" name="claveAcceso" type="password" placeholder="Contraseña" class="form-control tableusuario-input input-large"/> 
                                                 
 
                                             </div>
@@ -144,11 +148,11 @@
                                                     </div>
                                                 </div>
 
-                                                <div sec:authorize="hasRole('Super_Usuario')">
+                                                <div sec:authorize="hasRole('Empresa.Asignar')">
                                                     <div class="form-group"><label class="col-lg-2 control-label">Empresa</label>
-                                                        <select class="col-lg-3 tableusuario-input" data-placeholder="Seleccione Empresa" th:field="*{empresas}">
+                                                        <select class="form-control tableusuario-input input-xlarge" id="empresa" name="empresa.id" data-placeholder="Seleccione Empresa">
                                                             <option value="">Seleccione Empresa</option>
-                                                            <option th:each="empresa : ${empresas}" name="empresa" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
+                                                            <option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
                                                           </select>
                                                     </div>
                                                 </div>

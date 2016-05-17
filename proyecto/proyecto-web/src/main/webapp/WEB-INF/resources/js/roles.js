@@ -12,6 +12,7 @@ $(document).ready(function(data) {
         urlAsignar: CONTEXT_ROOT+'/roles/asignar',
         tableId:'example1',
         isStatus:true,
+        editarFormButton: false,
         editButton: permisoEditar,
         deleteButton: permisoDesactivar,
         activarButton:permisoActivar,

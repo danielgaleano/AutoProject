@@ -6,9 +6,11 @@
 package com.sistem.proyecto.web.controller;
 
 import com.sistem.proyecto.entity.Empresa;
+import com.sistem.proyecto.entity.Imagen;
 import com.sistem.proyecto.entity.Usuario;
 import com.sistem.proyecto.entity.Rol;
 import com.sistem.proyecto.userDetail.UserDetail;
+import com.sistem.proyecto.utils.Base64Bytes;
 import com.sistem.proyecto.utils.MensajeDTO;
 import java.sql.Timestamp;
 import java.util.List;
@@ -84,41 +86,67 @@ public class UsuarioController extends BaseController{
        Usuario ejUsuario = new Usuario();
        try{
            inicializarUsuarioManager();
+           inicializarImagenManager();
            
-           if(usuarioRecibido != null && usuarioRecibido.getDocumento() != null){
-               ejUsuario.setDocumento(usuarioRecibido.getDocumento());
-               
-               ejUsuario = usuarioManager.get(ejUsuario);
-               if(ejUsuario != null){
-                   mensaje.setError(true);
-                   mensaje.setMensaje("El numero de documento ya se encuentra registrado.");
-                   return mensaje;
-               }else{
-                    ejUsuario = new Usuario();
-                    ejUsuario.setActivo("S");
-                    ejUsuario.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                    ejUsuario.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                    ejUsuario.setAlias(usuarioRecibido.getAlias());
-                    ejUsuario.setClaveAcceso(usuarioRecibido.getClaveAcceso());
-                    ejUsuario.setDireccion(usuarioRecibido.getDireccion());
-                    ejUsuario.setDocumento(usuarioRecibido.getDocumento());
-                    ejUsuario.setEmail(usuarioRecibido.getEmail());
-                    ejUsuario.setNombre(usuarioRecibido.getNombre());
-                    ejUsuario.setApellido(usuarioRecibido.getApellido());
-                    ejUsuario.setTelefono(usuarioRecibido.getTelefono());
-                    ejUsuario.setTelefonoMovil(usuarioRecibido.getTelefonoMovil());
-                    ejUsuario.setEmpresa(new Empresa(Long.valueOf(usuarioRecibido.getEmpresa().getId())));
-                    ejUsuario.setRol(new Rol(Long.valueOf(usuarioRecibido.getRol().getId())));
-               }
-               
-           }else{
+           if(usuarioRecibido.getDocumento() == null || usuarioRecibido.getDocumento() != null
+                   && usuarioRecibido.getDocumento().compareToIgnoreCase("") == 0){
                 mensaje.setError(true);
-                mensaje.setMensaje("Debe ingresar numero de documento.");
+                mensaje.setMensaje("El documento del usuario no puede estar vacio.");
                 return mensaje;
            }
-             
            
+           if(usuarioRecibido.getNombre()== null || usuarioRecibido.getNombre() != null
+                   && usuarioRecibido.getNombre().compareToIgnoreCase("") == 0){
+                mensaje.setError(true);
+                mensaje.setMensaje("El nombre del usuario no puede estar vacio.");
+                return mensaje;
+           }
+           
+           if(usuarioRecibido.getApellido()== null || usuarioRecibido.getApellido() != null
+                   && usuarioRecibido.getApellido().compareToIgnoreCase("") == 0){
+                mensaje.setError(true);
+                mensaje.setMensaje("El apellido del usuario no puede estar vacio.");
+                return mensaje;
+           }
+           
+           if(usuarioRecibido.getAlias()== null || usuarioRecibido.getAlias() != null
+                   && usuarioRecibido.getAlias().compareToIgnoreCase("") == 0){
+                mensaje.setError(true);
+                mensaje.setMensaje("El alias del usuario no puede estar vacio.");
+                return mensaje;
+           }
+           
+           if(usuarioRecibido.getClaveAcceso()== null || usuarioRecibido.getClaveAcceso() != null
+                   && usuarioRecibido.getClaveAcceso().compareToIgnoreCase("") == 0){
+                mensaje.setError(true);
+                mensaje.setMensaje("La clave del usuario no puede estar vacia.");
+                return mensaje;
+           }
+           
+           if(usuarioRecibido.getTelefono()== null || usuarioRecibido.getTelefono() != null
+                   && usuarioRecibido.getTelefono().compareToIgnoreCase("") == 0){
+                mensaje.setError(true);
+                mensaje.setMensaje("El telefono del usuario no puede estar vacia.");
+                return mensaje;
+           }
+           
+           Imagen imagenP = null;
+           
+           String imagenPortada = usuarioRecibido.getImagenPort();		
+
            if(usuarioRecibido.getId() != null){
+               
+               imagenP = new Imagen();
+               imagenP.setEntidadId(usuarioRecibido.getId());
+               
+               imagenP = imagenManager.get(imagenP);
+               imagenP.setImagen(Base64Bytes.decode(imagenPortada.split(",")[1]));
+               imagenP.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+               imagenP.setEmpresa(new Empresa(Long.valueOf(usuarioRecibido.getEmpresa().getId())));
+               String extension = imagenPortada.split(";")[0];
+               extension = extension.substring(extension.indexOf("/")+1);
+               imagenP.setNombreImagen(usuarioRecibido.getNombre()+ "." + extension);
+               
                Usuario ejUsuarioUp = new Usuario();
                ejUsuarioUp = usuarioManager.get(usuarioRecibido.getId());
                ejUsuarioUp.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
@@ -134,10 +162,66 @@ public class UsuarioController extends BaseController{
                ejUsuarioUp.setEmpresa(usuarioRecibido.getEmpresa());
                ejUsuarioUp.setEmpresa(new Empresa(Long.valueOf(usuarioRecibido.getEmpresa().getId())));
                ejUsuarioUp.setRol(new Rol(Long.valueOf(usuarioRecibido.getRol().getId())));
+              
                usuarioManager.update(ejUsuarioUp);  
-           }else{
-              usuarioManager.save(ejUsuario); 
-           }       
+               
+               imagenManager.update(imagenP);
+               
+               mensaje.setError(false);
+               mensaje.setMensaje("El usuario "+usuarioRecibido.getAlias()+" se modifico exitosamente.");
+               return mensaje;
+           }
+           
+           
+            if (imagenPortada != null && !imagenPortada.equals("")
+                            && imagenPortada.length() > 0) {
+                imagenP = new Imagen();
+                imagenP.setImagen(Base64Bytes.decode(imagenPortada.split(",")[1]));
+                String extension = imagenPortada.split(";")[0];
+                extension = extension.substring(extension.indexOf("/")+1);
+                imagenP.setNombreTabla("usuario");
+                imagenP.setNombreImagen(usuarioRecibido.getNombre()+ "." + extension);
+                imagenP.setActivo("S");
+                imagenP.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                imagenP.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                imagenP.setEmpresa(new Empresa(usuarioRecibido.getEmpresa().getId()));
+
+            }
+                     
+            ejUsuario.setDocumento(usuarioRecibido.getDocumento());
+
+            ejUsuario = usuarioManager.get(ejUsuario);
+            if(ejUsuario != null && usuarioRecibido.getId() != null){            
+                mensaje.setError(true);
+                mensaje.setMensaje("El numero de documento ya se encuentra registrado.");
+                return mensaje;
+                
+            }else{
+                
+                 ejUsuario = new Usuario();
+                 ejUsuario.setActivo("S");
+                 ejUsuario.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                 ejUsuario.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                 ejUsuario.setAlias(usuarioRecibido.getAlias());
+                 ejUsuario.setClaveAcceso(usuarioRecibido.getClaveAcceso());
+                 ejUsuario.setDireccion(usuarioRecibido.getDireccion());
+                 ejUsuario.setDocumento(usuarioRecibido.getDocumento());
+                 ejUsuario.setEmail(usuarioRecibido.getEmail());
+                 ejUsuario.setNombre(usuarioRecibido.getNombre());
+                 ejUsuario.setApellido(usuarioRecibido.getApellido());
+                 ejUsuario.setTelefono(usuarioRecibido.getTelefono());
+                 ejUsuario.setTelefonoMovil(usuarioRecibido.getTelefonoMovil());
+                 ejUsuario.setEmpresa(new Empresa(usuarioRecibido.getEmpresa().getId()));
+                 
+                 usuarioManager.save(ejUsuario); 
+                 
+                 imagenP.setEntidadId(ejUsuario.getId());
+                 
+                 imagenManager.save(imagenP);
+                
+            }
+  
+                 
            
            
            mensaje.setError(false);
@@ -146,7 +230,7 @@ public class UsuarioController extends BaseController{
        }catch(Exception e){
            mensaje.setError(true);
            mensaje.setMensaje("Error a guardar el usuario");
-           System.out.println("Error");
+           System.out.println("Error" + e);
        }
            
            return mensaje;
@@ -239,9 +323,9 @@ public class UsuarioController extends BaseController{
 
     }
     
-    @RequestMapping(value = "/{id}/{tipo}", method = RequestMethod.GET)
+    @RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
     public @ResponseBody
-    ModelAndView editar(@PathVariable("id") Long id,@PathVariable("tipo") String tipo,Model model) {
+    ModelAndView editar(@PathVariable("id") Long id,Model model) {
             ModelAndView retorno = new ModelAndView();
             String nombre = "";
 
@@ -253,18 +337,15 @@ public class UsuarioController extends BaseController{
 					new Usuario(id), atributos.split(","), false, true);
 
                     model.addAttribute("usuario", usuario);
+                   
+                    model.addAttribute("editar", true);
+                    model.addAttribute("tipo", "Editar");
                     
-                    if(tipo.compareToIgnoreCase("editar") == 0){
-                        model.addAttribute("editar", true);
-                        model.addAttribute("tipo", "Editar");
-                    }else{
-                        model.addAttribute("visualizar", true);
-                        model.addAttribute("tipo", "Visualizar");
-                    }
 
                     retorno.setViewName("usuario");
             } catch (Exception e) {
-                    
+                 
+                System.out.println("Error" + e);   
             }
 
             return retorno;

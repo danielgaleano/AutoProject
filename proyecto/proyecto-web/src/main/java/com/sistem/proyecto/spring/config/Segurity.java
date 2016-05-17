@@ -59,7 +59,7 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/usuarios/guardar**").access("isAuthenticated()")
                 .antMatchers("/usuarios/activar/**").access("isAuthenticated()")
                 .antMatchers("/usuarios/desactivar/**").access("isAuthenticated()")
-                .antMatchers("/usuarios/*/editar**").access("isAuthenticated()")
+                .antMatchers("/usuarios/editar/**").access("isAuthenticated()")
                 .antMatchers("/usuarios/*/visualizar**").access("isAuthenticated()")
                 //------roles----//
                 .antMatchers("/roles**").access("isAuthenticated()")
@@ -81,6 +81,7 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/empresas/*/visualizar**").access("isAuthenticated()")
                //------Movil----//
                 .antMatchers("/movil/guardarImagen**").permitAll()
+                .antMatchers("/obtenerImagen/*/*").permitAll()
                 .and()
                 .formLogin().loginPage("/login")
                 .loginProcessingUrl("/j_spring_security_check")

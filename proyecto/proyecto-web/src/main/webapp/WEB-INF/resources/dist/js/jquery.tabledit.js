@@ -32,6 +32,7 @@ if (typeof jQuery === 'undefined') {
             urlEditar:window.location.href,
             tableId:'',
             inputClass: 'form-control input-sm',
+            titleAsignar: '',
             toolbarClass: 'btn-toolbar',
             groupClass: 'btn-group btn-group-sm',
             dangerClass: 'danger',
@@ -82,7 +83,7 @@ if (typeof jQuery === 'undefined') {
                 },                
                 asignar: {
                     class: 'btn btn-xs btn-info',
-                    html: '<span class="fa fa-wrench"></span>',
+                    html: '<span class="fa fa-group"></span>',
                     action: 'asignar'
                 },
                 visualizar: {
@@ -254,10 +255,10 @@ if (typeof jQuery === 'undefined') {
 									 // Create asignar button.
 									if (settings.asignarButton) {
 										
-                                                                            asignarButton = '<a class="tabledit-asignar-button btn btn-xs btn-info" href="'+settings.urlAsignar+'/'+ids 
-                                                                            +'" title="Asignar Permisos" style="float: none;">' 
+                                                                            asignarButton = '<button class="tabledit-asignar-button btn btn-xs btn-info"' 
+                                                                            + '" title="'+settings.titleAsignar+'" style="float: none;">' 
                                                                             + settings.buttons.asignar.html 
-                                                                            + '</a>';
+                                                                            + '</button>';
 										
 									}
                                                                         
@@ -1060,6 +1061,29 @@ if (typeof jQuery === 'undefined') {
                 
                 if(id !== null){
                    window.location = settings.urlEditar +"/"+id.valueOf(); 
+                }
+                
+            });
+        }
+        
+        if (settings.asignarButton) {
+            /**
+             * Restore one row.
+             *
+             * @param {object} event
+             */
+            $table.on('click', 'button.tabledit-asignar-button', function(event) {
+                
+                var td = $(this).parents('td');
+                
+                $(td).parent('tr').find('input.tabledit-identifier').attr('disabled',false);
+                
+                var id = $(td).parent('tr').find('input.tabledit-identifier').val();
+                
+                $(td).parent('tr').find('input.tabledit-identifier').attr('disabled',true);
+                
+                if(id !== null){
+                   window.location = settings.urlAsignar +"/"+id.valueOf(); 
                 }
                 
             });

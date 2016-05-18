@@ -44,6 +44,7 @@
                                         <th class="hidden-480">DOCUMENTO</th>
                                         <th class="hidden-480">DIRECCION</th>
                                         <th class="hidden-480">TELEFONO</th>
+                                        <th class="hidden-480">EMPRESA</th>
                                         <th class="hidden-480">ROL</th>
                                         <th class="hidden-480">STATUS</th>
                                         <th class="tabledit-toolbar-column">ACCIONES</th>
@@ -74,6 +75,10 @@
                                             <td class="tabledit-view-mode">
                                                 <span  style="display: inline;"  th:text="${usuario.telefono}"></span>
                                                 <input class="tabledit-input form-control input-sm" type="text" th:name="telefono" th:value="${usuario.telefono}" style="display: none;" disabled=""/>
+                                            </td>
+                                            <td class="tabledit-view-mode">
+                                                <span  style="display: inline;"  th:text="${usuario.empresaNombre}"></span>
+                                                <input class="tabledit-input form-control input-sm" type="text" th:name="empresaNombre" th:value="${usuario.empresaNombre}" style="display: none;" disabled=""/>
                                             </td>
                                             <td class="tabledit-view-mode">
                                                 <span  style="display: inline;"  th:text="${usuario.rolNombre}"></span>

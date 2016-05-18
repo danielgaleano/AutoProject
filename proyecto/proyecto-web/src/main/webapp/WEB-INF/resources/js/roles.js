@@ -9,8 +9,9 @@ $(document).ready(function(data) {
         url: CONTEXT_ROOT+'/roles/guardar',
         urlDelete: CONTEXT_ROOT+'/roles/desactivar/',
         urlActivate: CONTEXT_ROOT+'/roles/activar/',
-        urlAsignar: CONTEXT_ROOT+'/roles/asignar',
+        urlAsignar: CONTEXT_ROOT+'/roles/asignar/',
         tableId:'example1',
+        titleAsignar:'Asignar Permisos',
         isStatus:true,
         editarFormButton: false,
         editButton: permisoEditar,
@@ -21,8 +22,7 @@ $(document).ready(function(data) {
         columns: {
             identifier: [0, 'id'],
             editable: [
-                [1, 'nombre'],
-                [2, 'empresa',datosEmpresa]
+                [1, 'nombre']
             ]
         },
          onDraw: function() {

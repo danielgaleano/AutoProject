@@ -11,14 +11,16 @@ $(document).ready(function(data) {
         urlActivate: CONTEXT_ROOT+'/usuarios/activar/',
         urlVisualizar: CONTEXT_ROOT+'/usuarios/visualizar',
         urlEditar: CONTEXT_ROOT+'/usuarios/editar',
+        urlAsignar: CONTEXT_ROOT+'/usuarios/asignar/rol/',
         tableId:'example1',
+        titleAsignar:'Asignar Rol',
         isStatus:true,
         deleteButton: permisoDesactivar,
         activarButton:permisoActivar,
         visualizarButton:permisoVisualizar,
         editarFormButton:true,
         editButton:false,
-        asignarButton:false,
+        asignarButton:true,
         columns: {
             identifier: [0, 'id'],
             editable: []

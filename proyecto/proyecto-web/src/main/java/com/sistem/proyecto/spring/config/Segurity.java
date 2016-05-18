@@ -57,6 +57,7 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/usuarios**").access("isAuthenticated()")
                 .antMatchers("/usuarios/crear**").access("isAuthenticated()")
                 .antMatchers("/usuarios/guardar**").access("isAuthenticated()")
+                .antMatchers("/usuarios/asignar/rol/*").access("isAuthenticated()")
                 .antMatchers("/usuarios/activar/**").access("isAuthenticated()")
                 .antMatchers("/usuarios/desactivar/**").access("isAuthenticated()")
                 .antMatchers("/usuarios/editar/**").access("isAuthenticated()")

@@ -52,6 +52,7 @@ public class UsuarioController extends BaseController{
             List<Map<String, Object>> listMapUsuarios = usuarioManager.listAtributos(ejUsuario, atributos.split(","), true);
             for(Map<String, Object> rpm : listMapUsuarios){
                 rpm.put("rolNombre", rpm.get("rol.nombre"));
+                rpm.put("empresaNombre", rpm.get("empresa.nombre"));
             }
 
             model.addAttribute("usuarios", listMapUsuarios);
@@ -320,6 +321,38 @@ public class UsuarioController extends BaseController{
            
            return mensaje;
    }
+     
+     @RequestMapping(value = "/asignar/rol/{id}",method = RequestMethod.GET)
+    public @ResponseBody
+        ModelAndView listarRoles(@PathVariable("id") Long id,Model model) {
+            ModelAndView retorno = new ModelAndView();
+
+            UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        try{
+            inicializarRolManager();
+            
+            inicializarUsuarioManager();
+            
+            Usuario ejUsuario = new Usuario();
+            
+            ejUsuario = usuarioManager.get(id);
+            
+            Rol ejemplo = new Rol();           
+            ejemplo.setEmpresa(ejUsuario.getEmpresa()); 
+            ejemplo.setActivo("S");
+            
+            List<Map<String, Object>> listMapRoles = rolManager.listAtributos(ejemplo, "id,nombre".split(","), true);            
+            
+            model.addAttribute("roles", listMapRoles);
+            model.addAttribute("id", id);
+            retorno.setViewName("asignarRol"); 
+            
+        }catch (Exception ex){
+            System.out.println("Error " + ex);
+        }
+        
+        return retorno;
+    }
    
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody

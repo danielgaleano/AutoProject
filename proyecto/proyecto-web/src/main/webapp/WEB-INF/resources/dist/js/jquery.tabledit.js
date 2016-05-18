@@ -176,8 +176,9 @@ if (typeof jQuery === 'undefined') {
 
                                 // Create options for select element.
                                 console.log(settings.columns.editable[i][2]);
+                           
                                 $.each(settings.columns.editable[i][2], function(index, value) {
-                                    if (text === value) {
+                                    if (text === value.id) {
                                         input += '<option value="' + value.id + '" selected>' + value.nombre + '</option>';
                                     } else {
                                         input += '<option value="' + value.id + '">' + value.nombre + '</option>';
@@ -438,13 +439,10 @@ if (typeof jQuery === 'undefined') {
 										   ' + restoreButton + '\n\
 									   </div></div>';
 
-							var mansaje = '<button type="button" class="close" data-dismiss="alert"'
-										+'aria-label="Close"><span aria-hidden="true">&times;</span></button>';
-
-
-							$('#mensaje').append(mansaje);
-							//Add toolbar column cells.
-						    $table.find('tr:gt(0)').append('<td style="white-space: nowrap; width: 1%;">' + toolbar + '</td>');
+							
+                                                        
+							
+                                                        $table.find('tr:gt(0)').append('<td style="white-space: nowrap; width: 1%;">' + toolbar + '</td>');
 							
 						}
 					}
@@ -547,6 +545,7 @@ if (typeof jQuery === 'undefined') {
                     if ($input.is('select')) {
                         $(this).find('.tabledit-span').text($input.find('option:selected').text().trim());
                     } else {
+                        console.log($input.val());
                         $(this).find('.tabledit-span').text($input.val().trim());
                     }
                     // Change to view mode.

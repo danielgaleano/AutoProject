@@ -1,99 +1,53 @@
 
 $(document).ready(function(data) { 
     var registros = $('.checkbox-identifier');
-    $.ajax({
-        type:'GET',
-        url: CONTEXT_ROOT+'/roles/'+idRol+'/permisos',        
-        success: function(data){ 
+    $('#example1').Tabledit({
+        url: CONTEXT_ROOT+'/usuarios/asignar',
+        urlDelete: CONTEXT_ROOT+'/roles/desactivar/',
+        urlActivate: CONTEXT_ROOT+'/roles/activar/',
+        urlAsignar: CONTEXT_ROOT+'/roles/asignar/',
+        tableId:'example1',
+        titleAsignar:'Asignar Permisos',
+        isStatus:false,
+        editarFormButton: false,
+        editButton: true,
+        deleteButton: false,
+        activarButton:false,
+        asignarButton:false,
+        visualizarButton:false,
+        columns: {
+            identifier: [0, 'id'],
+            editable: [
+                [2, 'rol.id',roles]
+            ]
+        },
+         onDraw: function() {
+            console.log('onDraw()');
+        },
+        onSuccess: function(data, textStatus, jqXHR) {
+            window.location = window.location +"#success";
+
+            console.log('onSuccess(data, textStatus, jqXHR)');
             console.log(data);
-            if(data.error == true){
-                $('#mensaje').before('<div class="alert alert-danger alert-dismissible fade in">'
-                                    + '<button type="button" class="close" data-dismiss="alert"'
-                                    +'aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                                    +'<strong>Error! </strong>'
-                                    + data.mensaje
-                                    + '</div>');
-                $('html, body').animate({ scrollTop: 0 }, 0);
-
-            }else{
-                for(i=0; i<data.permisos.length; i++){
-                    $.each(registros, function(index, el) {
-                        if(data.permisos[i] === parseInt($(el).val())){
-                            $(this).attr('checked', true);
-                        }
-                   });
-                }
-            }
-         },
-        async: false
-    });
-    
-    var permisos = []; 
-    $("#selectall").click(function () {
-        if(this.checked) { //chequear status del select
-            $('.checkbox-identifier').each(function() { //recorrer cada checkbox
-                this.checked = true;  //seleccionar todos los checkboxes con clase "checkbox-identifier"               
-            });
-        }else{
-            $('.checkbox-identifier').each(function() { //recorrer cada checkbox
-                this.checked = false; //deseleccionar todos los checkboxes con clase "checkbox-identifier"                      
-            });         
+            console.log(textStatus);
+            console.log(jqXHR);
+        },
+        onFail: function(jqXHR, textStatus, errorThrown) {
+            console.log('onFail(jqXHR, textStatus, errorThrown)');
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        },
+        onAlways: function() {
+            console.log('onAlways()');
+        },
+        onAjax: function(action, serialize) {
+            console.log('onAjax(action, serialize)');
+            console.log(action);
+            console.log(serialize);
         }
-        /*var els = $('.checkbox-identifier');
-        console.log(els);
-        
-        if (!this.checked) {
-            console.log("false");
-            els.prop('checked', false);
-            els.prop('defaultChecked', false);
-            
-            $('#arrayContent').empty();
-        } else {
-            els.attr('checked', true);
-            console.log("true");
-            $.each(els, function(index, el) {
-                 permisos.push( $(el).val() ); 
-            });
-            console.log(permisos);
-//            $('#arrayContent').empty();
-//            $('#arrayContent').append(permisos.join( ', ' ) );
-        }*/
-        //contacts.push($('#tbody').children(tr > td > input).val();)
+
     });
-
-    // if all checkbox are selected, check the selectall checkbox
-    // and viceversa
-
-//    $(".checkbox-identifier").click(function() {
-//        if($(this).is(':checked')){
-//            console.log("false");
-//           $(this).prop('checked', false); 
-//        }else{
-//            console.log("true")
-//           $(this).prop('checked', true);  
-//        }
-//    });
-
-
-
-    $('#example1').DataTable( {
-        "order": [[ 1, "asc" ]],
-        "pageLength": 10,
-        "autoWidth": false,
-        "scrollY": "360px",
-        "scrollCollapse": true,
-        "paging": false,
-        "bInfo": false,
-
-        "language": {
-            "lengthMenu": "Mostrar _MENU_ resultados por pagina",
-            "zeroRecords": "No se encontraron resultados",
-            "info": "Pagina _PAGE_ de _PAGES_",
-            "infoEmpty": "No hay resultados disponibles",
-            "infoFiltered": "(filtrado de un total de _MAX_ )",
-            "search": "Buscar:"
-        }
-    } );  
   
 });
 

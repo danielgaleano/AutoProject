@@ -7,7 +7,7 @@
 
         <link rel="stylesheet" th:href="@{/resources/dist/css/dataTables.bootstrap.css}" type="text/css"/>
         <script th:inline="javascript">  
-            var idRol = /*[[${id}]]*/'';
+            var roles = /*[[${roles}]]*/'';
         </script>
         
     </head>
@@ -21,9 +21,7 @@
                 Asignar Rol
                 <small>Solo se puede asignar un rol al usuario.</small>
             </h1>
-            <ol class="breadcrumb">
-                <button data-dismiss="modal" th:onclick="'asignarRol();'" type="button" class="btn btn-info">Asignar</button>    
-            </ol>
+            
         </section>
         <hr/>
         <!-- Main content -->
@@ -33,22 +31,25 @@
                     <div class="" id="mensaje" style="display: none; float: none;"></div>
                     <thead>
                         <tr>
-                            <td></td>
-                            <th>Nombre</th>
+                            <td>USUARIO</td>
+                            <th>ROL</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <th:block th:each='rol : ${roles}'>
+                        <!--<th:block th:each='usuario : ${usuarios}'>-->
                             <tr>
-                                <td>
-                                    <input class="checkbox-identifier" type="checkbox" th:name="id" th:value="${rol.id}"/>
+                                <input class="tabledit-input tabledit-identifier" type="hidden" th:name="id" th:value="${usuario.id}" disabled=""/>
+
+                                <td class="tabledit-view-mode">
+                                    <span  style="display: inline;"  th:text="${usuario.nombre}"></span>
+                                    <input class="tabledit-input form-control input-sm" type="hidden" th:name="nombre" th:value="${usuario.nombre}" style="display: none;" disabled=""/>
                                 </td>
                                 <td class="tabledit-view-mode">
-                                    <span  style="display: inline;"  th:text="${rol.nombre}"></span>
-                                    <input class="tabledit-input form-control input-sm" type="text" th:name="nombre" th:value="${rol.nombre}" style="display: none;" disabled=""/>
-                                </td>                               
+                                    <span  style="display: inline;"  th:text="${usuario.rolNombre}"></span>
+                                </td> 
+                                
                             </tr>
-                           </th:block>     
+                           <!--</th:block>-->     
                     </tbody>
                 </table>
             </div>
@@ -59,6 +60,7 @@
     <!-- /.content -->
     <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
     <script src="/proyecto/resources/js/asignarRol.js"></script>  
+    <script src="/proyecto/resources/dist/js/jquery.tabledit.js"></script>
     <script src="/proyecto/resources/dist/js/jquery.dataTables.js"></script>
     <script src="/proyecto/resources/dist/js/dataTables.bootstrap.min.js"></script>
     

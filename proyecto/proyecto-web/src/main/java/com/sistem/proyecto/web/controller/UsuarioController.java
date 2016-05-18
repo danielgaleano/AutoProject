@@ -334,17 +334,18 @@ public class UsuarioController extends BaseController{
             inicializarUsuarioManager();
             
             Usuario ejUsuario = new Usuario();
+            ejUsuario.setId(id);
             
-            ejUsuario = usuarioManager.get(id);
-            
+            Map<String, Object> usuarios = usuarioManager.getAtributos(ejUsuario, atributos.split(","));
+            usuarios.put("rolNombre", usuarios.get("rol.nombre"));
             Rol ejemplo = new Rol();           
-            ejemplo.setEmpresa(ejUsuario.getEmpresa()); 
+            ejemplo.setEmpresa( new Empresa(Long.parseLong(usuarios.get("empresa.id").toString()))); 
             ejemplo.setActivo("S");
             
             List<Map<String, Object>> listMapRoles = rolManager.listAtributos(ejemplo, "id,nombre".split(","), true);            
             
             model.addAttribute("roles", listMapRoles);
-            model.addAttribute("id", id);
+            model.addAttribute("usuario", usuarios);
             retorno.setViewName("asignarRol"); 
             
         }catch (Exception ex){
@@ -353,6 +354,43 @@ public class UsuarioController extends BaseController{
         
         return retorno;
     }
+        
+    @RequestMapping(value = "/asignar", method = RequestMethod.POST)
+    public @ResponseBody MensajeDTO asignar(@ModelAttribute("Usuario") Usuario usuarioRecibido) {
+       MensajeDTO mensaje = new MensajeDTO();
+       Usuario ejUsuario = new Usuario();
+       try{
+           inicializarUsuarioManager();
+           
+           if(usuarioRecibido.getRol()== null || usuarioRecibido.getRol() != null
+                   && usuarioRecibido.getRol().getId() == null){
+                mensaje.setError(true);
+                mensaje.setMensaje("El rol del usuario no puede estar vacio.");
+                return mensaje;
+           }
+
+           if(usuarioRecibido.getId() != null){
+               
+               Usuario ejUsuarioUp = new Usuario();
+               ejUsuarioUp = usuarioManager.get(usuarioRecibido.getId());
+               ejUsuarioUp.setRol(usuarioRecibido.getRol());
+               
+               usuarioManager.update(ejUsuarioUp);                               
+               
+               mensaje.setError(false);
+               mensaje.setMensaje("El rol se asigno exitosamente.");
+               return mensaje;
+           }
+
+           
+       }catch(Exception e){
+           mensaje.setError(true);
+           mensaje.setMensaje("Error al asignar el rol.");
+           System.out.println("Error" + e);
+       }
+           
+           return mensaje;
+   }
    
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody

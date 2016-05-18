@@ -99,69 +99,96 @@ $(document).ready(function(data) {
                     var imagen = $('#imagenPortInput').val();
                     console.log(imagen);
                     var serialize = $form.find('.tableusuario-input').serialize();
+                    if(usuario == null ){
+                        var jqXHR = $.post(CONTEXT_ROOT+'/usuarios/guardar', serialize, function(data, textStatus, jqXHR) {
+                            if(data.error){
+                                $('#mensaje').addClass('alert alert-danger alert-dismissible fade in');   
+                                $('#mensaje').append(data.mensaje);
+                                $('#mensaje').show();
+                            }else{
+                                $('#buttonServicio').attr('disabled','disabled');                           
+                                var $input = $form.find('.tabledit-input');
+                                $input.attr('disabled','disabled');
+                                $('#subServicio').show();
+                                $('#mensaje').addClass('alert alert-block alert-success');   
+                                $('#mensaje').append(data.mensaje);
+                                $('#mensaje').show();
+    //                            setTimeout(function() {
+    //                                window.location = CONTEXT_ROOT+"/servicios/"+data.id+"/subServicios";
+    //                            }, 2500);
+
+                            }
+
+                        });
+
+                        jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
+
+                        });
+                    }else{
+                        var jqXHR = $.post(CONTEXT_ROOT+'/usuarios/editar', serialize, function(data, textStatus, jqXHR) {
+                            if(data.error){
+                                $('#mensaje').addClass('alert alert-danger alert-dismissible fade in');   
+                                $('#mensaje').append(data.mensaje);
+                                $('#mensaje').show();
+                            }else{
+                                $('#buttonServicio').attr('disabled','disabled');                           
+                                var $input = $form.find('.tabledit-input');
+                                $input.attr('disabled','disabled');
+                                $('#subServicio').show();
+                                $('#mensaje').addClass('alert alert-block alert-success');   
+                                $('#mensaje').append(data.mensaje);
+                                $('#mensaje').show();
+    //                            setTimeout(function() {
+    //                                window.location = CONTEXT_ROOT+"/servicios/"+data.id+"/subServicios";
+    //                            }, 2500);
+
+                            }
+
+                        });
+
+                        jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
+
+                        });
+                    }
                     
-                    var jqXHR = $.post(CONTEXT_ROOT+'/usuarios/guardar', serialize, function(data, textStatus, jqXHR) {
-                        if(data.error){
-                            $('#mensaje').addClass('alert alert-danger alert-dismissible fade in');   
-                            $('#mensaje').append(data.mensaje);
-                            $('#mensaje').show();
-                        }else{
-                            $('#buttonServicio').attr('disabled','disabled');                           
-                            var $input = $form.find('.tabledit-input');
-                            $input.attr('disabled','disabled');
-                            $('#subServicio').show();
-                            $('#mensaje').addClass('alert alert-block alert-success');   
-                            $('#mensaje').append(data.mensaje);
-                            $('#mensaje').show();
-                            setTimeout(function() {
-                                window.location = CONTEXT_ROOT+"/servicios/"+data.id+"/subServicios";
-                            }, 2500);
-                            
-                        }
-
-                    });
-
-                    jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
-
-                    });
 		}
 	});
     
     
     $("#botonEditar").hide();
-    if(editar){
-        $('h1').append('Editar Usuario');
-        $('input[id="idUsuario"]').val(usuario.id);
-        $('input[id="documento"]').prop('disabled', true);
-        $('input[id="alias"]').val(usuario.alias);
-        $('input[id="claveAcceso"]').val(usuario.claveAcceso);
-        $('input[id="nombre"]').val(usuario.nombre);
-        $('input[id="apellido"]').val(usuario.apellido);
-        $('input[id="direccion"]').val(usuario.direccion);
-        $('input[id="email"]').val(usuario.email);
-        $('input[id="telefono"]').val(usuario.telefono);
-        $('input[id="documento"]').val(usuario.documento);
+//    if(editar){
+//        $('h1').append('Editar Usuario');
+//        $('input[id="idUsuario"]').val(usuario.id);
+//        $('input[id="documento"]').prop('disabled', true);
+//        $('input[id="alias"]').val(usuario.alias);
+//        $('input[id="claveAcceso"]').val(usuario.claveAcceso);
+//        $('input[id="nombre"]').val(usuario.nombre);
+//        $('input[id="apellido"]').val(usuario.apellido);
+//        $('input[id="direccion"]').val(usuario.direccion);
+//        $('input[id="email"]').val(usuario.email);
+//        $('input[id="telefono"]').val(usuario.telefono);
+//        $('input[id="documento"]').val(usuario.documento);
+//        
+//    }else if(visualizar){
+//        $('h1').append('Visualizar Usuario');
+//        $('input[type="text"]').prop('disabled', true);
+//        $('input[id="alias"]').val(usuario.alias);
+//        $('input[id="claveAcceso"]').val(usuario.claveAcceso);
+//        $('input[id="nombre"]').val(usuario.nombre);
+//        $('input[id="apellido"]').val(usuario.apellido);
+//        $('input[id="direccion"]').val(usuario.direccion);
+//        $('input[id="email"]').val(usuario.email);
+//        $('input[id="telefono"]').val(usuario.telefono);
+//        $('input[id="documento"]').val(usuario.documento);
         
-    }else if(visualizar){
-        $('h1').append('Visualizar Usuario');
-        $('input[type="text"]').prop('disabled', true);
-        $('input[id="alias"]').val(usuario.alias);
-        $('input[id="claveAcceso"]').val(usuario.claveAcceso);
-        $('input[id="nombre"]').val(usuario.nombre);
-        $('input[id="apellido"]').val(usuario.apellido);
-        $('input[id="direccion"]').val(usuario.direccion);
-        $('input[id="email"]').val(usuario.email);
-        $('input[id="telefono"]').val(usuario.telefono);
-        $('input[id="documento"]').val(usuario.documento);
-        
-        if(usuario.activo == 'S'){
-            $("#botonEditar").show();
-        } 
-        $("#aceptar").hide();
-        $("#cancelar").hide();
-    }else{
-//        $('h1').append('Crear Usuario');
-    }
+//        if(usuario.activo == 'S'){
+//            $("#botonEditar").show();
+//        } 
+//        $("#aceptar").hide();
+//        $("#cancelar").hide();
+//    }else{
+////        $('h1').append('Crear Usuario');
+//    }
            
     
 });

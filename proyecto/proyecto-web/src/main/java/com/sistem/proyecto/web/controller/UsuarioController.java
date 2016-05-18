@@ -34,7 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/usuarios")
 public class UsuarioController extends BaseController{
     
-    String atributos = "id,nombre,apellido,documento,email,claveAcceso,telefono,rol.id,"
+    String atributos = "id,nombre,apellido,documento,email,claveAcceso,telefono,telefonoMovil,alias,rol.id,"
             + "rol.nombre,empresa.id,empresa.nombre,direccion,activo";
     
     @RequestMapping(method = RequestMethod.GET)
@@ -71,8 +71,10 @@ public class UsuarioController extends BaseController{
         try{
         inicializarEmpresaManager();
         model.addAttribute("tipo", "Crear");
+        model.addAttribute("editar", false);
         List<Map<String, Object>> listMapEmpresas = empresaManager.listAtributos(new Empresa(), "id,nombre".split(","), true);
         model.addAttribute("empresas", listMapEmpresas);
+        
         }catch(Exception ex){
         
         }
@@ -81,7 +83,7 @@ public class UsuarioController extends BaseController{
     }
     
     @RequestMapping(value = "/guardar", method = RequestMethod.POST)
-   public @ResponseBody MensajeDTO guardar(@ModelAttribute("Usuario") Usuario usuarioRecibido) {
+     public @ResponseBody MensajeDTO guardar(@ModelAttribute("Usuario") Usuario usuarioRecibido) {
        MensajeDTO mensaje = new MensajeDTO();
        Usuario ejUsuario = new Usuario();
        try{
@@ -133,61 +135,8 @@ public class UsuarioController extends BaseController{
            Imagen imagenP = null;
            
            String imagenPortada = usuarioRecibido.getImagenPort();		
-
-           if(usuarioRecibido.getId() != null){
-               
-               imagenP = new Imagen();
-               imagenP.setEntidadId(usuarioRecibido.getId());
-               
-               imagenP = imagenManager.get(imagenP);
-               imagenP.setImagen(Base64Bytes.decode(imagenPortada.split(",")[1]));
-               imagenP.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-               imagenP.setEmpresa(new Empresa(Long.valueOf(usuarioRecibido.getEmpresa().getId())));
-               String extension = imagenPortada.split(";")[0];
-               extension = extension.substring(extension.indexOf("/")+1);
-               imagenP.setNombreImagen(usuarioRecibido.getNombre()+ "." + extension);
-               
-               Usuario ejUsuarioUp = new Usuario();
-               ejUsuarioUp = usuarioManager.get(usuarioRecibido.getId());
-               ejUsuarioUp.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-               ejUsuarioUp.setAlias(usuarioRecibido.getAlias());
-               ejUsuarioUp.setClaveAcceso(usuarioRecibido.getClaveAcceso());
-               ejUsuarioUp.setDireccion(usuarioRecibido.getDireccion());
-               ejUsuarioUp.setDocumento(usuarioRecibido.getDocumento());
-               ejUsuarioUp.setEmail(usuarioRecibido.getEmail());
-               ejUsuarioUp.setNombre(usuarioRecibido.getNombre());
-               ejUsuarioUp.setApellido(usuarioRecibido.getApellido());
-               ejUsuarioUp.setTelefono(usuarioRecibido.getTelefono());
-               ejUsuarioUp.setTelefonoMovil(usuarioRecibido.getTelefonoMovil());
-               ejUsuarioUp.setEmpresa(usuarioRecibido.getEmpresa());
-               ejUsuarioUp.setEmpresa(new Empresa(Long.valueOf(usuarioRecibido.getEmpresa().getId())));
-               ejUsuarioUp.setRol(new Rol(Long.valueOf(usuarioRecibido.getRol().getId())));
-              
-               usuarioManager.update(ejUsuarioUp);  
-               
-               imagenManager.update(imagenP);
-               
-               mensaje.setError(false);
-               mensaje.setMensaje("El usuario "+usuarioRecibido.getAlias()+" se modifico exitosamente.");
-               return mensaje;
-           }
            
-           
-            if (imagenPortada != null && !imagenPortada.equals("")
-                            && imagenPortada.length() > 0) {
-                imagenP = new Imagen();
-                imagenP.setImagen(Base64Bytes.decode(imagenPortada.split(",")[1]));
-                String extension = imagenPortada.split(";")[0];
-                extension = extension.substring(extension.indexOf("/")+1);
-                imagenP.setNombreTabla("usuario");
-                imagenP.setNombreImagen(usuarioRecibido.getNombre()+ "." + extension);
-                imagenP.setActivo("S");
-                imagenP.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                imagenP.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                imagenP.setEmpresa(new Empresa(usuarioRecibido.getEmpresa().getId()));
-
-            }
-                     
+        
             ejUsuario.setDocumento(usuarioRecibido.getDocumento());
 
             ejUsuario = usuarioManager.get(ejUsuario);
@@ -215,17 +164,153 @@ public class UsuarioController extends BaseController{
                  
                  usuarioManager.save(ejUsuario); 
                  
-                 imagenP.setEntidadId(ejUsuario.getId());
-                 
-                 imagenManager.save(imagenP);
-                
+                if (imagenPortada != null && !imagenPortada.equals("")
+                            && imagenPortada.length() > 0) {
+                    imagenP = new Imagen();
+                    imagenP.setImagen(Base64Bytes.decode(imagenPortada.split(",")[1]));
+                    String extension = imagenPortada.split(";")[0];
+                    extension = extension.substring(extension.indexOf("/")+1);
+                    imagenP.setNombreTabla("usuario");
+                    imagenP.setNombreImagen(usuarioRecibido.getNombre()+ "." + extension);
+                    imagenP.setActivo("S");
+                    imagenP.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                    imagenP.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    imagenP.setEmpresa(new Empresa(usuarioRecibido.getEmpresa().getId()));
+                    imagenP.setEntidadId(ejUsuario.getId());
+                    
+                     imagenManager.save(imagenP);
+
+                }
             }
-  
-                 
-           
-           
+
            mensaje.setError(false);
            mensaje.setMensaje("El usuario "+usuarioRecibido.getAlias()+" se guardo exitosamente.");
+           
+       }catch(Exception e){
+           mensaje.setError(true);
+           mensaje.setMensaje("Error a guardar el usuario");
+           System.out.println("Error" + e);
+       }
+           
+           return mensaje;
+   }
+     
+     @RequestMapping(value = "/editar", method = RequestMethod.POST)
+     public @ResponseBody MensajeDTO editar(@ModelAttribute("Usuario") Usuario usuarioRecibido) {
+       MensajeDTO mensaje = new MensajeDTO();
+       Usuario ejUsuario = new Usuario();
+       try{
+           inicializarUsuarioManager();
+           inicializarImagenManager();
+           
+           if(usuarioRecibido.getDocumento() == null || usuarioRecibido.getDocumento() != null
+                   && usuarioRecibido.getDocumento().compareToIgnoreCase("") == 0){
+                mensaje.setError(true);
+                mensaje.setMensaje("El documento del usuario no puede estar vacio.");
+                return mensaje;
+           }
+           
+           if(usuarioRecibido.getNombre()== null || usuarioRecibido.getNombre() != null
+                   && usuarioRecibido.getNombre().compareToIgnoreCase("") == 0){
+                mensaje.setError(true);
+                mensaje.setMensaje("El nombre del usuario no puede estar vacio.");
+                return mensaje;
+           }
+           
+           if(usuarioRecibido.getApellido()== null || usuarioRecibido.getApellido() != null
+                   && usuarioRecibido.getApellido().compareToIgnoreCase("") == 0){
+                mensaje.setError(true);
+                mensaje.setMensaje("El apellido del usuario no puede estar vacio.");
+                return mensaje;
+           }
+           
+           if(usuarioRecibido.getAlias()== null || usuarioRecibido.getAlias() != null
+                   && usuarioRecibido.getAlias().compareToIgnoreCase("") == 0){
+                mensaje.setError(true);
+                mensaje.setMensaje("El alias del usuario no puede estar vacio.");
+                return mensaje;
+           }
+           
+           if(usuarioRecibido.getClaveAcceso()== null || usuarioRecibido.getClaveAcceso() != null
+                   && usuarioRecibido.getClaveAcceso().compareToIgnoreCase("") == 0){
+                mensaje.setError(true);
+                mensaje.setMensaje("La clave del usuario no puede estar vacia.");
+                return mensaje;
+           }
+           
+           if(usuarioRecibido.getTelefono()== null || usuarioRecibido.getTelefono() != null
+                   && usuarioRecibido.getTelefono().compareToIgnoreCase("") == 0){
+                mensaje.setError(true);
+                mensaje.setMensaje("El telefono del usuario no puede estar vacia.");
+                return mensaje;
+           }
+           
+           Imagen imagenP = null;
+           
+            String imagenPortada = usuarioRecibido.getImagenPort();
+           
+            if (imagenPortada != null && !imagenPortada.equals("")
+                            && imagenPortada.length() > 0) {
+                imagenP = new Imagen();
+                imagenP.setEntidadId(usuarioRecibido.getId());
+                imagenP.setNombreTabla("usuario");
+                imagenP = imagenManager.get(imagenP);
+
+                if(imagenP != null){
+                    
+                    imagenP.setImagen(Base64Bytes.decode(imagenPortada.split(",")[1]));
+                    imagenP.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    imagenP.setEmpresa(new Empresa(Long.valueOf(usuarioRecibido.getEmpresa().getId())));
+                    String extension = imagenPortada.split(";")[0];
+                    extension = extension.substring(extension.indexOf("/")+1);
+                    imagenP.setNombreImagen(usuarioRecibido.getNombre()+ "." + extension);
+
+                    imagenManager.update(imagenP);
+
+                }else{
+                    imagenP = new Imagen();
+                    imagenP.setImagen(Base64Bytes.decode(imagenPortada.split(",")[1]));
+                    String extension = imagenPortada.split(";")[0];
+                    extension = extension.substring(extension.indexOf("/")+1);
+                    imagenP.setNombreTabla("usuario");
+                    imagenP.setNombreImagen(usuarioRecibido.getNombre()+ "." + extension);
+                    imagenP.setActivo("S");
+                    imagenP.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                    imagenP.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    imagenP.setEmpresa(new Empresa(usuarioRecibido.getEmpresa().getId()));
+                    imagenP.setEntidadId(usuarioRecibido.getId());
+                    
+                    imagenManager.save(imagenP);
+                }
+           }
+            
+
+           if(usuarioRecibido.getId() != null){
+               
+               Usuario ejUsuarioUp = new Usuario();
+               ejUsuarioUp = usuarioManager.get(usuarioRecibido.getId());
+               ejUsuarioUp.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+               ejUsuarioUp.setAlias(usuarioRecibido.getAlias());
+               ejUsuarioUp.setClaveAcceso(usuarioRecibido.getClaveAcceso());
+               ejUsuarioUp.setDireccion(usuarioRecibido.getDireccion());
+               ejUsuarioUp.setDocumento(usuarioRecibido.getDocumento());
+               ejUsuarioUp.setEmail(usuarioRecibido.getEmail());
+               ejUsuarioUp.setNombre(usuarioRecibido.getNombre());
+               ejUsuarioUp.setApellido(usuarioRecibido.getApellido());
+               ejUsuarioUp.setTelefono(usuarioRecibido.getTelefono());
+               ejUsuarioUp.setTelefonoMovil(usuarioRecibido.getTelefonoMovil());
+               ejUsuarioUp.setEmpresa(usuarioRecibido.getEmpresa());
+               ejUsuarioUp.setEmpresa(new Empresa(Long.valueOf(usuarioRecibido.getEmpresa().getId())));
+              
+               usuarioManager.update(ejUsuarioUp);                               
+               
+               mensaje.setError(false);
+               mensaje.setMensaje("El usuario "+usuarioRecibido.getAlias()+" se modifico exitosamente.");
+               return mensaje;
+           }
+
+           mensaje.setError(false);
+           mensaje.setMensaje("El usuario "+usuarioRecibido.getAlias()+" se modifico exitosamente.");
            
        }catch(Exception e){
            mensaje.setError(true);
@@ -332,16 +417,19 @@ public class UsuarioController extends BaseController{
             try {
 
                     inicializarUsuarioManager();
+                    inicializarEmpresaManager();
 
                     Map<String, Object> usuario = usuarioManager.getAtributos(
 					new Usuario(id), atributos.split(","), false, true);
-
+                    usuario.put("idEmpresa", Long.parseLong(usuario.get("empresa.id").toString()));
+                    
+                    List<Map<String, Object>> listMapEmpresas = empresaManager.listAtributos(new Empresa(), "id,nombre".split(","), true);
+                    model.addAttribute("empresas", listMapEmpresas);
+                    
                     model.addAttribute("usuario", usuario);
                    
                     model.addAttribute("editar", true);
-                    model.addAttribute("tipo", "Editar");
                     
-
                     retorno.setViewName("usuario");
             } catch (Exception e) {
                  

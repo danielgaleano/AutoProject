@@ -96,26 +96,26 @@ $(document).ready(function(data) {
 		submitHandler: function (form) {
                     console.log("exitoooo");
                     var $form = $('#validation-form');
-                    var imagen = $('#imagenPortInput').val();
-                    console.log(imagen);
                     var serialize = $form.find('.tableusuario-input').serialize();
                     if(usuario == null ){
                         var jqXHR = $.post(CONTEXT_ROOT+'/usuarios/guardar', serialize, function(data, textStatus, jqXHR) {
                             if(data.error){
-                                $('#mensaje').addClass('alert alert-danger alert-dismissible fade in');   
-                                $('#mensaje').append(data.mensaje);
-                                $('#mensaje').show();
+                                $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    +'><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Error! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
                             }else{
-                                $('#buttonServicio').attr('disabled','disabled');                           
-                                var $input = $form.find('.tabledit-input');
-                                $input.attr('disabled','disabled');
-                                $('#subServicio').show();
-                                $('#mensaje').addClass('alert alert-block alert-success');   
-                                $('#mensaje').append(data.mensaje);
-                                $('#mensaje').show();
-    //                            setTimeout(function() {
-    //                                window.location = CONTEXT_ROOT+"/servicios/"+data.id+"/subServicios";
-    //                            }, 2500);
+                                $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    +'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Exito! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
+                                setTimeout(function() {
+                                    window.location = CONTEXT_ROOT+"/usuarios";
+                                }, 1500);
 
                             }
 
@@ -127,20 +127,22 @@ $(document).ready(function(data) {
                     }else{
                         var jqXHR = $.post(CONTEXT_ROOT+'/usuarios/editar', serialize, function(data, textStatus, jqXHR) {
                             if(data.error){
-                                $('#mensaje').addClass('alert alert-danger alert-dismissible fade in');   
-                                $('#mensaje').append(data.mensaje);
-                                $('#mensaje').show();
+                                $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    +'><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Error! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
                             }else{
-                                $('#buttonServicio').attr('disabled','disabled');                           
-                                var $input = $form.find('.tabledit-input');
-                                $input.attr('disabled','disabled');
-                                $('#subServicio').show();
-                                $('#mensaje').addClass('alert alert-block alert-success');   
-                                $('#mensaje').append(data.mensaje);
-                                $('#mensaje').show();
-    //                            setTimeout(function() {
-    //                                window.location = CONTEXT_ROOT+"/servicios/"+data.id+"/subServicios";
-    //                            }, 2500);
+                                $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    +'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Exito! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
+                                setTimeout(function() {
+                                    window.location = CONTEXT_ROOT+"/usuarios";
+                                }, 1500);
 
                             }
 

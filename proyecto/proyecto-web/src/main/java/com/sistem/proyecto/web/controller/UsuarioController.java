@@ -203,13 +203,12 @@ public class UsuarioController extends BaseController{
        try{
            inicializarUsuarioManager();
            inicializarImagenManager();
-           
-           if(usuarioRecibido.getDocumento() == null || usuarioRecibido.getDocumento() != null
-                   && usuarioRecibido.getDocumento().compareToIgnoreCase("") == 0){
+           if(usuarioRecibido.getId() == null){
                 mensaje.setError(true);
-                mensaje.setMensaje("El documento del usuario no puede estar vacio.");
+                mensaje.setMensaje("Error al editar el usuario.");
                 return mensaje;
            }
+           
            
            if(usuarioRecibido.getNombre()== null || usuarioRecibido.getNombre() != null
                    && usuarioRecibido.getNombre().compareToIgnoreCase("") == 0){
@@ -225,12 +224,7 @@ public class UsuarioController extends BaseController{
                 return mensaje;
            }
            
-           if(usuarioRecibido.getAlias()== null || usuarioRecibido.getAlias() != null
-                   && usuarioRecibido.getAlias().compareToIgnoreCase("") == 0){
-                mensaje.setError(true);
-                mensaje.setMensaje("El alias del usuario no puede estar vacio.");
-                return mensaje;
-           }
+           
            
            if(usuarioRecibido.getClaveAcceso()== null || usuarioRecibido.getClaveAcceso() != null
                    && usuarioRecibido.getClaveAcceso().compareToIgnoreCase("") == 0){
@@ -245,6 +239,9 @@ public class UsuarioController extends BaseController{
                 mensaje.setMensaje("El telefono del usuario no puede estar vacia.");
                 return mensaje;
            }
+           
+           Usuario ejUsuarioUp = new Usuario();
+           ejUsuarioUp = usuarioManager.get(usuarioRecibido.getId());
            
            Imagen imagenP = null;
            
@@ -261,7 +258,6 @@ public class UsuarioController extends BaseController{
                     
                     imagenP.setImagen(Base64Bytes.decode(imagenPortada.split(",")[1]));
                     imagenP.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                    imagenP.setEmpresa(new Empresa(Long.valueOf(usuarioRecibido.getEmpresa().getId())));
                     String extension = imagenPortada.split(";")[0];
                     extension = extension.substring(extension.indexOf("/")+1);
                     imagenP.setNombreImagen(usuarioRecibido.getNombre()+ "." + extension);
@@ -278,40 +274,29 @@ public class UsuarioController extends BaseController{
                     imagenP.setActivo("S");
                     imagenP.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                     imagenP.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                    imagenP.setEmpresa(new Empresa(usuarioRecibido.getEmpresa().getId()));
+                    imagenP.setEmpresa(ejUsuarioUp.getEmpresa());
                     imagenP.setEntidadId(usuarioRecibido.getId());
                     
                     imagenManager.save(imagenP);
                 }
            }
-            
+                       
+            ejUsuarioUp.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejUsuarioUp.setClaveAcceso(usuarioRecibido.getClaveAcceso());
+            ejUsuarioUp.setDireccion(usuarioRecibido.getDireccion());
+            ejUsuarioUp.setEmail(usuarioRecibido.getEmail());
+            ejUsuarioUp.setNombre(usuarioRecibido.getNombre());
+            ejUsuarioUp.setApellido(usuarioRecibido.getApellido());
+            ejUsuarioUp.setTelefono(usuarioRecibido.getTelefono());
+            ejUsuarioUp.setTelefonoMovil(usuarioRecibido.getTelefonoMovil());
 
-           if(usuarioRecibido.getId() != null){
-               
-               Usuario ejUsuarioUp = new Usuario();
-               ejUsuarioUp = usuarioManager.get(usuarioRecibido.getId());
-               ejUsuarioUp.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-               ejUsuarioUp.setAlias(usuarioRecibido.getAlias());
-               ejUsuarioUp.setClaveAcceso(usuarioRecibido.getClaveAcceso());
-               ejUsuarioUp.setDireccion(usuarioRecibido.getDireccion());
-               ejUsuarioUp.setDocumento(usuarioRecibido.getDocumento());
-               ejUsuarioUp.setEmail(usuarioRecibido.getEmail());
-               ejUsuarioUp.setNombre(usuarioRecibido.getNombre());
-               ejUsuarioUp.setApellido(usuarioRecibido.getApellido());
-               ejUsuarioUp.setTelefono(usuarioRecibido.getTelefono());
-               ejUsuarioUp.setTelefonoMovil(usuarioRecibido.getTelefonoMovil());
-               ejUsuarioUp.setEmpresa(usuarioRecibido.getEmpresa());
-               ejUsuarioUp.setEmpresa(new Empresa(Long.valueOf(usuarioRecibido.getEmpresa().getId())));
-              
-               usuarioManager.update(ejUsuarioUp);                               
-               
-               mensaje.setError(false);
-               mensaje.setMensaje("El usuario "+usuarioRecibido.getAlias()+" se modifico exitosamente.");
-               return mensaje;
-           }
+            usuarioManager.update(ejUsuarioUp);                               
 
-           mensaje.setError(false);
-           mensaje.setMensaje("El usuario "+usuarioRecibido.getAlias()+" se modifico exitosamente.");
+            mensaje.setError(false);
+            mensaje.setMensaje("El usuario "+usuarioRecibido.getNombre()+" se modifico exitosamente.");
+            return mensaje;
+           
+
            
        }catch(Exception e){
            mensaje.setError(true);

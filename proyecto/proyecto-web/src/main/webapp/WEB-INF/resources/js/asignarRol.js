@@ -7,6 +7,7 @@ $(document).ready(function(data) {
         urlActivate: CONTEXT_ROOT+'/roles/activar/',
         urlAsignar: CONTEXT_ROOT+'/roles/asignar/',
         tableId:'example1',
+        inputClass:'form-control input-large',
         titleAsignar:'Asignar Permisos',
         isStatus:false,
         editarFormButton: false,

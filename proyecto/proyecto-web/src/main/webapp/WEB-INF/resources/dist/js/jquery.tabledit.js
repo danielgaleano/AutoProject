@@ -300,6 +300,16 @@ if (typeof jQuery === 'undefined') {
 									}
 
 								}else{
+                                                                    
+                                                                        if (settings.editarFormButton) {
+                                                                            //Control de Permisos
+										
+                                                                            editarFormButton = '<button type="button" class="tabledit-editar-button ' 
+                                                                            + settings.buttons.edit.class + '" style="display: none;float: none;" title="Editar">' 
+                                                                            + settings.buttons.edit.html 
+                                                                            + '</button>';
+										
+									}
 									
 									// Create edit button.
 									if (settings.editButton) {
@@ -445,12 +455,7 @@ if (typeof jQuery === 'undefined') {
                                                         $table.find('tr:gt(0)').append('<td style="white-space: nowrap; width: 1%;">' + toolbar + '</td>');
 							
 						}
-					}
-                                        var mansaje = '<button type="button" class="close" data-dismiss="alert"'
-											+'aria-label="Close"><span aria-hidden="true">&times;</span></button>';
-
-
-                                        $('#mensaje').append(mansaje);
+					}                                        
 					
                 }
             }
@@ -577,7 +582,7 @@ if (typeof jQuery === 'undefined') {
                 var ajaxResult = ajax(settings.buttons.delete.action);
                 // Disable identifier hidden input.
                 $(td).parents('tr').find('input.tabledit-identifier').attr('disabled', true);
-
+                
                 if (ajaxResult === false) {
                     return;
                 }
@@ -586,9 +591,12 @@ if (typeof jQuery === 'undefined') {
                 $(td).parent('tr').addClass('tabledit-deleted-row');
                 // Hide table row.
                 //$(td).parent('tr').addClass(settings.mutedClass).find('.tabledit-toolbar button:not(.tabledit-restore-button)').attr('disabled', true);
+                $(td).parents('tr').find('span.table-estado').text('Inactivo');
+                $(td).parents('tr').find('span.table-estado').removeClass('label-success');
+                $(td).parents('tr').find('span.table-estado').addClass('label-danger');
                 
                 $(td).find('.tabledit-edit-button').hide();
-                
+                $(td).find('.tabledit-editar-button').hide();
                 $(td).find('.tabledit-delete-button').hide();
                 
                 $(td).find('.tabledit-asignar-button').hide();
@@ -664,10 +672,14 @@ if (typeof jQuery === 'undefined') {
                 // Hide table row.
                 //$(td).parent('tr').addClass(settings.mutedClass).find('.tabledit-toolbar button:not(.tabledit-restore-button)').attr('disabled', true);
                 
+                $(td).parents('tr').find('span.table-estado').text('Activo');
+                $(td).parents('tr').find('span.table-estado').removeClass('label-danger');
+                $(td).parents('tr').find('span.table-estado').addClass('label-success');
+                
                 $(td).find('.tabledit-activar-button').hide();
                 
                 $(td).find('.tabledit-edit-button').show();
-                
+                $(td).find('.tabledit-editar-button').show();
                 $(td).find('.tabledit-delete-button').show();
                 
                 $(td).find('.tabledit-asignar-button').show();
@@ -795,20 +807,25 @@ if (typeof jQuery === 'undefined') {
                 var valores = serialize.split("id=");
                 var id = valores[1];
                 var jqXHR = $.get(settings.urlDelete+id, function(data, textStatus, jqXHR) {
-                    
                     if (data.error === true) {
-                        $('#mensaje').addClass(settings.mensajeErrorClass);   
-                        $('#mensaje').append(data.mensaje);
-                        $('#mensaje').show();
+                        $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    +'><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Error! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
                         
                     }else{
-                        $('#mensaje').addClass(settings.mensajeClass);   
-                        $('#mensaje').append(data.mensaje);
-                        $('#mensaje').show();
-//                        setTimeout(function() {
-//                            //$lastEditedRow.removeClass(settings.warningClass);
-//                            location.reload();
-//                        }, 7000);
+                        $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    +'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Exito! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
+                        setTimeout(function() {
+                            //$lastEditedRow.removeClass(settings.warningClass);
+                            location.reload();
+                        }, 1500);
                     }
 
                     settings.onSuccess(data, textStatus, jqXHR);
@@ -817,20 +834,25 @@ if (typeof jQuery === 'undefined') {
                 var valores = serialize.split("id=");
                 var id = valores[1];
                 var jqXHR = $.get(settings.urlActivate+id, function(data, textStatus, jqXHR) {
-                    
                     if (data.error === true) {
-                        $('#mensaje').addClass(settings.mensajeErrorClass);   
-                        $('#mensaje').append(data.mensaje);
-                        $('#mensaje').show();
+                        $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    +'><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Error! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
                         
                     }else{
-                        $('#mensaje').addClass(settings.mensajeClass);   
-                        $('#mensaje').append(data.mensaje);
-                        $('#mensaje').show();
-//                        setTimeout(function() {
-//                            //$lastEditedRow.removeClass(settings.warningClass);
-//                            location.reload();
-//                        }, 7000);
+                        $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    +'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Exito! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
+                        setTimeout(function() {
+                            //$lastEditedRow.removeClass(settings.warningClass);
+                            location.reload();
+                        }, 1500);
                          
                     }
                     
@@ -862,13 +884,29 @@ if (typeof jQuery === 'undefined') {
 //                });
             }else{
                  var jqXHR = $.post(settings.url, serialize, function(data, textStatus, jqXHR) {
-                    console.log(data);
-                    if (action === settings.buttons.edit.action) {
-                        $lastEditedRow.removeClass(settings.dangerClass).addClass(settings.warningClass);
+                    $lastEditedRow.removeClass(settings.dangerClass).addClass(settings.warningClass);
+                    if (data.error === true) {
+                        $table.find('tr.' + settings.warningClass).removeClass(settings.warningClass);
+
+                        $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    +'><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Error! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
+                        
+                    }else{
+                        $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    +'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Exito! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
                         setTimeout(function() {
                             //$lastEditedRow.removeClass(settings.warningClass);
-                            $table.find('tr.' + settings.warningClass).removeClass(settings.warningClass);
-                        }, 1400);
+                            location.reload();
+                        }, 1500);
+                         
                     }
 
                     settings.onSuccess(data, textStatus, jqXHR);
@@ -878,16 +916,22 @@ if (typeof jQuery === 'undefined') {
 
             jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
                 if (action === settings.buttons.delete.action) {
-                    $('#mensaje').addClass(settings.mensajeErrorClass);   
-                    $('#mensaje').append(settings.mensajeErrorDesactivar);
-                    $('#mensaje').show();
+                    $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    +'><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Error! </strong>'
+                                    + 'Error al desactivar el registro. '
+                                    + '</div>');
                     $lastDeletedRow.removeClass(settings.mutedClass).addClass(settings.dangerClass);
                     $lastDeletedRow.find('.tabledit-toolbar button').attr('disabled', false);
                     $lastDeletedRow.find('.tabledit-toolbar .tabledit-restore-button').hide();
                 } else if (action === settings.buttons.edit.action) {
-                    $('#mensaje').addClass(settings.mensajeErrorClass);   
-                    $('#mensaje').append(settings.mensajeErrorEditar);
-                    $('#mensaje').show();
+                    $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    +'><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Error! </strong>'
+                                    + 'Error al editar el registro. '
+                                    + '</div>');
                     $lastEditedRow.addClass(settings.dangerClass);
                 }
 

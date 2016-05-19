@@ -6,7 +6,7 @@ $(document).ready(function(data) {
   var permisoAsignar = parseBolean($(this).find('.tablasignar-permiso').text());
 
   $('#example1').Tabledit({
-        url: CONTEXT_ROOT+'/roles/guardar',
+        url: CONTEXT_ROOT+'/roles/editar',
         urlDelete: CONTEXT_ROOT+'/roles/desactivar/',
         urlActivate: CONTEXT_ROOT+'/roles/activar/',
         urlAsignar: CONTEXT_ROOT+'/roles/asignar/',
@@ -74,7 +74,7 @@ $(document).ready(function(data) {
         $('#crear').attr('disabled','disabled');
         var input = '<input class="tabledit-input form-control input-sm" type="text" name="nombre" value="" style="">';
         
-        var select = '<select class="tabledit-input form-control input-sm" name="empresa" style="">';
+        var select = '<select class="tabledit-input form-control input-sm" name="empresa.id" style="">';
         select += '<option value="" selected>Seleccione Empresa</option>';    
         
         $.each(datosEmpresa, function(index, value) {
@@ -105,11 +105,23 @@ $(document).ready(function(data) {
         
         var jqXHR = $.post(CONTEXT_ROOT+'/roles/guardar', serialize, function(data, textStatus, jqXHR) {
             if(data.error){
-                $('#mensaje').addClass('alert alert-danger alert-dismissible fade in');   
-                $('#mensaje').append(data.mensaje);
-                $('#mensaje').show();
+                $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    +'><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Error! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
             }else{
-                location.reload();
+                $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    +'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Exito! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
+                setTimeout(function() {
+                    //$lastEditedRow.removeClass(settings.warningClass);
+                    location.reload();
+                }, 1500);
             }
             
         });

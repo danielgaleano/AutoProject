@@ -21,7 +21,7 @@
       
       <ol class="breadcrumb">
         <a id="botonEditar" th:if="${tipo} == 'Visualizar'" th:href="@{'/usuarios/'+${usuario.id}+'/editar'}" class="btn btn-primary" role="button">Editar</a>
-        <a th:if="${tipo} == 'Visualizar'" th:href="@{/usuarios}" class="btn btn-primary" role="button">Volver</a>
+        <a th:href="@{/usuarios}" class="btn btn-primary" role="button">Volver</a>
       </ol>
     </section> 
     <!-- Main content -->
@@ -32,7 +32,7 @@
                   <h3 class="box-title">
                       <span th:if="${usuario} == null" class="middle">Crear Usuario</span>
                       <span th:if="${editar}" class="middle">Editar Usuario</span>
-                      <span th:if="!${editar}" class="middle">Visualizar Usuario</span>
+                      <span th:if="!${editar} and ${usuario} != null" class="middle">Visualizar Usuario</span>
                   </h3>
                 </div>
                 <!-- <form:input path="fichero" type="file" class="hidden" />
@@ -86,14 +86,14 @@
                                         <hr/>
                                         <div class="form-group"><label class="col-lg-2 control-label">Documento</label>
                                             <div class="col-lg-6">
-                                                <input th:if="${usuario} != null" th:value="${usuario.documento}" id="documento" name="documento" type="text" placeholder="Documento" class="form-control tableusuario-input input-large"/> 
+                                                <input th:if="${usuario} != null" th:value="${usuario.documento}" id="documento" name="documento" type="text" placeholder="Documento" disabled="disabled" class="form-control tableusuario-input input-large"/> 
                                                 <input th:if="${usuario} == null"  id="documento" name="documento" type="text" placeholder="Documento" class="form-control tableusuario-input input-large"/> 
                                             </div>
                                         </div>
                                         <div class="form-group"><label class="col-lg-2 control-label">Alias</label>
                                             <div class="col-lg-6">
                                                 <input th:if="${usuario} == null" id="alias" name="alias"  type="text" placeholder="Alias" class="form-control tableusuario-input input-large"/> 
-                                                <input th:if="${usuario} != null" th:value="${usuario.alias}" id="alias" name="alias"  type="text" placeholder="Alias" class="form-control tableusuario-input input-large"/> 
+                                                <input th:if="${usuario} != null" th:value="${usuario.alias}" disabled="disabled" id="alias" name="alias"  type="text" placeholder="Alias" class="form-control tableusuario-input input-large"/> 
                                             </div>
                                         </div>
                                         <div class="form-group"><label class="col-lg-2 control-label">Contraseña</label>
@@ -147,7 +147,19 @@
 
                                                 <div sec:authorize="hasRole('Empresa.Asignar')">
                                                     <div class="form-group"><label class="col-lg-2 control-label">Empresa</label>
-                                                        <select class="form-control tableusuario-input input-xlarge" id="empresa" name="empresa.id" data-placeholder="Seleccione Empresa">
+                                                        
+                                                        <select th:if="${usuario} != null" disabled="disabled" class="form-control tableusuario-input input-xlarge" id="empresa"  name="empresa.id" data-placeholder="Seleccione Empresa">
+                                                            
+                                                            <option value="">Seleccione Empresa</option>
+                                                            <option th:if="${usuario} == null" th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
+                                                            
+                                                            <th:block th:if="${usuario} != null" th:each="empresa : ${empresas}">
+                                                                <option th:if="${usuario.idEmpresa} == ${empresa[id]}" selected="selected" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
+                                                                <option th:if="${usuario.idEmpresa} != ${empresa[id]}" th:value="${empresa.id}" th:text="${empresa.nombre}"/>                                  
+                                                            </th:block>
+                                                        </select>
+
+                                                        <select th:if="${usuario} == null" class="form-control tableusuario-input input-xlarge" id="empresa"  name="empresa.id" data-placeholder="Seleccione Empresa">
                                                             
                                                             <option value="">Seleccione Empresa</option>
                                                             <option th:if="${usuario} == null" th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
@@ -160,18 +172,18 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <div class="col-md-offset-3 col-md-9">
-                                                <button id="aceptar" class="btn btn-primary" type="submit">Guardar</button>
-
-
-                                                    &nbsp; &nbsp; &nbsp;
-                                                    <button id="cancelar" class="btn btn-default" type="reset" >
-                                                            <i class="fa fa-undo bigger-110"></i>
-                                                            Cancelar
-                                                    </button>
+                                            <div class="form-group">
+                                                <div class="col-md-offset-3 col-md-9">
+                                                    <button id="aceptar" class="btn btn-primary" type="submit">Guardar</button>
+                                                        &nbsp; &nbsp; &nbsp;
+                                                    <a th:href="@{/usuarios}"  role="button" class="btn btn-default">
+                                                                <i class="fa fa-undo bigger-110"></i>
+                                                                Cancelar
+                                                    </a>
+                                                    
+                                                </div>
                                             </div>
-                                            <hr/>
+                                            
                                         </div>
                                     </div>
 

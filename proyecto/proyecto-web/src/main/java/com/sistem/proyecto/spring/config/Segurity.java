@@ -70,6 +70,7 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/roles/asignar/*/permisos*").access("isAuthenticated()")
                 .antMatchers("/roles/*/permisos*").access("isAuthenticated()")
                 .antMatchers("/roles/guardar**").access("isAuthenticated()")
+                .antMatchers("/roles/editar**").access("isAuthenticated()")
                 .antMatchers("/roles/activar/**").hasAnyAuthority("Rol.Activar")
                 .antMatchers("/roles/desactivar/**").hasAnyAuthority("Rol.Desactivar")
                 //------Permisos----//

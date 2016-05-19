@@ -65,7 +65,7 @@ public class EmpresaController extends BaseController{
         return new ModelAndView("empresa");
     }
     
-    @RequestMapping(value = "/guardar", method = RequestMethod.POST)
+   @RequestMapping(value = "/guardar", method = RequestMethod.POST)
    public @ResponseBody MensajeDTO guardar(@ModelAttribute("Empresa") Empresa empresaRecibido) {
        MensajeDTO mensaje = new MensajeDTO();
        Empresa ejEmpresa = new Empresa();

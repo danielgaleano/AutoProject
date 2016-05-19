@@ -85,8 +85,8 @@
                                                 <input class="tabledit-input form-control input-sm" type="text" th:name="rolNombre" th:value="${usuario.rolNombre}" style="display: none;" disabled=""/>
                                             </td>            
                                             <td class="tabledit-estado">
-                                                <span class="label label-success" th:if="${usuario.activo} == 'S'"  th:value="S" th:text="Activo"/>
-                                                <span class="label label-danger" th:if="${usuario.activo} == 'N'"  th:value="N" th:text="Inactivo"/> 
+                                                <span class="table-estado label label-success" th:if="${usuario.activo} == 'S'"  th:value="S" th:text="Activo"/>
+                                                <span class="table-estado label label-danger" th:if="${usuario.activo} == 'N'"  th:value="N" th:text="Inactivo"/> 
                                             </td>
                                             <td style="white-space: nowrap; width: 1%;" class="tabledit-buttons">
 

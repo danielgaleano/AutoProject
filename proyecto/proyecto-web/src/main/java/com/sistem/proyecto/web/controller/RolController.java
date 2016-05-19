@@ -43,6 +43,8 @@ import org.springframework.web.servlet.ModelAndView;
 public class RolController extends BaseController{
     
     String atributos = "id,nombre,activo,empresa.id,empresa.nombre";
+    
+    
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listarRoles(Model model) {
             ModelAndView retorno = new ModelAndView();
@@ -60,6 +62,7 @@ public class RolController extends BaseController{
             
             for(Map<String, Object> rpm : listMapRoles){
                 rpm.put("rolEmpresa", rpm.get("empresa.nombre"));
+                rpm.put("idEmpresa", rpm.get("empresa.id"));
             }
             
             Empresa ejEmpresa = new Empresa();
@@ -71,14 +74,14 @@ public class RolController extends BaseController{
             retorno.setViewName("roles");
             
         }catch (Exception ex){
-            
+            System.out.println("Error " + ex);
         }
         
         return retorno;
     }
     
     @RequestMapping(value = "/guardar", method = RequestMethod.POST)
-    public @ResponseBody MensajeDTO guardar(@ModelAttribute("Rol") DatosDTO rolRecibido) {
+    public @ResponseBody MensajeDTO guardar(@ModelAttribute("Rol") Rol rolRecibido) {
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO retorno = new MensajeDTO();
         try{
@@ -91,7 +94,7 @@ public class RolController extends BaseController{
             }
             
             if(rolRecibido.getEmpresa() == null || rolRecibido.getEmpresa() != null
-                    && rolRecibido.getEmpresa().compareToIgnoreCase("") == 0){
+                    && rolRecibido.getEmpresa().getId() == null){
                 retorno.setError(true);
                 retorno.setMensaje("Debe seleccionar una empresa para el rol.");
                 return retorno;
@@ -101,22 +104,14 @@ public class RolController extends BaseController{
                 Rol rol = new Rol();
                 rol.setNombre(rolRecibido.getNombre());
                 rol.setActivo("S");
-                rol.setEmpresa(new Empresa(Long.valueOf(rolRecibido.getEmpresa())));
+                rol.setEmpresa(new Empresa(rolRecibido.getEmpresa().getId()));
                 rol.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                rol.setIdUsuarioCreacion(userDetail.getId());
                 rol.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 rolManager.save(rol);
                 retorno.setMensaje("El rol se creo exitosamente.");
                 return retorno;
-            }else{
-                Rol rol = rolManager.get(rolRecibido.getId());
-                rol.setNombre(rolRecibido.getNombre());
-                rol.setEmpresa(new Empresa(Long.valueOf(rolRecibido.getEmpresa())));
-                rolManager.update(rol);
-                retorno.setError(false);
-                retorno.setMensaje("El rol se modifico exitosamente.");
-                return retorno;
-            }      
-                
+            }
             
             
         }catch (Exception ex){
@@ -128,82 +123,136 @@ public class RolController extends BaseController{
         return retorno;
     }
     
+    
+    @RequestMapping(value = "/editar", method = RequestMethod.POST)
+    public @ResponseBody MensajeDTO editar(@ModelAttribute("Rol") Rol rolRecibido) {
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        MensajeDTO retorno = new MensajeDTO();
+        try{
+            inicializarRolManager();
+            
+            if(rolRecibido.getNombre() == null || rolRecibido.getNombre() != null
+                    && rolRecibido.getNombre().compareToIgnoreCase("") == 0){
+                retorno.setError(true);
+                retorno.setMensaje("El campo nombre no puede estar vacio.");
+                return retorno;
+            }
+            
+           
+
+            if(rolRecibido.getId() != null){
+               
+                Rol rol = rolManager.get(rolRecibido.getId());
+                rol.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                rol.setIdUsuarioModificacion(userDetail.getId());
+                rol.setNombre(rolRecibido.getNombre());
+                
+                rolManager.update(rol);
+                
+                retorno.setError(false);
+                retorno.setMensaje("El rol se modifico exitosamente.");
+                return retorno;
+            }      
+                
+            
+            
+        }catch (Exception ex){
+            System.out.println("Error " + ex);
+            retorno.setError(true);
+            retorno.setMensaje("Error al modificar el rol.");
+            
+        }
+        return retorno;
+    }
+    
     @RequestMapping(value = "/activar/{id}", method = RequestMethod.GET)
     public  @ResponseBody
     MensajeDTO activar(@PathVariable("id") Long id) {
-            MensajeDTO retorno = new MensajeDTO();
-            String nombre = "";
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
-            try {
+        MensajeDTO retorno = new MensajeDTO();
+        String nombre = "";
 
-                    inicializarRolManager();
+        try {
 
-                    Rol rol = rolManager.get(id);
+                inicializarRolManager();
 
-                    if (rol != null) {
-                            nombre = rol.getNombre().toString();
-                    }
+                Rol rol = rolManager.get(id);
 
-                    if (rol != null && rol.getActivo().toString()
-                                                    .compareToIgnoreCase("S") == 0) {
-                        retorno.setError(true);
-                        retorno.setMensaje("La empresa "+ nombre+" ya se encuentra activada.");
-                    }
-                    rol.setActivo("S");
-                    rol.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                    rol.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
-                    
-                    rolManager.update(rol);
+                if (rol != null) {
+                        nombre = rol.getNombre().toString();
+                }
 
-                    retorno.setError(false);
-                    retorno.setMensaje("El rol "+ nombre+" se activo exitosamente.");
-
-            } catch (Exception e) {
+                if (rol != null && rol.getActivo().toString()
+                                                .compareToIgnoreCase("S") == 0) {
                     retorno.setError(true);
-                    retorno.setMensaje("Error al tratar de activar el rol.");
-            }
+                    retorno.setMensaje("La empresa "+ nombre+" ya se encuentra activada.");
+                    return retorno;
+                }
+                
+                rol.setActivo("S");
+                rol.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                rol.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
+                rol.setIdUsuarioModificacion(userDetail.getId());
+                
+                rolManager.update(rol);
 
-            return retorno;
+                retorno.setError(false);
+                retorno.setMensaje("El rol "+ nombre+" se activo exitosamente.");
+
+        } catch (Exception e) {
+            System.out.println("Error " + e);
+            retorno.setError(true);
+            retorno.setMensaje("Error al tratar de activar el rol.");
+        }
+
+        return retorno;
 
     }
     
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO desactivar(@PathVariable("id") Long id,Model model) {
-            ModelAndView view = new ModelAndView();
-            MensajeDTO retorno = new MensajeDTO();
-            String nombre = "";
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
-            try {
+        ModelAndView view = new ModelAndView();
+        MensajeDTO retorno = new MensajeDTO();
+        String nombre = "";
 
-                    inicializarRolManager();
+        try {
 
-                    Rol rol = rolManager.get(id);
+            inicializarRolManager();
 
-                    if (rol != null) {
-                            nombre = rol.getNombre().toString();
-                    }
+            Rol rol = rolManager.get(id);
 
-                    if (rol != null && rol.getActivo().toString()
-                                                    .compareToIgnoreCase("N") == 0) {
-                        retorno.setError(true);
-                        retorno.setMensaje("El rol "+ nombre+" ya se encuentra desactivada.");
-                    }
-                    rol.setActivo("N");
-                    rol.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                    rol.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
-                    
-                    rolManager.update(rol);
-
-                    retorno.setError(false);
-                    retorno.setMensaje("El rol "+ nombre+" se desactivo exitosamente.");
-
-            } catch (Exception e) {
-                    retorno.setError(true);
-                    retorno.setMensaje("Error al tratar de desactivar el rol.");
+            if (rol != null) {
+                    nombre = rol.getNombre().toString();
             }
-            view = listarRoles(model);
-            return retorno;
+
+            if (rol != null && rol.getActivo().toString()
+                                            .compareToIgnoreCase("N") == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("El rol "+ nombre+" ya se encuentra desactivada.");
+                return retorno;
+            }
+
+            rol.setActivo("N");
+            rol.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            rol.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
+            rol.setIdUsuarioEliminacion(userDetail.getId());
+
+            rolManager.update(rol);
+
+            retorno.setError(false);
+            retorno.setMensaje("El rol "+ nombre+" se desactivo exitosamente.");
+
+        } catch (Exception e) {
+            System.out.println("Error " + e);
+            retorno.setError(true);
+            retorno.setMensaje("Error al tratar de desactivar el rol.");
+        }
+        view = listarRoles(model);
+        return retorno;
 
     }
     

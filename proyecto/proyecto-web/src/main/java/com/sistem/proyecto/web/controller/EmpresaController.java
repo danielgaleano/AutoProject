@@ -250,9 +250,9 @@ public class EmpresaController extends BaseController{
 
     }
     
-    @RequestMapping(value = "/{tipo}/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
     public @ResponseBody
-    ModelAndView editar(@PathVariable("id") Long id,@PathVariable("tipo") String tipo,Model model) {
+    ModelAndView editar(@PathVariable("id") Long id,Model model) {
             ModelAndView retorno = new ModelAndView();
             String nombre = "";
 
@@ -264,18 +264,36 @@ public class EmpresaController extends BaseController{
 					new Empresa(id), atributos.split(","), false, true);
 
                     model.addAttribute("empresa", empresa);
+                    model.addAttribute("editar", true);
                     
-                    if(tipo.compareToIgnoreCase("editar") == 0){
-                        model.addAttribute("editar", true);
-                        model.addAttribute("tipo", "Editar");
-                    }else{
-                        model.addAttribute("visualizar", true);
-                        model.addAttribute("tipo", "Visualizar");
-                    }
 
                     retorno.setViewName("empresa");
             } catch (Exception e) {
-                    
+                    System.out.println("Error" + e);
+            }
+
+            return retorno;
+
+    }
+    
+    @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    ModelAndView visualizar(@PathVariable("id") Long id,Model model) {
+            ModelAndView retorno = new ModelAndView();
+            String nombre = "";
+
+            try {
+                    inicializarEmpresaManager();
+
+                    Map<String, Object> empresa = empresaManager.getAtributos(
+					new Empresa(id), atributos.split(","), false, true);
+                   
+                    model.addAttribute("editar", false);
+                    model.addAttribute("empresa", empresa);
+                    retorno.setViewName("empresa");
+            } catch (Exception e) {
+                 
+                System.out.println("Error" + e);   
             }
 
             return retorno;

@@ -29,7 +29,7 @@
                   </h3>
                     
                   <div class="widget-toolbar no-border">
-                      <a id="botonEditar" th:if="!${editar} and ${usuario} != null" th:href="@{'/usuarios/editar/'+${usuario.id}}" class="btn btn-primary bigger" role="button">Editar</a>
+                      <a sec:authorize="hasRole('Usuario.Editar')" id="botonEditar" th:if="!${editar} and ${usuario} != null" th:href="@{'/usuarios/editar/'+${usuario.id}}" class="btn btn-primary bigger" role="button">Editar</a>
                       <a th:href="@{/usuarios}" class="btn btn-primary btn-light bigger" role="button">
                           <i class="ace-icon fa fa-arrow-left"></i>
                           Volver

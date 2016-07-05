@@ -18,7 +18,7 @@ $(document).ready(function(data) {
         deleteButton: permisoDesactivar,
         activarButton:permisoActivar,
         visualizarButton:permisoVisualizar,
-        editarFormButton:true,
+        editarFormButton:permisoEditar,
         editButton:false,
         asignarButton:true,
         columns: {

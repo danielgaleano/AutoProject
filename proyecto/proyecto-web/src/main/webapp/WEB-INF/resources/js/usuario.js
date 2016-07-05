@@ -157,7 +157,7 @@ $(document).ready(function(data) {
 	});
     
     
-    $("#botonEditar").hide();
+ //   $("#botonEditar").hide();
 //    if(editar){
 //        $('h1').append('Editar Usuario');
 //        $('input[id="idUsuario"]').val(usuario.id);

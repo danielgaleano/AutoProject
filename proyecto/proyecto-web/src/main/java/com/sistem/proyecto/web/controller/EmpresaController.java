@@ -171,7 +171,7 @@ public class EmpresaController extends BaseController{
            return mensaje;
    }
    
-    @RequestMapping(value = "/{id}/desactivar", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.DELETE)
     public @ResponseBody
     MensajeDTO desactivar(@PathVariable("id") Long id) {
             MensajeDTO retorno = new MensajeDTO();
@@ -211,7 +211,7 @@ public class EmpresaController extends BaseController{
 
     }
     
-    @RequestMapping(value = "/{id}/activar", method = RequestMethod.GET)
+    @RequestMapping(value = "/activar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO activar(@PathVariable("id") Long id) {
             MensajeDTO retorno = new MensajeDTO();
@@ -250,7 +250,7 @@ public class EmpresaController extends BaseController{
 
     }
     
-    @RequestMapping(value = "/{id}/{tipo}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{tipo}/{id}", method = RequestMethod.GET)
     public @ResponseBody
     ModelAndView editar(@PathVariable("id") Long id,@PathVariable("tipo") String tipo,Model model) {
             ModelAndView retorno = new ModelAndView();

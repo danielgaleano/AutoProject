@@ -35,7 +35,7 @@ if (typeof jQuery === 'undefined') {
             titleAsignar: '',
             toolbarClass: 'btn-toolbar',
             groupClass: 'btn-group btn-group-sm',
-            dangerClass: 'danger',
+            dangerClass: 'alert alert-danger',
             warningClass: 'warning',
             mutedClass: 'text-muted',
             mensajeErrorClass:'alert alert-danger alert-dismissible fade in',
@@ -502,6 +502,7 @@ if (typeof jQuery === 'undefined') {
                 }
                 // Add "edit" class and remove "view" class in td element.
                 $(td).addClass('tabledit-edit-mode').removeClass('tabledit-view-mode');
+                
                 // Update toolbar buttons.
                 if (settings.editButton) {
                     $tr.find('button.tabledit-edit-button').addClass('active');
@@ -517,11 +518,15 @@ if (typeof jQuery === 'undefined') {
          */
         var Edit = {
             reset: function(td) {
+                console.log('Editar Botonn');
+                
+                
                 $(td).each(function() {
                     // Get input element.
                     var $input = $(this).find('.tabledit-input');
                     // Get span text.
                     var text = $(this).find('.tabledit-span').text().trim();
+                    
                     // Set input/select value with span text.
                     if ($input.is('select')) {
                         $input.find('option').filter(function() {
@@ -536,12 +541,13 @@ if (typeof jQuery === 'undefined') {
             },
             submit: function(td) {
                 // Send AJAX request to server.
+                
                 var ajaxResult = ajax(settings.buttons.edit.action);
 
                 if (ajaxResult === false) {
                     return;
                 }
-
+                
                 $(td).each(function() {
                     // Get input element.
                     var $input = $(this).find('.tabledit-input');
@@ -1186,11 +1192,21 @@ if (typeof jQuery === 'undefined') {
 
                     // Get current state before reset to view mode.
                     var activated = $button.hasClass('active');
+                    
+                    var td = $(this).parents('td');
+ 
+                    $(td).find('.tabledit-delete-button').show();               
+                    $(td).find('.tabledit-asignar-button').show();
+                    $(td).find('.tabledit-visualizar-button').show();
 
                     // Change to view mode columns that are in edit mode.
                     Edit.reset($table.find('td.tabledit-edit-mode'));
 
                     if (!activated) {
+                        
+                        $(td).find('.tabledit-delete-button').hide();               
+                        $(td).find('.tabledit-asignar-button').hide();
+                        $(td).find('.tabledit-visualizar-button').hide();
                         // Change to edit mode for all columns in reverse way.
                         $($button.parents('tr').find('td.tabledit-view-mode').get().reverse()).each(function() {
                             Mode.edit(this);
@@ -1209,10 +1225,15 @@ if (typeof jQuery === 'undefined') {
             $table.on('click', 'button.tabledit-save-button', function(event) {
                 if (event.handled !== true) {
                     event.preventDefault();
+                    var td = $(this).parents('td');
 
                     // Submit and update all columns.
                     Edit.submit($(this).parents('tr').find('td.tabledit-edit-mode'));
-
+                    
+                    $(td).find('.tabledit-delete-button').show();               
+                    $(td).find('.tabledit-asignar-button').show();
+                    $(td).find('.tabledit-visualizar-button').show();
+                    
                     event.handled = true;
                 }
             });

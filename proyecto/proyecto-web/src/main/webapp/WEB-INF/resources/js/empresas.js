@@ -1,59 +1,103 @@
 
-function desactivar(data) {
-        $.ajax({
-        type:'DELETE',
-        url: CONTEXT_ROOT+'/empresas/'+data+'/desactivar', 
-        success: function(data){ 
-            location.reload();
-            if(data.error == true){
-                
-                $('#mensaje').before('<div class="alert alert-danger alert-dismissible fade in">'
-                                    + '<button type="button" class="close" data-dismiss="alert"'
-                                    +'aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                                    +'<strong>Error! </strong>'
-                                    + data.menasje
-                                    + '</div>');
+$(document).ready(function(data) { 
+    
+  var permisoActivar = parseBolean($(this).find('.tablactivate-permiso').text());
+  var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
+  var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
+  var permisoVisualizar = parseBolean($(this).find('.tablvisualizar-permiso').text());
 
-            }else{
-                $('#mensaje').before('<div class="alert alert-block alert-success">'
-                                    + '<button type="button" class="close" data-dismiss="alert"'
-                                    +'aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                                    +'<strong class="green">Exito! </strong>'
-                                    + data.menasje
-                                    + '</div>');
-            }
+  $('#example1').Tabledit({
+        url: CONTEXT_ROOT+'/roles/guardar',
+        urlDelete: CONTEXT_ROOT+'/empresas/desactivar/',
+        urlActivate: CONTEXT_ROOT+'/empresas/activar/',
+        urlVisualizar: CONTEXT_ROOT+'/empresas/visualizar',
+        urlEditar: CONTEXT_ROOT+'/empresas/editar',
+        urlAsignar: CONTEXT_ROOT,
+        tableId:'example1',
+        titleAsignar:'Asignar Rol',
+        isStatus:true,
+        deleteButton: permisoDesactivar,
+        activarButton:permisoActivar,
+        visualizarButton:permisoVisualizar,
+        editarFormButton:permisoEditar,
+        editButton:false,
+        asignarButton:false,
+        columns: {
+            identifier: [0, 'id'],
+            editable: []
         },
-        async: false
-    });
+         onDraw: function() {
+            console.log('onDraw()');
+        },
+        onSuccess: function(data, textStatus, jqXHR) {
+
+            console.log('onSuccess(data, textStatus, jqXHR)');
+            console.log(data);
+            console.log(textStatus);
+            console.log(jqXHR);
+        },
+        onFail: function(jqXHR, textStatus, errorThrown) {
+            console.log('onFail(jqXHR, textStatus, errorThrown)');
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
+        },
+        onAlways: function() {
+            console.log('onAlways()');
+        },
+        onAjax: function(action, serialize) {
+            console.log('onAjax(action, serialize)');
+            console.log(action);
+            console.log(serialize);
+        }
+
+    }); 
+    
+    $('#example1').DataTable( {
+        "order": [[ 0, "asc" ]],
+        "pageLength": 10,
+        "autoWidth": false,
+
+        "language": {
+            "lengthMenu": "Mostrar _MENU_ resultados por pagina",
+            "zeroRecords": "No se encontraron resultados",
+            "info": "Pagina _PAGE_ de _PAGES_",
+            "infoEmpty": "No hay resultados disponibles",
+            "infoFiltered": "(filtrado de un total de _MAX_ )",
+            "search": "Buscar:"
+        }
+    } );  
+});
+
+
+
+function parseBolean(val){
+    if(val.toLowerCase() === 'true'){
+        return true;
+    }else if (val.toLowerCase() === 'false' || val.toLowerCase() === ''){
+        return false;
+    }
 
 }
-
-function activar(data) {
-        $.ajax({
-        type:'GET',
-        url: CONTEXT_ROOT+'/empresas/'+data+'/activar', 
-        success: function(data){ 
-            if(data.error == true){
-                location.reload();
-                $('#mensaje').before('<div class="alert alert-danger alert-dismissible fade in">'
-                                    + '<button type="button" class="close" data-dismiss="alert"'
-                                    +'aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                                    +'<strong>Error! </strong>'
-                                    + data.menasje
-                                    + '</div>');
-
-            }else{
-                location.reload();
-                $('#mensaje').before('<div class="alert alert-info alert-dismissible fade in">'
-                                    + '<button type="button" class="close" data-dismiss="alert"'
-                                    +'aria-label="Close"><span aria-hidden="true">&times;</span></button>'
-                                    +'<strong>Exito! </strong>'
-                                    + data.menasje
-                                    + '</div>');
-            }
-         },
-        async: false
-    });
+            
 
 
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

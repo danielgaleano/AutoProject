@@ -80,7 +80,7 @@ public class SpringMvcContext extends WebMvcConfigurerAdapter{
     @Bean(name ="templateResolver")	
     public ServletContextTemplateResolver getTemplateResolver() {
     	ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver();
-    	templateResolver.setPrefix("/WEB-INF/resources/jsp/");
+    	templateResolver.setPrefix("/WEB-INF/resources/html/");
     	templateResolver.setSuffix(".html");
     	templateResolver.setTemplateMode("XHTML");
         templateResolver.setCharacterEncoding("utf-8");

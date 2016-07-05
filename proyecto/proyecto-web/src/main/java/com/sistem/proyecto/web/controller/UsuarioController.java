@@ -495,4 +495,36 @@ public class UsuarioController extends BaseController{
             return retorno;
 
     }
+    
+    @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    ModelAndView visualizar(@PathVariable("id") Long id,Model model) {
+            ModelAndView retorno = new ModelAndView();
+            String nombre = "";
+
+            try {
+
+                    inicializarUsuarioManager();
+                    inicializarEmpresaManager();
+
+                    Map<String, Object> usuario = usuarioManager.getAtributos(
+					new Usuario(id), atributos.split(","), false, true);
+                    usuario.put("idEmpresa", Long.parseLong(usuario.get("empresa.id").toString()));
+                    
+                    List<Map<String, Object>> listMapEmpresas = empresaManager.listAtributos(new Empresa(), "id,nombre".split(","), true);
+                    model.addAttribute("empresas", listMapEmpresas);
+                    
+                    model.addAttribute("usuario", usuario);
+                   
+                    model.addAttribute("editar", false);
+                    
+                    retorno.setViewName("usuario");
+            } catch (Exception e) {
+                 
+                System.out.println("Error" + e);   
+            }
+
+            return retorno;
+
+    }
 }

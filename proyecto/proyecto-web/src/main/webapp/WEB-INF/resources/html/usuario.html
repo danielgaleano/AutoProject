@@ -16,24 +16,25 @@
 <body >
     <nav th:replace="include/navbar :: navbar"></nav>
     <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      
-      <ol class="breadcrumb">
-        <a id="botonEditar" th:if="${tipo} == 'Visualizar'" th:href="@{'/usuarios/'+${usuario.id}+'/editar'}" class="btn btn-primary" role="button">Editar</a>
-        <a th:href="@{/usuarios}" class="btn btn-primary" role="button">Volver</a>
-      </ol>
-    </section> 
+    <!-- Content Header (Page header) --> 
     <!-- Main content -->
     <section class="content">
             <div class="box box-info">
                 <div id="mensaje"/> 
-                <div class="box-header with-border">
-                  <h3 class="box-title">
+                <div class="widget-header widget-header-flat widget-header-large">
+                  <h3 class="widget-title">
                       <span th:if="${usuario} == null" class="middle">Crear Usuario</span>
                       <span th:if="${editar}" class="middle">Editar Usuario</span>
                       <span th:if="!${editar} and ${usuario} != null" class="middle">Visualizar Usuario</span>
                   </h3>
+                    
+                  <div class="widget-toolbar no-border">
+                      <a id="botonEditar" th:if="!${editar} and ${usuario} != null" th:href="@{'/usuarios/editar/'+${usuario.id}}" class="btn btn-primary bigger" role="button">Editar</a>
+                      <a th:href="@{/usuarios}" class="btn btn-primary btn-light bigger" role="button">
+                          <i class="ace-icon fa fa-arrow-left"></i>
+                          Volver
+                      </a>                 
+                  </div>   
                 </div>
                 <!-- <form:input path="fichero" type="file" class="hidden" />
                 <form:input path="nuevoFichero" type="boolean" class="hidden" /> -->
@@ -52,7 +53,7 @@
                                                  <img th:if="${usuario} != null" id="imgPortada" style="width: 200px; height: auto" th:src="@{'/obtenerImagen/usuario/'+${usuario.id}}" alt="Seleccione una nueva imagen"/>
                                                  
                                                  <div class="caption">
-                                                   <a class="btn btn-warning boton-imagen" role="button" data-campo="imagenPort" data-ancho="200" data-alto="400" data-img="imgPortada">Elegir imagen</a>
+                                                   <a th:if="${editar} and ${usuario} != null or ${usuario} == null" class="btn btn-warning boton-imagen" role="button" data-campo="imagenPort" data-ancho="200" data-alto="400" data-img="imgPortada">Elegir imagen</a>
                                                    <input class="form-control tableusuario-input hidden" name="imagenPortInput" id="imagenPortInput" type="file"/>
                                                  </div>
                                                </div>
@@ -99,20 +100,23 @@
                                         <div class="form-group"><label class="col-lg-2 control-label">Contraseña</label>
                                             <div class="col-lg-6">
                                                 <input th:if="${usuario} == null" id="claveAcceso" name="claveAcceso" type="password" placeholder="Contraseña" class="form-control tableusuario-input input-large"/> 
-                                                <input th:if="${usuario} != null" th:value="${usuario.claveAcceso}" id="claveAcceso" name="claveAcceso" type="password" placeholder="Contraseña" class="form-control tableusuario-input input-large"/> 
+                                                <input th:if="!${editar} and ${usuario} != null" disabled="disabled" th:value="${usuario.claveAcceso}" id="claveAcceso" name="claveAcceso" type="password" placeholder="Contraseña" class="form-control tableusuario-input input-large"/> 
+                                                <input th:if="${editar} and ${usuario} != null"  th:value="${usuario.claveAcceso}" id="claveAcceso" name="claveAcceso" type="password" placeholder="Contraseña" class="form-control tableusuario-input input-large"/> 
                                             </div>
                                         </div>
                                         <div class="form-group"><label class="col-lg-2 control-label">Nombre</label>
                                             <div class="col-lg-6">
                                                 <input th:if="${usuario} == null" id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input input-xlarge"/> 
-                                                <input th:if="${usuario} != null" th:value="${usuario.nombre}" id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input input-xlarge"/>                                                 
+                                                <input th:if="${editar} and ${usuario} != null" th:value="${usuario.nombre}" id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input input-xlarge"/>
+                                                <input th:if="!${editar} and ${usuario} != null" disabled="disabled" th:value="${usuario.nombre}" id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input input-xlarge"/>
                                             </div>
                                         </div>
                                         
                                         <div class="form-group"><label class="col-lg-2 control-label">Apellido</label>
                                             <div class="col-lg-6">
                                                 <input th:if="${usuario} == null" id="apellido" name="apellido" type="text" placeholder="Apellido" class="form-control tableusuario-input input-xlarge"/> 
-                                                <input th:if="${usuario} != null" th:value="${usuario.apellido}" id="apellido" name="apellido" type="text" placeholder="Apellido" class="form-control tableusuario-input input-xlarge"/> 
+                                                <input th:if="${editar} and ${usuario} != null" th:value="${usuario.apellido}" id="apellido" name="apellido" type="text" placeholder="Apellido" class="form-control tableusuario-input input-xlarge"/>
+                                                <input th:if="!${editar} and ${usuario} != null" disabled="disabled" th:value="${usuario.apellido}" id="apellido" name="apellido" type="text" placeholder="Apellido" class="form-control tableusuario-input input-xlarge"/>
                                             </div>
                                         </div>
                                         
@@ -123,25 +127,29 @@
                                                 <div class="form-group"><label class="col-lg-2 control-label">Telefono</label>
                                                     <div class="col-lg-6">
                                                         <input th:if="${usuario} == null" id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999) 999 999'" class="form-control tableusuario-input input-large"/> 
-                                                        <input th:if="${usuario} != null" th:value="${usuario.telefono}" id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999) 999 999'" class="form-control tableusuario-input input-large"/>                                                        
+                                                        <input th:if="${editar} and ${usuario} != null" th:value="${usuario.telefono}" id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999) 999 999'" class="form-control tableusuario-input input-large"/>
+                                                        <input th:if="!${editar} and ${usuario} != null" disabled="disabled" th:value="${usuario.telefono}" id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999) 999 999'" class="form-control tableusuario-input input-large"/>
                                                     </div>
                                                 </div>
                                                 <div class="form-group"><label class="col-lg-2 control-label">Telefono Movil</label>
                                                     <div class="col-lg-6">
                                                         <input th:if="${usuario} == null" id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '0\\999 999 999'" class="form-control tableusuario-input input-large" /> 
-                                                        <input th:if="${usuario} != null" th:value="${usuario.telefonoMovil}" id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '0\\999 999 999'" class="form-control tableusuario-input input-large" />                                                        
+                                                        <input th:if="${editar} and ${usuario} != null" th:value="${usuario.telefonoMovil}" id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '0\\999 999 999'" class="form-control tableusuario-input input-large" />
+                                                        <input th:if="!${editar} and ${usuario} != null" disabled="disabled" th:value="${usuario.telefonoMovil}" id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '0\\999 999 999'" class="form-control tableusuario-input input-large" />
                                                     </div>
                                                 </div>
                                                 <div class="form-group"><label class="col-lg-2 control-label">Direccion</label>
                                                     <div class="col-lg-6">
                                                         <input th:if="${usuario} == null" id="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input input-xlarge" /> 
-                                                        <input th:if="${usuario} != null" th:value="${usuario.direccion}" id="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input input-xlarge" />                                                         
+                                                        <input th:if="${editar} and ${usuario} != null" th:value="${usuario.direccion}" id="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input input-xlarge" />
+                                                        <input th:if="!${editar} and ${usuario} != null" disabled="disabled" th:value="${usuario.direccion}" id="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input input-xlarge" />
                                                     </div>
                                                 </div>
                                                 <div class="form-group"><label class="col-lg-2 control-label">Email</label>
                                                     <div class="col-lg-6">
                                                         <input th:if="${usuario} == null" id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input input-xlarge"/> 
-                                                        <input th:if="${usuario} != null" th:value="${usuario.email}" id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input input-xlarge"/>                                                         
+                                                        <input th:if="${editar} and ${usuario} != null" th:value="${usuario.email}" id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input input-xlarge"/> 
+                                                        <input th:if="!${editar} and ${usuario} != null" disabled="disabled" th:value="${usuario.email}" id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input input-xlarge"/> 
                                                     </div>
                                                 </div>
 
@@ -172,7 +180,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group" th:if="${editar} and ${usuario} != null or ${usuario} == null">
                                                 <div class="col-md-offset-3 col-md-9">
                                                     <button id="aceptar" class="btn btn-primary" type="submit">Guardar</button>
                                                         &nbsp; &nbsp; &nbsp;

@@ -24,9 +24,10 @@
                 <small>Lista de usuarios del sistema.</small>
             </h1>
             <ol class="breadcrumb">
-                <a href="usuarios/crear" class="btn btn-primary btn-sm" role="button">Crear</a>
+                <a href="usuarios/crear" class="btn btn-primary" role="button">Crear</a>
             </ol>
         </section>
+        <hr/>
         <!-- Main content -->
         <section class="content">
             <div class="row">
@@ -57,31 +58,31 @@
                                            
                                             <td class="tabledit-view-mode">
                                                 <span  style="display: inline;"  th:text="${usuario.nombre}"></span>
-                                                <input class="tabledit-input form-control input-sm" type="text" th:name="nombre" th:value="${usuario.nombre}" style="display: none;" disabled=""/>
+                                                <!-- <input class="tabledit-input form-control input-sm" type="text" th:name="nombre" th:value="${usuario.nombre}" style="display: none;" disabled=""/> -->
                                             </td>
                                             <td class="tabledit-view-mode">
                                                 <span  style="display: inline;"  th:text="${usuario.apellido}"></span>
-                                                <input class="tabledit-input form-control input-sm" type="text" th:name="apellido" th:value="${usuario.apellido}" style="display: none;" disabled=""/>
+                                                <!-- <input class="tabledit-input form-control input-sm" type="text" th:name="apellido" th:value="${usuario.apellido}" style="display: none;" disabled=""/> -->
                                             </td>
                                             <td class="tabledit-view-mode">
                                                 <span  style="display: inline;"  th:text="${usuario.documento}"></span>
-                                                <input class="tabledit-input form-control input-sm" type="text" th:name="documento" th:value="${usuario.documento}" style="display: none;" disabled=""/>
+                                                <!-- <input class="tabledit-input form-control input-sm" type="text" th:name="documento" th:value="${usuario.documento}" style="display: none;" disabled=""/> -->
                                             </td>
                                             <td class="tabledit-view-mode">
                                                 <span  style="display: inline;"  th:text="${usuario.direccion}"></span>
-                                                <input class="tabledit-input form-control input-sm" type="text" th:name="direccion" th:value="${usuario.direccion}" style="display: none;" disabled=""/>
+                                                <!-- <input class="tabledit-input form-control input-sm" type="text" th:name="direccion" th:value="${usuario.direccion}" style="display: none;" disabled=""/> -->
                                             </td>
                                             <td class="tabledit-view-mode">
                                                 <span  style="display: inline;"  th:text="${usuario.telefono}"></span>
-                                                <input class="tabledit-input form-control input-sm" type="text" th:name="telefono" th:value="${usuario.telefono}" style="display: none;" disabled=""/>
+                                                <!-- <input class="tabledit-input form-control input-sm" type="text" th:name="telefono" th:value="${usuario.telefono}" style="display: none;" disabled=""/> -->
                                             </td>
                                             <td class="tabledit-view-mode">
                                                 <span  style="display: inline;"  th:text="${usuario.empresaNombre}"></span>
-                                                <input class="tabledit-input form-control input-sm" type="text" th:name="empresaNombre" th:value="${usuario.empresaNombre}" style="display: none;" disabled=""/>
+                                                <!-- <input class="tabledit-input form-control input-sm" type="text" th:name="empresaNombre" th:value="${usuario.empresaNombre}" style="display: none;" disabled=""/> -->
                                             </td>
                                             <td class="tabledit-view-mode">
                                                 <span  style="display: inline;"  th:text="${usuario.rolNombre}"></span>
-                                                <input class="tabledit-input form-control input-sm" type="text" th:name="rolNombre" th:value="${usuario.rolNombre}" style="display: none;" disabled=""/>
+                                                <!-- <input class="tabledit-input form-control input-sm" type="text" th:name="rolNombre" th:value="${usuario.rolNombre}" style="display: none;" disabled=""/> -->
                                             </td>            
                                             <td class="tabledit-estado">
                                                 <span class="table-estado label label-success" th:if="${usuario.activo} == 'S'"  th:value="S" th:text="Activo"/>

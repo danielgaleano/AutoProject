@@ -7,7 +7,9 @@ $('#imgPortada').on('error', function(){
 
 $(document).ready(function(data) {
     $(":input").inputmask();
-    
+    $("#documento").inputmask("Regex", {
+        regex:"^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$"
+    });
     $('.boton-imagen').on('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -31,20 +33,28 @@ $(document).ready(function(data) {
         });
       });
    
+    $.validator.addMethod("regx", function(value, element, regexpr) {          
+        return regexpr.test(value);
+    }, "Debe ingresar un número de ruc válido!");
+
     $('#validation-form').validate({
 		errorElement: 'span',
 		errorClass: 'help-inline',
 		focusInvalid: false,
 		rules: {
 			documento: {
-				required: true
+				required: true,
+                //expresion regular para validar el documento
+                regx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$/,
+                minlength: 5,
+                maxlength: 10
 			},
 			alias: {
 				required: true
 			},
 			contrasena: {
 				required: true,
-                                minlength:5
+                minlength:5
 			},
 			nombre: {
 				required: true
@@ -57,26 +67,29 @@ $(document).ready(function(data) {
 			},
 			email: {
 				required: true,
-                                email:true
+                email:true
 			}
 		},
 		messages: {			
-			documento: "Favor ingresar numero de documento!",
+			documento: "Favor ingresar número de documento!",
 			alias: "Debe ingresar un alias para el usuario!",
-                        contrasena: {
+            contrasena: {
 				required: "Debe ingresar una contraseña para el usuario!",
-                                minlength: "Longitud minima de 5 caracteres!"
+                minlength: "Longitud mínima de 5 caracteres!"
 			},
 			nombre: "Debe ingresar nombre del usuario!",
 			apellido: "Debe ingresar apellido del usuario!",
-			telefono: "Debe ingresar numero de telefono del usuario!",
+			telefono: "Debe ingresar número de telefono del usuario!",
 			email: "Favor ingresar un email valido!"
 		},
 		invalidHandler: function (event, validator) { //display error alert on form submit   
 			$('.alert-error', $('.login-form')).show();
 		},
-		highlight: function (e) {
-			$(e).closest('.form-group').removeClass('has-info').addClass('has-error');
+		highlight: function (element) {
+            var id_attr = "#" + $( element ).attr("id") + "1";
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+            $(id_attr).removeClass('glyphicon-ok').addClass('glyphicon-remove');
+			//$(e).closest('.form-group').removeClass('has-info').addClass('has-error');
 		},
 		success: function (e) {
 			$(e).closest('.form-group').removeClass('has-error').addClass('has-info');
@@ -93,6 +106,11 @@ $(document).ready(function(data) {
 			}
 			else error.insertAfter(element);
 		},
+        unhighlight: function(element) {
+            var id_attr = "#" + $( element ).attr("id") + "1";
+            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+            $(id_attr).removeClass('glyphicon-remove').addClass('glyphicon-ok');         
+        },
 		submitHandler: function (form) {
                     console.log("exitoooo");
                     var $form = $('#validation-form');
@@ -100,17 +118,17 @@ $(document).ready(function(data) {
                     if(usuario == null ){
                         var jqXHR = $.post(CONTEXT_ROOT+'/usuarios/guardar', serialize, function(data, textStatus, jqXHR) {
                             if(data.error){
-                                $('#mensaje').append('<div class="alert alert-error">'
+                                $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                     + '<button class="close" data-dismiss="alert" type="button"'
                                     +'><i class="fa  fa-remove"></i></button>'
-                                    +'<strong>Error! </strong>'
+                                    +'<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
                                     + data.mensaje
                                     + '</div>');
                             }else{
-                                $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
                                     + '<button type="button" class="close" data-dismiss="alert"'
                                     +'aria-label="Close"><i class="fa  fa-remove"></i></button>'
-                                    +'<strong>Exito! </strong>'
+                                    +'<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
                                     + data.mensaje
                                     + '</div>');
                                 setTimeout(function() {
@@ -127,17 +145,17 @@ $(document).ready(function(data) {
                     }else{
                         var jqXHR = $.post(CONTEXT_ROOT+'/usuarios/editar', serialize, function(data, textStatus, jqXHR) {
                             if(data.error){
-                                $('#mensaje').append('<div class="alert alert-error">'
+                                $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                     + '<button class="close" data-dismiss="alert" type="button"'
                                     +'><i class="fa  fa-remove"></i></button>'
-                                    +'<strong>Error! </strong>'
+                                    +'<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
                                     + data.mensaje
                                     + '</div>');
                             }else{
-                                $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
                                     + '<button type="button" class="close" data-dismiss="alert"'
                                     +'aria-label="Close"><i class="fa  fa-remove"></i></button>'
-                                    +'<strong>Exito! </strong>'
+                                    +'<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
                                     + data.mensaje
                                     + '</div>');
                                 setTimeout(function() {

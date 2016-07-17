@@ -1,8 +1,9 @@
 
 $(document).ready(function(data) {
-    
     $(":input").inputmask();
-    
+    $("#ruc").inputmask("Regex", {
+        regex:"^[0-9]{5}[0-9]?[0-9]?[0-9]?-[0-9]$"
+    });
     $('.boton-imagen').on('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -26,13 +27,22 @@ $(document).ready(function(data) {
         });
       });
     
+
+    $.validator.addMethod("regx", function(value, element, regexpr) {          
+        return regexpr.test(value);
+    }, "Debe ingresar un número de ruc válido!");
+
     $('#validation-form').validate({
 		errorElement: 'span',
 		errorClass: 'help-inline',
 		focusInvalid: false,
 		rules: {
 			ruc: {
-				required: true
+				required: true,
+                //expresion regular para validar el ruc
+                regx: /^[0-9]{5}[0-9]?[0-9]?[0-9]?-[0-9]$/,
+                minlength: 7,
+                maxlength: 10
 			},			
 			nombre: {
 				required: true
@@ -40,35 +50,37 @@ $(document).ready(function(data) {
 			direccion: {
 				required: true
 			},
-			telefono: {
+			/*telefono: {
 				required: true
-			},
+			},*/
 			email: {
 				required: true,
-                                email:true
+                email:true
 			},
 			nombreContacto: {
 				required: true
-			},
+			}/*,
 			telefonoContacto: {
 				required: true
-			}
+			}*/
 		},
 		messages: {			
-			ruc: "Favor ingresar numero de ruc!",
-                        nombre: "Debe ingresar nombre de la empresa!",
-			alias: "Debe ingresar un alias para el usuario!",                        			
-			direccion: "Debe ingresar direccion de la empresa!",
-			telefono: "Debe ingresar numero de telefono del usuario!",
-			email: "Favor ingresar un email valido!",
-                        nombreContacto: "Debe ingresar nombre del contacto!",
-                        telefonoContacto: "Debe ingresar telefono del contacto!"
+			ruc: "Debe ingresar un número de ruc!",
+            nombre: "Debe ingresar un nombre!",	                        			
+			direccion: "Debe ingresar una dirección!",
+			/*telefono: "Debe ingresar un número de telefono!",*/
+			email: "Debe ingresar un email válido!",
+            nombreContacto: "Debe ingresar nombre del contacto!"/*,
+            telefonoContacto: "Debe ingresar teléfono del contacto!"*/
 		},
 		invalidHandler: function (event, validator) { //display error alert on form submit   
 			$('.alert-error', $('.login-form')).show();
 		},
-		highlight: function (e) {
-			$(e).closest('.form-group').removeClass('has-info').addClass('has-error');
+		highlight: function (element) {
+            var id_attr = "#" + $( element ).attr("id") + "1";
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+            $(id_attr).removeClass('glyphicon-ok').addClass('glyphicon-remove');
+			//$(e).closest('.form-group').removeClass('has-info').addClass('has-error');
 		},
 		success: function (e) {
 			$(e).closest('.form-group').removeClass('has-error').addClass('has-info');
@@ -85,24 +97,35 @@ $(document).ready(function(data) {
 			}
 			else error.insertAfter(element);
 		},
+        /*highlight: function(element) {
+            var id_attr = "#" + $( element ).attr("id") + "1";
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+            $(id_attr).removeClass('glyphicon-ok').addClass('glyphicon-remove');         
+        },*/
+        unhighlight: function(element) {
+            var id_attr = "#" + $( element ).attr("id") + "1";
+            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+            $(id_attr).removeClass('glyphicon-remove').addClass('glyphicon-ok');         
+        },
 		submitHandler: function (form) {
                     console.log("exitoooo");
+
                     var $form = $('#validation-form');
                     var serialize = $form.find('.table-empresa-input').serialize();
                     if(empresa == null ){
                         var jqXHR = $.post(CONTEXT_ROOT+'/empresas/guardar', serialize, function(data, textStatus, jqXHR) {
                             if(data.error){
-                                $('#mensaje').append('<div class="alert alert-error">'
+                                $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                     + '<button class="close" data-dismiss="alert" type="button"'
                                     +'><i class="fa  fa-remove"></i></button>'
-                                    +'<strong>Error! </strong>'
+                                    +'<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
                                     + data.mensaje
                                     + '</div>');
                             }else{
-                                $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
                                     + '<button type="button" class="close" data-dismiss="alert"'
                                     +'aria-label="Close"><i class="fa  fa-remove"></i></button>'
-                                    +'<strong>Exito! </strong>'
+                                    +'<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
                                     + data.mensaje
                                     + '</div>');
                                 setTimeout(function() {
@@ -119,17 +142,17 @@ $(document).ready(function(data) {
                     }else{
                         var jqXHR = $.post(CONTEXT_ROOT+'/empresas/editar', serialize, function(data, textStatus, jqXHR) {
                             if(data.error){
-                                $('#mensaje').append('<div class="alert alert-error">'
+                                $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                     + '<button class="close" data-dismiss="alert" type="button"'
                                     +'><i class="fa  fa-remove"></i></button>'
-                                    +'<strong>Error! </strong>'
+                                    +'<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
                                     + data.mensaje
                                     + '</div>');
                             }else{
-                                $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
                                     + '<button type="button" class="close" data-dismiss="alert"'
                                     +'aria-label="Close"><i class="fa  fa-remove"></i></button>'
-                                    +'<strong>Exito! </strong>'
+                                    +'<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
                                     + data.mensaje
                                     + '</div>');
                                 setTimeout(function() {

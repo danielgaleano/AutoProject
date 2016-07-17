@@ -1,3 +1,9 @@
-.form-horizontal .has-feedback .form-control-feedback {
-	right:0px;
+.has-error .form-control-feedback {
+    right: 15px;
+}
+.has-success .form-control-feedback {
+    right: 15px;
+}
+.form-control-feedback {
+    right: 15px;
 }

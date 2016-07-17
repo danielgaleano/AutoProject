@@ -6,7 +6,10 @@
 package com.sistem.proyecto.web.controller;
 
 import com.sistem.proyecto.entity.Empresa;
+import com.sistem.proyecto.entity.Imagen;
+import com.sistem.proyecto.entity.Usuario;
 import com.sistem.proyecto.userDetail.UserDetail;
+import com.sistem.proyecto.utils.Base64Bytes;
 import com.sistem.proyecto.utils.MensajeDTO;
 import java.sql.Timestamp;
 import java.util.List;
@@ -71,7 +74,7 @@ public class EmpresaController extends BaseController{
        Empresa ejEmpresa = new Empresa();
        try{
            inicializarEmpresaManager();
-           
+           inicializarImagenManager();
            if(empresaRecibido != null && (empresaRecibido.getRuc()== null 
                    || empresaRecibido.getRuc().compareToIgnoreCase("") == 0) ){
                 mensaje.setError(true);
@@ -107,58 +110,56 @@ public class EmpresaController extends BaseController{
                 return mensaje;
            }
            
-           if(empresaRecibido != null && empresaRecibido.getRuc() != null){
-               ejEmpresa.setRuc(empresaRecibido.getRuc());
+           Imagen imagenP = null;
+           
+           String imagenPortada = empresaRecibido.getImagenPort();
+           
+           ejEmpresa.setRuc(empresaRecibido.getRuc());
                
-               ejEmpresa = empresaManager.get(ejEmpresa);
-               if(ejEmpresa != null){
-                   mensaje.setError(true);
-                   mensaje.setMensaje("El numero de ruc ya se encuentra registrado.");
-                   return mensaje;
-               }else{
-                    ejEmpresa = new Empresa();
-                    ejEmpresa.setActivo("S");
-                    ejEmpresa.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                    ejEmpresa.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                    ejEmpresa.setDescripcion(empresaRecibido.getDescripcion());
-                    ejEmpresa.setDireccion(empresaRecibido.getDireccion());
-                    ejEmpresa.setRuc(empresaRecibido.getRuc());
-                    ejEmpresa.setEmail(empresaRecibido.getEmail());
-                    ejEmpresa.setNombre(empresaRecibido.getNombre());
-                    ejEmpresa.setTelefono(empresaRecibido.getTelefono());
-                    ejEmpresa.setTelefonoMovil(empresaRecibido.getTelefonoMovil());
-                    ejEmpresa.setNombreContacto(empresaRecibido.getNombreContacto());
-                    ejEmpresa.setTelefonoContacto(empresaRecibido.getTelefonoContacto());
-                    ejEmpresa.setTelefonoMovilContacto(empresaRecibido.getTelefonoMovilContacto());
-               }
-               
-           }else{
+           ejEmpresa = empresaManager.get(ejEmpresa);
+           if(ejEmpresa != null){
                 mensaje.setError(true);
-                mensaje.setMensaje("Debe ingresar numero de ruc.");
+                mensaje.setMensaje("El numero de ruc ya se encuentra registrado.");
                 return mensaje;
-           }
-             
-           
-           if(empresaRecibido.getId() != null){
-               Empresa ejEmpresaUp = new Empresa();
-               ejEmpresaUp = empresaManager.get(empresaRecibido.getId());
-               ejEmpresaUp.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-               ejEmpresaUp.setDescripcion(empresaRecibido.getDescripcion());
-               ejEmpresaUp.setDireccion(empresaRecibido.getDireccion());
-               //ejEmpresaUp.setRuc(empresaRecibido.getRuc());
-               ejEmpresaUp.setEmail(empresaRecibido.getEmail());
-               ejEmpresaUp.setNombre(empresaRecibido.getNombre());
-               ejEmpresaUp.setTelefono(empresaRecibido.getTelefono());
-               ejEmpresa.setTelefonoMovil(empresaRecibido.getTelefonoMovil());
-               ejEmpresa.setNombreContacto(empresaRecibido.getNombreContacto());
-               ejEmpresa.setTelefonoContacto(empresaRecibido.getTelefonoContacto());
-               ejEmpresa.setTelefonoMovilContacto(empresaRecibido.getTelefonoMovilContacto());
-               empresaManager.update(ejEmpresaUp);  
            }else{
-              empresaManager.save(ejEmpresa); 
-           }       
-           
-           
+               
+                ejEmpresa = new Empresa();
+                ejEmpresa.setActivo("S");
+                ejEmpresa.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                ejEmpresa.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                ejEmpresa.setDescripcion(empresaRecibido.getDescripcion());
+                ejEmpresa.setDireccion(empresaRecibido.getDireccion());
+                ejEmpresa.setRuc(empresaRecibido.getRuc());
+                ejEmpresa.setEmail(empresaRecibido.getEmail());
+                ejEmpresa.setNombre(empresaRecibido.getNombre());
+                ejEmpresa.setTelefono(empresaRecibido.getTelefono());
+                ejEmpresa.setTelefonoMovil(empresaRecibido.getTelefonoMovil());
+                ejEmpresa.setNombreContacto(empresaRecibido.getNombreContacto());
+                ejEmpresa.setTelefonoContacto(empresaRecibido.getTelefonoContacto());
+                ejEmpresa.setTelefonoMovilContacto(empresaRecibido.getTelefonoMovilContacto());
+                
+                empresaManager.save(ejEmpresa);
+                
+                if (imagenPortada != null && !imagenPortada.equals("")
+                            && imagenPortada.length() > 0) {
+                    imagenP = new Imagen();
+                    imagenP.setImagen(Base64Bytes.decode(imagenPortada.split(",")[1]));
+                    String extension = imagenPortada.split(";")[0];
+                    extension = extension.substring(extension.indexOf("/")+1);
+                    imagenP.setNombreTabla("empresa");
+                    imagenP.setNombreImagen(empresaRecibido.getNombre()+ "." + extension);
+                    imagenP.setActivo("S");
+                    imagenP.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                    imagenP.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    imagenP.setEmpresa(ejEmpresa);
+                    imagenP.setEntidadId(ejEmpresa.getId());
+                    
+                     imagenManager.save(imagenP);
+
+                }
+               
+           }
+
            mensaje.setError(false);
            mensaje.setMensaje("La empresa "+empresaRecibido.getNombre()+" se guardo exitosamente.");
            
@@ -166,6 +167,110 @@ public class EmpresaController extends BaseController{
            mensaje.setError(true);
            mensaje.setMensaje("Error a guardar la empresa");
            System.out.println("Error");
+       }
+           
+           return mensaje;
+   }
+   
+   @RequestMapping(value = "/editar", method = RequestMethod.POST)
+    public @ResponseBody MensajeDTO editar(@ModelAttribute("Empresa") Empresa empresaRecibido) {
+        MensajeDTO mensaje = new MensajeDTO();
+        Empresa ejEmpresa = new Empresa();
+        try{
+            inicializarEmpresaManager();
+            inicializarImagenManager();
+            
+            if(empresaRecibido != null && (empresaRecibido.getNombre() == null 
+                   || empresaRecibido.getNombre().compareToIgnoreCase("") == 0) ){
+                mensaje.setError(true);
+                mensaje.setMensaje("El nombre de la empresa no puede estar vacio.");
+                return mensaje;
+            }
+           
+            if(empresaRecibido != null && (empresaRecibido.getDireccion()== null 
+                   || empresaRecibido.getDireccion().compareToIgnoreCase("") == 0) ){
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar una direccion para la empresa.");
+                return mensaje;
+            }
+           
+            if(empresaRecibido != null && (empresaRecibido.getEmail()== null 
+                   || empresaRecibido.getEmail().compareToIgnoreCase("") == 0) ){
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar un email para la empresa.");
+                return mensaje;
+            }
+           
+            if(empresaRecibido != null && (empresaRecibido.getNombreContacto()== null 
+                   || empresaRecibido.getNombreContacto().compareToIgnoreCase("") == 0) ){
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar un contacto para la empresa.");
+                return mensaje;
+            }
+               
+            ejEmpresa = empresaManager.get(empresaRecibido.getId());
+           
+            Imagen imagenP = null;
+           
+            String imagenPortada = empresaRecibido.getImagenPort();
+           
+            if (imagenPortada != null && !imagenPortada.equals("")
+                            && imagenPortada.length() > 0) {
+                imagenP = new Imagen();
+                imagenP.setEntidadId(empresaRecibido.getId());
+                imagenP.setNombreTabla(Empresa.class.getName());
+                imagenP = imagenManager.get(imagenP);
+
+                if(imagenP != null){
+                    
+                    imagenP.setImagen(Base64Bytes.decode(imagenPortada.split(",")[1]));
+                    imagenP.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    String extension = imagenPortada.split(";")[0];
+                    extension = extension.substring(extension.indexOf("/")+1);
+                    imagenP.setNombreImagen(empresaRecibido.getNombre()+ "." + extension);
+
+                    imagenManager.update(imagenP);
+
+                }else{
+                    imagenP = new Imagen();
+                    imagenP.setImagen(Base64Bytes.decode(imagenPortada.split(",")[1]));
+                    String extension = imagenPortada.split(";")[0];
+                    extension = extension.substring(extension.indexOf("/")+1);
+                    imagenP.setNombreTabla("empresa");
+                    imagenP.setNombreImagen(empresaRecibido.getNombre()+ "." + extension);
+                    imagenP.setActivo("S");
+                    imagenP.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                    imagenP.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    imagenP.setEmpresa(ejEmpresa);
+                    imagenP.setEntidadId(empresaRecibido.getId());
+                    
+                    imagenManager.save(imagenP);
+                }
+           }
+                       
+            ejEmpresa.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejEmpresa.setDescripcion(empresaRecibido.getDescripcion());
+            ejEmpresa.setDireccion(empresaRecibido.getDireccion());
+            ejEmpresa.setEmail(empresaRecibido.getEmail());
+            ejEmpresa.setNombre(empresaRecibido.getNombre());
+            ejEmpresa.setTelefono(empresaRecibido.getTelefono());
+            ejEmpresa.setTelefonoMovil(empresaRecibido.getTelefonoMovil());
+            ejEmpresa.setNombreContacto(empresaRecibido.getNombreContacto());
+            ejEmpresa.setTelefonoContacto(empresaRecibido.getTelefonoContacto());
+            ejEmpresa.setTelefonoMovilContacto(empresaRecibido.getTelefonoMovilContacto());
+                
+            empresaManager.update(ejEmpresa);                               
+
+            mensaje.setError(false);
+            mensaje.setMensaje("La empresa "+empresaRecibido.getNombre()+" se modifico exitosamente.");
+            return mensaje;
+           
+
+           
+       }catch(Exception e){
+           mensaje.setError(true);
+           mensaje.setMensaje("Error a guardar la empresa");
+           System.out.println("Error" + e);
        }
            
            return mensaje;

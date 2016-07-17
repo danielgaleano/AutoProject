@@ -85,26 +85,26 @@
 
                                     <div class="col-xs-12 col-sm-9">
                                         <hr/>
-                                        <div class="form-group"><label class="col-lg-2 control-label">Documento</label>
+                                        <div class="form-group"><label class="col-lg-2 control-label">*Documento</label>
                                             <div class="col-lg-6">
                                                 <input th:if="${usuario} != null" th:value="${usuario.documento}" id="documento" name="documento" type="text" placeholder="Documento" disabled="disabled" class="form-control tableusuario-input input-large"/> 
                                                 <input th:if="${usuario} == null"  id="documento" name="documento" type="text" placeholder="Documento" class="form-control tableusuario-input input-large"/> 
                                             </div>
                                         </div>
-                                        <div class="form-group"><label class="col-lg-2 control-label">Alias</label>
+                                        <div class="form-group"><label class="col-lg-2 control-label">*Alias</label>
                                             <div class="col-lg-6">
                                                 <input th:if="${usuario} == null" id="alias" name="alias"  type="text" placeholder="Alias" class="form-control tableusuario-input input-large"/> 
                                                 <input th:if="${usuario} != null" th:value="${usuario.alias}" disabled="disabled" id="alias" name="alias"  type="text" placeholder="Alias" class="form-control tableusuario-input input-large"/> 
                                             </div>
                                         </div>
-                                        <div class="form-group"><label class="col-lg-2 control-label">Contraseña</label>
+                                        <div class="form-group"><label class="col-lg-2 control-label">*Contraseña</label>
                                             <div class="col-lg-6">
                                                 <input th:if="${usuario} == null" id="claveAcceso" name="claveAcceso" type="password" placeholder="Contraseña" class="form-control tableusuario-input input-large"/> 
                                                 <input th:if="!${editar} and ${usuario} != null" disabled="disabled" th:value="${usuario.claveAcceso}" id="claveAcceso" name="claveAcceso" type="password" placeholder="Contraseña" class="form-control tableusuario-input input-large"/> 
                                                 <input th:if="${editar} and ${usuario} != null"  th:value="${usuario.claveAcceso}" id="claveAcceso" name="claveAcceso" type="password" placeholder="Contraseña" class="form-control tableusuario-input input-large"/> 
                                             </div>
                                         </div>
-                                        <div class="form-group"><label class="col-lg-2 control-label">Nombre</label>
+                                        <div class="form-group"><label class="col-lg-2 control-label">*Nombre</label>
                                             <div class="col-lg-6">
                                                 <input th:if="${usuario} == null" id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input input-xlarge"/> 
                                                 <input th:if="${editar} and ${usuario} != null" th:value="${usuario.nombre}" id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input input-xlarge"/>
@@ -112,7 +112,7 @@
                                             </div>
                                         </div>
                                         
-                                        <div class="form-group"><label class="col-lg-2 control-label">Apellido</label>
+                                        <div class="form-group"><label class="col-lg-2 control-label">*Apellido</label>
                                             <div class="col-lg-6">
                                                 <input th:if="${usuario} == null" id="apellido" name="apellido" type="text" placeholder="Apellido" class="form-control tableusuario-input input-xlarge"/> 
                                                 <input th:if="${editar} and ${usuario} != null" th:value="${usuario.apellido}" id="apellido" name="apellido" type="text" placeholder="Apellido" class="form-control tableusuario-input input-xlarge"/>
@@ -124,7 +124,7 @@
                                     <div class="row">
                                         <div class="col-xs-12">
                                             <div class="col-xs-12 col-sm-12">
-                                                <div class="form-group"><label class="col-lg-2 control-label">Telefono</label>
+                                                <div class="form-group"><label class="col-lg-2 control-label">*Telefono</label>
                                                     <div class="col-lg-6">
                                                         <input th:if="${usuario} == null" id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999) 999 999'" class="form-control tableusuario-input input-large"/> 
                                                         <input th:if="${editar} and ${usuario} != null" th:value="${usuario.telefono}" id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999) 999 999'" class="form-control tableusuario-input input-large"/>
@@ -145,7 +145,7 @@
                                                         <input th:if="!${editar} and ${usuario} != null" disabled="disabled" th:value="${usuario.direccion}" id="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input input-xlarge" />
                                                     </div>
                                                 </div>
-                                                <div class="form-group"><label class="col-lg-2 control-label">Email</label>
+                                                <div class="form-group"><label class="col-lg-2 control-label">*Email</label>
                                                     <div class="col-lg-6">
                                                         <input th:if="${usuario} == null" id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input input-xlarge"/> 
                                                         <input th:if="${editar} and ${usuario} != null" th:value="${usuario.email}" id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input input-xlarge"/> 
@@ -154,29 +154,30 @@
                                                 </div>
 
                                                 <div sec:authorize="hasRole('Empresa.Asignar')">
-                                                    <div class="form-group"><label class="col-lg-2 control-label">Empresa</label>
-                                                        
-                                                        <select th:if="${usuario} != null" disabled="disabled" class="form-control tableusuario-input input-xlarge" id="empresa"  name="empresa.id" data-placeholder="Seleccione Empresa">
-                                                            
-                                                            <option value="">Seleccione Empresa</option>
-                                                            <option th:if="${usuario} == null" th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
-                                                            
-                                                            <th:block th:if="${usuario} != null" th:each="empresa : ${empresas}">
-                                                                <option th:if="${usuario.idEmpresa} == ${empresa[id]}" selected="selected" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
-                                                                <option th:if="${usuario.idEmpresa} != ${empresa[id]}" th:value="${empresa.id}" th:text="${empresa.nombre}"/>                                  
-                                                            </th:block>
-                                                        </select>
+                                                    <div class="form-group"><label class="col-lg-2 control-label">*Empresa</label>
+                                                        <div class="col-lg-6">
+                                                            <select th:if="${usuario} != null" disabled="disabled" class="form-control tableusuario-input input-xlarge" id="empresa"  name="empresa" data-placeholder="Seleccione Empresa">
 
-                                                        <select th:if="${usuario} == null" class="form-control tableusuario-input input-xlarge" id="empresa"  name="empresa.id" data-placeholder="Seleccione Empresa">
-                                                            
-                                                            <option value="">Seleccione Empresa</option>
-                                                            <option th:if="${usuario} == null" th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
-                                                            
-                                                            <th:block th:if="${usuario} != null" th:each="empresa : ${empresas}">
-                                                                <option th:if="${usuario.idEmpresa} == ${empresa[id]}" selected="selected" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
-                                                                <option th:if="${usuario.idEmpresa} != ${empresa[id]}" th:value="${empresa.id}" th:text="${empresa.nombre}"/>                                  
-                                                            </th:block>
-                                                        </select>
+                                                                <option value="">Seleccione Empresa</option>
+                                                                <option th:if="${usuario} == null" th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
+
+                                                                <th:block th:if="${usuario} != null" th:each="empresa : ${empresas}">
+                                                                    <option th:if="${usuario.idEmpresa} == ${empresa[id]}" selected="selected" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
+                                                                    <option th:if="${usuario.idEmpresa} != ${empresa[id]}" th:value="${empresa.id}" th:text="${empresa.nombre}"/>                                  
+                                                                </th:block>
+                                                            </select>
+
+                                                            <select th:if="${usuario} == null" class="form-control tableusuario-input input-xlarge" id="empresa"  name="empresa" data-placeholder="Seleccione Empresa">
+
+                                                                <option value="">Seleccione Empresa</option>
+                                                                <option th:if="${usuario} == null" th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
+
+                                                                <th:block th:if="${usuario} != null" th:each="empresa : ${empresas}">
+                                                                    <option th:if="${usuario.idEmpresa} == ${empresa[id]}" selected="selected" th:value="${empresa.id}" th:text="${empresa.nombre}"/>
+                                                                    <option th:if="${usuario.idEmpresa} != ${empresa[id]}" th:value="${empresa.id}" th:text="${empresa.nombre}"/>                                  
+                                                                </th:block>
+                                                            </select>
+                                                        </div>    
                                                     </div>
                                                 </div>
                                             </div>

@@ -58,6 +58,9 @@ $(document).ready(function(data) {
 			email: {
 				required: true,
                                 email:true
+			},
+			empresa: {
+				required: true
 			}
 		},
 		messages: {			
@@ -70,7 +73,8 @@ $(document).ready(function(data) {
 			nombre: "Debe ingresar nombre del usuario!",
 			apellido: "Debe ingresar apellido del usuario!",
 			telefono: "Debe ingresar numero de telefono del usuario!",
-			email: "Favor ingresar un email valido!"
+			email: "Favor ingresar un email valido!",
+                        empresa: "Debe seleccionar una empresa!"
 		},
 		invalidHandler: function (event, validator) { //display error alert on form submit   
 			$('.alert-error', $('.login-form')).show();
@@ -97,8 +101,9 @@ $(document).ready(function(data) {
                     console.log("exitoooo");
                     var $form = $('#validation-form');
                     var serialize = $form.find('.tableusuario-input').serialize();
+                    var datos = serialize.replace("empresa","empresa.id");
                     if(usuario == null ){
-                        var jqXHR = $.post(CONTEXT_ROOT+'/usuarios/guardar', serialize, function(data, textStatus, jqXHR) {
+                        var jqXHR = $.post(CONTEXT_ROOT+'/usuarios/guardar', datos, function(data, textStatus, jqXHR) {
                             if(data.error){
                                 $('#mensaje').append('<div class="alert alert-error">'
                                     + '<button class="close" data-dismiss="alert" type="button"'

@@ -35,9 +35,6 @@ public class Permiso implements Serializable {
     private String nombre;
     
     
-    @Column(name = "super_usuario")
-    private Boolean superUsuario;
-    
     public Permiso() {
 
     }
@@ -72,22 +69,6 @@ public class Permiso implements Serializable {
      */
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    /**
-     * @return the superUsuario
-     */
-    public Boolean getSuperUsuario() {
-        return superUsuario;
-    }
-
-    /**
-     * @param superUsuario the superUsuario to set
-     */
-    public void setSuperUsuario(Boolean superUsuario) {
-        this.superUsuario = superUsuario;
-    }
-    
-    
+    }    
     
 }

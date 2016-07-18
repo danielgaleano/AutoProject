@@ -30,7 +30,7 @@
                     
                   <div class="widget-toolbar no-border">
                       
-                      <a sec:authorize="hasRole('Empresa.Editar')" id="botonEditar" th:if="!${editar} and ${empresa} != null" th:href="@{'/empresas/editar/'+${empresa.id}}" class="btn btn-primary" role="button">Editar</a>
+                      <a sec:authorize="hasRole('SuperUsuario')" id="botonEditar" th:if="!${editar} and ${empresa} != null" th:href="@{'/empresas/editar/'+${empresa.id}}" class="btn btn-primary" role="button">Editar</a>
                                            
                       <a th:href="@{/empresas}" class="btn btn-primary btn-light bigger" role="button">
                           <i class="ace-icon fa fa-arrow-left"></i>
@@ -49,7 +49,7 @@
                                    <div>
                                         <div id="img-boton">
                                             <div class="profile-picture">
-                                             <input  name="imagenPort" type="hidden"  class="form-control tableusuario-input" />
+                                             <input  name="imagenPort" type="hidden"  class="form-control table-empresa-input" />
                                              <img th:if="${empresa} == null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{/resources/img/empresa.jpg}" alt="Seleccione una nueva imagen"/>
 
                                              <img th:if="${empresa} != null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{'/obtenerImagen/empresa/'+${empresa.id}}" alt="Seleccione una nueva imagen"/>

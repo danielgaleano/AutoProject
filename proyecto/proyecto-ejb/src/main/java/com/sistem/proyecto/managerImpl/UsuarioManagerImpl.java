@@ -7,9 +7,11 @@
 package com.sistem.proyecto.managerImpl;
 
 import com.sistem.proyecto.entity.Empresa;
+import com.sistem.proyecto.entity.Permiso;
 import com.sistem.proyecto.entity.Rol;
 import com.sistem.proyecto.entity.Usuario;
 import com.sistem.proyecto.manager.EmpresaManager;
+import com.sistem.proyecto.manager.PermisoManager;
 import com.sistem.proyecto.manager.RolManager;
 import com.sistem.proyecto.manager.UsuarioManager;
 import java.sql.Timestamp;
@@ -32,6 +34,9 @@ public class UsuarioManagerImpl extends GenericDaoImpl<Usuario, Long>
     @EJB(mappedName = "java:app/proyecto-ejb/RolManagerImpl")
     private RolManager rolManager;
     
+    @EJB(mappedName = "java:app/proyecto-ejb/PermisoManagerImpl")
+    private PermisoManager permisoManager;
+    
     @Override
     protected Class<Usuario> getEntityBeanType() {
             return Usuario.class;
@@ -43,6 +48,9 @@ public class UsuarioManagerImpl extends GenericDaoImpl<Usuario, Long>
         
         try{
             List<Map<String, Object>> usuarios = this.listAtributos(ejUsuario,"id".split(","));
+            
+            String[] entidades = "Cliente,Usuario,Proveedor,Vehiculo".split(",");
+            String[] permisos = "Crear,Editar,Visualizar,Activar,Desactivar,Listar".split(",");
             
             if(usuarios != null && !usuarios.isEmpty()){
                 ejUsuario = new Usuario();
@@ -57,26 +65,6 @@ public class UsuarioManagerImpl extends GenericDaoImpl<Usuario, Long>
                 }
             }else{
                 
-                Empresa ejEmpresa = new Empresa(); 
-                ejEmpresa.setActivo("S");
-                ejEmpresa.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejEmpresa.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                ejEmpresa.setDescripcion("Gerenciadora del Sistema");
-                ejEmpresa.setDireccion("San Andres 203");
-                ejEmpresa.setEmail("xxxx@gmail.com");
-                ejEmpresa.setNombre("System Sorf");
-                ejEmpresa.setRuc("848888-9");
-                ejEmpresa.setTelefono("021456789");
-                empresaManager.save(ejEmpresa);
-                
-                Rol ejRol = new Rol();
-                ejRol.setActivo("S");
-                ejRol.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejRol.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                ejRol.setEmpresa(ejEmpresa);
-                ejRol.setNombre("Super Usuario");
-                rolManager.save(ejRol);
-                
                 ejUsuario = new Usuario();
                 ejUsuario.setNombre("Ramon Daniel");
                 ejUsuario.setApellido("Galeano Bate");
@@ -86,8 +74,7 @@ public class UsuarioManagerImpl extends GenericDaoImpl<Usuario, Long>
                 ejUsuario.setActivo("S");
                 ejUsuario.setEmail("daniel@gamil.com");
                 ejUsuario.setTelefono("0981777201");
-                ejUsuario.setEmpresa(new Empresa(ejEmpresa.getId()));
-                ejUsuario.setRol(ejRol);
+                ejUsuario.setSuperUsuario(true);
                 ejUsuario.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                 ejUsuario.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 
@@ -103,8 +90,7 @@ public class UsuarioManagerImpl extends GenericDaoImpl<Usuario, Long>
                 ejUsuario.setActivo("S");
                 ejUsuario.setEmail("santos@gamil.com");
                 ejUsuario.setTelefono("0981999999");
-                ejUsuario.setEmpresa(new Empresa(ejEmpresa.getId()));
-                ejUsuario.setRol(ejRol);
+                ejUsuario.setSuperUsuario(true);
                 ejUsuario.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                 ejUsuario.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 
@@ -120,12 +106,19 @@ public class UsuarioManagerImpl extends GenericDaoImpl<Usuario, Long>
                 ejUsuario.setActivo("S");
                 ejUsuario.setEmail("miguel@gamil.com");
                 ejUsuario.setTelefono("0981999999");
-                ejUsuario.setEmpresa(new Empresa(ejEmpresa.getId()));
-                ejUsuario.setRol(ejRol);
+                ejUsuario.setSuperUsuario(true);
                 ejUsuario.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                 ejUsuario.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 
-                this.save(ejUsuario);
+                this.save(ejUsuario); 
+                
+                for (String entidade : entidades) {
+                    for (String permiso : permisos) {
+                        Permiso ejPermiso = new Permiso();
+                        ejPermiso.setNombre(entidade + "." + permiso);
+                        permisoManager.save(ejPermiso);
+                    }
+                }
                 
                 ejUsuario = new Usuario();
                 ejUsuario.setAlias(alias);

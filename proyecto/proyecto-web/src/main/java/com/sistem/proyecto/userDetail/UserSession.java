@@ -3,11 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.sistem.proyecto.userDetail;
-
-
-
 
 import com.sistem.proyecto.entity.Rol;
 import com.sistem.proyecto.entity.RolPermiso;
@@ -41,14 +37,13 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @author Miguel
  */
 public class UserSession implements AuthenticationProvider {
-    
-        //@EJB(mappedName = "java:global/sistem/sistem-ejb/UsuarioManagerImpl")
+
+    //@EJB(mappedName = "java:global/sistem/sistem-ejb/UsuarioManagerImpl")
     private UsuarioManager usuarioManager;
     private RolPermisoManager rolPermisoManager;
-    
+
     private Context context;
 
-    
     private IfaceLogin serviceLogin;
 
     /**
@@ -68,12 +63,12 @@ public class UserSession implements AuthenticationProvider {
     public Usuario userExist(Usuario user) {
         Usuario ejUsuario = new Usuario();
         try {
-            inicializarUsuarioManager();           
+            inicializarUsuarioManager();
             ejUsuario.setAlias(user.getAlias());
             ejUsuario.setClaveAcceso(user.getClaveAcceso());
 
-            ejUsuario =  usuarioManager.get(ejUsuario);
-            if(ejUsuario != null && ejUsuario.getId() != null) {
+            ejUsuario = usuarioManager.get(ejUsuario);
+            if (ejUsuario != null && ejUsuario.getId() != null) {
                 return ejUsuario;
             } else {
                 return ejUsuario;
@@ -94,37 +89,48 @@ public class UserSession implements AuthenticationProvider {
         System.out.println("User: " + userLogin);
         System.out.println("Password: " + passwordLogin);
         Usuario user = new Usuario();
-        user = usuarioManager.loginSistema(userLogin,passwordLogin);
+        user = usuarioManager.loginSistema(userLogin, passwordLogin);
 
-        if(user != null && user.getId() != null) {
-            RolPermiso ejemplo = new RolPermiso();
-            ejemplo.setRol(new Rol(user.getRol().getId()));
-            
-            List<Map<String, Object>> listMapPermisos = rolPermisoManager.listAtributos(ejemplo, "id,rol.id,permiso.nombre".split(","), true);
-
+        if (user != null && user.getId() != null) {
             List<GrantedAuthority> autoridades = new ArrayList<GrantedAuthority>();
             boolean superUsuario = false;
             UserDetail userDetails = new UserDetail();
-            for(Map<String, Object> rpm : listMapPermisos){
-                System.err.println(rpm.get("permiso.nombre").toString());
-                if(rpm.get("permiso.nombre").toString().compareToIgnoreCase("Empresa.Crear") == 0 && !superUsuario){
-                    userDetails.setSuperUsuario(true);
-                    superUsuario = true;
-                }else if(!superUsuario){
-                    userDetails.setSuperUsuario(false);
+            if (user.isSuperUsuario()) {
+                
+                userDetails.setSuperUsuario(true);
+                userDetails.setNombreRol("Super Usuario");
+                autoridades.add(new SimpleGrantedAuthority("SuperUsuario"));
+                autoridades.add(new SimpleGrantedAuthority("Usuario.Agregar"));
+                autoridades.add(new SimpleGrantedAuthority("Usuario.Listar"));
+                autoridades.add(new SimpleGrantedAuthority("Usuario.Visualizar"));
+                autoridades.add(new SimpleGrantedAuthority("Usuario.Editar"));
+                autoridades.add(new SimpleGrantedAuthority("Usuario.Desactivar"));
+                autoridades.add(new SimpleGrantedAuthority("Usuario.Activar"));
+            
+            } else {
+                
+                RolPermiso ejemplo = new RolPermiso();
+                ejemplo.setRol(new Rol(user.getRol().getId()));
+
+                List<Map<String, Object>> listMapPermisos = rolPermisoManager.listAtributos(ejemplo, "id,rol.id,permiso.nombre".split(","), true);
+
+                for (Map<String, Object> rpm : listMapPermisos) {
+                    
+                    autoridades.add(new SimpleGrantedAuthority(rpm.get("permiso.nombre").toString()));
+                    
                 }
-                autoridades.add(new SimpleGrantedAuthority(rpm.get("permiso.nombre").toString()));
+                
+                userDetails.setNombreRol(user.getRol().getNombre());
+                userDetails.setIdEmpresa(user.getEmpresa().getId());
             }
-           
+
             userDetails.setUsername(user.getAlias());
             userDetails.setPassword(passwordLogin);
-            userDetails.setNombre(user.getNombre()+" "+user.getApellido());
+            userDetails.setNombre(user.getNombre() + " " + user.getApellido());
             userDetails.setId(user.getId());
-            userDetails.setIdEmpresa(user.getEmpresa().getId());
-            userDetails.setNombreRol(user.getRol().getNombre());
-            
-            Authentication customAuthentication = new UsernamePasswordAuthenticationToken(userDetails, 
-                    passwordLogin, autoridades);           
+
+            Authentication customAuthentication = new UsernamePasswordAuthenticationToken(userDetails,
+                    passwordLogin, autoridades);
             return customAuthentication;
         } else {
             System.out.println("Usuario o Contraseña Inválidos.");
@@ -136,39 +142,41 @@ public class UserSession implements AuthenticationProvider {
     public boolean supports(Class<?> type) {
         return true;
     }
-    
+
     private void inicializarUsuarioManager() {
-            if (context == null)
-                    try {
-                            context = new InitialContext();
-                    } catch (NamingException e1) {
-                            throw new RuntimeException("No se puede inicializar el contexto", e1);
-                    }
-            if (usuarioManager == null) {
-                    try {
-
-                            usuarioManager = (UsuarioManager) context.lookup("java:app/proyecto-ejb/UsuarioManagerImpl");
-                    } catch (NamingException ne) {
-                            throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
-                    }
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
             }
+        }
+        if (usuarioManager == null) {
+            try {
+
+                usuarioManager = (UsuarioManager) context.lookup("java:app/proyecto-ejb/UsuarioManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
     }
-    
+
     private void inicializarRolPermisoManager() {
-            if (context == null)
-                    try {
-                            context = new InitialContext();
-                    } catch (NamingException e1) {
-                            throw new RuntimeException("No se puede inicializar el contexto", e1);
-                    }
-            if (rolPermisoManager == null) {
-                    try {
-
-                            rolPermisoManager = (RolPermisoManager) context.lookup("java:app/proyecto-ejb/RolPermisoManagerImpl");
-                    } catch (NamingException ne) {
-                            throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
-                    }
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
             }
+        }
+        if (rolPermisoManager == null) {
+            try {
+
+                rolPermisoManager = (RolPermisoManager) context.lookup("java:app/proyecto-ejb/RolPermisoManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
     }
-    
+
 }

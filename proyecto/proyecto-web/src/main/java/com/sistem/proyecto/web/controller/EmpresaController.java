@@ -276,7 +276,7 @@ public class EmpresaController extends BaseController{
            return mensaje;
    }
    
-    @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO desactivar(@PathVariable("id") Long id) {
             MensajeDTO retorno = new MensajeDTO();

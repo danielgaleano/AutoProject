@@ -267,6 +267,7 @@ public class RolController extends BaseController{
         try {
 
                 inicializarRolPermisoManager();
+                inicializarRolManager();
                 
                 Gson gson = new GsonBuilder().create();
 
@@ -275,13 +276,13 @@ public class RolController extends BaseController{
 
                 if (permisos != null 
                         && permisos.getPermisos() != null) {
+                   
                     Rol ejRol = new Rol();
-                    ejRol.setId(id);
-                    Empresa ejEmpresa = new Empresa();
-                    ejEmpresa.setId(userDetail.getIdEmpresa());
+                    ejRol = rolManager.get(id);
+                    
                     RolPermiso ejRolPer = new RolPermiso();
                     ejRolPer.setRol(ejRol);
-                    ejRolPer.setEmpresa(ejEmpresa);
+                    ejRolPer.setEmpresa(ejRol.getEmpresa());
                     
                     List<Map<String, Object>> listMapRolPermisos = rolPermisoManager.listAtributos(ejRolPer, "id,rol.id,empresa.id".split(","), true);
     
@@ -295,7 +296,7 @@ public class RolController extends BaseController{
                     for (Integer rp : permisos.getPermisos()) {
                         ejRolPer = new RolPermiso();
                         ejRolPer.setRol(ejRol);
-                        ejRolPer.setEmpresa(ejEmpresa);
+                        ejRolPer.setEmpresa(ejRol.getEmpresa());
                         ejRolPer.setPermiso(new Permiso(Long.parseLong(rp.toString())));
 
                         rolPermisoManager.save(ejRolPer);

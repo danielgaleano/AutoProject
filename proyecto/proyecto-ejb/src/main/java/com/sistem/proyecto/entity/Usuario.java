@@ -57,6 +57,9 @@ public class Usuario extends Base{
     
     @Column(name = "telefono_movil")
     private String telefonoMovil;
+    
+    @Column(name = "super_usuario")
+    private Boolean superUsuario;
 
     @Column(name = "email")
     private String email;
@@ -84,104 +87,188 @@ public class Usuario extends Base{
             super(id);
     }
 
+    /**
+     * @return the nombre
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     * @param nombre the nombre to set
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-
-    public String getClaveAcceso() {
-        return claveAcceso;
-    }
-
-    public void setClaveAcceso(String claveAcceso) {
-        this.claveAcceso = claveAcceso;
-    }
-
-    public String getDocumento() {
-        return documento;
-    }
-
-    public void setDocumento(String documento) {
-        this.documento = documento;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-
+    /**
+     * @return the apellido
+     */
     public String getApellido() {
         return apellido;
     }
 
+    /**
+     * @param apellido the apellido to set
+     */
     public void setApellido(String apellido) {
         this.apellido = apellido;
     }
 
-    public Empresa getEmpresa() {
-        return empresa;
+    /**
+     * @return the alias
+     */
+    public String getAlias() {
+        return alias;
     }
 
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
+    /**
+     * @param alias the alias to set
+     */
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
-    public Rol getRol() {
-        return rol;
+    /**
+     * @return the claveAcceso
+     */
+    public String getClaveAcceso() {
+        return claveAcceso;
     }
 
-    public void setRol(Rol rol) {
-        this.rol = rol;
+    /**
+     * @param claveAcceso the claveAcceso to set
+     */
+    public void setClaveAcceso(String claveAcceso) {
+        this.claveAcceso = claveAcceso;
     }
 
+    /**
+     * @return the documento
+     */
+    public String getDocumento() {
+        return documento;
+    }
+
+    /**
+     * @param documento the documento to set
+     */
+    public void setDocumento(String documento) {
+        this.documento = documento;
+    }
+
+    /**
+     * @return the direccion
+     */
     public String getDireccion() {
         return direccion;
     }
 
+    /**
+     * @param direccion the direccion to set
+     */
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
 
+    /**
+     * @return the telefono
+     */
+    public String getTelefono() {
+        return telefono;
+    }
+
+    /**
+     * @param telefono the telefono to set
+     */
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    /**
+     * @return the telefonoMovil
+     */
     public String getTelefonoMovil() {
         return telefonoMovil;
     }
 
+    /**
+     * @param telefonoMovil the telefonoMovil to set
+     */
     public void setTelefonoMovil(String telefonoMovil) {
         this.telefonoMovil = telefonoMovil;
     }
 
+    /**
+     * @return the superUsuario
+     */
+    public Boolean isSuperUsuario() {
+        return superUsuario;
+    }
+
+    /**
+     * @param superUsuario the superUsuario to set
+     */
+    public void setSuperUsuario(Boolean superUsuario) {
+        this.superUsuario = superUsuario;
+    }
+
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * @return the imagenPort
+     */
     public String getImagenPort() {
         return imagenPort;
     }
 
+    /**
+     * @param imagenPort the imagenPort to set
+     */
     public void setImagenPort(String imagenPort) {
         this.imagenPort = imagenPort;
     }
-     
+
+    /**
+     * @return the empresa
+     */
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    /**
+     * @param empresa the empresa to set
+     */
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+
+    /**
+     * @return the rol
+     */
+    public Rol getRol() {
+        return rol;
+    }
+
+    /**
+     * @param rol the rol to set
+     */
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
     
         
 }

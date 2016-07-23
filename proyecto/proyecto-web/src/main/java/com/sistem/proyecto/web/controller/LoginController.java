@@ -17,7 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 /**
- * @author Hermann Bottger
+ * Controller para el Login. Implementación de mappings, servicios REST
+ * y métodos de mapeo privados y públicos.
  * 
  */
 @Controller

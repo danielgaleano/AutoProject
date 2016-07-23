@@ -134,7 +134,7 @@ public class UsuarioManagerImpl extends GenericDaoImpl<Usuario, Long>
             }
             
         }catch (Exception ex){
-            
+            System.err.println("Error al crear Usuarios Nuevos. " + ex);
         }
         return ejUsuario;
     }

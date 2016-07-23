@@ -116,8 +116,8 @@ and open the template in the editor.
                   <!-- Optionally, you can add icons to the links -->
                   <li><a sec:authorize="hasRole('SuperUsuario')" th:href="@{/empresas}"><i class="fa fa-suitcase"></i> <span>Empresas</span></a></li>
                   <li><a sec:authorize="hasRole('Usuario.Listar')" th:href="@{/usuarios}"><i class="fa fa-user"></i> <span>Usuarios</span></a></li>
-                  <li><a sec:authorize="hasRole('Cliente.Listar')" th:href="@{/clientes}"><i class="fa fa-user"></i> <span>Clientes</span></a></li>
-                  <li><a sec:authorize="hasRole('Proveedor.Listar')" th:href="@{/proveedores}"><i class="fa fa-user"></i> <span>Proveedores</span></a></li>
+                  <li><a sec:authorize="hasRole('Cliente.Listar')" th:href="@{/clientes}"><i class="fa fa-users"></i> <span>Clientes</span></a></li>
+                  <li><a sec:authorize="hasRole('Proveedor.Listar')" th:href="@{/proveedores}"><i class="fa fa-truck"></i> <span>Proveedores</span></a></li>
                   <li class="treeview">
                     <a href="#"><i class="fa fa-car"></i> <span>Vehículos</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">

@@ -14,14 +14,14 @@ $(document).ready(function(data) {
         urlEditar: CONTEXT_ROOT+'/clientes/editar',
         urlAsignar: CONTEXT_ROOT+'',
         tableId:'example1',
-        titleAsignar:'',
+        titleAsignar:'Asignar Rol',
         isStatus:true,
         deleteButton: permisoDesactivar,
         activarButton:permisoActivar,
         visualizarButton:permisoVisualizar,
         editarFormButton:permisoEditar,
         editButton:false,
-        asignarButton:true,
+        asignarButton:false,
         columns: {
             identifier: [0, 'id'],
             editable: []

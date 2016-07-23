@@ -83,6 +83,14 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/empresas/desactivar/*").hasAnyAuthority("SuperUsuario")
                 .antMatchers("/empresas/editar/**").hasAnyAuthority("SuperUsuario")
                 .antMatchers("/empresas/visualizar/**").hasAnyAuthority("SuperUsuario")
+                //------Empresa----//
+                .antMatchers("/clientes**").hasAnyAuthority("Cliente.Listar")
+                .antMatchers("/clientes/crear**").hasAnyAuthority("Cliente.Agregar")
+                .antMatchers("/clientes/guardar**").hasAnyAuthority("Cliente.Agregar")
+                .antMatchers("/clientes/activar/*").hasAnyAuthority("Cliente.Activar")
+                .antMatchers("/clientes/desactivar/*").hasAnyAuthority("Cliente.Desactivar")
+                .antMatchers("/clientes/editar/**").hasAnyAuthority("Cliente.Editar")
+                .antMatchers("/clientes/visualizar/**").hasAnyAuthority("Cliente.Visualizar")
                //------Movil----//
                 .antMatchers("/movil/guardarImagen**").permitAll()
                 .antMatchers("/obtenerImagen/*/*").permitAll()

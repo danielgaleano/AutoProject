@@ -7,12 +7,12 @@ $(document).ready(function(data) {
   var permisoAsignar = parseBolean($(this).find('.tablasignar-permiso').text());
 
   $('#example1').Tabledit({
-        url: CONTEXT_ROOT+'',
-        urlDelete: CONTEXT_ROOT+'/clientes/desactivar/',
-        urlActivate: CONTEXT_ROOT+'/clientes/activar/',
-        urlVisualizar: CONTEXT_ROOT+'/clientes/visualizar',
-        urlEditar: CONTEXT_ROOT+'/clientes/editar',
-        urlAsignar: CONTEXT_ROOT+'',
+        url: CONTEXT_ROOT+'/roles/guardar',
+        urlDelete: CONTEXT_ROOT+'/usuarios/desactivar/',
+        urlActivate: CONTEXT_ROOT+'/usuarios/activar/',
+        urlVisualizar: CONTEXT_ROOT+'/usuarios/visualizar',
+        urlEditar: CONTEXT_ROOT+'/usuarios/editar',
+        urlAsignar: CONTEXT_ROOT+'/usuarios/asignar/rol/',
         tableId:'example1',
         titleAsignar:'',
         isStatus:true,
@@ -21,7 +21,7 @@ $(document).ready(function(data) {
         visualizarButton:permisoVisualizar,
         editarFormButton:permisoEditar,
         editButton:false,
-        asignarButton:true,
+        asignarButton:permisoAsignar,
         columns: {
             identifier: [0, 'id'],
             editable: []

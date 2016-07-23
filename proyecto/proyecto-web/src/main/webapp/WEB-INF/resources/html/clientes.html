@@ -12,11 +12,11 @@
 <body>
     <nav th:replace="include/navbar :: navbar"></nav>
     <div class="content-wrapper">
-        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Usuario.Agregar'')')}"/>
-        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Usuario.Editar'')')}"/>
-        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Usuario.Activar'')')}"/>
-        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Usuario.Desactivar'')')}"/>
-        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Usuario.Visualizar'')')}"/>
+        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Agregar'')')}"/>
+        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Editar'')')}"/>
+        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Activar'')')}"/>
+        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Desactivar'')')}"/>
+        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Visualizar'')')}"/>
         <div class="tablasignar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
 
         <!-- Content Header (Page header) -->

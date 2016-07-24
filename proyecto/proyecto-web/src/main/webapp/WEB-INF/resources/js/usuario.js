@@ -35,7 +35,7 @@ $(document).ready(function (data) {
 
     $.validator.addMethod("regx", function (value, element, regexpr) {
         return regexpr.test(value);
-    }, "Debe ingresar un número de ruc válido!");
+    }, "Debe ingresar un número de documento válido!");
 
     $('#validation-form').validate({
         errorElement: 'span',
@@ -52,7 +52,7 @@ $(document).ready(function (data) {
             alias: {
                 required: true
             },
-            contrasena: {
+            claveAcceso: {
                 required: true,
                 minlength: 5
             },
@@ -74,16 +74,20 @@ $(document).ready(function (data) {
             }
         },
         messages: {
-            documento: "Favor ingresar número de documento!",
+            documento: {
+                required: "Debe ingresar un número de documento!",
+                minlength: "Longitud mínima de 5 números!",
+                maxlength: "Longitud máxima de 10 números!",   
+            },
             alias: "Debe ingresar un alias para el usuario!",
-            contrasena: {
+            claveAcceso: {
                 required: "Debe ingresar una contraseña para el usuario!",
                 minlength: "Longitud mínima de 5 caracteres!"
             },
             nombre: "Debe ingresar nombre del usuario!",
             apellido: "Debe ingresar apellido del usuario!",
             telefono: "Debe ingresar numero de telefono del usuario!",
-            email: "Favor ingresar un email valido!",
+            email: "Debe ingresar un email valido!",
             empresa: "Debe seleccionar una empresa!"
         },
         invalidHandler: function (event, validator) { //display error alert on form submit   

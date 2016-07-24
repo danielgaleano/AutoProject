@@ -42,6 +42,8 @@ public class UsuarioController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listaUsuarios(Model model) {
         ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("usuarios");
+        
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         List<Map<String, Object>> listMapUsuarios;
         Empresa ejemplo = new Empresa();
@@ -66,8 +68,6 @@ public class UsuarioController extends BaseController {
             }
 
             model.addAttribute("usuarios", listMapUsuarios);
-
-            retorno.setViewName("usuarios");
 
         } catch (Exception ex) {
 
@@ -610,4 +610,26 @@ public class UsuarioController extends BaseController {
         return retorno;
 
     }
+    
+    @RequestMapping(value = "/cambiar/pass/{id}", method = RequestMethod.GET)
+    public ModelAndView cambiarPass(Model model,@PathVariable("id") Long id) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("cambiarContrasenha");
+        
+        try {
+            inicializarUsuarioManager();
+            
+            Map<String, Object> usuario = usuarioManager.getAtributos(
+                    new Usuario(id), "id,nombre,apellido,claveAcceso,alias,documento".split(","), false, true);
+            
+            model.addAttribute("usuario", usuario);
+
+        } catch (Exception ex) {
+            logger.error("Error al optener vista reset pass.", ex);
+        }
+        return retorno;
+
+    }
+    
+
 }

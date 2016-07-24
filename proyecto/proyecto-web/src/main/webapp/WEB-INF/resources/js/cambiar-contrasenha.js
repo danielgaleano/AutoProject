@@ -37,7 +37,7 @@ $(document).ready(function (data) {
                 required: true,
                 minlength: 5
             },
-            claveAccesoNuevoRepetir {
+            claveAccesoNuevoRepetir: {
                 required: true,
                 minlength: 5,
                 equalTo: "#claveAccesoNuevo"

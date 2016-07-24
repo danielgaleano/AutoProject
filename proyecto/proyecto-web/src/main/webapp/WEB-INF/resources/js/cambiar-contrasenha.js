@@ -46,17 +46,17 @@ $(document).ready(function (data) {
         },
         messages: {
             claveAcceso: {
-                required: "Debe ingresar la contraseña actual del usuario!",
+                required: "Debe ingresar la contraseña actual!",
                 minlength: "Longitud mínima de 5 caracteres!"
             },
             claveAccesoNuevo: {
-                required: "Debe ingresar la nueva contraseña del usuario!",
+                required: "Debe ingresar la nueva contraseña!",
                 minlength: "Longitud mínima de 5 caracteres!"
             },
             claveAccesoNuevoRepetir: {
-                required: "Debe repetir la nueva contraseña del usuario!",
+                required: "Debe repetir la nueva contraseña!",
                 minlength: "Longitud mínima de 5 caracteres!",
-                equalTo: "Las nuevas contraseñas ingresadas no coinciden!"
+                equalTo: "Las nuevas contraseñas no coinciden!"
             }
 
         },

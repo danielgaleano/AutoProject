@@ -13,7 +13,11 @@ $(document).ready(function(data) {
         urlVisualizar: CONTEXT_ROOT+'/usuarios/visualizar',
         urlEditar: CONTEXT_ROOT+'/usuarios/editar',
         urlAsignar: CONTEXT_ROOT+'/usuarios/asignar/rol/',
+        urlAccionExtra: CONTEXT_ROOT+'/usuarios/reset/',
         tableId:'example1',
+        btonAccionExtra: 'btn btn-xs btn-warning',
+        iconAccionExtra: 'ace-icon fa fa-key',
+        titleAction:'Reset Pass',
         titleAsignar:'',
         isStatus:true,
         deleteButton: permisoDesactivar,
@@ -22,6 +26,7 @@ $(document).ready(function(data) {
         editarFormButton:permisoEditar,
         editButton:false,
         asignarButton:permisoAsignar,
+        isActionExtra:permisoAsignar,
         columns: {
             identifier: [0, 'id'],
             editable: []

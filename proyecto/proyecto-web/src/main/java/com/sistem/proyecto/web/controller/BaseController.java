@@ -12,6 +12,7 @@ import com.sistem.proyecto.manager.PermisoManager;
 import com.sistem.proyecto.manager.RolManager;
 import com.sistem.proyecto.manager.RolPermisoManager;
 import com.sistem.proyecto.manager.UsuarioManager;
+import java.security.SecureRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.naming.Context;
@@ -25,143 +26,175 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 public class BaseController {
-    
+
     private Context context;
+    
+    static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    static SecureRandom rnd = new SecureRandom();
 
     protected UsuarioManager usuarioManager;
-    
+
     protected EmpresaManager empresaManager;
-    
+
     protected RolManager rolManager;
-    
+
     protected PermisoManager permisoManager;
-    
+
     protected RolPermisoManager rolPermisoManager;
-    
+
     protected ImagenManager imagenManager;
-    
+
     protected ClienteManager clienteManager;
-    
+
     public static final Logger logger = LoggerFactory
-			.getLogger("proyecto");
-    
-    protected void inicializarImagenManager() throws Exception{
-        if (context == null)
-                try {
-                        context = new InitialContext();
-                } catch (NamingException e1) {
-                        throw new RuntimeException("No se puede inicializar el contexto", e1);
-                }
+            .getLogger("proyecto");
+
+    protected void inicializarImagenManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
         if (imagenManager == null) {
-                try {
+            try {
 
-                        imagenManager = (ImagenManager) context.lookup("java:app/proyecto-ejb/ImagenManagerImpl");
-                } catch (NamingException ne) {
-                        throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
-                }
+                imagenManager = (ImagenManager) context.lookup("java:app/proyecto-ejb/ImagenManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
         }
     }
-    
-    
-    protected void inicializarRolPermisoManager() throws Exception{
-        if (context == null)
-                try {
-                        context = new InitialContext();
-                } catch (NamingException e1) {
-                        throw new RuntimeException("No se puede inicializar el contexto", e1);
-                }
+
+    protected void inicializarRolPermisoManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
         if (rolPermisoManager == null) {
-                try {
+            try {
 
-                        rolPermisoManager = (RolPermisoManager) context.lookup("java:app/proyecto-ejb/RolPermisoManagerImpl");
-                } catch (NamingException ne) {
-                        throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
-                }
+                rolPermisoManager = (RolPermisoManager) context.lookup("java:app/proyecto-ejb/RolPermisoManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
         }
     }
-    
-    protected void inicializarPermisoManager() throws Exception{
-        if (context == null)
-                try {
-                        context = new InitialContext();
-                } catch (NamingException e1) {
-                        throw new RuntimeException("No se puede inicializar el contexto", e1);
-                }
+
+    protected void inicializarPermisoManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
         if (permisoManager == null) {
-                try {
+            try {
 
-                        permisoManager = (PermisoManager) context.lookup("java:app/proyecto-ejb/PermisoManagerImpl");
-                } catch (NamingException ne) {
-                        throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
-                }
+                permisoManager = (PermisoManager) context.lookup("java:app/proyecto-ejb/PermisoManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
         }
     }
-    
-    protected void inicializarUsuarioManager() throws Exception{
-        if (context == null)
-                try {
-                        context = new InitialContext();
-                } catch (NamingException e1) {
-                        throw new RuntimeException("No se puede inicializar el contexto", e1);
-                }
+
+    protected void inicializarUsuarioManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
         if (usuarioManager == null) {
-                try {
+            try {
 
-                        usuarioManager = (UsuarioManager) context.lookup("java:app/proyecto-ejb/UsuarioManagerImpl");
-                } catch (NamingException ne) {
-                        throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
-                }
+                usuarioManager = (UsuarioManager) context.lookup("java:app/proyecto-ejb/UsuarioManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
         }
     }
-    
-    protected void inicializarEmpresaManager() throws Exception{
-        if (context == null)
-                try {
-                        context = new InitialContext();
-                } catch (NamingException e1) {
-                        throw new RuntimeException("No se puede inicializar el contexto", e1);
-                }
+
+    protected void inicializarEmpresaManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
         if (empresaManager == null) {
-                try {
+            try {
 
-                        empresaManager = (EmpresaManager) context.lookup("java:app/proyecto-ejb/EmpresaManagerImpl");
-                } catch (NamingException ne) {
-                        throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
-                }
+                empresaManager = (EmpresaManager) context.lookup("java:app/proyecto-ejb/EmpresaManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
         }
     }
-    
-    protected void inicializarRolManager() throws Exception{
-        if (context == null)
-                try {
-                        context = new InitialContext();
-                } catch (NamingException e1) {
-                        throw new RuntimeException("No se puede inicializar el contexto", e1);
-                }
+
+    protected void inicializarRolManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
         if (rolManager == null) {
-                try {
+            try {
 
-                        rolManager = (RolManager) context.lookup("java:app/proyecto-ejb/RolManagerImpl");
-                } catch (NamingException ne) {
-                        throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
-                }
+                rolManager = (RolManager) context.lookup("java:app/proyecto-ejb/RolManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
         }
     }
-    
-    protected void inicializarClienteManager() throws Exception{
-        if (context == null)
-                try {
-                        context = new InitialContext();
-                } catch (NamingException e1) {
-                        throw new RuntimeException("No se puede inicializar el contexto", e1);
-                }
-        if (clienteManager == null) {
-                try {
 
-                        clienteManager = (ClienteManager) context.lookup("java:app/proyecto-ejb/ClienteManagerImpl");
-                } catch (NamingException ne) {
-                        throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
-                }
+    protected void inicializarClienteManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
         }
+        if (clienteManager == null) {
+            try {
+
+                clienteManager = (ClienteManager) context.lookup("java:app/proyecto-ejb/ClienteManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
+    }
+
+    
+
+    String randomString(int len) {
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        }
+        return sb.toString();
+    }
+    
+    String mensajeCambioPass(String nombreUsuario, String pass) {
+        String mensaje = "Buenas " + nombreUsuario+",\n"
+                +"        Se ha realizado el reseteo de su contraseña, su nueva contraseña \n"
+                +" es la siguiente  "+ pass +"  , favor ingresar al sistema y modificarla.";
+        return mensaje;
+    }
+    
+    String mensajeCambioPassUsuario(String nombreUsuario) {
+        String mensaje = "Buenas,\n"
+                +"        Se ha realizado el reseteo de la contraseña del usuario "+nombreUsuario+" \n";
+        return mensaje;
     }
 }

@@ -119,7 +119,7 @@ and open the template in the editor.
                   <li><a sec:authorize="hasRole('Cliente.Listar')" th:href="@{/clientes}"><i class="fa fa-users"></i> <span>Clientes</span></a></li>
                   <li><a sec:authorize="hasRole('Proveedor.Listar')" th:href="@{/proveedores}"><i class="fa fa-truck"></i> <span>Proveedores</span></a></li>
                   <li class="treeview">
-                    <a href="#"><i class="fa fa-car"></i> <span>Vehículos</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    <a sec:authorize="hasRole('Vehiculo.Listar')" href="#"><i class="fa fa-car"></i> <span>Vehículos</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                       <li><a href="#">Automoviles</a></li>
                       <li><a href="#">Camionetas</a></li>

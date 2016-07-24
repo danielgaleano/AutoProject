@@ -12,7 +12,9 @@ import com.sistem.proyecto.entity.Rol;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.Base64Bytes;
 import com.sistem.proyecto.utils.MensajeDTO;
+import com.sistem.proyecto.utils.SendMail;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.core.Authentication;
@@ -48,7 +50,7 @@ public class UsuarioController extends BaseController {
         try {
             inicializarUsuarioManager();
             System.out.println(userDetail.getNombre());
-            
+             
             if(userDetail.isSuperUsuario()){
                 ejUsuario.setSuperUsuario(Boolean.FALSE);
                 listMapUsuarios = usuarioManager.listAtributos(ejUsuario, atributos.split(","), true);
@@ -546,6 +548,63 @@ public class UsuarioController extends BaseController {
         } catch (Exception e) {
 
             System.out.println("Error" + e);
+        }
+
+        return retorno;
+
+    }
+    
+    @RequestMapping(value = "/reset/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    MensajeDTO resetearPass(@PathVariable("id") Long id) {
+        MensajeDTO retorno = new MensajeDTO();
+        String nombre = "";
+        List<String> to = new ArrayList<String>();
+        List<String> toUser = new ArrayList<String>();        
+        try {
+
+            inicializarUsuarioManager();
+
+            Usuario ejUsuario = new Usuario();            
+            ejUsuario.setSuperUsuario(Boolean.TRUE);
+            
+            List<Map<String, Object>> listMapUsuarios = usuarioManager.listAtributos(ejUsuario, "email,superUsuario".split(","), true);
+            
+            
+            
+            for(Map<String, Object> rmp: listMapUsuarios){
+                to.add(rmp.get("email").toString()) ;
+            }
+            
+            Usuario usuario = usuarioManager.get(id);
+            toUser.add(usuario.getEmail());
+            
+            String nuevaContraseña = randomString(10);
+            String antiguaContraseña = usuario.getClaveAcceso();
+            
+            String mensajeUsuario = mensajeCambioPass(usuario.getNombre() +" " +usuario.getApellido(),nuevaContraseña);
+            
+            String mensajeAdmin = mensajeCambioPassUsuario(usuario.getNombre() +" " +usuario.getApellido());
+            
+            SendMail.enviarMensaje("sistemaproyecto2016@gmail.com", "proyecto2016*auto",
+                    toUser, new ArrayList<String>(), new ArrayList<String>(), mensajeUsuario, "Reseteo de contraseña");
+            
+            SendMail.enviarMensaje("sistemaproyecto2016@gmail.com", "proyecto2016*auto",
+                    to, new ArrayList<String>(), new ArrayList<String>(), mensajeAdmin, "Reseteo de contraseña");
+
+            usuario.setClaveAcceso(nuevaContraseña);
+            usuario.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            usuario.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
+
+            usuarioManager.update(usuario);
+
+            retorno.setError(false);
+            retorno.setMensaje("Contraseña reseteada exitosamente.");
+
+        } catch (Exception e) {
+            retorno.setError(true);
+            retorno.setMensaje("Error al resetear contraseña.");
+            logger.error("Error al resetear contraseña.", e);
         }
 
         return retorno;

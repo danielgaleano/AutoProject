@@ -30,6 +30,10 @@ if (typeof jQuery === 'undefined') {
             urlAsignar:window.location.href,
             urlVisualizar:window.location.href,
             urlEditar:window.location.href,
+            urlAccionExtra:window.location.href,
+            btonAccionExtra: 'btn-toolbar',
+            iconAccionExtra: 'btn-toolbar',
+            titleAction: '',
             tableId:'',
             inputClass: 'form-control input-sm',
             titleAsignar: '',
@@ -61,6 +65,7 @@ if (typeof jQuery === 'undefined') {
             activarButton: true,
             visualizarButton: true,
             editarFormButton: true,
+            isActionExtra: false,
             buttons: {
                 edit: {
                     class: 'btn btn-xs btn-info',
@@ -99,6 +104,11 @@ if (typeof jQuery === 'undefined') {
                 confirm: {
                     class: 'btn btn-sm btn-danger',
                     html: 'Esta Seguro!'
+                },
+                action: {
+                    class: '',
+                    html: '',
+                    action: 'action'
                 }
             },
             onDraw: function() { return; },
@@ -224,6 +234,8 @@ if (typeof jQuery === 'undefined') {
                                                                 var visualizarButton = '';
 								var toolbar = '';
 								var permisoDelete = '';
+                                                                var actionButton = '';
+                                                                var confirmActionButton = '';
                                                        
 								// Add toolbar column header if not exists.
 								if ($table.find('th.tabledit-toolbar-column').length === 0) {
@@ -298,6 +310,19 @@ if (typeof jQuery === 'undefined') {
                                                                             + '</button>';
 										
 									}
+                                                                        
+                                                                        // Create action extra button.
+									if (settings.isActionExtra) {
+                                                                            actionButton = '<button  type="button" class="tabledit-action-button ' 
+                                                                            + settings.btonAccionExtra + '" style="float: none;" title="'+settings.titleAction+'">' 
+                                                                            + '<span class="'+settings.iconAccionExtra+'"></span>' 
+                                                                            + '</button>';
+                                                                            confirmActionButton = '<button  type="button" class="tabledit-confirm-action-button ' 
+                                                                            + settings.buttons.confirm.class + '" style="display: none; float: none;">' 
+                                                                            + settings.buttons.confirm.html 
+                                                                            + '</button>';
+										
+									}
 
 								}else{
                                                                     
@@ -367,6 +392,19 @@ if (typeof jQuery === 'undefined') {
 										
 										
 									}
+                                                                        
+                                                                        // Create action extra button.
+									if (settings.isActionExtra) {
+                                                                            actionButton = '<button  type="button" class="tabledit-action-button ' 
+                                                                            + settings.btonAccionExtra + '" style="display: none; float: none;" title="'+settings.titleAction+'">' 
+                                                                            + '<span class="'+settings.iconAccionExtra+'"></span>' 
+                                                                            + '</button>';
+                                                                            confirmActionButton = '<button  type="button" class="tabledit-confirm-action-button ' 
+                                                                            + settings.buttons.confirm.class + '" style="display: none; float: none;">' 
+                                                                            + settings.buttons.confirm.html 
+                                                                            + '</button>';
+										
+									}
 								}
 
 								// Create save button.
@@ -380,10 +418,12 @@ if (typeof jQuery === 'undefined') {
 								}
 
 								toolbar = '<div class="tabledit-toolbar ' + settings.toolbarClass + '" style="text-align: left;">\n\
-											   <div class="' + settings.groupClass + '" style="float: none;">' + editButton + editarFormButton + visualizarButton + asignarButton +  deleteButton + activarButton +'</div>\n\
+											   <div class="' + settings.groupClass + '" style="float: none;">' + editButton + editarFormButton + 
+                                                                                            visualizarButton + asignarButton + deleteButton +  activarButton+  actionButton+'</div>\n\
 											   ' + saveButton + '\n\
 											   ' + confirmButton + '\n\
 											   ' + confirmActivarButton + '\n\
+                                                                                           ' + confirmActionButton +'\n\
 											   ' + restoreButton + '\n\
 										   </div></div>';						
 								
@@ -405,6 +445,8 @@ if (typeof jQuery === 'undefined') {
 							var asignarButton = '';
 							var activarButton = '';
 							var toolbar = '';
+                                                        var actionButton = '';
+                                                        var confirmActionButton = '';
 
 							// Add toolbar column header if not exists.
 							if ($table.find('th.tabledit-toolbar-column').length === 0) {
@@ -431,6 +473,19 @@ if (typeof jQuery === 'undefined') {
                                                                 + '</button>';
 								
 							}
+                                                        
+                                                        // Create action extra button.
+                                                        if (settings.isActionExtra) {
+                                                            actionButton = '<button  type="button" class="tabledit-action-button ' 
+                                                            + settings.buttons.action.class + '" style="float: none;" title="Resetear Pass">' 
+                                                            + settings.buttons.action.html 
+                                                            + '</button>';
+                                                            confirmActionButton = '<button  type="button" class="tabledit-confirm-action-button ' 
+                                                            + settings.buttons.confirm.class + '" style="display: none; float: none;">' 
+                                                            + settings.buttons.confirm.html 
+                                                            + '</button>';
+
+                                                        }
 							
 
 							// Create save button.
@@ -652,6 +707,76 @@ if (typeof jQuery === 'undefined') {
             }
         };
         
+        /**
+         * Available actions for action function, with button as parameter.
+         *
+         * @type object
+         */
+        var Action = {
+            reset: function(td) {
+                // Reset delete button to initial status.
+                $table.find('.tabledit-confirm-action-button').hide();
+                // Remove "active" class in delete button.
+                $table.find('.tabledit-action-button').removeClass('active').blur();
+            },
+            submit: function(td) {
+                Action.reset(td);
+                // Enable identifier hidden input.
+                $(td).parent('tr').find('input.tabledit-identifier').attr('disabled', false);
+                // Send AJAX request to server.
+                var ajaxResult = ajax(settings.buttons.action.action);
+                // Disable identifier hidden input.
+                $(td).parents('tr').find('input.tabledit-identifier').attr('disabled', true);
+                
+                if (ajaxResult === false) {
+                    return;
+                }
+                
+                $(td).find('.tabledit-edit-button').show();
+                $(td).find('.tabledit-editar-button').show();
+                $(td).find('.tabledit-delete-button').show();
+                
+                $(td).find('.tabledit-asignar-button').show();
+                
+                $(td).find('.tabledit-visualizar-button').show();
+                
+                // Set last deleted row.
+                $lastDeletedRow = $(td).parent('tr');
+            },
+            confirm: function(td) {
+                // Reset all cells in edit mode.
+                $table.find('td.tabledit-edit-mode').each(function() {
+                    Edit.reset(this);
+                });
+                
+                $(td).find('.tabledit-edit-button').hide();
+                $(td).find('.tabledit-editar-button').hide();
+                $(td).find('.tabledit-delete-button').hide();
+                
+                $(td).find('.tabledit-asignar-button').hide();
+                
+                $(td).find('.tabledit-visualizar-button').hide();
+                
+                // Add "active" class in delete button.
+                $(td).find('.tabledit-action-button').addClass('active');
+                // Show confirm button.
+                $(td).find('.tabledit-confirm-action-button').show();
+            },
+            restore: function(td) {
+                // Enable identifier hidden input.
+                $(td).parent('tr').find('input.tabledit-identifier').attr('disabled', false);
+                // Send AJAX request to server.
+                var ajaxResult = ajax(settings.buttons.restore.action);
+                // Disable identifier hidden input.
+                $(td).parents('tr').find('input.tabledit-identifier').attr('disabled', true);
+
+                if (ajaxResult === false) {
+                    return;
+                }
+                $lastRestoredRow = $(td).parent('tr');
+            }
+        };
+        
         
         
         var Activar = {
@@ -685,6 +810,7 @@ if (typeof jQuery === 'undefined') {
                 $(td).find('.tabledit-activar-button').hide();
                 
                 $(td).find('.tabledit-edit-button').show();
+                $(td).find('.tabledit-action-button').show();
                 $(td).find('.tabledit-editar-button').show();
                 $(td).find('.tabledit-delete-button').show();
                 
@@ -840,6 +966,34 @@ if (typeof jQuery === 'undefined') {
                 var valores = serialize.split("id=");
                 var id = valores[1];
                 var jqXHR = $.get(settings.urlActivate+id, function(data, textStatus, jqXHR) {
+                    if (data.error === true) {
+                        $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    +'><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Error! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
+                        
+                    }else{
+                        $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    +'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                    +'<strong>Exito! </strong>'
+                                    + data.mensaje
+                                    + '</div>');
+                        setTimeout(function() {
+                            //$lastEditedRow.removeClass(settings.warningClass);
+                            location.reload();
+                        }, 1500);
+                         
+                    }
+                    
+                    settings.onSuccess(data, textStatus, jqXHR);
+                });
+            }else if(action === "action"){
+                var valores = serialize.split("id=");
+                var id = valores[1];
+                var jqXHR = $.get(settings.urlAccionExtra+id, function(data, textStatus, jqXHR) {
                     if (data.error === true) {
                         $('#mensaje').append('<div class="alert alert-error">'
                                     + '<button class="close" data-dismiss="alert" type="button"'
@@ -1025,6 +1179,54 @@ if (typeof jQuery === 'undefined') {
                     event.handled = true;
                 }
             });
+        }
+        
+        if (settings.isActionExtra) {
+            console.log('desactivarrr');
+            /**
+             * action one row.
+             *
+             * @param {object} event
+             */
+            $table.on('click', 'button.tabledit-action-button', function(event) {
+                console.log('entro Action');
+                if (event.handled !== true) {
+                    event.preventDefault();
+
+                    // Get current state before reset to view mode.
+                    var activated = $(this).hasClass('active');
+
+                    var $td = $(this).parents('td');
+
+                    Action.reset($td);
+
+                    if (!activated) {
+                        Action.confirm($td);
+                    }
+
+                    event.handled = true;
+                }
+            });
+
+            /**
+             * Delete one row (confirm).
+             *
+             * @param {object} event
+             */
+            $table.on('click', 'button.tabledit-confirm-action-button', function(event) {
+                console.log('confirmacion delete')
+                if (event.handled !== true) {
+                    event.preventDefault();
+
+                    var $td = $(this).parents('td');
+
+                    Action.submit($td);
+
+                    event.handled = true;
+                }
+            });
+			
+			
         }
 
         if (settings.deleteButton) {

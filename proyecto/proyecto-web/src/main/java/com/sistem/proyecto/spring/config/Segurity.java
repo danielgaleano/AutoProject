@@ -64,6 +64,7 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/usuarios/editar/**").access("isAuthenticated()")
                 .antMatchers("/usuarios/editar").access("isAuthenticated()")
                 .antMatchers("/usuarios/visualizar/**").access("isAuthenticated()")
+                .antMatchers("/usuarios/reset/**").hasAnyAuthority("SuperUsuario")
                 //------roles----//
                 .antMatchers("/roles**").hasAnyAuthority("SuperUsuario")
                 .antMatchers("/roles/asignar/*").hasAnyAuthority("SuperUsuario")

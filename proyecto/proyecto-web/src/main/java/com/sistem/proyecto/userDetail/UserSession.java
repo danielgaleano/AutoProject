@@ -100,13 +100,13 @@ public class UserSession implements AuthenticationProvider {
                 userDetails.setSuperUsuario(true);
                 userDetails.setNombreRol("Super Usuario");
                 autoridades.add(new SimpleGrantedAuthority("SuperUsuario"));
-                autoridades.add(new SimpleGrantedAuthority("Usuario.Agregar"));
+                autoridades.add(new SimpleGrantedAuthority("Usuario.Crear"));
                 autoridades.add(new SimpleGrantedAuthority("Usuario.Listar"));
                 autoridades.add(new SimpleGrantedAuthority("Usuario.Visualizar"));
                 autoridades.add(new SimpleGrantedAuthority("Usuario.Editar"));
                 autoridades.add(new SimpleGrantedAuthority("Usuario.Desactivar"));
                 autoridades.add(new SimpleGrantedAuthority("Usuario.Activar"));
-            
+                autoridades.add(new SimpleGrantedAuthority("Usuario.AsignarRol"));        
             } else {
                 
                 RolPermiso ejemplo = new RolPermiso();

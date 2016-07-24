@@ -12,7 +12,7 @@
 <body>
     <nav th:replace="include/navbar :: navbar"></nav>
     <div class="content-wrapper">
-        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Agregar'')')}"/>
+        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Crear'')')}"/>
         <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Editar'')')}"/>
         <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Activar'')')}"/>
         <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Desactivar'')')}"/>
@@ -26,7 +26,7 @@
                 <small>Lista de clientes de la empresa.</small>
             </h1>
             <ol class="breadcrumb">
-                <a href="clientes/crear" class="btn btn-primary" role="button">Crear</a>
+                <a sec:authorize="hasRole('Cliente.Crear')"  href="clientes/crear" class="btn btn-primary" role="button">Crear</a>
             </ol>
         </section>
         <hr/>

@@ -1,47 +1,64 @@
 
 $(document).ready(function (data) {
-    $(":input").inputmask();
-    $("#documento").inputmask("Regex", {
-        regex: "^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$"
+    
+    $('.boton-imagen').on('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var boton = $(this);
+        var campo = boton.data('campo');
+        var imagen = boton.data('img');
+        var alto = boton.data('alto');
+        var ancho = boton.data('ancho');
+        console.log(campo);
+        console.log(imagen);
+        $('#' + campo + 'Input').click().change(function () {
+            var input = this
+            if (input.files && input.files[0]) {
+                var FR = new FileReader();
+                FR.onload = function (e) {
+                    $('#' + imagen).attr("src", e.target.result);
+                    $('input[name="' + campo + '"]').val(e.target.result);
+                };
+                FR.readAsDataURL(input.files[0]);
+            }
+        });
     });
-
-
-    $.validator.addMethod("regx", function (value, element, regexpr) {
-        return regexpr.test(value);
-    }, "Debe ingresar un número de documento válido!");
 
     $('#validation-form').validate({
         errorElement: 'span',
         errorClass: 'help-inline',
         focusInvalid: false,
         rules: {
-            documento: {
+            claveAcceso: {
                 required: true,
-                //expresion regular para validar el documento
-                regx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$/,
+                minlength: 5
+            },
+            claveAccesoNuevo: {
+                required: true,
+                minlength: 5
+            },
+            claveAccesoNuevoRepetir {
+                required: true,
                 minlength: 5,
-                maxlength: 10
-            },           
-            nombre: {
-                required: true
-            },
-            telefono: {
-                required: true
-            },
-            email: {
-                required: true,
-                email: true
+                equalTo: "#claveAccesoNuevo"
             }
+            
         },
         messages: {
-            documento: {
-                required: "Debe ingresar un número de documento!",
-                minlength: "Longitud mínima de 5 números!",
-                maxlength: "Longitud máxima de 10 números!",   
+            claveAcceso: {
+                required: "Debe ingresar la contraseña actual del usuario!",
+                minlength: "Longitud mínima de 5 caracteres!"
             },
-            nombre: "Debe ingresar el nombre del cliente!",
-            telefono: "Debe ingresar el numero de telefono del cliente!",
-            email: "Debe ingresar un email valido!"
+            claveAccesoNuevo: {
+                required: "Debe ingresar la nueva contraseña del usuario!",
+                minlength: "Longitud mínima de 5 caracteres!"
+            },
+            claveAccesoNuevoRepetir: {
+                required: "Debe repetir la nueva contraseña del usuario!",
+                minlength: "Longitud mínima de 5 caracteres!",
+                equalTo: "Las nuevas contraseñas ingresadas no coinciden!"
+            }
+
         },
         invalidHandler: function (event, validator) { //display error alert on form submit   
             $('.alert-error', $('.login-form')).show();
@@ -77,9 +94,9 @@ $(document).ready(function (data) {
             console.log("exitoooo");
             var $form = $('#validation-form');
             var serialize = $form.find('.tableusuario-input').serialize();
-            
-            if (cliente == null) {
-                var jqXHR = $.post(CONTEXT_ROOT + '/clientes/guardar', serialize, function (data, textStatus, jqXHR) {
+            var datos = serialize.replace("empresa", "empresa.id");
+            if (usuario == null) {
+                var jqXHR = $.post(CONTEXT_ROOT + '/usuarios/guardar', datos, function (data, textStatus, jqXHR) {
                     if (data.error) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                 + '<button class="close" data-dismiss="alert" type="button"'
@@ -94,9 +111,9 @@ $(document).ready(function (data) {
                                 + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
                                 + data.mensaje
                                 + '</div>');
-//                        setTimeout(function () {
-//                            window.location = CONTEXT_ROOT + "/clientes";
-//                        }, 1500);
+                        setTimeout(function () {
+                            window.location = CONTEXT_ROOT + "/usuarios";
+                        }, 1500);
 
                     }
 
@@ -106,7 +123,7 @@ $(document).ready(function (data) {
 
                 });
             } else {
-                var jqXHR = $.post(CONTEXT_ROOT + '/clientes/editar', serialize, function (data, textStatus, jqXHR) {
+                var jqXHR = $.post(CONTEXT_ROOT + '/usuarios/editar', serialize, function (data, textStatus, jqXHR) {
                     if (data.error) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                 + '<button class="close" data-dismiss="alert" type="button"'
@@ -121,9 +138,9 @@ $(document).ready(function (data) {
                                 + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
                                 + data.mensaje
                                 + '</div>');
-//                        setTimeout(function () {
-//                            window.location = CONTEXT_ROOT + "/clientes";
-//                        }, 1500);
+                        setTimeout(function () {
+                            window.location = CONTEXT_ROOT + "/usuarios";
+                        }, 1500);
 
                     }
 
@@ -136,5 +153,7 @@ $(document).ready(function (data) {
 
         }
     });
+
+
 
 });

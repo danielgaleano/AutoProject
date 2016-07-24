@@ -114,7 +114,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                        <label class="col-lg-2 control-label">Email</label>
+                                        <label class="col-lg-2 control-label">Email(*)</label>
                                         <div class="col-lg-6">
                                             <input th:if="${usuario} == null" id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input "/> 
                                             <input th:if="${editar} and ${usuario} != null" th:value="${usuario.email}" id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input "/> 

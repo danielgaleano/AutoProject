@@ -109,8 +109,9 @@ and open the template in the editor.
                   <li class="treeview">
                     <a sec:authorize="hasRole('Vehiculo.Listar')" href="#"><i class="fa fa-car"></i> <span>Vehículos</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
-                      <li><a href="#">Automoviles</a></li>
-                      <li><a href="#">Camionetas</a></li>
+                      <li><a href="#">Stock</a></li>
+                      <li><a th:href="@{/tipos}">Tipos</a></li>
+                      <li><a th:href="@{/marcas}">Marcas</a></li>
                     </ul>
                   </li>
                   <li class="treeview">

@@ -24,11 +24,11 @@
                 <div class="widget-header widget-header-flat widget-header-large">
                     <h3 class="widget-title">
                         <span class="middle">Perfil Usuario</span>
-                        
+
                     </h3>
 
                     <div class="widget-toolbar no-border">
-                        
+
                         <a th:href="@{/usuarios}" class="btn btn-primary btn-light bigger" role="button">
                             <i class="ace-icon fa fa-arrow-left"></i>
                             Volver
@@ -48,7 +48,7 @@
                                     <div>
                                         <div id="img-boton">
                                             <div class="profile-picture">
-                                                
+
                                                 <img th:if="${usuario} == null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{/resources/img/usuario.jpg}" alt="Imagen"/>
 
                                                 <img th:if="${usuario} != null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{'/obtenerImagen/usuario/'+${usuario.id}}" alt="Imagen"/>
@@ -63,48 +63,50 @@
                                 <input th:if="${usuario} != null" th:value="${usuario.id}" id="idUsuario" name="id" type="hidden"  class="form-control tableusuario-input" />
 
                                 <div class="col-xs-12 col-sm-9">
-                                    <div class=" col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                        <label class="col-lg-3 ">Usuario: </label>
-                                        <div class="col-lg-3">
-                                            <p th:text="${usuario.alias}"></p>
+                                    <div class="profile-user-info profile-user-info-striped">
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Usuario </div>
+
+                                            <div class="profile-info-value">
+                                                <span class="editable"  th:text="${usuario.alias}"/>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Documento </div>
+
+                                            <div class="profile-info-value">
+                                                <span class="editable"  th:text="${usuario.documento}"/>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Nombre </div>
+
+                                            <div class="profile-info-value">
+                                                <span class="editable"  th:text="${usuario.nombre}"/>
+                                            </div>
+                                        </div>
+                                        <div class="profile-info-row">
+                                            <div class="profile-info-name"> Apellido </div>
+
+                                            <div class="profile-info-value">
+                                                <span class="editable"  th:text="${usuario.apellido}"/>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class=" col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                        <label class="col-lg-3 ">Documento: </label>
-                                        <div class="col-lg-3">
-                                            <p th:text="${usuario.documento}"></p>
-                                            
-                                        </div>
-                                    </div>
-                                    
-                                    <div class=" col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                        <label class="col-lg-3 ">Nombre: </label>
-                                        <div class="col-lg-6">
-                                            <p th:text="${usuario.nombre}"></p>
-                                            
-                                        </div>
-                                    </div>
-
-                                    <div class=" col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                        <label class="col-lg-3 ">Apellido: </label>
-                                        <div class="col-lg-6">
-                                            <p th:text="${usuario.apellido}"></p>
-                                        </div>
-                                    </div>
 
                                     <div class="row">
-                                      <div class="col-lg-5">
-                                          <h3>
-                                            Cambiar contraseña
-                                          </h3>
-                                      </div>
+                                        <div class="col-lg-5">
+                                            <h3>
+                                                Cambiar contraseña
+                                            </h3>
+                                        </div>
                                     </div>
                                     <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
                                         <label class="col-lg-3 control-label">Contraseña(*)</label>
                                         <div class="col-lg-4">
                                             <input th:if="${usuario} != null"  id="claveAcceso" name="claveAcceso" type="password" placeholder="Contraseña" class="form-control tableusuario-input "/> 
-                                            
+
                                             <span class="glyphicon form-control-feedback" id="claveAcceso1"></span>
                                         </div>
                                     </div>
@@ -112,7 +114,7 @@
                                         <label class="col-lg-3 control-label">Nueva Contraseña(*)</label>
                                         <div class="col-lg-4">
                                             <input th:if="${usuario} != null"  id="claveAccesoNuevo" name="claveAccesoNuevo" type="password" placeholder="Contraseña" class="form-control tableusuario-input "/> 
-                                             
+
                                             <span class="glyphicon form-control-feedback" id="claveAccesoNuevo1"></span>
                                         </div>
                                     </div>
@@ -120,13 +122,18 @@
                                         <label class="col-lg-3 control-label">Repetir Nueva Contraseña(*)</label>
                                         <div class="col-lg-4">
                                             <input th:if="${usuario} != null"  id="claveAccesoNuevoRepetir" name="claveAccesoNuevoRepetir" type="password" placeholder="Contraseña" class="form-control tableusuario-input "/> 
-                                            
+
                                             <span class="glyphicon form-control-feedback" id="claveAccesoNuevoRepetir1"></span>
                                         </div>
                                     </div>
 
                                 </div>
-                                
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <hr/>
+                                    </div>
+                                </div>
+
 
                             </div>
 

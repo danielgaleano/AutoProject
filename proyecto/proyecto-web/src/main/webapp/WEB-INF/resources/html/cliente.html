@@ -116,9 +116,9 @@
                                     <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
                                         <label class="col-lg-2 control-label">Direccion</label>
                                         <div class="col-lg-6">
-                                            <input th:if="${usuario} == null" id="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input " /> 
-                                            <input th:if="${editar} and ${usuario} != null" th:value="${usuario.direccion}" id="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input " />
-                                            <input th:if="!${editar} and ${usuario} != null" disabled="disabled" th:value="${usuario.direccion}" id="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input " />
+                                            <input th:if="${usuario} == null" id="direccion" type="text" name="direccion" placeholder="Direccion" class="form-control tableusuario-input " /> 
+                                            <input th:if="${editar} and ${usuario} != null" th:value="${usuario.direccion}" name="direccion" id="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input " />
+                                            <input th:if="!${editar} and ${usuario} != null" disabled="disabled" th:value="${usuario.direccion}" name="direccion" id="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input " />
                                             <span class="glyphicon form-control-feedback" id="direccion1"></span>
                                         </div>
                                     </div>

@@ -6,6 +6,7 @@
 package com.sistem.proyecto.web.controller;
 
 import com.sistem.proyecto.manager.ClienteManager;
+import com.sistem.proyecto.manager.ProveedorManager;
 import com.sistem.proyecto.manager.EmpresaManager;
 import com.sistem.proyecto.manager.ImagenManager;
 import com.sistem.proyecto.manager.PermisoManager;
@@ -45,6 +46,8 @@ public class BaseController {
     protected ImagenManager imagenManager;
 
     protected ClienteManager clienteManager;
+    
+    protected ProveedorManager proveedorManager;
 
     public static final Logger logger = LoggerFactory
             .getLogger("proyecto");
@@ -169,6 +172,24 @@ public class BaseController {
             try {
 
                 clienteManager = (ClienteManager) context.lookup("java:app/proyecto-ejb/ClienteManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
+    }
+    
+    protected void inicializarProveedorManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
+        if (proveedorManager == null) {
+            try {
+
+                proveedorManager = (ProveedorManager) context.lookup("java:app/proyecto-ejb/ProveedorManagerImpl");
             } catch (NamingException ne) {
                 throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
             }

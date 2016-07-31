@@ -4,8 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.Transient;
 
 /**
  * @author mojeda
@@ -39,10 +38,35 @@ public class Cliente extends Base {
     
     @Column(name = "telefono_movil")
     private String telefonoMovil;
+    
+    @ManyToOne
+    @JoinColumn(name = "contacto")
+    private Contacto contacto;
 
     @ManyToOne
     @JoinColumn(name = "empresa")
     private Empresa empresa;
+    
+    @Transient
+    private String nombreContacto;
+    
+    @Transient
+    private String telefonoContacto;
+    
+    @Transient
+    private String contactoCargo;
+    
+    @Transient
+    private String contactoEmail;
+    
+    @Transient
+    private String contactoComentario;
+    
+    @Transient
+    private boolean tieneContacto;
+    
+    @Transient
+    private Long idContacto;
 
     public Cliente() {
     }
@@ -149,6 +173,70 @@ public class Cliente extends Base {
 
     public void setTelefonoMovil(String telefonoMovil) {
         this.telefonoMovil = telefonoMovil;
+    }
+
+    public Contacto getContacto() {
+        return contacto;
+    }
+
+    public void setContacto(Contacto contacto) {
+        this.contacto = contacto;
+    }
+
+    public String getNombreContacto() {
+        return nombreContacto;
+    }
+
+    public void setNombreContacto(String nombreContacto) {
+        this.nombreContacto = nombreContacto;
+    }
+
+    public String getTelefonoContacto() {
+        return telefonoContacto;
+    }
+
+    public void setTelefonoContacto(String telefonoContacto) {
+        this.telefonoContacto = telefonoContacto;
+    }
+
+    public String getContactoCargo() {
+        return contactoCargo;
+    }
+
+    public void setContactoCargo(String contactoCargo) {
+        this.contactoCargo = contactoCargo;
+    }
+
+    public String getContactoEmail() {
+        return contactoEmail;
+    }
+
+    public void setContactoEmail(String contactoEmail) {
+        this.contactoEmail = contactoEmail;
+    }
+
+    public String getContactoComentario() {
+        return contactoComentario;
+    }
+
+    public void setContactoComentario(String contactoComentario) {
+        this.contactoComentario = contactoComentario;
+    }
+
+    public boolean isTieneContacto() {
+        return tieneContacto;
+    }
+
+    public void setTieneContacto(boolean tieneContacto) {
+        this.tieneContacto = tieneContacto;
+    }
+
+    public Long getIdContacto() {
+        return idContacto;
+    }
+
+    public void setIdContacto(Long idContacto) {
+        this.idContacto = idContacto;
     }
     
     

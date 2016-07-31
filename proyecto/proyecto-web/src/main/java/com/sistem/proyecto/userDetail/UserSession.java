@@ -131,6 +131,7 @@ public class UserSession implements AuthenticationProvider {
 
             Authentication customAuthentication = new UsernamePasswordAuthenticationToken(userDetails,
                     passwordLogin, autoridades);
+            
             return customAuthentication;
         } else {
             System.out.println("Usuario o Contraseña Inválidos.");

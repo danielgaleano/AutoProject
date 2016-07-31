@@ -110,7 +110,12 @@ $(document).ready(function (data) {
         },
         submitHandler: function (form) {
             console.log("exitoooo");
-
+            console.log($("#id-disable-check").is(':checked'));
+            if($("#id-disable-check").is(':checked')){
+               $("#tieneContacto").val(true);
+            }else{
+               $("#tieneContacto").val(false); 
+            }
             var $form = $('#validation-form');
             var serialize = $form.find('.table-empresa-input').serialize();
             if (empresa == null) {
@@ -175,6 +180,14 @@ $(document).ready(function (data) {
     $('#imgPortada').on('error', function () {
         if (this.naturalWidth == 0) {
             $(this).attr('alt', 'Imagen con errores, vuelva a subir.');
+        }
+    });
+    
+    $("#id-disable-check").click(function () {
+        if(this.checked) { //chequear status del select
+            $("#formContacto").show();
+        }else{
+            $("#formContacto").hide();        
         }
     });
 

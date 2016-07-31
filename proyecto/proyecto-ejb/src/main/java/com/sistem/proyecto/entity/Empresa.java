@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -44,21 +46,37 @@ public class Empresa extends Base{
     
     @Column(name = "telefono_movil")
     private String telefonoMovil;
-    
-    @Column(name = "nombre_contacto")
-    private String nombreContacto;
-    
-    @Column(name = "telefono_contacto")
-    private String telefonoContacto;
-    
-    @Column(name = "telefono_movil_contacto")
-    private String telefonoMovilContacto;
 
     @Column(name = "email")
     private String email;
     
+    @ManyToOne
+    @JoinColumn(name = "contacto")
+    private Contacto contacto;
+    
     @Transient
     private String imagenPort;
+    
+    @Transient
+    private String nombreContacto;
+    
+    @Transient
+    private String telefonoContacto;
+    
+    @Transient
+    private String contactoCargo;
+    
+    @Transient
+    private String contactoEmail;
+    
+    @Transient
+    private String contactoComentario;
+    
+    @Transient
+    private boolean tieneContacto;
+    
+    @Transient
+    private Long idContacto;
 
     
     public Empresa() {
@@ -141,13 +159,6 @@ public class Empresa extends Base{
         this.telefonoContacto = telefonoContacto;
     }
 
-    public String getTelefonoMovilContacto() {
-        return telefonoMovilContacto;
-    }
-
-    public void setTelefonoMovilContacto(String telefonoMovilContacto) {
-        this.telefonoMovilContacto = telefonoMovilContacto;
-    }
 
     public String getImagenPort() {
         return imagenPort;
@@ -155,6 +166,54 @@ public class Empresa extends Base{
 
     public void setImagenPort(String imagenPort) {
         this.imagenPort = imagenPort;
+    }
+
+    public Contacto getContacto() {
+        return contacto;
+    }
+
+    public void setContacto(Contacto contacto) {
+        this.contacto = contacto;
+    }
+
+    public String getContactoCargo() {
+        return contactoCargo;
+    }
+
+    public void setContactoCargo(String contactoCargo) {
+        this.contactoCargo = contactoCargo;
+    }
+
+    public String getContactoEmail() {
+        return contactoEmail;
+    }
+
+    public void setContactoEmail(String contactoEmail) {
+        this.contactoEmail = contactoEmail;
+    }
+
+    public String getContactoComentario() {
+        return contactoComentario;
+    }
+
+    public void setContactoComentario(String contactoComentario) {
+        this.contactoComentario = contactoComentario;
+    }
+
+    public boolean isTieneContacto() {
+        return tieneContacto;
+    }
+
+    public void setTieneContacto(boolean tieneContacto) {
+        this.tieneContacto = tieneContacto;
+    }
+
+    public Long getIdContacto() {
+        return idContacto;
+    }
+
+    public void setIdContacto(Long idContacto) {
+        this.idContacto = idContacto;
     }
     
     

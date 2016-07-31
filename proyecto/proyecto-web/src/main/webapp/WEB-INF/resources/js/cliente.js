@@ -74,7 +74,11 @@ $(document).ready(function (data) {
             $(id_attr).removeClass('glyphicon-remove').addClass('glyphicon-ok');
         },
         submitHandler: function (form) {
-            console.log("exitoooo");
+            if($("#id-disable-check").is(':checked')){
+               $("#tieneContacto").val(true);
+            }else{
+               $("#tieneContacto").val(false); 
+            }
             var $form = $('#validation-form');
             var serialize = $form.find('.tableusuario-input').serialize();
             
@@ -134,6 +138,14 @@ $(document).ready(function (data) {
                 });
             }
 
+        }
+    });
+    
+    $("#id-disable-check").click(function () {
+        if(this.checked) { //chequear status del select
+            $("#formContacto").show();
+        }else{
+            $("#formContacto").hide();        
         }
     });
 

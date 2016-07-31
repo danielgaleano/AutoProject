@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 /**
@@ -24,9 +25,21 @@ public class Proveedor extends Base {
 
     @Column(name = "ruc", nullable = false)
     private String ruc;
-
+    
+    @Column(name = "codigo_postal")
+    private String codigoPostal;
+    
+    @Column(name = "fax")
+    private String fax;
+    
     @Column(name = "email")
     private String email;
+    
+    @Column(name = "pais")
+    private String pais;
+    
+    @Column(name = "ciudad")
+    private String ciudad;
     
     @Column(name = "direccion")
     private String direccion;
@@ -39,10 +52,35 @@ public class Proveedor extends Base {
     
     @Column(name = "telefono_movil")
     private String telefonoMovil;
+    
+    @ManyToOne
+    @JoinColumn(name = "contacto")
+    private Contacto contacto;
 
     @ManyToOne
     @JoinColumn(name = "empresa")
     private Empresa empresa;
+    
+    @Transient
+    private String nombreContacto;
+    
+    @Transient
+    private String telefonoContacto;
+    
+    @Transient
+    private String contactoCargo;
+    
+    @Transient
+    private String contactoEmail;
+    
+    @Transient
+    private String contactoComentario;
+    
+    @Transient
+    private boolean tieneContacto;
+    
+    @Transient
+    private Long idContacto;
 
     public Proveedor() {
     }
@@ -149,6 +187,102 @@ public class Proveedor extends Base {
 
     public void setTelefonoMovil(String telefonoMovil) {
         this.telefonoMovil = telefonoMovil;
+    }
+
+    public String getCodigoPostal() {
+        return codigoPostal;
+    }
+
+    public void setCodigoPostal(String codigoPostal) {
+        this.codigoPostal = codigoPostal;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public String getPais() {
+        return pais;
+    }
+
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+    public String getNombreContacto() {
+        return nombreContacto;
+    }
+
+    public void setNombreContacto(String nombreContacto) {
+        this.nombreContacto = nombreContacto;
+    }
+
+    public String getTelefonoContacto() {
+        return telefonoContacto;
+    }
+
+    public void setTelefonoContacto(String telefonoContacto) {
+        this.telefonoContacto = telefonoContacto;
+    }
+
+    public Contacto getContacto() {
+        return contacto;
+    }
+
+    public void setContacto(Contacto contacto) {
+        this.contacto = contacto;
+    }
+
+    public String getContactoCargo() {
+        return contactoCargo;
+    }
+
+    public void setContactoCargo(String contactoCargo) {
+        this.contactoCargo = contactoCargo;
+    }
+
+    public String getContactoEmail() {
+        return contactoEmail;
+    }
+
+    public void setContactoEmail(String contactoEmail) {
+        this.contactoEmail = contactoEmail;
+    }
+
+    public String getContactoComentario() {
+        return contactoComentario;
+    }
+
+    public void setContactoComentario(String contactoComentario) {
+        this.contactoComentario = contactoComentario;
+    }
+
+    public boolean isTieneContacto() {
+        return tieneContacto;
+    }
+
+    public void setTieneContacto(boolean tieneContacto) {
+        this.tieneContacto = tieneContacto;
+    }
+
+    public Long getIdContacto() {
+        return idContacto;
+    }
+
+    public void setIdContacto(Long idContacto) {
+        this.idContacto = idContacto;
     }
     
     

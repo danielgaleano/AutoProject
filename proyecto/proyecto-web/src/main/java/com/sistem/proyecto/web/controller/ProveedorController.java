@@ -5,6 +5,7 @@
  */
 package com.sistem.proyecto.web.controller;
 
+import com.sistem.proyecto.entity.Contacto;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Imagen;
 import com.sistem.proyecto.entity.Proveedor;
@@ -14,6 +15,7 @@ import com.sistem.proyecto.utils.Base64Bytes;
 import com.sistem.proyecto.utils.MensajeDTO;
 //import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.core.Authentication;
@@ -35,8 +37,9 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/proveedores")
 public class ProveedorController extends BaseController {
 
-    String atributos = "id,nombre,ruc,email,telefono,telefonoMovil,comentario,"
-            + "empresa.id,empresa.nombre,direccion,activo";
+    String atributos = "id,nombre,ruc,email,telefono,telefonoMovil,comentario,fax,ciudad,pais,codigoPostal,contacto.id,"
+            + "contacto.nombre,contacto.cargo,contacto.telefono,contacto.email,"
+            + "contacto.comentario,empresa.id,empresa.nombre,direccion,activo";
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listaProveedores(Model model) {
@@ -86,9 +89,11 @@ public class ProveedorController extends BaseController {
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO mensaje = new MensajeDTO();
         Proveedor ejProveedor = new Proveedor();
+        Contacto ejContacto = new Contacto();
         try {
             inicializarProveedorManager();
             inicializarImagenManager();
+            inicializarContactoManager();
 
             if (proveedorRecibido.getRuc() == null || proveedorRecibido.getRuc() != null
                     && proveedorRecibido.getRuc().compareToIgnoreCase("") == 0) {
@@ -123,6 +128,41 @@ public class ProveedorController extends BaseController {
             }
 
             ejProveedor = new Proveedor();
+            
+            if (proveedorRecibido.isTieneContacto()) {
+
+                if (proveedorRecibido != null && (proveedorRecibido.getNombreContacto() == null
+                        || proveedorRecibido.getNombreContacto().compareToIgnoreCase("") == 0)) {
+                    mensaje.setError(true);
+                    mensaje.setMensaje("El nombre del contacto es obligario.");
+                    return mensaje;
+                }
+
+                if (proveedorRecibido != null && (proveedorRecibido.getTelefonoContacto() == null
+                        || proveedorRecibido.getTelefonoContacto().compareToIgnoreCase("") == 0)) {
+                    mensaje.setError(true);
+                    mensaje.setMensaje("El telefono del contacto es obligario.");
+                    return mensaje;
+                }
+
+
+                ejContacto = new Contacto();
+
+                ejContacto.setActivo("S");
+                ejContacto.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                ejContacto.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                ejContacto.setCargo(proveedorRecibido.getContactoCargo());
+                ejContacto.setComentario(proveedorRecibido.getContactoComentario());
+                ejContacto.setEmail(proveedorRecibido.getContactoEmail());
+                ejContacto.setNombre(proveedorRecibido.getNombreContacto());
+                ejContacto.setTelefono(proveedorRecibido.getTelefonoContacto());
+                ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+                contactoManager.save(ejContacto);
+
+                ejProveedor.setContacto(ejContacto);
+
+            }
 
             ejProveedor.setActivo("S");
             ejProveedor.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
@@ -135,6 +175,10 @@ public class ProveedorController extends BaseController {
             ejProveedor.setComentario(proveedorRecibido.getComentario());
             ejProveedor.setTelefono(proveedorRecibido.getTelefono());
             ejProveedor.setTelefonoMovil(proveedorRecibido.getTelefonoMovil());
+            ejProveedor.setCiudad(proveedorRecibido.getCiudad());
+            ejProveedor.setCodigoPostal(proveedorRecibido.getCodigoPostal());
+            ejProveedor.setPais(proveedorRecibido.getPais());
+            ejProveedor.setFax(proveedorRecibido.getFax());
 
             proveedorManager.save(ejProveedor);
            
@@ -157,9 +201,12 @@ public class ProveedorController extends BaseController {
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO mensaje = new MensajeDTO();
         Proveedor ejProveedor = new Proveedor();
+        Contacto ejContacto = new Contacto();
         try {
             inicializarProveedorManager();
             inicializarImagenManager();
+            inicializarContactoManager();
+            
             if (proveedorRecibido.getId() == null) {
                 mensaje.setError(true);
                 mensaje.setMensaje("Error al editar el proveedor.");
@@ -182,6 +229,82 @@ public class ProveedorController extends BaseController {
 
             Proveedor ejProveedorUp = new Proveedor();
             ejProveedorUp = proveedorManager.get(proveedorRecibido.getId());
+            if (proveedorRecibido.isTieneContacto()) {
+
+                if (proveedorRecibido != null && (proveedorRecibido.getNombreContacto() == null
+                        || proveedorRecibido.getNombreContacto().compareToIgnoreCase("") == 0)) {
+                    mensaje.setError(true);
+                    mensaje.setMensaje("El nombre del contacto es obligario.");
+                    return mensaje;
+                }
+
+                if (proveedorRecibido != null && (proveedorRecibido.getTelefonoContacto() == null
+                        || proveedorRecibido.getTelefonoContacto().compareToIgnoreCase("") == 0)) {
+                    mensaje.setError(true);
+                    mensaje.setMensaje("El telefono del contacto es obligario.");
+                    return mensaje;
+                }
+
+                if (proveedorRecibido.getIdContacto() != null && proveedorRecibido.getIdContacto()
+                        .toString().compareToIgnoreCase("") != 0) {
+
+                    ejContacto.setNombre(proveedorRecibido.getNombre());
+                    ejContacto.setEmpresa(ejProveedorUp.getEmpresa());
+                    
+                    Map<String, Object> contactoNombre = contactoManager.getLike(ejContacto, "id".split(","));
+
+                    if (contactoNombre != null && !contactoNombre.isEmpty() 
+                            && contactoNombre.get("id").toString()
+                                    .compareToIgnoreCase(proveedorRecibido.getIdContacto().toString())  != 0) {
+                        mensaje.setError(true);
+                        mensaje.setMensaje("El nombre del contacto ya se encuentra registrado.");
+                        return mensaje;
+
+                    }
+                    ejContacto = new Contacto();
+
+                    ejContacto = contactoManager.get(proveedorRecibido.getIdContacto());
+
+                    ejContacto.setCargo(proveedorRecibido.getContactoCargo());
+                    ejContacto.setComentario(proveedorRecibido.getContactoComentario());
+                    ejContacto.setEmail(proveedorRecibido.getContactoEmail());
+                    ejContacto.setNombre(proveedorRecibido.getNombreContacto());
+                    ejContacto.setTelefono(proveedorRecibido.getTelefonoContacto());
+
+                    contactoManager.update(ejContacto);
+                    
+                    ejProveedorUp.setContacto(ejContacto);
+                } else {
+                    
+                    ejContacto.setNombre(proveedorRecibido.getNombre());
+                    ejContacto.setEmpresa(ejProveedorUp.getEmpresa());
+                    
+                    Map<String, Object> contactoNombre = contactoManager.getLike(ejContacto, "id".split(","));
+
+                    if (contactoNombre != null && !contactoNombre.isEmpty() ) {
+                        mensaje.setError(true);
+                        mensaje.setMensaje("El nombre del contacto ya se encuentra registrado.");
+                        return mensaje;
+
+                    }
+                    ejContacto = new Contacto();
+                    ejContacto.setActivo("S");
+                    ejContacto.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                    ejContacto.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    ejContacto.setCargo(proveedorRecibido.getContactoCargo());
+                    ejContacto.setComentario(proveedorRecibido.getContactoComentario());
+                    ejContacto.setEmail(proveedorRecibido.getContactoEmail());
+                    ejContacto.setNombre(proveedorRecibido.getNombreContacto());
+                    ejContacto.setTelefono(proveedorRecibido.getTelefonoContacto());
+                    ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+                    contactoManager.save(ejContacto);
+                    
+                    ejProveedorUp.setContacto(ejContacto);
+                }
+                
+
+            }
 
             ejProveedorUp.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
             ejProveedorUp.setComentario(proveedorRecibido.getComentario());
@@ -190,6 +313,10 @@ public class ProveedorController extends BaseController {
             ejProveedorUp.setNombre(proveedorRecibido.getNombre());
             ejProveedorUp.setTelefono(proveedorRecibido.getTelefono());
             ejProveedorUp.setTelefonoMovil(proveedorRecibido.getTelefonoMovil());
+            ejProveedorUp.setCiudad(proveedorRecibido.getCiudad());
+            ejProveedorUp.setCodigoPostal(proveedorRecibido.getCodigoPostal());
+            ejProveedorUp.setPais(proveedorRecibido.getPais());
+            ejProveedorUp.setFax(proveedorRecibido.getFax());
             
             proveedorManager.update(ejProveedorUp);
 
@@ -300,9 +427,9 @@ public class ProveedorController extends BaseController {
     ModelAndView editar(@PathVariable("id") Long id, Model model) {
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         ModelAndView retorno = new ModelAndView();
-                    retorno.setViewName("proveedor");
+        retorno.setViewName("proveedor");
         String nombre = "";
-
+        Map<String, Object> retornoMap = new HashMap<String, Object>();
         try {
 
             inicializarProveedorManager();
@@ -310,11 +437,32 @@ public class ProveedorController extends BaseController {
 
             Map<String, Object> proveedor = proveedorManager.getAtributos(
                     new Proveedor(id), atributos.split(","), false, true);
+            
+            retornoMap.putAll(proveedor);
+            
+            for (Map.Entry<String, Object> entry : proveedor.entrySet()) {
+                
+                
+                    if (entry.getKey().compareToIgnoreCase("contacto.id") == 0) {
+                        retornoMap.put("idContacto", entry.getValue());
+                    } else if (entry.getKey().compareToIgnoreCase("contacto.nombre") == 0) {
+                        retornoMap.put("nombreContacto", entry.getValue());
+                    } else if (entry.getKey().compareToIgnoreCase("contacto.cargo") == 0) {
+                        retornoMap.put("contactoCargo", entry.getValue());
+                    } else if (entry.getKey().compareToIgnoreCase("contacto.telefono") == 0) {
+                        retornoMap.put("telefonoContacto", entry.getValue());
+                    } else if (entry.getKey().compareToIgnoreCase("contacto.email") == 0) {
+                        retornoMap.put("contactoEmail", entry.getValue());
+                    } else if (entry.getKey().compareToIgnoreCase("contacto.comentario") == 0) {
+                        retornoMap.put("contactoComentario", entry.getValue());
+                    }
+               
+            }
            
 
-            model.addAttribute("proveedor", proveedor);
+            model.addAttribute("proveedor", retornoMap);
 
-            model.addAttribute("proveedor", true);
+            model.addAttribute("editar", true);
 
 
         } catch (Exception ex) {
@@ -335,7 +483,7 @@ public class ProveedorController extends BaseController {
         ModelAndView retorno = new ModelAndView();
         retorno.setViewName("proveedor");
         String nombre = "";
-
+        Map<String, Object> retornoMap = new HashMap<String, Object>();
         try {
 
             inicializarProveedorManager();
@@ -343,8 +491,29 @@ public class ProveedorController extends BaseController {
 
             Map<String, Object> proveedor = proveedorManager.getAtributos(
                     new Proveedor(id), atributos.split(","), false, true);
+            
+            retornoMap.putAll(proveedor);
+            
+            for (Map.Entry<String, Object> entry : proveedor.entrySet()) {
+                
+                
+                    if (entry.getKey().compareToIgnoreCase("contacto.id") == 0) {
+                        retornoMap.put("idContacto", entry.getValue());
+                    } else if (entry.getKey().compareToIgnoreCase("contacto.nombre") == 0) {
+                        retornoMap.put("nombreContacto", entry.getValue());
+                    } else if (entry.getKey().compareToIgnoreCase("contacto.cargo") == 0) {
+                        retornoMap.put("contactoCargo", entry.getValue());
+                    } else if (entry.getKey().compareToIgnoreCase("contacto.telefono") == 0) {
+                        retornoMap.put("telefonoContacto", entry.getValue());
+                    } else if (entry.getKey().compareToIgnoreCase("contacto.email") == 0) {
+                        retornoMap.put("contactoEmail", entry.getValue());
+                    } else if (entry.getKey().compareToIgnoreCase("contacto.comentario") == 0) {
+                        retornoMap.put("contactoComentario", entry.getValue());
+                    }
+               
+            }
 
-            model.addAttribute("proveedor", proveedor);
+            model.addAttribute("proveedor", retornoMap);
 
             model.addAttribute("editar", false);
 

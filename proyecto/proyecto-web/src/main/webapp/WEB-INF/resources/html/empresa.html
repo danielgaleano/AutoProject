@@ -3,71 +3,71 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-   <head>
-        <div th:include="include/head :: head" th:remove="tag"></div>
-        <script th:src="@{~/proyecto/resources/js/lib/jquery-1.9.1.min.js}"></script>
-        <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}"></script>
-        <link rel="stylesheet" th:href="@{/resources/dist/css/style_image.css}" type="text/css"/>
-        <link rel="stylesheet" th:href="@{/resources/dist/css/style.css}" type="text/css"/>
-        <script th:inline="javascript">  
-            var empresa = /*[[${empresa}]]*/'';
-        </script>
-        <title>Empresas</title>
-  </head>
+    <head>
+    <div th:include="include/head :: head" th:remove="tag"></div>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery-1.9.1.min.js}"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/resources/dist/css/style_image.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/resources/dist/css/style.css}" type="text/css"/>
+    <script th:inline="javascript">
+        var empresa = /*[[${empresa}]]*/'';
+    </script>
+    <title>Empresas</title>
+</head>
 <body >
     <nav th:replace="include/navbar :: navbar"></nav>
     <div class="content-wrapper">
-    <!-- Main content -->
-    <section class="content">
+        <!-- Main content -->
+        <section class="content">
             <div class="box box-info">
-                
+
                 <div class="widget-header widget-header-flat widget-header-large">
-                  <h3 class="widget-title">
-                      <span th:if="${empresa} == null" class="middle">Crear Empresa</span>
-                      <span th:if="${editar}" class="middle">Editar Empresa</span>
-                      <span th:if="!${editar} and ${empresa} != null" class="middle">Visualizar Empresa</span>
-                  </h3>
-                    
-                  <div class="widget-toolbar no-border">
-                      
-                      <a sec:authorize="hasRole('SuperUsuario')" id="botonEditar" th:if="!${editar} and ${empresa} != null" th:href="@{'/empresas/editar/'+${empresa.id}}" class="btn btn-primary" role="button">Editar</a>
-                                           
-                      <a th:href="@{/empresas}" class="btn btn-primary btn-light bigger" role="button">
-                          <i class="ace-icon fa fa-arrow-left"></i>
-                          Volver
-                      </a>                 
-                  </div>   
+                    <h3 class="widget-title">
+                        <span th:if="${empresa} == null" class="middle">Crear Empresa</span>
+                        <span th:if="${editar}" class="middle">Editar Empresa</span>
+                        <span th:if="!${editar} and ${empresa} != null" class="middle">Visualizar Empresa</span>
+                    </h3>
+
+                    <div class="widget-toolbar no-border">
+
+                        <a sec:authorize="hasRole('SuperUsuario')" id="botonEditar" th:if="!${editar} and ${empresa} != null" th:href="@{'/empresas/editar/'+${empresa.id}}" class="btn btn-primary" role="button">Editar</a>
+
+                        <a th:href="@{/empresas}" class="btn btn-primary btn-light bigger" role="button">
+                            <i class="ace-icon fa fa-arrow-left"></i>
+                            Volver
+                        </a>                 
+                    </div>   
                 </div>
-                
-               <form id="validation-form" class="form-horizontal dropzone" data-toggle="validator" role="form">
-                  
-                   <div class="box-body">
-                      <div id="mensaje"/> 
-                       <div class="col-xs-12">
-                           <div id="empresa-profile-1" class="user-profile row" style="padding-top: 2em; padding-left: 1em; padding-right: 1em;">
-                               <div class="col-xs-12 col-sm-3 center">
-                                   <div>
+
+                <form id="validation-form" class="form-horizontal dropzone" data-toggle="validator" role="form">
+
+                    <div class="box-body">
+                        <div id="mensaje"/> 
+                        <div class="col-xs-12">
+                            <div id="empresa-profile-1" class="user-profile row" style="padding-top: 2em; padding-left: 1em; padding-right: 1em;">
+                                <div class="col-xs-12 col-sm-3 center">
+                                    <div>
                                         <div id="img-boton">
                                             <div class="profile-picture">
-                                             <input  name="imagenPort" type="hidden"  class="form-control table-empresa-input" />
-                                             <img th:if="${empresa} == null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{/resources/img/empresa.jpg}" alt="Seleccione una nueva imagen"/>
+                                                <input  name="imagenPort" type="hidden"  class="form-control table-empresa-input" />
+                                                <img th:if="${empresa} == null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{/resources/img/empresa.jpg}" alt="Seleccione una nueva imagen"/>
 
-                                             <img th:if="${empresa} != null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{'/obtenerImagen/empresa/'+${empresa.id}}" alt="Seleccione una nueva imagen"/>
+                                                <img th:if="${empresa} != null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{'/obtenerImagen/empresa/'+${empresa.id}}" alt="Seleccione una nueva imagen"/>
 
-                                             <div class="caption">
-                                               <a th:if="${editar} and ${empresa} != null or ${empresa} == null" class="btn btn-warning boton-imagen" role="button" data-campo="imagenPort" data-ancho="200" data-alto="400" data-img="imgPortada">Elegir imagen</a>
-                                               <input class="form-control table-empresa-input hidden" name="imagenPortInput" id="imagenPortInput" type="file"/>
-                                             </div>
-                                           </div>
-                                       </div>
+                                                <div class="caption">
+                                                    <a th:if="${editar} and ${empresa} != null or ${empresa} == null" class="btn btn-warning boton-imagen" role="button" data-campo="imagenPort" data-ancho="200" data-alto="400" data-img="imgPortada">Elegir imagen</a>
+                                                    <input class="form-control table-empresa-input hidden" name="imagenPortInput" id="imagenPortInput" type="file"/>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                               </div>
-                               <input th:if="${empresa} == null" id="idUsuario" name="id" type="hidden"  class="form-control table-empresa-input" />
-                               <input th:if="${empresa} != null" th:value="${empresa.id}" id="idUsuario" name="id" type="hidden"  class="form-control table-empresa-input" />
-                               <div class="col-xs-12 col-sm-9">
-                                   
-                                   <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                    <label class="col-lg-2 control-label">RUC(*)</label>
+                                </div>
+                                <input th:if="${empresa} == null" id="idUsuario" name="id" type="hidden"  class="form-control table-empresa-input" />
+                                <input th:if="${empresa} != null" th:value="${empresa.id}" id="idUsuario" name="id" type="hidden"  class="form-control table-empresa-input" />
+                                <div class="col-xs-12 col-sm-9">
+
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                        <label class="col-lg-2 control-label">RUC(*)</label>
                                         <div class="col-lg-3">
                                             <input th:if="${empresa} != null" th:value="${empresa.ruc}" id="ruc" name="ruc" type="text" placeholder="Documento" disabled="disabled" data-mask="" data-inputmask-regex="^[0-9]{5}[0-9]?[0-9]?[0-9]?-[0-9]$" class="form-control table-empresa-input"/>
                                             <input th:if="${empresa} == null"  id="ruc" name="ruc" type="text" placeholder="RUC" data-mask="" data-inputmask-regex="^[0-9]{5}[0-9]?[0-9]?[0-9]?-[0-9]$" class="form-control table-empresa-input"/>
@@ -75,135 +75,166 @@
                                         </div>
                                     </div>
 
-                                   <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                    <label class="col-lg-2 control-label">Nombre(*)</label>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                        <label class="col-lg-2 control-label">Nombre(*)</label>
                                         <div class="col-lg-6">
                                             <input th:if="!${editar} and ${empresa} != null" th:value="${empresa.nombre}" id="nombre" name="nombre" type="text" placeholder="Nombre" disabled="disabled" class="form-control table-empresa-input"/>
                                             <input th:if="${editar} and ${empresa} != null" th:value="${empresa.nombre}" id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control table-empresa-input"/> 
                                             <input th:if="${empresa} == null"  id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control table-empresa-input"/>
                                             <span class="glyphicon form-control-feedback" id="nombre1"></span> 
                                         </div>
-                                   </div>
-                                   <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                    <label class="col-lg-2 control-label">Direccion(*)</label>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                        <label class="col-lg-2 control-label">Direccion(*)</label>
                                         <div class="col-lg-6">
                                             <input th:if="!${editar} and ${empresa} != null" th:value="${empresa.direccion}" id="direccion" name="direccion" type="text" placeholder="Direccion" disabled="disabled" class="form-control table-empresa-input"/>
                                             <input th:if="${editar} and ${empresa} != null" th:value="${empresa.direccion}" id="direccion" name="direccion" type="text" placeholder="Direccion" class="form-control table-empresa-input"/>
                                             <input th:if="${empresa} == null"  id="direccion" name="direccion" type="text" placeholder="Direccion" class="form-control table-empresa-input"/> 
                                             <span class="glyphicon form-control-feedback" id="direccion1"></span>
                                         </div>
-                                   </div>
-                                   <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                    <label class="col-lg-2 control-label">Descripcion</label>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                        <label class="col-lg-2 control-label">Descripcion</label>
                                         <div class="col-lg-6">
                                             <input th:if="!${editar} and ${empresa} != null" th:value="${empresa.descripcion}" id="descripcion" name="descripcion" type="text" placeholder="Descripcion" disabled="disabled" class="form-control table-empresa-input"/>
                                             <input th:if="${editar} and ${empresa} != null" th:value="${empresa.descripcion}" id="descripcion" name="descripcion" type="text" placeholder="Descripcion" class="form-control table-empresa-input"/>
                                             <input th:if="${empresa} == null"  id="descripcion" name="descripcion" type="text" placeholder="Descripcion" class="form-control table-empresa-input"/> 
                                             <span class="glyphicon form-control-feedback" id="descripcion1"></span>
                                         </div>
-                                   </div>
-                                   <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                    <label class="col-lg-2 control-label">Telefono</label>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                        <label class="col-lg-2 control-label">Telefono</label>
                                         <div class="col-lg-3">
                                             <input th:if="!${editar} and ${empresa} != null" th:value="${empresa.telefono}" id="telefono" name="telefono" type="text" data-mask="" data-inputmask="'mask': '(999)999-999'" placeholder="Telefono" disabled="disabled" class="form-control table-empresa-input"/>
                                             <input th:if="${editar} and ${empresa} != null" th:value="${empresa.telefono}" id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control table-empresa-input"/>
                                             <input th:if="${empresa} == null"  id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control table-empresa-input"/> 
                                             <span class="glyphicon form-control-feedback" id="telefono1"></span>
                                         </div>
-                                   </div>
-              
-                                  <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                    <label class="col-lg-2 control-label">Telefono Movil</label>
-                                      <div class="col-lg-3">
-                                          <input th:if="${empresa} == null" id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control table-empresa-input"/> 
-                                          <input th:if="${editar} and ${empresa} != null" th:value="${empresa.telefonoMovil}" id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control table-empresa-input"/>
-                                          <input th:if="!${editar} and ${empresa} != null" disabled="disabled" th:value="${empresa.telefonoMovil}" id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control table-empresa-input"/>
-                                          <span class="glyphicon form-control-feedback" id="telefonoMovil1"></span>
-                                      </div>
-                                  </div>
-                                  <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                    <label class="col-lg-2 control-label">Email(*)</label>
-                                      <div class="col-lg-5">
-                                          <input th:if="${empresa} == null" id="email" name="email" type="text" placeholder="Email"  class="form-control table-empresa-input"/> 
-                                          <input th:if="${editar} and ${empresa} != null" th:value="${empresa.email}" id="email" name="email" type="text" placeholder="Email"  class="form-control table-empresa-input"/>
-                                          <input th:if="!${editar} and ${empresa} != null" disabled="disabled" th:value="${empresa.email}" id="email" name="email" type="text" placeholder="Email"  class="form-control table-empresa-input"/>
-                                          <span class="glyphicon form-control-feedback" id="email1"></span>
-                                      </div>
-                                  </div>
-                                  
-                              </div>             
-                              <div class="row">
-                                      <div class="col-lg-2">
-                                          <h2 class="pull-right">
-                                            Contacto
-                                          </h2>
-                                      </div>
-                                  </div>
-                                <div class="row">
-                                  <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                    <label class="col-lg-3 control-label">Nombre del Contacto(*)</label>
-                                      <div class="col-lg-4">
-                                          <input th:if="!${editar} and ${empresa} != null" th:value="${empresa.nombreContacto}" id="nombreContacto" name="nombreContacto" type="text" placeholder="Nombre del Contacto" disabled="disabled" class="form-control table-empresa-input"/>
-                                          <input th:if="${editar} and ${empresa} != null" th:value="${empresa.nombreContacto}" id="nombreContacto" name="nombreContacto" type="text" placeholder="Nombre del Contacto" class="form-control table-empresa-input"/> 
-                                          <input th:if="${empresa} == null"  id="nombreContacto" name="nombreContacto" type="text" placeholder="Nombre del Contacto" class="form-control table-empresa-input"/> 
-                                          <span class="glyphicon form-control-feedback" id="nombreContacto1"></span>
-                                      </div>
-                                 </div>
-                                  <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                    <label class="col-lg-3 control-label">Telefono</label>
-                                      <div class="col-lg-3">
-                                          <input th:if="!${editar} and ${empresa} != null" th:value="${empresa.telefonoContacto}" id="telefonoContacto" name="telefonoContacto" type="text" data-mask="" data-inputmask="'mask': '(999)999-999'" placeholder="Telefono" disabled="disabled" class="form-control table-empresa-input"/>
-                                          <input th:if="${editar} and ${empresa} != null" th:value="${empresa.telefonoContacto}" id="telefonoContacto" name="telefonoContacto" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control table-empresa-input"/>
-                                          <input th:if="${empresa} == null"  id="telefonoContacto" name="telefonoContacto" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control table-empresa-input"/> 
-                                          <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
-                                      </div>
-                                 </div>
-                                  <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                    <label class="col-lg-3 control-label">Telefono Movil</label>
-                                      <div class="col-lg-3">
-                                          <input th:if="${empresa} == null" id="telefonoMovilContacto" name="telefonoMovilContacto" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control table-empresa-input"/> 
-                                          <input th:if="${editar} and ${empresa} != null" th:value="${empresa.telefonoMovilContacto}" id="telefonoMovilContacto" name="telefonoMovilContacto" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control table-empresa-input"/>
-                                          <input th:if="!${editar} and ${empresa} != null" disabled="disabled" th:value="${empresa.telefonoMovilContacto}" id="telefonoMovilContacto" name="telefonoMovilContacto" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control table-empresa-input"/>
-                                          <span class="glyphicon form-control-feedback" id="telefonoMovilContacto1"></span>
-                                      </div>
-                                  </div>
-                                </div>           
-                           </div>
-                       </div>
-                   </div>
+                                    </div>
+
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                        <label class="col-lg-2 control-label">Telefono Movil</label>
+                                        <div class="col-lg-3">
+                                            <input th:if="${empresa} == null" id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control table-empresa-input"/> 
+                                            <input th:if="${editar} and ${empresa} != null" th:value="${empresa.telefonoMovil}" id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control table-empresa-input"/>
+                                            <input th:if="!${editar} and ${empresa} != null" disabled="disabled" th:value="${empresa.telefonoMovil}" id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono Movil" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control table-empresa-input"/>
+                                            <span class="glyphicon form-control-feedback" id="telefonoMovil1"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                        <label class="col-lg-2 control-label">Email(*)</label>
+                                        <div class="col-lg-5">
+                                            <input th:if="${empresa} == null" id="email" name="email" type="text" placeholder="Email"  class="form-control table-empresa-input"/> 
+                                            <input th:if="${editar} and ${empresa} != null" th:value="${empresa.email}" id="email" name="email" type="text" placeholder="Email"  class="form-control table-empresa-input"/>
+                                            <input th:if="!${editar} and ${empresa} != null" disabled="disabled" th:value="${empresa.email}" id="email" name="email" type="text" placeholder="Email"  class="form-control table-empresa-input"/>
+                                            <span class="glyphicon form-control-feedback" id="email1"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                        <label class="col-lg-2 control-label">Contacto</label>
+                                        <div class="col-lg-5">
+                                            <span class="col-xs-12 col-sm-7">
+                                                <label class="middle">
+                                                    <input type="checkbox" id="id-disable-check"/>
+                                                    <input id="tieneContacto" name="tieneContacto" type="hidden"  class="table-empresa-input" />
+                                                </label>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div id="formContacto" style="display:none;">
+                                    <div class="row" >
+                                        <div class="col-lg-2">
+                                            <h2 class="pull-right">
+                                                Contacto
+                                            </h2>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <input th:if="${empresa} == null" id="idContacto" name="idContacto" type="hidden"  class="form-control table-empresa-input" />
+                                        <input th:if="${empresa} != null" th:value="${empresa.idContacto}" id="idContacto" name="idContacto" type="hidden"  class="form-control table-empresa-input" />
+                  
+                                        <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                            <label class="col-lg-3 control-label">Nombre(*)</label>
+                                            <div class="col-lg-3">
+                                                <input th:if="!${editar} and ${empresa} != null" th:value="${empresa.nombreContacto}" id="nombreContacto" name="nombreContacto" type="text" placeholder="Nombre del Contacto" disabled="disabled" class="form-control table-empresa-input"/>
+                                                <input th:if="${editar} and ${empresa} != null" th:value="${empresa.nombreContacto}" id="nombreContacto" name="nombreContacto" type="text" placeholder="Nombre del Contacto" class="form-control table-empresa-input"/> 
+                                                <input th:if="${empresa} == null"  id="nombreContacto" name="nombreContacto" type="text" placeholder="Nombre del Contacto" class="form-control table-empresa-input"/> 
+                                                <span class="glyphicon form-control-feedback" id="nombreContacto1"></span>
+                                            </div>
+                                            <label class="col-lg-3 control-label">Cargo(*)</label>
+                                            <div class="col-lg-3">
+                                                <input th:if="!${editar} and ${empresa} != null" th:value="${empresa.contactoCargo}" id="contactoCargo" name="contactoCargo" type="text" placeholder="Cargo del Contacto" disabled="disabled" class="form-control table-empresa-input"/>
+                                                <input th:if="${editar} and ${empresa} != null" th:value="${empresa.contactoCargo}" id="contactoCargo" name="contactoCargo" type="text" placeholder="Cargo del Contacto" class="form-control table-empresa-input"/> 
+                                                <input th:if="${empresa} == null"  id="contactoCargo" name="contactoCargo" type="text" placeholder="Cargo del Contacto" class="form-control table-empresa-input"/> 
+                                                <span class="glyphicon form-control-feedback" id="cargoContacto1"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                            <label class="col-lg-3 control-label">Telefono(*)</label>
+                                            <div class="col-lg-3">
+                                                <input th:if="!${editar} and ${empresa} != null" th:value="${empresa.telefonoContacto}" id="telefonoContacto" name="telefonoContacto" type="text" data-mask="" data-inputmask="'mask': '(999)999-999'" placeholder="Telefono" disabled="disabled" class="form-control table-empresa-input"/>
+                                                <input th:if="${editar} and ${empresa} != null" th:value="${empresa.telefonoContacto}" id="telefonoContacto" name="telefonoContacto" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control table-empresa-input"/>
+                                                <input th:if="${empresa} == null"  id="telefonoContacto" name="telefonoContacto" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control table-empresa-input"/> 
+                                                <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
+                                            </div>
+                                            <label class="col-lg-3 control-label">Email</label>
+                                            <div class="col-lg-3">
+                                                <input th:if="!${editar} and ${empresa} != null" th:value="${empresa.contactoEmail}" id="contactoEmail" name="contactoEmail" type="text"  placeholder="Email" disabled="disabled" class="form-control table-empresa-input"/>
+                                                <input th:if="${editar} and ${empresa} != null" th:value="${empresa.contactoEmail}" id="contactoEmail" name="contactoEmail" type="text" placeholder="Email"  class="form-control table-empresa-input"/>
+                                                <input th:if="${empresa} == null"  id="contactoEmail" name="contactoEmail" type="text" placeholder="Email"  class="form-control table-empresa-input"/> 
+                                                <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                            <label class="col-lg-3 control-label">Comentario</label>
+                                            <div class="col-lg-3">
+                                                <input th:if="${empresa} == null" id="telefonoMovilContacto" name="contactoComentario" type="text" placeholder="Comentario"  class="form-control table-empresa-input"/> 
+                                                <input th:if="${editar} and ${empresa} != null" th:value="${empresa.contactoComentario}" id="contactoComentario" name="contactoComentario" type="text" placeholder="Comentario"  class="form-control table-empresa-input"/>
+                                                <input th:if="!${editar} and ${empresa} != null" disabled="disabled" th:value="${empresa.contactoComentario}" id="contactoComentario" name="contactoComentario" type="text" placeholder="Comentario"  class="form-control table-empresa-input"/>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                     <div class="clearfix box-footer"  th:if="${editar} and ${empresa} != null or ${empresa} == null">
                         <div class="col-md-offset-3 col-md-9">
-                                <button id="aceptar" class="btn btn-primary"  type="submit" data-disable="true">
-                                        <i class="fa fa-check bigger-110"></i>
-                                        Guardar
-                                </button>
+                            <button id="aceptar" class="btn btn-primary"  type="submit" data-disable="true">
+                                <i class="fa fa-check bigger-110"></i>
+                                Guardar
+                            </button>
 
-                                &nbsp; &nbsp; &nbsp;
-                                <button id="cancelar" class="btn btn-default" type="reset" >
-                                        <i class="fa fa-undo bigger-110"></i>
-                                   Cancelar
-                                </button>
+                            &nbsp; &nbsp; &nbsp;
+                            <button id="cancelar" class="btn btn-default" type="reset" >
+                                <i class="fa fa-undo bigger-110"></i>
+                                Cancelar
+                            </button>
                         </div>
                     </div>                   
-               </form>
-           </div>
-      <!-- Your Page Content Here -->
+                </form>
+            </div>
+            <!-- Your Page Content Here -->
 
-    </section><!-- /.content -->
-  </div>
+        </section><!-- /.content -->
+    </div>
 
     <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
-    
+
     <script th:src="@{~/proyecto/resources/js/lib/bootstrap-editable.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/dist/js/jquery.inputmask.bundle.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/empresa.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/base.js}" charset="UTF-8"></script>
-    
-    <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>
-    
 
-  
-     
-    
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>
+
+
+
+
+
 </body>
 </html>

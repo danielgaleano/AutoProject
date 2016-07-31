@@ -86,12 +86,25 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/empresas/visualizar/**").hasAnyAuthority("SuperUsuario")
                 //------Empresa----//
                 .antMatchers("/clientes**").hasAnyAuthority("Cliente.Listar")
-                .antMatchers("/clientes/crear**").hasAnyAuthority("Cliente.Agregar")
-                .antMatchers("/clientes/guardar**").hasAnyAuthority("Cliente.Agregar")
+                .antMatchers("/clientes/crear**").hasAnyAuthority("Cliente.Crear")
+                .antMatchers("/clientes/guardar**").hasAnyAuthority("Cliente.Crear")
                 .antMatchers("/clientes/activar/*").hasAnyAuthority("Cliente.Activar")
                 .antMatchers("/clientes/desactivar/*").hasAnyAuthority("Cliente.Desactivar")
                 .antMatchers("/clientes/editar/**").hasAnyAuthority("Cliente.Editar")
                 .antMatchers("/clientes/visualizar/**").hasAnyAuthority("Cliente.Visualizar")
+                //------Tipos----//
+                .antMatchers("/tipos**").hasAnyAuthority("Tipo.Listar")
+                .antMatchers("/tipos/crear**").hasAnyAuthority("Tipo.Crear")
+                .antMatchers("/tipos/guardar**").hasAnyAuthority("Tipo.Crear")
+                .antMatchers("/tipos/editar**").hasAnyAuthority("Tipo.Editar")
+                //------Proveedor----//
+                .antMatchers("/proveedores**").hasAnyAuthority("Proveedor.Listar")
+                .antMatchers("/proveedores/crear**").hasAnyAuthority("Proveedor.Crear")
+                .antMatchers("/proveedores/guardar**").hasAnyAuthority("Proveedor.Crear")
+                .antMatchers("/proveedores/activar/*").hasAnyAuthority("Proveedor.Activar")
+                .antMatchers("/proveedores/desactivar/*").hasAnyAuthority("Proveedor.Desactivar")
+                .antMatchers("/proveedores/editar/**").hasAnyAuthority("Proveedor.Editar")
+                .antMatchers("/proveedores/visualizar/**").hasAnyAuthority("Proveedor.Visualizar")
                //------Movil----//
                 .antMatchers("/movil/guardarImagen**").permitAll()
                 .antMatchers("/obtenerImagen/*/*").permitAll()

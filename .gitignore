@@ -13,3 +13,4 @@ hs_err_pid*
 /proyecto/proyecto-ejb/target/
 /proyecto/proyecto-web/target/
 /proyecto/proyecto-ear/target/*.log
+proyecto/proyecto-ear/target/maven-archiver/pom.properties

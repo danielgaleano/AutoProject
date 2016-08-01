@@ -59,10 +59,13 @@ $(document).ready(function (data) {
             },
             nombreContacto: {
                 required: true
-            }/*,
-             telefonoContacto: {
-             required: true
-             }*/
+            },
+            contactoCargo: {
+                required: true
+            },
+            telefonoContacto: {
+                required: true
+            }
         },
         messages: {
             ruc: "Debe ingresar un número de ruc!",
@@ -70,8 +73,10 @@ $(document).ready(function (data) {
             direccion: "Debe ingresar una dirección!",
             /*telefono: "Debe ingresar un número de telefono!",*/
             email: "Debe ingresar un email válido!",
-            nombreContacto: "Debe ingresar nombre del contacto!"/*,
-             telefonoContacto: "Debe ingresar teléfono del contacto!"*/
+            nombreContacto: "Debe ingresar nombre del contacto!",
+            contactoCargo: "Debe ingresar el cargo del contacto!",
+            telefonoContacto: "Debe ingresar teléfono del contacto!"
+
         },
         invalidHandler: function (event, validator) { //display error alert on form submit   
             $('.alert-error', $('.login-form')).show();

@@ -126,10 +126,10 @@
                                     <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
                                         <label class="col-lg-2 control-label">Comentario</label>
                                         <div class="col-lg-6">
-                                            <textarea rows="3" maxlength="60"  th:if="${cliente} == null" id="telefonoMovil" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " /> 
-                                            <textarea rows="3" maxlength="60"  th:if="${editar} and ${cliente} != null" th:value="${cliente.comentario}" id="comentario" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " />
-                                            <textarea rows="3" maxlength="60"  th:if="!${editar} and ${cliente} != null" disabled="disabled" th:value="${cliente.comentario}" id="comentario" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " />
-
+                                            <textarea rows="3"   th:if="${cliente} == null" id="comentario" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " /> 
+                                            <textarea rows="3"   th:if="${editar} and ${cliente} != null" th:value="${cliente.comentario}" id="comentario" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " />
+                                            <textarea rows="3"   th:if="!${editar} and ${cliente} != null" disabled="disabled" th:value="${cliente.comentario}" id="comentario" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " />
+                                            <span class="glyphicon form-control-feedback" id="comentario1"></span>
                                         </div>
                                     </div>
                                     <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
@@ -155,46 +155,52 @@
                                             <input th:if="${cliente} == null" id="idContacto" name="idContacto" type="hidden"  class="form-control tableusuario-input" />
                                             <input th:if="${cliente} != null" th:value="${cliente.idContacto}" id="idContacto" name="idContacto" type="hidden"  class="form-control tableusuario-input" />
 
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                <label class="col-lg-3 control-label">Nombre(*)</label>
-                                                <div class="col-lg-3">
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                <label class="col-lg-4 control-label">Nombre(*)</label>
+                                                <div class="col-lg-6">
                                                     <input th:if="!${editar} and ${cliente} != null" th:value="${cliente.nombreContacto}" id="nombreContacto" name="nombreContacto" type="text" placeholder="Nombre del Contacto" disabled="disabled" class="form-control tableusuario-input"/>
                                                     <input th:if="${editar} and ${cliente} != null" th:value="${cliente.nombreContacto}" id="nombreContacto" name="nombreContacto" type="text" placeholder="Nombre del Contacto" class="form-control tableusuario-input"/> 
                                                     <input th:if="${cliente} == null"  id="nombreContacto" name="nombreContacto" type="text" placeholder="Nombre del Contacto" class="form-control tableusuario-input"/> 
                                                     <span class="glyphicon form-control-feedback" id="nombreContacto1"></span>
                                                 </div>
-                                                <label class="col-lg-3 control-label">Cargo(*)</label>
-                                                <div class="col-lg-3">
+                                            </div>
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                <label class="col-lg-4 control-label">Cargo(*)</label>
+                                                <div class="col-lg-6">
                                                     <input th:if="!${editar} and ${cliente} != null" th:value="${cliente.contactoCargo}" id="contactoCargo" name="contactoCargo" type="text" placeholder="Cargo del Contacto" disabled="disabled" class="form-control tableusuario-input"/>
                                                     <input th:if="${editar} and ${cliente} != null" th:value="${cliente.contactoCargo}" id="contactoCargo" name="contactoCargo" type="text" placeholder="Cargo del Contacto" class="form-control tableusuario-input"/> 
                                                     <input th:if="${cliente} == null"  id="contactoCargo" name="contactoCargo" type="text" placeholder="Cargo del Contacto" class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="cargoContacto1"></span>
+                                                    <span class="glyphicon form-control-feedback" id="contactoCargo1"></span>
                                                 </div>
                                             </div>
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                <label class="col-lg-3 control-label">Telefono(*)</label>
-                                                <div class="col-lg-3">
-                                                    <input th:if="!${editar} and ${cliente} != null" th:value="${cliente.telefonoContacto}" id="telefonoContacto" name="telefonoContacto" type="text" data-mask="" data-inputmask="'mask': '(999)999-999'" placeholder="Telefono" disabled="disabled" class="form-control tableusuario-input"/>
-                                                    <input th:if="${editar} and ${cliente} != null" th:value="${cliente.telefonoContacto}" id="telefonoContacto" name="telefonoContacto" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input"/>
-                                                    <input th:if="${cliente} == null"  id="telefonoContacto" name="telefonoContacto" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input"/> 
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                <label class="col-lg-4 control-label">Telefono Movil(*)</label>
+                                                <div class="col-lg-4">
+                                                    <input th:if="!${editar} and ${cliente} != null" th:value="${cliente.telefonoContacto}" id="telefonoContacto" name="telefonoContacto" type="text" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" placeholder="Telefono" disabled="disabled" class="form-control tableusuario-input"/>
+                                                    <input th:if="${editar} and ${cliente} != null" th:value="${cliente.telefonoContacto}" id="telefonoContacto" name="telefonoContacto" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control tableusuario-input"/>
+                                                    <input th:if="${cliente} == null"  id="telefonoContacto" name="telefonoContacto" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control tableusuario-input"/> 
                                                     <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
                                                 </div>
-                                                <label class="col-lg-3 control-label">Email</label>
-                                                <div class="col-lg-3">
+                                            </div>
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                <label class="col-lg-4 control-label">Email</label>
+                                                <div class="col-lg-6">
                                                     <input th:if="!${editar} and ${cliente} != null" th:value="${cliente.contactoEmail}" id="contactoEmail" name="contactoEmail" type="text"  placeholder="Email" disabled="disabled" class="form-control tableusuario-input"/>
                                                     <input th:if="${editar} and ${cliente} != null" th:value="${cliente.contactoEmail}" id="contactoEmail" name="contactoEmail" type="text" placeholder="Email"  class="form-control tableusuario-input"/>
                                                     <input th:if="${cliente} == null"  id="contactoEmail" name="contactoEmail" type="text" placeholder="Email"  class="form-control tableusuario-input"/> 
                                                     <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
                                                 </div>
                                             </div>
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                <label class="col-lg-3 control-label">Comentario</label>
-                                                <div class="col-lg-3">
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                <label class="col-lg-4 control-label">Comentario</label>
+                                                <div class="col-lg-8">
                                                     <input th:if="${cliente} == null" id="telefonoMovilContacto" name="contactoComentario" type="text" placeholder="Comentario"  class="form-control tableusuario-input"/> 
                                                     <input th:if="${editar} and ${cliente} != null" th:value="${cliente.contactoComentario}" id="contactoComentario" name="contactoComentario" type="text" placeholder="Comentario"  class="form-control tableusuario-input"/>
                                                     <input th:if="!${editar} and ${cliente} != null" disabled="disabled" th:value="${cliente.contactoComentario}" id="contactoComentario" name="contactoComentario" type="text" placeholder="Comentario"  class="form-control tableusuario-input"/>
 
                                                 </div>
+                                            </div>
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                             </div>
                                         </div>
                                     </div>

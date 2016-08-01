@@ -31,6 +31,15 @@ $(document).ready(function (data) {
             email: {
                 required: true,
                 email: true
+            },
+            nombreContacto: {
+                required: true
+            },
+            contactoCargo: {
+                required: true
+            },
+            telefonoContacto: {
+                required: true
             }
         },
         messages: {
@@ -41,7 +50,10 @@ $(document).ready(function (data) {
             },
             nombre: "Debe ingresar el nombre del proveedor!",
             telefono: "Debe ingresar el numero de telefono del proveedor!",
-            email: "Debe ingresar un email valido!"
+            email: "Debe ingresar un email valido!",
+            nombreContacto: "Debe ingresar nombre del contacto!",
+            contactoCargo: "Debe ingresar el cargo del contacto!",
+            telefonoContacto: "Debe ingresar teléfono del contacto!"
         },
         invalidHandler: function (event, validator) { //display error alert on form submit   
             $('.alert-error', $('.login-form')).show();

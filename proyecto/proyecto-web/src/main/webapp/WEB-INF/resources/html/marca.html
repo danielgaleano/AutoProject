@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+    <div th:include="include/head :: head" th:remove="tag"></div>
+
+    <!-- page specific plugin styles -->
+    <link rel="stylesheet" th:href="@{/resources/dist/css/jquery-ui.min.css}" />
+    <link rel="stylesheet" th:href="@{/resources/css/datepicker.css}" />
+    <link rel="stylesheet" th:href="@{/resources/dist/css/ui.jqgrid.min.css}" />
+    <script th:inline="javascript">
+        var idRol = /*[[${id}]]*/'';
+    </script>
+
+</head>
+<body>
+    <nav th:replace="include/navbar :: navbar"></nav>
+    <div class="content-wrapper">
+        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Marca.Crear'')')}"/>
+        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Marca.Editar'')')}"/>
+<!--        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Proveedor.Activar'')')}"/>
+        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Proveedor.Desactivar'')')}"/>
+        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Proveedor.Visualizar'')')}"/>
+        <div class="tablasignar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>-->
+
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Marca Vehiculos
+            </h1>
+            <ol class="breadcrumb">
+                <button sec:authorize="hasRole('Marca.Crear')" id="crear" class="btn btn-primary btn-sm" >
+                        <i class="fa fa-check bigger-110"></i>
+                        Crear
+                </button>
+                <a href="roles" class="btn btn-info btn-sm" role="button">Cancelar</a>
+            </ol>
+        </section>
+        <hr/>
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <!-- PAGE CONTENT BEGINS -->
+
+                    <div class="dataTables_wrapper form-inline no-footer">
+                        <table class="table table-striped table-bordered table table-striped table-bordered table-hover dataTable no-footer DTTT_selectable" id="example1">
+                            <div id="mensaje"/>
+                            <thead>
+                                <tr>
+                                    <th>Marca Vehiculo</th>
+                                    <th>STATUS</th>
+                                    <th class="tabledit-toolbar-column">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each='marca : ${marcas}'>
+                                <tr>
+
+                                <input class="tabledit-input tabledit-identifier" type="hidden" th:name="id" th:value="${marca.id}" disabled=""/>
+
+                                <td class="tabledit-view-mode">
+                                    <span  style="display: inline;"  th:text="${marca.nombre}"></span>
+                                    <input class="tabledit-input form-control input-sm" type="text" th:name="nombre" th:value="${marca.nombre}" style="display: none;" disabled=""/>
+                                </td>
+                                <td class="tabledit-estado">
+                                    <span class="table-estado label label-success" th:if="${marca.activo} == 'S'"  th:value="S" th:text="Activo"/>
+                                    <span class="table-estado label label-danger" th:if="${marca.activo} == 'N'"  th:value="N" th:text="Inactivo"/> 
+                                </td>
+                                <td style="white-space: nowrap; width: 1%;" class="tabledit-buttons">
+
+                                </td>
+                                </tr>
+                            </th:block>     
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- PAGE CONTENT ENDS -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+
+        </section>
+
+    </div>    
+    <!-- /.content -->
+    <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script src="/proyecto/resources/js/marca.js"></script> 
+    <script src="/proyecto/resources/dist/js/jquery.tabledit.js"></script>
+    <script src="/proyecto/resources/dist/js/jquery.dataTables.js"></script>
+    <script src="/proyecto/resources/dist/js/dataTables.bootstrap.min.js"></script>
+
+
+</body>
+</html>

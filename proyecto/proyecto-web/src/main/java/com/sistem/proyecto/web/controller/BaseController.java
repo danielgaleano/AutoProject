@@ -14,6 +14,7 @@ import com.sistem.proyecto.manager.PermisoManager;
 import com.sistem.proyecto.manager.RolManager;
 import com.sistem.proyecto.manager.RolPermisoManager;
 import com.sistem.proyecto.manager.TipoManager;
+import com.sistem.proyecto.manager.MarcaManager;
 import com.sistem.proyecto.manager.UsuarioManager;
 import java.security.SecureRandom;
 import org.slf4j.Logger;
@@ -52,6 +53,8 @@ public class BaseController {
     protected ProveedorManager proveedorManager;
     
     protected TipoManager tipoManager;
+    
+    protected MarcaManager marcaManager;
     
     protected ContactoManager contactoManager;
 
@@ -214,6 +217,24 @@ public class BaseController {
             try {
 
                 tipoManager = (TipoManager) context.lookup("java:app/proyecto-ejb/TipoManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
+    }
+    
+    protected void inicializarMarcaManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
+        if (marcaManager == null) {
+            try {
+
+                marcaManager = (MarcaManager) context.lookup("java:app/proyecto-ejb/MarcaManagerImpl");
             } catch (NamingException ne) {
                 throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
             }

@@ -15,6 +15,7 @@ import com.sistem.proyecto.manager.RolManager;
 import com.sistem.proyecto.manager.RolPermisoManager;
 import com.sistem.proyecto.manager.TipoManager;
 import com.sistem.proyecto.manager.MarcaManager;
+import com.sistem.proyecto.manager.PedidoManager;
 import com.sistem.proyecto.manager.UsuarioManager;
 import java.security.SecureRandom;
 import org.slf4j.Logger;
@@ -57,6 +58,8 @@ public class BaseController {
     protected MarcaManager marcaManager;
     
     protected ContactoManager contactoManager;
+    
+    protected PedidoManager pedidoManager;
 
     public static final Logger logger = LoggerFactory
             .getLogger("proyecto");
@@ -253,6 +256,24 @@ public class BaseController {
             try {
 
                 contactoManager = (ContactoManager) context.lookup("java:app/proyecto-ejb/ContactoManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
+    }
+    
+    protected void inicializarPedidoManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
+        if (pedidoManager == null) {
+            try {
+
+                pedidoManager = (PedidoManager) context.lookup("java:app/proyecto-ejb/PedidoManagerImpl");
             } catch (NamingException ne) {
                 throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
             }

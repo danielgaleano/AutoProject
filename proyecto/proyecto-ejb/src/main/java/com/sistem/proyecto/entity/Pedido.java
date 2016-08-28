@@ -49,20 +49,16 @@ public class Pedido extends Base {
     @Column(name = "total", nullable = false)
     private Double total;
 
-    @Column(name = "descuento_porcentual", nullable = false)
-    private Double descuentoPorcentual;
-
     @Column(name = "neto", nullable = false)
     private Double neto;
-
-    @Column(name = "total_guaranies", nullable = false)
-    private Double totalGuaranies;
-
-    @Column(name = "descuento_guaranies", nullable = false)
-    private Double descuentoGuaranies;
-
-    @Column(name = "neto_guaranies", nullable = false)
-    private Double netoGuaranies;
+    
+    @ManyToOne
+    @JoinColumn(name = "proveedor")
+    private Proveedor proveedor ;
+    
+//    @ManyToOne
+//    @JoinColumn(name = "detalle_pedido")
+//    private DetallePedido detallePedido ;
 
     @ManyToOne
     @JoinColumn(name = "empresa")
@@ -181,22 +177,7 @@ public class Pedido extends Base {
     public void setTotal(Double total) {
         this.total = total;
     }
-
-    /**
-     * @return the descuentoPorcentual
-     */
-    public Double getDescuentoPorcentual() {
-        return descuentoPorcentual;
-    }
-
-    /**
-     * @param descuentoPorcentual the descuentoPorcentual to set
-     */
-    public void setDescuentoPorcentual(Double descuentoPorcentual) {
-        this.descuentoPorcentual = descuentoPorcentual;
-    }
-
-    /**
+   /**
      * @return the neto
      */
     public Double getNeto() {
@@ -209,49 +190,7 @@ public class Pedido extends Base {
     public void setNeto(Double neto) {
         this.neto = neto;
     }
-
-    /**
-     * @return the totalGuaranies
-     */
-    public Double getTotalGuaranies() {
-        return totalGuaranies;
-    }
-
-    /**
-     * @param totalGuaranies the totalGuaranies to set
-     */
-    public void setTotalGuaranies(Double totalGuaranies) {
-        this.totalGuaranies = totalGuaranies;
-    }
-
-    /**
-     * @return the descuentosGuaranies
-     */
-    public Double getDescuentoGuaranies() {
-        return descuentoGuaranies;
-    }
-
-    /**
-     * @param descuentosGuaranies the descuentosGuaranies to set
-     */
-    public void setDescuentosGuaranies(Double descuentoGuaranies) {
-        this.descuentoGuaranies = descuentoGuaranies;
-    }
-
-    /**
-     * @return the netoGuaranies
-     */
-    public Double getNetoGuaranies() {
-        return netoGuaranies;
-    }
-
-    /**
-     * @param netoGuaranies the netoGuaranies to set
-     */
-    public void setNetoGuaranies(Double netoGuaranies) {
-        this.netoGuaranies = netoGuaranies;
-    }
-
+  
     /**
      * @return la empresa del pedido
      */
@@ -265,9 +204,33 @@ public class Pedido extends Base {
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
-
-
-    public void setDescuentoGuaranies(Double descuentoGuaranies) {
-        this.descuentoGuaranies = descuentoGuaranies;
+    /**
+     * @return the proveedor
+     */
+    public Proveedor getProveedor() {
+        return proveedor;
     }
+
+    /**
+     * @param proveedor the proveedor to set
+     */
+    public void setProveedor(Proveedor proveedor) {
+        this.proveedor = proveedor;
+    }
+
+//    /**
+//     * @return the detallePedido
+//     */
+//    public DetallePedido getDetallePedido() {
+//        return detallePedido;
+//    }
+//
+//    /**
+//     * @param detallePedido the detallePedido to set
+//     */
+//    public void setDetallePedido(DetallePedido detallePedido) {
+//        this.detallePedido = detallePedido;
+//    }
+    
+    
 }

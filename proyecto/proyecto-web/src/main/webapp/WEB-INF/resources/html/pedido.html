@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>  
+    <div th:include="include/head :: head" th:remove="tag"></div>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery-1.9.1.min.js}"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/resources/dist/css/style_image.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/resources/dist/css/style.css}" type="text/css"/>
+    <title>Proveedores</title>
+    <script th:inline="javascript">
+        var proveedor = /*[[${proveedor}]]*/'';
+    </script>
+</head>
+<body >
+    <nav th:replace="include/navbar :: navbar"></nav>
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) --> 
+        <!-- Main content -->
+        <section class="content">
+            <div class="box box-info">
+
+                <div class="widget-header widget-header-flat widget-header-large">
+                    <h3 class="widget-title">
+                        <span th:if="${proveedor} == null" class="middle">Crear Pedido</span>
+                        <span th:if="${editar}" class="middle">Editar Pedido</span>
+                        <span th:if="!${editar} and ${proveedor} != null" class="middle">Visualizar Pedido</span>
+                    </h3>
+
+                    <div class="widget-toolbar no-border">
+                        <a sec:authorize="hasRole('Pedido.Editar')" id="botonEditar" th:if="!${editar} and ${pedido} != null" th:href="@{'/pedidos/editar/'+${proveedor.id}}" class="btn btn-primary bigger" role="button">Editar</a>
+                        <a th:href="@{/pedidos}" class="btn btn-primary btn-light bigger" role="button">
+                            <i class="ace-icon fa fa-arrow-left"></i>
+                            Volver
+                        </a>                 
+                    </div>   
+                </div>
+                <!-- <form:input path="fichero" type="file" class="hidden" />
+                <form:input path="nuevoFichero" type="boolean" class="hidden" /> -->
+
+                <form id="validation-form" class="form-horizontal dropzone" enctype="multipart/form-data">
+                    <div class="box-body">
+
+                        <div class="col-xs-12">
+
+                            <div class="col-xs-12 col-sm-12">
+
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                    <label class="col-lg-6 control-label">Nro. Factura(*)</label>
+                                    <div class="col-lg-4">
+                                        <input th:if="${pedido} == null"  id="numeroPedido" name="numeroPedido" type="text" placeholder="Numero de Factura" disabled="disabled" data-mask="" data-inputmask-regex="^[0-9]{5}[0-9]?[0-9]?[0-9]?-[0-9]$" class="form-control tableusuario-input "/> 
+                                        <span class="glyphicon form-control-feedback" id="ruc1"></span> 
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                    <label class="col-lg-6 control-label">Codigo(*)</label>
+                                    <div class="col-lg-6">
+                                        <input th:if="${pedido} == null" id="codigo" name="codigo" type="text" placeholder="Codigo Pedido" class="form-control tableusuario-input "/> 
+                                        <span class="glyphicon form-control-feedback" id="nombre1"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                    <label class="col-lg-4 control-label">Proveedor(*)</label>
+                                    <div class="col-lg-8">
+                                        <select  class="form-control tableusuario-input " id="proveedor"  name="proveedor.id" data-placeholder="Seleccione Proveedor">
+
+                                            <option value="">Seleccione Proveedor</option>
+                                            <option th:if="${pedido} == null" th:each="proveedor : ${proveedores}" th:value="${proveedor.id}" th:text="${proveedor.nombre}"/>
+                                            
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                    <label class="col-lg-6 control-label">Fecha Entrega(*)</label>
+                                    <div class="col-lg-6">
+                                        <input th:if="${pedido} == null" id="fechaEntrega" name="fechaEntrega" type="text" placeholder="Fecha Entrega" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input "/> 
+                                        <span class="glyphicon form-control-feedback" id="telefono1"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                    <label class="col-lg-6 control-label">Estado</label>
+                                    <div class="col-lg-6">
+                                        <input th:if="${pedido} == null" id="confirmado" name="confirmado" type="text" placeholder="Estado del Pedido" data-mask="" data-inputmask="'mask': '(999)999-999'"  class="form-control tableusuario-input "/> 
+                                        <span class="glyphicon form-control-feedback" id="fax1"></span>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                    <label class="col-lg-6 control-label">Cantidad</label>
+                                    <div class="col-lg-6">
+                                        <input th:if="${pedido} == null" id="pais" type="text" name="cantidad" placeholder="Cantidad Total" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="pais1"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                    <label class="col-lg-6 control-label">Monto Total</label>
+                                    <div class="col-lg-6">
+                                        <input th:if="${pedido} == null" id="total" type="text" name="total" placeholder="Total" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="direccion1"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                    <label class="col-lg-6 control-label">Descuento %</label>
+                                    <div class="col-lg-6">
+                                        <input th:if="${pedido} == null" id="descuento" type="text" name="descuento" placeholder="Descuentos" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="pais1"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                    <label class="col-lg-4 control-label">Neto</label>
+                                    <div class="col-lg-8">
+                                        <input th:if="${pedido} == null" id="neto" type="text" name="neto" placeholder="Neto a Pagar" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="direccion1"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-2 control-label">Observacion</label>
+                                    <div class="col-lg-10">
+                                        <input th:if="${pedido} == null" id="observacion" type="text" name="observacion" placeholder="Observacion" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="pais1"></span>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </form>
+                <h4 class="purple">
+                    <i class="ace-icon fa fa-hand-o-right green"></i>
+                    Detalle de Pedidos
+                </h4>
+                <div class="dataTables_wrapper form-inline no-footer">
+                    <table class="table table-striped table-bordered table table-striped table-bordered table-hover dataTable no-footer DTTT_selectable" id="example1">
+                        <div class="" id="mensaje" style="display: none; float: none;"></div>
+                        <thead>
+                            <tr>
+                                <th>Tipo Vehiculo</th>
+                                <th>Marca</th>
+                                <th>Caracteristica</th>
+                                <th>Año</th>
+                                <th>Color</th>
+                                <th>Cambio</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each='detalle : ${detalles}'>
+                            <tr>
+                                <td class="tabledit-view-mode">
+                                    <span  style="display: inline;"  th:text="${detalle.nombre}"></span>
+                                    <input class="tabledit-input form-control input-sm" type="text" th:name="nombre" th:value="${detalle.nombre}" style="display: none;" disabled=""/>
+                                </td>
+                                <td class="tabledit-view-mode">
+                                    <span  style="display: inline;"  th:text="${detalle.nombre}"></span>
+                                    <input class="tabledit-input form-control input-sm" type="text" th:name="nombre" th:value="${detalle.nombre}" style="display: none;" disabled=""/>
+                                </td>
+                                <td class="tabledit-view-mode">
+                                    <span  style="display: inline;"  th:text="${detalle.nombre}"></span>
+                                    <input class="tabledit-input form-control input-sm" type="text" th:name="nombre" th:value="${detalle.nombre}" style="display: none;" disabled=""/>
+                                </td>
+                                <td class="tabledit-view-mode">
+                                    <span  style="display: inline;"  th:text="${detalle.nombre}"></span>
+                                    <input class="tabledit-input form-control input-sm" type="text" th:name="nombre" th:value="${detalle.nombre}" style="display: none;" disabled=""/>
+                                </td>
+                            </tr>
+                        </th:block>     
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Your Page Content Here -->
+
+        </section><!-- /.content -->
+    </div>
+    <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{~/proyecto/resources/js/lib/bootstrap-editable.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/dist/js/jquery.inputmask.bundle.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/proveedor.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/base.js}" charset="UTF-8"></script>
+
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>
+    <!--    <script th:src="@{~/proyecto/resources/js/lib/dropzone.js}"></script>
+        <script th:src="@{~/proyecto/resources/js/upload_image.js}"></script> -->
+
+</body>
+</html>

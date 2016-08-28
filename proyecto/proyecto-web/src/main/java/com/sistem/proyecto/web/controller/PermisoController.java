@@ -44,7 +44,7 @@ public class PermisoController extends BaseController{
             retorno.setViewName("permisosListar");
             
         }catch (Exception ex){
-            
+            logger.error("Error en listar permisos", ex);
         }
         
         return retorno;

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+    <div th:include="include/head :: head" th:remove="tag"></div>
+    <title>Empresas</title>
+
+    <link rel="stylesheet" th:href="@{/resources/dist/css/style_image.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/resources/dist/css/style.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/resources/css/sol.css}" type="text/css"/>
+</head>
+<body>
+    <nav th:replace="include/navbar :: navbar"></nav>
+    <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
+    <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
+    <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
+    <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
+    <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
+
+    <div class="content-wrapper">
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Empresas
+                <small>Lista de empresas del sistema.</small>
+            </h1>
+            <ol class="breadcrumb">
+                <a href="empresas/crear" class="btn btn-primary" role="button">Crear</a>
+
+            </ol>
+        </section>
+        <hr/>
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <div id="mensaje"></div>
+
+                    <table id="grid" style="width: 100%;"></table>
+                    <div id="grid-pager"></div>
+
+                </div>
+            </div>  
+        </section>
+
+    </div>    
+    <!-- /.content -->
+    <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{/resources/js/base.js}"></script>
+    <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
+    <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
+    <script th:src="@{/resources/js/empresasListar.js}"></script>
+    <script src="/proyecto/resources/dist/js/jquery.tabledit.js"></script>
+    <script src="/proyecto/resources/dist/js/jquery.dataTables.js"></script>
+    <script src="/proyecto/resources/dist/js/dataTables.bootstrap.min.js"></script>
+
+</body>
+</html>

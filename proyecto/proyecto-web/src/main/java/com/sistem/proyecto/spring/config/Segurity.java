@@ -92,6 +92,14 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/clientes/desactivar/*").hasAnyAuthority("Cliente.Desactivar")
                 .antMatchers("/clientes/editar/**").hasAnyAuthority("Cliente.Editar")
                 .antMatchers("/clientes/visualizar/**").hasAnyAuthority("Cliente.Visualizar")
+                //------Pedidos----//
+                .antMatchers("/pedidos**").hasAnyAuthority("Pedido.Listar")
+                .antMatchers("/pedidos/crear**").hasAnyAuthority("Pedido.Crear")
+                .antMatchers("/pedidos/guardar**").hasAnyAuthority("Pedido.Crear")
+                .antMatchers("/pedidos/activar/*").hasAnyAuthority("Pedido.Activar")
+                .antMatchers("/pedidos/desactivar/*").hasAnyAuthority("Pedido.Desactivar")
+                .antMatchers("/pedidos/editar/**").hasAnyAuthority("Pedido.Editar")
+                .antMatchers("/pedidos/visualizar/**").hasAnyAuthority("Pedido.Visualizar")
                 //------Tipos----//
                 .antMatchers("/tipos**").hasAnyAuthority("Tipo.Listar")
                 .antMatchers("/tipos/crear**").hasAnyAuthority("Tipo.Crear")
@@ -116,6 +124,7 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .permitAll()
                 .usernameParameter("usuario")
                 .passwordParameter("password")
+                .and().exceptionHandling().accessDeniedPage("/403")
                 .and()
                 .csrf().disable()
                 .logout().invalidateHttpSession(true).logoutUrl("/logout").logoutSuccessUrl("/login");

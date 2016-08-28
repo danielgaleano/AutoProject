@@ -32,7 +32,9 @@
       <div class="login-box-body">
         <p class="login-box-msg">Ingreso al sistema</p>
         <form action="j_spring_security_check" method="POST" class="text-right">
-
+            <div th:if="${param.error}" class="form-group has-feedback alert alert-error">    
+                    Usuario y contraseña invalidos.
+            </div>
             <div class="form-group has-feedback">
                 <input id="usuario" name="usuario" type="text" class="form-control" value="" placeholder="Usuario"/>
                 <span class="glyphicon glyphicon-user form-control-feedback"></span>

@@ -5,12 +5,15 @@
  */
 package com.sistem.proyecto.web.controller;
 
+import com.google.gson.Gson;
 import com.sistem.proyecto.entity.Contacto;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Imagen;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.Base64Bytes;
+import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.MensajeDTO;
+import com.sistem.proyecto.utils.ReglaDTO;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import py.com.pronet.utils.DTORetorno;
 
 /**
  * Controller para la entidad Empresa. Implementación de mappings, servicios
@@ -49,23 +53,101 @@ public class EmpresaController extends BaseController {
         Authentication autentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         try {
-            inicializarEmpresaManager();
-            System.out.println(autentication.getName());
-            System.out.println(userDetail.getNombre());
-            Empresa ejemplo = new Empresa();
+//            inicializarEmpresaManager();
+//            System.out.println(autentication.getName());
+//            System.out.println(userDetail.getNombre());
+//            Empresa ejemplo = new Empresa();
+//
+//            List<Map<String, Object>> listMapEmpresas = empresaManager.listAtributos(ejemplo, atributos.split(","), true);
+//
+//            model.addAttribute("empresas", listMapEmpresas);
 
-            List<Map<String, Object>> listMapEmpresas = empresaManager.listAtributos(ejemplo, atributos.split(","), true);
-
-            model.addAttribute("empresas", listMapEmpresas);
-
-            retorno.setViewName("empresas");
+            retorno.setViewName("empresasListar");
 
         } catch (Exception ex) {
-
+            logger.error("Error al obtener la vista de empresas", ex);
         }
 
         return retorno;
 
+    }
+
+    @RequestMapping(value = "/listar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno listar(@ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filtros,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("sord") String sentidoOrdenamiento) {
+
+        DTORetorno retorno = new DTORetorno();
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        boolean todos = false;
+        ordenarPor = "nombre";
+        Empresa ejemplo = new Empresa();
+
+        try {
+
+            inicializarEmpresaManager();
+
+            Gson gson = new Gson();
+            String camposFiltros = null;
+            String valorFiltro = null;
+
+            if (filtrar) {
+                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
+                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
+                    for (ReglaDTO regla : filtro.getRules()) {
+                        if (camposFiltros == null) {
+                            camposFiltros = regla.getField();
+                            valorFiltro = regla.getData();
+                        } else {
+                            camposFiltros += "," + regla.getField();
+                        }
+                    }
+                } else {
+                    //ejemplo = generarEjemplo(filtro, ejemplo);
+                }
+
+            }
+            // ejemplo.setActivo("S");
+
+            pagina = pagina != null ? pagina : 1;
+            Integer total = 0;
+
+            if (!todos) {
+                total = empresaManager.list(ejemplo, true).size();
+            }
+
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+
+            if (total < inicio) {
+                inicio = total - total % cantidad;
+                pagina = total / cantidad;
+            }
+
+            List<Map<String, Object>> listMapGrupos = empresaManager.listAtributos(ejemplo, atributos.split(","), todos, inicio, cantidad, 
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro, 
+                    null, null, null, null, null, null, null, null, true);
+                    
+                    
+                    
+            if (todos) {
+                total = listMapGrupos.size();
+            }
+            Integer totalPaginas =  total / cantidad;
+            
+            retorno.setTotal(totalPaginas+1);
+            retorno.setRetorno(listMapGrupos);
+            retorno.setPage(pagina);
+
+        } catch (Exception e) {
+
+            logger.error("Error al listar", e);
+        }
+
+        return retorno;
     }
 
     /**
@@ -150,7 +232,6 @@ public class EmpresaController extends BaseController {
                     return mensaje;
                 }
 
-
                 ejContacto = new Contacto();
 
                 ejContacto.setActivo("S");
@@ -231,7 +312,7 @@ public class EmpresaController extends BaseController {
             inicializarEmpresaManager();
             inicializarImagenManager();
             inicializarContactoManager();
-            
+
             if (empresaRecibido != null && (empresaRecibido.getNombre() == null
                     || empresaRecibido.getNombre().compareToIgnoreCase("") == 0)) {
                 mensaje.setError(true);
@@ -252,8 +333,7 @@ public class EmpresaController extends BaseController {
                 mensaje.setMensaje("Debe ingresar un email para la empresa.");
                 return mensaje;
             }
-            
-            
+
             ejEmpresa = empresaManager.get(empresaRecibido.getId());
 
             if (empresaRecibido.isTieneContacto()) {
@@ -277,12 +357,12 @@ public class EmpresaController extends BaseController {
 
                     ejContacto.setNombre(empresaRecibido.getNombre());
                     ejContacto.setEmpresa(ejEmpresa);
-                    
+
                     Map<String, Object> contactoNombre = contactoManager.getLike(ejContacto, "id".split(","));
 
-                    if (contactoNombre != null && !contactoNombre.isEmpty() 
+                    if (contactoNombre != null && !contactoNombre.isEmpty()
                             && contactoNombre.get("id").toString()
-                                    .compareToIgnoreCase(empresaRecibido.getIdContacto().toString())  != 0) {
+                            .compareToIgnoreCase(empresaRecibido.getIdContacto().toString()) != 0) {
                         mensaje.setError(true);
                         mensaje.setMensaje("El nombre del contacto ya se encuentra registrado.");
                         return mensaje;
@@ -299,16 +379,16 @@ public class EmpresaController extends BaseController {
                     ejContacto.setTelefono(empresaRecibido.getTelefonoContacto());
 
                     contactoManager.update(ejContacto);
-                    
+
                     ejEmpresa.setContacto(ejContacto);
                 } else {
-                    
+
                     ejContacto.setNombre(empresaRecibido.getNombre());
                     ejContacto.setEmpresa(ejEmpresa);
-                    
+
                     Map<String, Object> contactoNombre = contactoManager.getLike(ejContacto, "id".split(","));
 
-                    if (contactoNombre != null && !contactoNombre.isEmpty() ) {
+                    if (contactoNombre != null && !contactoNombre.isEmpty()) {
                         mensaje.setError(true);
                         mensaje.setMensaje("El nombre del contacto ya se encuentra registrado.");
                         return mensaje;
@@ -326,13 +406,11 @@ public class EmpresaController extends BaseController {
                     ejContacto.setEmpresa(ejEmpresa);
 
                     contactoManager.save(ejContacto);
-                    
+
                     ejEmpresa.setContacto(ejContacto);
                 }
-                
 
             }
-
 
             Imagen imagenP = null;
 

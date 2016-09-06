@@ -2,9 +2,9 @@ var baseConstantes = {
     botonCerrar: '<button data-dismiss="alert" class="close" type="button"><i class="fa fa-times"></i></button>'
 };
 function estado(cellvalue, options, rowObject) {
-    if(cellvalue === 'S'){
+    if (cellvalue === 'S') {
         return '<span class="table-estado label label-success" value="S">Activo</span>';
-    }else{
+    } else {
         return '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
     }
 }
@@ -39,7 +39,7 @@ function editFormButton(id, permisoEditar) {
     if (permisoEditar) {
         button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
                 + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + content + '/editar/' + id + '"'
-                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Asignar">'
+                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Editar">'
                 + ' <span class="glyphicon glyphicon-pencil"></span></a>';
     }
 
@@ -93,49 +93,59 @@ function editInlineButton(cl, permisoEditar) {
 }
 
 function desactivar(content, id) {
-    var content = window.location.href;   
-    var jqXHR = $.get(content+"/desactivar/" + id, function(data, textStatus, jqXHR) {
-        if (data.error === true) {
-            $('#mensaje').append('<div class="alert alert-error">'
-                    + '<button class="close" data-dismiss="alert" type="button"'
-                    + '><i class="fa  fa-remove"></i></button>'
-                    + '<strong>Error! </strong>'
-                    + data.mensaje
-                    + '</div>');
+    var content = window.location.href;
+    $.messager.confirm('Confirm', 'Esta Seguro que desea desactivar el registro?', function(r) {
+        if (r) {
+            var jqXHR = $.get(content + "/desactivar/" + id, function(data, textStatus, jqXHR) {
+                if (data.error === true) {
+                    $('#mensaje').append('<div class="alert alert-error">'
+                            + '<button class="close" data-dismiss="alert" type="button"'
+                            + '><i class="fa  fa-remove"></i></button>'
+                            + '<strong>Error! </strong>'
+                            + data.mensaje
+                            + '</div>');
 
-        } else {
-            $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
-                    + '<button type="button" class="close" data-dismiss="alert"'
-                    + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
-                    + '<strong>Exito! </strong>'
-                    + data.mensaje
-                    + '</div>');
-            $('#grid').trigger('reloadGrid');
+                } else {
+                    $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                            + '<button type="button" class="close" data-dismiss="alert"'
+                            + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                            + '<strong>Exito! </strong>'
+                            + data.mensaje
+                            + '</div>');
+                    $('#grid').trigger('reloadGrid');
+                }
+            });
         }
     });
+
 }
 
 function activar(content, id) {
-    var content = window.location.href;   
-    var jqXHR = $.get(content+"/activar/" + id, function(data, textStatus, jqXHR) {
-        if (data.error === true) {
-            $('#mensaje').append('<div class="alert alert-error">'
-                    + '<button class="close" data-dismiss="alert" type="button"'
-                    + '><i class="fa  fa-remove"></i></button>'
-                    + '<strong>Error! </strong>'
-                    + data.mensaje
-                    + '</div>');
+    var content = window.location.href;
+    $.messager.confirm('Confirm', 'Esta Seguro que desea activar el registro?', function(r) {
+        if (r) {
+            var jqXHR = $.get(content + "/activar/" + id, function(data, textStatus, jqXHR) {
+                if (data.error === true) {
+                    $('#mensaje').append('<div class="alert alert-error">'
+                            + '<button class="close" data-dismiss="alert" type="button"'
+                            + '><i class="fa  fa-remove"></i></button>'
+                            + '<strong>Error! </strong>'
+                            + data.mensaje
+                            + '</div>');
 
-        } else {
-            $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
-                    + '<button type="button" class="close" data-dismiss="alert"'
-                    + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
-                    + '<strong>Exito! </strong>'
-                    + data.mensaje
-                    + '</div>');
-            $('#grid').trigger('reloadGrid');
+                } else {
+                    $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                            + '<button type="button" class="close" data-dismiss="alert"'
+                            + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                            + '<strong>Exito! </strong>'
+                            + data.mensaje
+                            + '</div>');
+                    $('#grid').trigger('reloadGrid');
+                }
+            });
         }
     });
+
 }
 
 function sendData(url) {

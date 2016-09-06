@@ -1,66 +1,55 @@
-$(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/roles/listar',
+
+$(document).ready(function(data) {
+
+    var isEditarInline = false;
+    var isStatus = true;
+
+    var permisoActivar = parseBolean($(this).find('.tablactivate-permiso').text());
+    var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
+    var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
+    var permisoVisualizar = parseBolean($(this).find('.tablvisualizar-permiso').text());
+    var permisoAsignar = parseBolean($(this).find('.tablasignar-permiso').text());
+
+    var grid_selector = "#grid";
+    var pager_selector = "#grid-pager";
+
+
+    $(window).on('resize.jqGrid', function() {
+        setTimeout(function() {
+            $(grid_selector).jqGrid('setGridWidth', $(".content").width());
+
+        }, 0);
+    }),
+    $(grid_selector).jqGrid({
+        url: CONTEXT_ROOT + '/usuarios/listar',
         datatype: 'json',
         mtype: 'GET',
-        height: 360,
+        height: 310,
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'NOMBRE ROL', 'EMPRESA ID', 'EMPRESA', 'STATUS', ''],
+        colNames: ['ID', 'NOMBRE', 'APELLIDO', 'DOCUMENTO', 'DIRECCION', 'TELEFONO','EMPRESA','ROL', 'STATUS', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'nombre', index: 'nombre', width: 90, editable: true},
-            {name: 'empresa.id', index: 'empresa.id', width: 90, editable: true, hidden: true,
-                cellattr: function(rowid, tv, rawObject, cm, rdata) {
-                    if ($.isNumeric(rowid) !== true) {
-                        cm.hidden = false;
-                        return 'class="tableedit-combo"';
-                    }
-                },
-                edittype: 'select',
-                editoptions: {
-                    dataUrl: CONTEXT_ROOT + '/empresas/listar?_search=false&rows=100&page=1&sidx=&sord=asc',
-                    buildSelect: function(resp) {
-
-                        var sel = '<select>';
-                        var obj = $.parseJSON(resp);
-                        console.log(obj);
-                        $.each(obj.retorno, function() {
-                            sel += '<option value="' + this['id'] + '">' + this['nombre'] + "</option>"; // label and value are returned from Java layer
-                        });
-                        sel += '</select>';
-                        return sel;
-                    }
-                }},
-            {name: 'empresa.nombre', index: 'empresa.nombre', width: 90, editable: false,
-                cellattr: function(rowid, tv, rawObject, cm, rdata) {
-                    if ($.isNumeric(rowid) !== true) {
-                        cm.hidden = false;
-                        return 'class="tableedit-combo-disable"';
-                    }
-                }
-
-            },
+            {name: 'nombre', index: 'nombre', width: 90, editable: false},
+            {name: 'apellido', index: 'apellido', width: 90, editable: false},
+            {name: 'documento', index: 'documento', width: 90, editable: false},
+            {name: 'direccion', index: 'direccion', width: 150, editable: false},
+            {name: 'telefono', index: 'telefono', width: 90, sortable: false},
+            {name: 'empresa.nombre', index: 'empresa.nombre', width: 90, sortable: false},
+            {name: 'rol.nombre', index: 'rol.nombre', width: 90, sortable: false},
             {name: 'activo', index: 'activo', width: 90, editable: false},
-            {name: 'act', index: 'act', align: 'center', width: 90
-//                formatter: function(value, row, index) {
-//                    if (row.editing) {
-//                        var s = '<a href="javascript:void(0)" onclick="saverow(this)">Save</a> ';
-//                        var c = '<a href="javascript:void(0)" onclick="cancelrow(this)">Cancel</a>';
-//                        return s + c;
-//                    } else {
-//                        var e = '<a href="javascript:void(0)" onclick="editrow(this)">Edit</a> ';
-//                        var d = '<a href="javascript:void(0)" onclick="deleterow(this)">Delete</a>';
-//                        return e + d;
-//                    }
-//                }
+            {name: 'act', index: 'act', fixed: true, sortable: false, resize: false
+                        //formatter:'actions', 
+                        //formatoptions:{ 
+                        //	keys:true,
+                        //delbutton: false,//disable delete button
+
+                        //	delOptions:{recreateForm: true, beforeShowForm:beforeDeleteCallback},
+                        //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
+                        //}
             }
         ],
-        postData: {
-            atributos: "id,nombre",
-            filters: null,
-            todos: false
-        },
         viewrecords: true,
         rowNum: 10,
         rowList: [10, 20, 30],
@@ -69,6 +58,11 @@ $(grid_selector).jqGrid({
         loadtext: "Cargando...",
         emptyrecords: "No se encontaron datos.",
         pgtext: "Pagina {0} de {1}",
+        postData: {
+            atributos:"id,nombre",
+            filters:null,
+            todos:false
+        },
         jsonReader: {
             root: 'retorno',
             page: 'page',
@@ -77,15 +71,8 @@ $(grid_selector).jqGrid({
                 return obj.retorno.length;
             }
         },
-        onSelectRow: function(item) {
-            var tr = $(grid_selector).jqGrid('getInd', item, true);
-            if ($.isNumeric(item) !== true) {
-                $(tr).find('td.tableedit-combo').removeAttr('style');
-                $(tr).find('td.tableedit-combo-disable').hide();
-            }
-        },
         //toppager: true,
-        loadComplete: function(rowid, rowdata, rowelem) {
+        loadComplete: function() {
             var table = this;
             setTimeout(function() {
                 //styleCheckbox(table);
@@ -128,7 +115,7 @@ $(grid_selector).jqGrid({
                             $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
                         }
                         $(grid_selector).setRowData(ids[i], {activo: labelActivo});
-                    } else if (estado === 'N') {
+                    } else {
                         var labelInactivo = '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
                         activar = activarButton(cl, permisoActivar);
                         $(grid_selector).setRowData(ids[i], {act: ini + activar + fin});
@@ -146,10 +133,45 @@ $(grid_selector).jqGrid({
                         editForm = editFormButton(cl, permisoEditar);
                         $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
                     }
-                }         
+                }
+
+
             }
         },
-        editurl: CONTEXT_ROOT + "/roles/editar", //nothing is saved
-        caption: "Roles"
+        editurl: "/editar", //nothing is saved
+        caption: "Usuarios"
 
     });
+    $(window).triggerHandler('resize.jqGrid');
+    $(grid_selector).jqGrid('setGridWidth', $(".content").width());
+    $(grid_selector).jqGrid('navGrid', pager_selector, {edit: false, add: false, del: false, search: false});
+});
+
+function updatePagerIcons(table) {
+    var replacement =
+            {
+                'ui-icon-seek-first': 'ace-icon fa fa-angle-double-left bigger-140',
+                'ui-icon-seek-prev': 'ace-icon fa fa-angle-left bigger-140',
+                'ui-icon-seek-next': 'ace-icon fa fa-angle-right bigger-140',
+                'ui-icon-seek-end': 'ace-icon fa fa-angle-double-right bigger-140'
+            };
+    $('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function() {
+        var icon = $(this);
+        var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+
+        if ($class in replacement)
+            icon.attr('class', 'ui-icon ' + replacement[$class]);
+    });
+}
+
+
+
+function parseBolean(val) {
+    if (val.toLowerCase() === 'true') {
+        return true;
+    } else if (val.toLowerCase() === 'false' || val.toLowerCase() === '') {
+        return false;
+    }
+
+}
+            

@@ -5,14 +5,18 @@
  */
 package com.sistem.proyecto.web.controller;
 
+import com.google.gson.Gson;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Imagen;
 import com.sistem.proyecto.entity.Usuario;
 import com.sistem.proyecto.entity.Rol;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.Base64Bytes;
+import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.MensajeDTO;
+import com.sistem.proyecto.utils.ReglaDTO;
 import com.sistem.proyecto.utils.SendMail;
+import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import py.com.pronet.utils.DTORetorno;
 
 /**
  *
@@ -42,7 +47,7 @@ public class UsuarioController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listaUsuarios(Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("usuarios");
+        retorno.setViewName("usuariosListar");
         
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         List<Map<String, Object>> listMapUsuarios;
@@ -50,24 +55,24 @@ public class UsuarioController extends BaseController {
         Usuario ejUsuario = new Usuario();
 
         try {
-            inicializarUsuarioManager();
-            System.out.println(userDetail.getNombre());
-             
-            if(userDetail.isSuperUsuario()){
-                ejUsuario.setSuperUsuario(Boolean.FALSE);
-                listMapUsuarios = usuarioManager.listAtributos(ejUsuario, atributos.split(","), true);
-
-            }else{
-                ejUsuario.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-                listMapUsuarios = usuarioManager.listAtributos(ejUsuario, atributos.split(","), true);
-
-            }
-            for (Map<String, Object> rpm : listMapUsuarios) {
-                rpm.put("rolNombre", rpm.get("rol.nombre"));
-                rpm.put("empresaNombre", rpm.get("empresa.nombre"));
-            }
-
-            model.addAttribute("usuarios", listMapUsuarios);
+//            inicializarUsuarioManager();
+//            System.out.println(userDetail.getNombre());
+//             
+//            if(userDetail.isSuperUsuario()){
+//                ejUsuario.setSuperUsuario(Boolean.FALSE);
+//                listMapUsuarios = usuarioManager.listAtributos(ejUsuario, atributos.split(","), true);
+//
+//            }else{
+//                ejUsuario.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+//                listMapUsuarios = usuarioManager.listAtributos(ejUsuario, atributos.split(","), true);
+//
+//            }
+//            for (Map<String, Object> rpm : listMapUsuarios) {
+//                rpm.put("rolNombre", rpm.get("rol.nombre"));
+//                rpm.put("empresaNombre", rpm.get("empresa.nombre"));
+//            }
+//
+//            model.addAttribute("usuarios", listMapUsuarios);
 
         } catch (Exception ex) {
 
@@ -75,6 +80,94 @@ public class UsuarioController extends BaseController {
 
         return retorno;
 
+    }
+    
+    @RequestMapping(value = "/listar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno listar(@ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filtros,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos) {
+
+        DTORetorno retorno = new DTORetorno();
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        ordenarPor = "nombre";
+        Usuario ejemplo = new Usuario();
+        List<Map<String, Object>> listMapGrupos = null;
+        try {
+
+            inicializarUsuarioManager();
+
+            Gson gson = new Gson();
+            String camposFiltros = null;
+            String valorFiltro = null;
+
+            if (filtrar) {
+                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
+                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
+                    for (ReglaDTO regla : filtro.getRules()) {
+                        if (camposFiltros == null) {
+                            camposFiltros = regla.getField();
+                            valorFiltro = regla.getData();
+                        } else {
+                            camposFiltros += "," + regla.getField();
+                        }
+                    }
+                } else {
+                    //ejemplo = generarEjemplo(filtro, ejemplo);
+                }
+
+            }
+            // ejemplo.setActivo("S");
+
+            pagina = pagina != null ? pagina : 1;
+            Integer total = 0;
+
+            if (!todos) {
+                total = usuarioManager.list(ejemplo, true).size();
+            }
+
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+
+            if (total < inicio) {
+                inicio = total - total % cantidad;
+                pagina = total / cantidad;
+            }
+            
+            if(userDetail.isSuperUsuario()){
+                ejemplo.setSuperUsuario(Boolean.FALSE);
+
+                listMapGrupos = usuarioManager.listAtributos(ejemplo, atributos.split(","), todos, inicio, cantidad, 
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro, 
+                    null, null, null, null, null, null, null, null, true);
+
+            }else{
+                ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+                listMapGrupos = usuarioManager.listAtributos(ejemplo, atributos.split(","), todos, inicio, cantidad, 
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro, 
+                    null, null, null, null, null, null, null, null, true);
+
+            }
+                                       
+                    
+            if (todos) {
+                total = listMapGrupos.size();
+            }
+            Integer totalPaginas =  total / cantidad;
+            
+            retorno.setTotal(totalPaginas+1);
+            retorno.setRetorno(listMapGrupos);
+            retorno.setPage(pagina);
+
+        } catch (Exception e) {
+
+            logger.error("Error al listar", e);
+        }
+
+        return retorno;
     }
 
     @RequestMapping(value = "/crear", method = RequestMethod.GET)
@@ -338,7 +431,7 @@ public class UsuarioController extends BaseController {
         return mensaje;
     }
 
-    @RequestMapping(value = "/asignar/rol/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/asignar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     ModelAndView listarRoles(@PathVariable("id") Long id, Model model) {
         ModelAndView retorno = new ModelAndView();

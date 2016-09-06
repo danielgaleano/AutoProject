@@ -12,9 +12,13 @@ import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Permiso;
 import com.sistem.proyecto.entity.Rol;
 import com.sistem.proyecto.entity.RolPermiso;
+import com.sistem.proyecto.entity.Usuario;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.DatosDTO;
+import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.MensajeDTO;
+import com.sistem.proyecto.utils.ReglaDTO;
+import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import py.com.pronet.utils.DTORetorno;
 
 /**
  *
@@ -48,35 +53,94 @@ public class RolController extends BaseController{
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listarRoles(Model model) {
             ModelAndView retorno = new ModelAndView();
-
-            UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         try{
-            inicializarRolManager();
-            inicializarEmpresaManager();
-            System.out.println(userDetail.getNombre());
             
-            Rol ejemplo = new Rol();
-            //ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-            
-            List<Map<String, Object>> listMapRoles = rolManager.listAtributos(ejemplo, atributos.split(","), true);
-            
-            for(Map<String, Object> rpm : listMapRoles){
-                rpm.put("rolEmpresa", rpm.get("empresa.nombre"));
-                rpm.put("idEmpresa", rpm.get("empresa.id"));
-            }
-            
-            Empresa ejEmpresa = new Empresa();
-            List<Map<String, Object>> listMapEmpresas = empresaManager.listAtributos(ejEmpresa, "id,nombre".split(","), true);
-
-            model.addAttribute("roles", listMapRoles);
-            model.addAttribute("empresas", listMapEmpresas);
-            
-            retorno.setViewName("roles");
+            retorno.setViewName("rolesListar");
             
         }catch (Exception ex){
             System.out.println("Error " + ex);
         }
         
+        return retorno;
+    }
+    
+    @RequestMapping(value = "/listar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno listar(@ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filtros,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos) {
+
+        DTORetorno retorno = new DTORetorno();
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        ordenarPor = "nombre";
+        Rol ejemplo = new Rol();
+        List<Map<String, Object>> listMapGrupos = null;
+        try {
+
+            inicializarRolManager();
+
+            Gson gson = new Gson();
+            String camposFiltros = null;
+            String valorFiltro = null;
+
+            if (filtrar) {
+                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
+                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
+                    for (ReglaDTO regla : filtro.getRules()) {
+                        if (camposFiltros == null) {
+                            camposFiltros = regla.getField();
+                            valorFiltro = regla.getData();
+                        } else {
+                            camposFiltros += "," + regla.getField();
+                        }
+                    }
+                } else {
+                    //ejemplo = generarEjemplo(filtro, ejemplo);
+                }
+
+            }
+            // ejemplo.setActivo("S");
+
+            pagina = pagina != null ? pagina : 1;
+            Integer total = 0;
+
+            if (!todos) {
+                total = rolManager.list(ejemplo, true).size();
+            }
+
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+
+            if (total < inicio) {
+                inicio = total - total % cantidad;
+                pagina = total / cantidad;
+            }
+            
+            
+            listMapGrupos = rolManager.listAtributos(ejemplo, atributos.split(","), todos, inicio, cantidad, 
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro, 
+                    null, null, null, null, null, null, null, null, true);
+
+            
+                                       
+                    
+            if (todos) {
+                total = listMapGrupos.size();
+            }
+            Integer totalPaginas =  total / cantidad;
+            
+            retorno.setTotal(totalPaginas+1);
+            retorno.setRetorno(listMapGrupos);
+            retorno.setPage(pagina);
+
+        } catch (Exception e) {
+
+            logger.error("Error al listar", e);
+        }
+
         return retorno;
     }
     
@@ -109,7 +173,10 @@ public class RolController extends BaseController{
                 rol.setIdUsuarioCreacion(userDetail.getId());
                 rol.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 rolManager.save(rol);
-                retorno.setMensaje("El rol se creo exitosamente.");
+                
+                retorno.setError(false);
+                retorno.setMensaje("El rol "+rolRecibido.getNombre()+ " se creo exitosamente.");
+                
                 return retorno;
             }
             

@@ -79,11 +79,11 @@ public class EmpresaController extends BaseController {
             @ModelAttribute("page") Integer pagina,
             @ModelAttribute("rows") Integer cantidad,
             @ModelAttribute("sidx") String ordenarPor,
-            @ModelAttribute("sord") String sentidoOrdenamiento) {
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos) {
 
         DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        boolean todos = false;
         ordenarPor = "nombre";
         Empresa ejemplo = new Empresa();
 

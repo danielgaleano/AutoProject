@@ -23,7 +23,9 @@ $(document).ready(function(data) {
         url: CONTEXT_ROOT + '/empresas/listar',
         datatype: 'json',
         mtype: 'GET',
-        height: 300,
+        height: 310,
+        hidegrid: false,
+        rownumbers: true,
         //width: $(".content").width(),
         colNames: ['ID', 'NOMBRE', 'RUC', 'DESCRIPCION', 'DIRECCION', 'TELEFONO', 'STATUS', ''],
         colModel: [
@@ -50,6 +52,14 @@ $(document).ready(function(data) {
         rowList: [10, 20, 30],
         pager: pager_selector,
         altRows: true,
+        loadtext: "Cargando...",
+        emptyrecords: "No se encontaron datos.",
+        pgtext: "Pagina {0} de {1}",
+        postData: {
+            atributos:"id,nombre",
+            filters:null,
+            todos:false
+        },
         jsonReader: {
             root: 'retorno',
             page: 'page',

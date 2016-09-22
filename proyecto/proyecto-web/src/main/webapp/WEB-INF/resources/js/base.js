@@ -1,6 +1,51 @@
-var baseConstantes = {
-    botonCerrar: '<button data-dismiss="alert" class="close" type="button"><i class="fa fa-times"></i></button>'
-};
+
+
+
+
+function customValidationMessage(val, colname) {
+    if (val.trim() == "") {
+        return [false, colname + " es requerido "];
+    } else {
+        return [true, ""];
+    }
+}
+
+function pickYear( cellvalue, options, cell ) {
+    console.log('oooo');
+    setTimeout(function(){
+        $(cell) .find('input[type=text]')
+                .datepicker({format:'yyyy' , autoclose:true, startView:'year' , viewMode:'years',
+                 minViewMode:'years', minView:'year' , orientation:"bottom" ,endDate: new Date()}); 
+    }, 0);
+}
+
+function spinnerNumber( cellvalue, options, cell ) {
+    
+    setTimeout(function(){
+//        $(cell) .append('<div class="input-group spinner" data-trigger="spinner" id="spinner"></div>'); 
+//        $('.spinner').append('<div class="input-group-addon">'
+//                +' <a href="javascript:;" class="spin-up" data-spin="up"><i class="fa fa-caret-up"></i></a>'
+//                +' <a href="javascript:;" class="spin-down" data-spin="down"><i class="fa fa-caret-down"></i></a>'
+//                +' </div>');
+        var value = '<div class="input-group-addon">'
+                +' <a href="javascript:;" class="spin-up" data-spin="up"><i class="fa fa-caret-up"></i></a>'
+                +' <a href="javascript:;" class="spin-down" data-spin="down"><i class="fa fa-caret-down"></i></a>'
+                +' </div>';
+        $(cell) .find('input[type=text]').after('<div class="input-group input-group-sm spinner" data-trigger="spinner" id="spinner">'+value+'</div>');
+        
+        var input = $(cell) .find('input[type=text]').addClass('form-control text-center').attr('data-rule',"quantity").attr('data-min',"1").attr('data-max',"100").attr('value',cellvalue);        
+        
+        $(cell) .find('input[type=text]').remove();
+        
+        $('.input-group-addon').before(input);
+        
+        $('#spinner').spinner('changed', function(e, newVal, oldVal) {
+                $('#old-val').text(oldVal);
+                $('#new-val').text(newVal);
+        });
+    }, 0);
+}
+
 function estado(cellvalue, options, rowObject) {
     if (cellvalue === 'S') {
         return '<span class="table-estado label label-success" value="S">Activo</span>';
@@ -70,6 +115,18 @@ function activarButton(id, permisoActivar) {
     return button;
 }
 
+function monedaButton(id, permisoMoneda) {
+    var button = '';
+    if (permisoMoneda) {
+        button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');"'
+                + '  class="btn btn-xs btn-grey" style="float:left;cursor:pointer;" type="button" title="Definir Moneda" onclick="definirMoneda(this,' + id + ');">'
+                + ' <span class="ace-icon fa fa-fw fa-check-square-o bigger-120"></span></a>';
+    }
+
+    return button;
+}
+
 function editInlineButton(cl, permisoEditar) {
     var be = '';
     var se = '';
@@ -125,6 +182,33 @@ function activar(content, id) {
     $.messager.confirm('Confirm', 'Esta Seguro que desea activar el registro?', function(r) {
         if (r) {
             var jqXHR = $.get(content + "/activar/" + id, function(data, textStatus, jqXHR) {
+                if (data.error === true) {
+                    $('#mensaje').append('<div class="alert alert-error">'
+                            + '<button class="close" data-dismiss="alert" type="button"'
+                            + '><i class="fa  fa-remove"></i></button>'
+                            + '<strong>Error! </strong>'
+                            + data.mensaje
+                            + '</div>');
+
+                } else {
+                    $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                            + '<button type="button" class="close" data-dismiss="alert"'
+                            + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                            + '<strong>Exito! </strong>'
+                            + data.mensaje
+                            + '</div>');
+                    $('#grid').trigger('reloadGrid');
+                }
+            });
+        }
+    });
+
+}
+function definirMoneda(content, id) {
+    var content = window.location.href;
+    $.messager.confirm('Confirm', 'Esta Seguro que desea definir esta moneda como principal?', function(r) {
+        if (r) {
+            var jqXHR = $.get(content + "/moneda/definir/" + id, function(data, textStatus, jqXHR) {
                 if (data.error === true) {
                     $('#mensaje').append('<div class="alert alert-error">'
                             + '<button class="close" data-dismiss="alert" type="button"'

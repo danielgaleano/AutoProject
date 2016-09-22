@@ -86,7 +86,11 @@ $(document).ready(function(data) {
             page: 'page',
             total: 'total',
             records: function(obj) {
-                return obj.retorno.length;
+                if(obj.retorno !== null){
+                    return obj.retorno.length;
+                }else{
+                    return 0 ;
+                }
             }
         },        
         onSelectRow: edit,
@@ -303,11 +307,5 @@ function edit(id)
     }
 }
 
-function customValidationMessage(val, colname) {
-    if (val.trim() == "") {
-        return [false, colname + " es requerido "];
-    } else {
-        return [true, ""];
-    }
-}
+
             

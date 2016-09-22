@@ -119,10 +119,11 @@ and open the template in the editor.
                     </ul>
                   </li>
                   <li class="treeview">
-                    <a sec:authorize="hasRole('SuperUsuario')" href="#"><i class="fa fa-cog"></i> <span>Datos de Acceso</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    <a sec:authorize="hasRole('Configurar.Sistema')" href="#"><i class="fa fa-cog"></i> <span>Datos del Sistema</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                         <li><a sec:authorize="hasRole('SuperUsuario')" th:href="@{/roles}"><i class="fa fa-users"></i> <span>Roles</span></a></li>
                         <li><a sec:authorize="hasRole('SuperUsuario')" th:href="@{/permisos}"><i class="fa fa-key"></i> <span>Permisos</span></a></li>
+                        <li><a sec:authorize="hasRole('Moneda.Listar')" th:href="@{/monedas}"><i class="fa fa-fw fa-dollar"></i> <span>Monedas</span></a></li>
                     </ul>
                   </li>
                   

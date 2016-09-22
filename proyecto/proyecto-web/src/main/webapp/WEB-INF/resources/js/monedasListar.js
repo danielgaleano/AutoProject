@@ -1,13 +1,13 @@
 
 $(document).ready(function(data) {
 
+    var isEditarInline = true;
+    var isStatus = true;
+
     var permisoActivar = parseBolean($(this).find('.tablactivate-permiso').text());
     var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
     var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
-    var permisoAsignar = parseBolean($(this).find('.tablasignar-permiso').text());
-
-    var isEditarInline = true;
-    var isStatus = true;
+    var permisoAgregar = parseBolean($(this).find('.tabladd-permiso').text());
 
     var grid_selector = "#grid";
     var pager_selector = "#grid-pager";
@@ -20,54 +20,30 @@ $(document).ready(function(data) {
         }, 0);
     });
     $(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/pedidos/detalles/listar',
+        url: CONTEXT_ROOT + '/monedas/listar',
         datatype: 'json',
         mtype: 'GET',
-        height: 150,
+        height: 360,
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'TIPO VEHICULO', 'MARCA', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'CANTIDAD','MONEDA', 'PRECIO', 'TOTAL', 'CONFIRMADO', ''],
+        colNames: ['ID', 'MONEDA', 'SIMBOLO', 'COTIZACION', 'DEFECTO', 'STATUS', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'tipo.nombre', index: 'tipo.nombre', width: 100, editable: true, edittype: 'select', editrules: { edithidden: true, custom: true, custom_func: customValidationMessage},
-                editoptions: {
-                    dataUrl: CONTEXT_ROOT + '/tipos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
-                    buildSelect: function(resp) {
-
-                        var sel = '<select>';
-                        sel += '<option value="">Seleccione la opcion</option>';
-                        var obj = $.parseJSON(resp);
-//                        var sel_id = $(grid_selector).jqGrid('getGridParam', 'selrow');
-//                        var value = $(grid_selector).jqGrid('getCell',sel_id ,'tipo.id');
-
-                        $.each(obj.retorno, function() {
-                            sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
-                        });
-                        sel += '</select>';
-                        return sel;
-                    }
-                }},
-            {name: 'marca.id', index: 'marca.id', width: 90, editable: false, hidden: true},
-            {name: 'caracteristica', index: 'caracteristica', width: 120, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
-            {name: 'anho', index: 'anho', width: 90, editable:true, sorttype:"date",unformat: pickYear, editrules: { edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'color', index: 'color', width: 90, sortable: false, editable: true, editrules: { edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'trasmision', index: 'trasmision', width: 90, editable: true,edittype:"select",editoptions:{value:"MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
-            {name: 'cantidad', index: 'cantidad', width: 90,sorttype:"number", editable: true, unformat: spinnerNumber},
-            {name: 'moneda', index: 'moneda', width: 90, editable: true,edittype:"select",editoptions:{value:"MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
-            {name: 'precio', index: 'precio', width: 90, sortable: false, editable: true, editrules: { edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'total', index: 'total', width: 90, sortable: false, editable: true},
+            {name: 'nombre', index: 'nombre', width: 90, editable: true, editrules: { edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'simbolo', index: 'simbolo', width: 90, editable: true, editrules: { edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'valor', index: 'valor', width: 90, editable: true, editrules: {edithidden: false, custom: true, custom_func: customValidationMessage,
+             formatter:'integer',
+             formatoptions:{
+                 decimalSeparator:',',
+                 thousandsSeparator:'.',
+                 decimalPlaces:3
+             }}},
+            {name: 'porDefecto', index: 'porDefecto', width: 90, editable: false, edittype:"checkbox", editoptions: {value:"true:false"}, editrules: {edithidden: false, custom: true, custom_func: customValidationMessage},
+            formatter:'checkbox'
+            },
             {name: 'activo', index: 'activo', width: 90, editable: false},
-            {name: 'act', index: 'act', fixed: true, sortable: false, resize: false
-                        //formatter:'actions', 
-                        //formatoptions:{ 
-                        //	keys:true,
-                        //delbutton: false,//disable delete button
-
-                        //	delOptions:{recreateForm: true, beforeShowForm:beforeDeleteCallback},
-                        //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
-                        //}
-            }
+            {name: 'act', index: 'act', fixed: true, sortable: false, resize: false}
         ],
         viewrecords: true,
         rowNum: 10,
@@ -77,31 +53,30 @@ $(document).ready(function(data) {
         loadtext: "Cargando...",
         emptyrecords: "No se encontaron datos.",
         pgtext: "Pagina {0} de {1}",
-        serializeRowData:function(postData){
-            postData['tipo.id'] = postData['tipo.nombre'];
-            delete postData['tipo.nombre'];
-            return postData;
+        serializeRowData: function(data) {
+            if ($.isNumeric(data.id) !== true) {
+                data.id = "";
+            }
+            return data;
         },
         postData: {
-            atributos: "id,nombre",
-            filters: null,
-            todos: false,
-            idPedido: $("#idPedido").val()
+            atributos:"id,nombre",
+            filters:null,
+            todos:false
         },
         jsonReader: {
             root: 'retorno',
             page: 'page',
             total: 'total',
             records: function(obj) {
-                if (obj.retorno !== null) {
+                if(obj.retorno !== null){
                     return obj.retorno.length;
-                } else {
-                    return 0;
+                }else{
+                    return 0 ;
                 }
             }
-        },
-        //toppager: true,
-        loadComplete: function() {
+        },        
+        loadComplete: function(rowid, rowdata, rowelem) {
             var table = this;
             setTimeout(function() {
                 //styleCheckbox(table);
@@ -118,7 +93,7 @@ $(document).ready(function(data) {
             for (var i = 0; i < ids.length; i++) {
                 var cl = ids[i];
                 var dato = $(grid_selector).jqGrid('getRowData', cl);
-                var asignar = '';
+                var moneda = '';
                 var editForm = '';
                 var ce = '';
                 var visuali = '';
@@ -131,20 +106,26 @@ $(document).ready(function(data) {
                     if (estado === 'S') {
                         var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
                         if (isEditarInline) {
-
-                            edit = editInlineButton(cl, true);
-                            $(grid_selector).setRowData(ids[i], {act: ini + edit + fin});
+                            console.log(dato.porDefecto);
+                            if(dato.porDefecto === 'false'){
+                                console.log(dato.porDefecto);
+                                 moneda = monedaButton(cl, permisoEditar);
+                            }
+                            edit = editInlineButton(cl, permisoEditar);
+                            desact = desactivarButton(cl, permisoDesactivar);
+                           
+                            $(grid_selector).setRowData(ids[i], {act: ini + edit  + desact + moneda + fin});
 
                         } else {
 
-                            asignar = "";
-                            visuali = visualizarButton(cl, permisoVisualizar);
+                            //asignar = asigButton(cl, true);
+                            //visuali = visualizarButton(cl, permisoVisualizar);
                             editForm = editFormButton(cl, permisoEditar);
                             desact = desactivarButton(cl, permisoDesactivar);
                             $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
                         }
                         $(grid_selector).setRowData(ids[i], {activo: labelActivo});
-                    } else {
+                    } else if (estado === 'N') {
                         var labelInactivo = '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
                         activar = activarButton(cl, permisoActivar);
                         $(grid_selector).setRowData(ids[i], {act: ini + activar + fin});
@@ -158,19 +139,22 @@ $(document).ready(function(data) {
                     } else {
 
                         //asignar = asigButton(cl, true);
-                        visuali = visualizarButton(cl, permisoVisualizar);
+                        //visuali = visualizarButton(cl, permisoVisualizar);
                         editForm = editFormButton(cl, permisoEditar);
                         $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
                     }
                 }
 
-
             }
         },
-        editurl: "/editar", //nothing is saved
-        caption: "Detalle del Pedido"
+        editurl: CONTEXT_ROOT + "/monedas/editar", //nothing is saved
+        caption: "Monedas"
+
 
     });
+
+
+
     $(window).triggerHandler('resize.jqGrid');
     $(grid_selector).jqGrid('setGridWidth', $(".content").width());
     $(grid_selector).jqGrid('navGrid', pager_selector, {edit: false, add: false, del: false, search: false});
@@ -178,13 +162,13 @@ $(document).ready(function(data) {
     $(grid_selector).jqGrid('inlineNav', pager_selector,
             {
                 edit: false,
-                add: true,
+                add: permisoAgregar,
                 addtext: 'Agregar',
                 addicon: "ui-icon ace-icon fa fa-plus-circle purple",
-                save: true,
+                save: permisoAgregar,
                 savetext: 'Guardar',
                 saveicon: "ui-icon-disk",
-                cancel: true,
+                cancel: permisoAgregar,
                 cancelicon: "ui-icon-cancel",
                 canceltext: 'Cancelar',
                 refresh: true,
@@ -194,7 +178,7 @@ $(document).ready(function(data) {
                     //position: 'last',
                     useDefValues: true,
                     addRowParams: {
-                        url: CONTEXT_ROOT + '/roles/guardar',
+                        url: CONTEXT_ROOT + '/monedas/guardar',
                         mtype: "POST",
                         datatype: 'json',
                         keys: true,
@@ -262,6 +246,7 @@ $(document).ready(function(data) {
 
 
             });
+
 });
 
 function updatePagerIcons(table) {
@@ -298,4 +283,6 @@ function parseBolean(val) {
     }
 
 }
+
+
             

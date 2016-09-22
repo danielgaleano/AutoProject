@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package com.sistem.proyecto.web.controller;
 
 import com.google.gson.Gson;
+import com.sistem.proyecto.entity.DetallePedido;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Pedido;
-import com.sistem.proyecto.entity.Permiso;
-import com.sistem.proyecto.entity.Proveedor;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
@@ -18,12 +18,10 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 import py.com.pronet.utils.DTORetorno;
 
 /**
@@ -31,24 +29,15 @@ import py.com.pronet.utils.DTORetorno;
  * @author Miguel
  */
 @Controller
-@RequestMapping(value = "/pedidos")
-public class PedidoController extends BaseController {
-
-    String atributos = "id,numeroPedido,codigo,fechaEntrega,observacion,confirmado,descuento,total,neto,proveedor.id,"
-            + "proveedor.nombre";
-    String atributosDetalle = "id,numeroPedido,codigo,fechaEntrega,observacion,confirmado,descuento,total,neto,proveedor.id,"
-            + "proveedor.nombre";
-
-    @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView listarPermisos(Model model) {
-        ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("pedidosListar");
-        return retorno;
-    }
-
+@RequestMapping(value = "/pedidos/detalles")
+public class DetallePedidoController extends BaseController{
+    
+    String atributos = "id,caracteristica,trasmision,color,anho,cantidad,precio,total,tipo.id,tipo.nombre,activo";
+    
+    
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
     public @ResponseBody
-    DTORetorno listar(@ModelAttribute("_search") boolean filtrar,
+    DTORetorno listarDetalle(@ModelAttribute("_search") boolean filtrar,
             @ModelAttribute("filters") String filtros,
             @ModelAttribute("page") Integer pagina,
             @ModelAttribute("rows") Integer cantidad,
@@ -58,14 +47,14 @@ public class PedidoController extends BaseController {
 
         DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        ordenarPor = "nombre";
-        Pedido ejemplo = new Pedido();
+        ordenarPor = "tipo.nombre";
+        DetallePedido ejemplo = new DetallePedido();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
 
         List<Map<String, Object>> listMapGrupos = null;
         try {
 
-            inicializarPedidoManager();
+            inicializarDetallePedidoManager();
 
             Gson gson = new Gson();
             String camposFiltros = null;
@@ -93,7 +82,7 @@ public class PedidoController extends BaseController {
             Integer total = 0;
 
             if (!todos) {
-                total = pedidoManager.list(ejemplo, true).size();
+                total = detallePedidoManager.list(ejemplo, true).size();
             }
 
             Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
@@ -103,7 +92,7 @@ public class PedidoController extends BaseController {
                 pagina = total / cantidad;
             }
 
-            listMapGrupos = pedidoManager.listAtributos(ejemplo, atributos.split(","), todos, inicio, cantidad,
+            listMapGrupos = detallePedidoManager.listAtributos(ejemplo, atributos.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
 
@@ -124,21 +113,4 @@ public class PedidoController extends BaseController {
         return retorno;
     }
     
-    
-
-    @RequestMapping(value = "/crear", method = RequestMethod.GET)
-    public ModelAndView crear(Model model) {
-
-        try {
-            inicializarPedidoManager();
-            model.addAttribute("tipo", "Crear");
-            model.addAttribute("editar", false);
-
-        } catch (Exception ex) {
-            logger.debug("Error al crear pedidos", ex);
-        }
-        return new ModelAndView("pedido");
-
-    }
-
 }

@@ -8,15 +8,16 @@ package com.sistem.proyecto.web.controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sistem.proyecto.entity.Empresa;
+import com.sistem.proyecto.entity.Moneda;
 import com.sistem.proyecto.entity.Permiso;
-import com.sistem.proyecto.entity.Proveedor;
-import com.sistem.proyecto.entity.Tipo;
+import com.sistem.proyecto.entity.Rol;
+import com.sistem.proyecto.entity.RolPermiso;
+import com.sistem.proyecto.entity.Usuario;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.DatosDTO;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.MensajeDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
-import com.sistem.proyecto.web.controller.BaseController;
 import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -43,31 +44,16 @@ import py.com.pronet.utils.DTORetorno;
  * @author daniel
  */
 @Controller
-@RequestMapping(value = "/tipos")
-public class TipoController extends BaseController {
+@RequestMapping(value = "/monedas")
+public class MonedaController extends BaseController {
 
-    String atributos = "id,nombre,activo";
+    String atributos = "id,nombre,activo,empresa.id,empresa.nombre,simbolo,valor,porDefecto";
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView listarTipos(Model model) {
+    public ModelAndView listarMonedas(Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("tipo");
-        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        try {
-            inicializarTipoManager();
-            inicializarEmpresaManager();
-            System.out.println(userDetail.getNombre());
 
-            Tipo ejemplo = new Tipo();
-            ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-
-            List<Map<String, Object>> listMapTipoes = tipoManager.listAtributos(ejemplo, atributos.split(","), true);
-
-            model.addAttribute("tipos", listMapTipoes);
-
-        } catch (Exception ex) {
-            System.out.println("Error " + ex);
-        }
+        retorno.setViewName("monedasListar");
 
         return retorno;
     }
@@ -85,13 +71,14 @@ public class TipoController extends BaseController {
         DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         ordenarPor = "nombre";
-        Tipo ejemplo = new Tipo();
+
+        Moneda ejemplo = new Moneda();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
 
         List<Map<String, Object>> listMapGrupos = null;
         try {
 
-            inicializarTipoManager();
+            inicializarMonedaManager();
 
             Gson gson = new Gson();
             String camposFiltros = null;
@@ -119,7 +106,7 @@ public class TipoController extends BaseController {
             Integer total = 0;
 
             if (!todos) {
-                total = tipoManager.list(ejemplo, true).size();
+                total = monedaManager.list(ejemplo, true).size();
             }
 
             Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
@@ -129,7 +116,7 @@ public class TipoController extends BaseController {
                 pagina = total / cantidad;
             }
 
-            listMapGrupos = tipoManager.listAtributos(ejemplo, atributos.split(","), todos, inicio, cantidad,
+            listMapGrupos = monedaManager.listAtributos(ejemplo, atributos.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
 
@@ -152,47 +139,53 @@ public class TipoController extends BaseController {
 
     @RequestMapping(value = "/guardar", method = RequestMethod.POST)
     public @ResponseBody
-    MensajeDTO guardar(@ModelAttribute("Tipo") Tipo tipoRecibido) {
+    MensajeDTO guardar(@ModelAttribute("Moneda") Moneda monedaRecibido) {
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO retorno = new MensajeDTO();
-        Tipo ejTipo = new Tipo();
         try {
-            inicializarTipoManager();
-            if (tipoRecibido.getNombre() == null || tipoRecibido.getNombre() != null
-                    && tipoRecibido.getNombre().compareToIgnoreCase("") == 0) {
+            inicializarMonedaManager();
+            if (monedaRecibido.getNombre() == null || monedaRecibido.getNombre() != null
+                    && monedaRecibido.getNombre().compareToIgnoreCase("") == 0) {
                 retorno.setError(true);
                 retorno.setMensaje("El campo nombre no puede estar vacio.");
                 return retorno;
             }
 
-            ejTipo.setNombre(tipoRecibido.getNombre());
-
-            Map<String, Object> tipoMap = tipoManager.getLike(ejTipo, "id".split(","));
-
-            if (tipoMap != null && !tipoMap.isEmpty()) {
+            if (monedaRecibido.getSimbolo() == null || monedaRecibido.getSimbolo() != null
+                    && monedaRecibido.getSimbolo().compareToIgnoreCase("") == 0) {
                 retorno.setError(true);
-                retorno.setMensaje("El tipo de vehiculo ya se encuentra registrado.");
+                retorno.setMensaje("El campo simbolo no puede estar vacio.");
                 return retorno;
-
             }
 
-            ejTipo = new Tipo();
-            ejTipo.setNombre(tipoRecibido.getNombre());
-            ejTipo.setActivo("S");
-            ejTipo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-            ejTipo.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-            ejTipo.setIdUsuarioCreacion(userDetail.getId());
-            ejTipo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            if (monedaRecibido.getValor() == null || monedaRecibido.getValor() != null
+                    && monedaRecibido.getValor().compareToIgnoreCase("") == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("El campo cotizacion no puede estar vacio.");
+                return retorno;
+            }
 
-            tipoManager.save(ejTipo);
+            Moneda moneda = new Moneda();
+            moneda.setNombre(monedaRecibido.getNombre());
+            moneda.setSimbolo(monedaRecibido.getSimbolo());
+            moneda.setValor(monedaRecibido.getValor());
+            moneda.setPorDefecto(monedaRecibido.getPorDefecto());
+            moneda.setActivo("S");
+            moneda.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            moneda.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+            moneda.setIdUsuarioCreacion(userDetail.getId());
+            moneda.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            monedaManager.save(moneda);
 
-            retorno.setMensaje("El tipo se creo exitosamente.");
+            retorno.setError(false);
+            retorno.setMensaje("La moneda " + moneda.getNombre() + " se creo exitosamente.");
+
             return retorno;
 
         } catch (Exception ex) {
             System.out.println("Error " + ex);
             retorno.setError(true);
-            retorno.setMensaje("Error al modificar/crear el tipo.");
+            retorno.setMensaje("Error al modificar/crear el rol.");
 
         }
         return retorno;
@@ -200,48 +193,50 @@ public class TipoController extends BaseController {
 
     @RequestMapping(value = "/editar", method = RequestMethod.POST)
     public @ResponseBody
-    MensajeDTO editar(@ModelAttribute("Tipo") Tipo tipoRecibido) {
+    MensajeDTO editar(@ModelAttribute("Moneda") Moneda monedaRecibido) {
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO retorno = new MensajeDTO();
-        Tipo ejTipo = new Tipo();
         try {
-            inicializarTipoManager();
 
-            if (tipoRecibido.getNombre() == null || tipoRecibido.getNombre() != null
-                    && tipoRecibido.getNombre().compareToIgnoreCase("") == 0) {
+            inicializarMonedaManager();
+            if (monedaRecibido.getNombre() == null || monedaRecibido.getNombre() != null
+                    && monedaRecibido.getNombre().compareToIgnoreCase("") == 0) {
                 retorno.setError(true);
                 retorno.setMensaje("El campo nombre no puede estar vacio.");
                 return retorno;
             }
 
-            Map<String, Object> tipoMap = tipoManager.getLike(ejTipo, "id".split(","));
-
-            if (tipoMap != null && !tipoMap.isEmpty() && tipoMap.get("id").toString()
-                    .compareToIgnoreCase(tipoRecibido.getId().toString()) != 0) {
+            if (monedaRecibido.getSimbolo() == null || monedaRecibido.getSimbolo() != null
+                    && monedaRecibido.getSimbolo().compareToIgnoreCase("") == 0) {
                 retorno.setError(true);
-                retorno.setMensaje("El tipo de vehiculo ya se encuentra registrado.");
-                return retorno;
-
-            }
-
-            if (tipoRecibido.getId() != null) {
-
-                Tipo tipo = tipoManager.get(tipoRecibido.getId());
-                tipo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                tipo.setIdUsuarioModificacion(userDetail.getId());
-                tipo.setNombre(tipoRecibido.getNombre());
-
-                tipoManager.update(tipo);
-
-                retorno.setError(false);
-                retorno.setMensaje("El tipo se modifico exitosamente.");
+                retorno.setMensaje("El campo simbolo no puede estar vacio.");
                 return retorno;
             }
+
+            if (monedaRecibido.getValor() == null || monedaRecibido.getValor() != null
+                    && monedaRecibido.getValor().compareToIgnoreCase("") == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("El campo cotizacion no puede estar vacio.");
+                return retorno;
+            }
+
+            Moneda moneda = monedaManager.get(monedaRecibido.getId());
+            moneda.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            moneda.setIdUsuarioModificacion(userDetail.getId());
+            moneda.setNombre(monedaRecibido.getNombre());
+            moneda.setValor(monedaRecibido.getValor());
+            moneda.setSimbolo(monedaRecibido.getSimbolo());
+            
+            monedaManager.update(moneda);
+
+            retorno.setError(false);
+            retorno.setMensaje("La moneda se modifico exitosamente.");
+            return retorno;
 
         } catch (Exception ex) {
             System.out.println("Error " + ex);
             retorno.setError(true);
-            retorno.setMensaje("Error al modificar el tipo.");
+            retorno.setMensaje("Error al modificar el rol.");
 
         }
         return retorno;
@@ -257,35 +252,35 @@ public class TipoController extends BaseController {
 
         try {
 
-            inicializarTipoManager();
+            inicializarMonedaManager();
 
-            Tipo tipo = tipoManager.get(id);
+            Moneda moneda = monedaManager.get(id);
 
-            if (tipo != null) {
-                nombre = tipo.getNombre().toString();
+            if (moneda != null) {
+                nombre = moneda.getNombre().toString();
             }
 
-            if (tipo != null && tipo.getActivo().toString()
+            if (moneda != null && moneda.getActivo().toString()
                     .compareToIgnoreCase("S") == 0) {
                 retorno.setError(true);
-                retorno.setMensaje("El tipo " + nombre + " ya se encuentra activada.");
+                retorno.setMensaje("La moneda " + nombre + " ya se encuentra activada.");
                 return retorno;
             }
 
-            tipo.setActivo("S");
-            tipo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-            tipo.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
-            tipo.setIdUsuarioModificacion(userDetail.getId());
+            moneda.setActivo("S");
+            moneda.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            moneda.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
+            moneda.setIdUsuarioModificacion(userDetail.getId());
 
-            tipoManager.update(tipo);
+            monedaManager.update(moneda);
 
             retorno.setError(false);
-            retorno.setMensaje("El tipo " + nombre + " se activo exitosamente.");
+            retorno.setMensaje("La moneda " + nombre + " se activo exitosamente.");
 
         } catch (Exception e) {
             System.out.println("Error " + e);
             retorno.setError(true);
-            retorno.setMensaje("Error al tratar de activar el tipo de vehiculo.");
+            retorno.setMensaje("Error al tratar de activar el rol.");
         }
 
         return retorno;
@@ -303,39 +298,86 @@ public class TipoController extends BaseController {
 
         try {
 
-            inicializarTipoManager();
+            inicializarMonedaManager();
 
-            Tipo tipo = tipoManager.get(id);
+            Moneda moneda = monedaManager.get(id);
 
-            if (tipo != null) {
-                nombre = tipo.getNombre().toString();
+            if (moneda != null) {
+                nombre = moneda.getNombre().toString();
             }
 
-            if (tipo != null && tipo.getActivo().toString()
+            if (moneda != null && moneda.getActivo().toString()
                     .compareToIgnoreCase("N") == 0) {
                 retorno.setError(true);
-                retorno.setMensaje("El tipo " + nombre + " ya se encuentra desactivada.");
+                retorno.setMensaje("El moneda " + nombre + " ya se encuentra desactivada.");
+                return retorno;
+            }
+            
+            if (moneda != null && moneda.getPorDefecto()) {
+                retorno.setError(true);
+                retorno.setMensaje("No puede desactivarse una moneda definida como principal");
                 return retorno;
             }
 
-            tipo.setActivo("N");
-            tipo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-            tipo.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
-            tipo.setIdUsuarioEliminacion(userDetail.getId());
+            moneda.setActivo("N");
+            moneda.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            moneda.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
+            moneda.setIdUsuarioEliminacion(userDetail.getId());
 
-            tipoManager.update(tipo);
+            monedaManager.update(moneda);
 
             retorno.setError(false);
-            retorno.setMensaje("El tipo " + nombre + " se desactivo exitosamente.");
+            retorno.setMensaje("La moneda " + nombre + " se desactivo exitosamente.");
 
         } catch (Exception e) {
             System.out.println("Error " + e);
             retorno.setError(true);
-            retorno.setMensaje("Error al tratar de desactivar el tipo de vehiculo.");
+            retorno.setMensaje("Error al tratar de desactivar el rol.");
         }
+        return retorno;
 
+    }
+    
+    @RequestMapping(value = "/moneda/definir/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    MensajeDTO definirMoneda(@PathVariable("id") Long id, Model model) {
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        ModelAndView view = new ModelAndView();
+        MensajeDTO retorno = new MensajeDTO();
+        String nombre = "";
+
+        try {
+
+            inicializarMonedaManager();
+            Moneda ejMoneda = new Moneda();
+            ejMoneda.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            ejMoneda.setActivo("S");
+            
+            List<Map<String, Object>> monedasMap = monedaManager.listAtributos(ejMoneda,"id".split(","));
+
+            for(Map<String, Object> rmp : monedasMap){
+                ejMoneda = monedaManager.get(Long.parseLong(rmp.get("id").toString()));
+                ejMoneda.setPorDefecto(Boolean.FALSE);
+                monedaManager.update(ejMoneda);
+            }
+            ejMoneda = monedaManager.get(id);
+
+            ejMoneda.setPorDefecto(Boolean.TRUE);
+
+            monedaManager.update(ejMoneda);
+
+            retorno.setError(false);
+            retorno.setMensaje("La moneda " + nombre + " se definio exitosamente.");
+
+        } catch (Exception e) {
+            System.out.println("Error " + e);
+            retorno.setError(true);
+            retorno.setMensaje("Error al tratar de desactivar el rol.");
+        }
         return retorno;
 
     }
 
+    
 }

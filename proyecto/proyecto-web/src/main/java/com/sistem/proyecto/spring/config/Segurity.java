@@ -84,7 +84,7 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/empresas/desactivar/*").hasAnyAuthority("SuperUsuario")
                 .antMatchers("/empresas/editar/**").hasAnyAuthority("SuperUsuario")
                 .antMatchers("/empresas/visualizar/**").hasAnyAuthority("SuperUsuario")
-                //------Empresa----//
+                //------Clientes----//
                 .antMatchers("/clientes**").hasAnyAuthority("Cliente.Listar")
                 .antMatchers("/clientes/crear**").hasAnyAuthority("Cliente.Crear")
                 .antMatchers("/clientes/guardar**").hasAnyAuthority("Cliente.Crear")
@@ -92,6 +92,14 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/clientes/desactivar/*").hasAnyAuthority("Cliente.Desactivar")
                 .antMatchers("/clientes/editar/**").hasAnyAuthority("Cliente.Editar")
                 .antMatchers("/clientes/visualizar/**").hasAnyAuthority("Cliente.Visualizar")
+                //------Moneda----//
+                .antMatchers("/monedas**").hasAnyAuthority("Moneda.Listar")
+                .antMatchers("/monedas/crear**").hasAnyAuthority("Moneda.Crear")
+                .antMatchers("/monedas/guardar**").hasAnyAuthority("Moneda.Crear")
+                .antMatchers("/monedas/activar/*").hasAnyAuthority("Moneda.Activar")
+                .antMatchers("/monedas/desactivar/*").hasAnyAuthority("Moneda.Desactivar")
+                .antMatchers("/monedas/editar/**").hasAnyAuthority("Moneda.Editar")
+                .antMatchers("/monedas/moneda/definir/**").hasAnyAuthority("Moneda.Editar")
                 //------Pedidos----//
                 .antMatchers("/pedidos**").hasAnyAuthority("Pedido.Listar")
                 .antMatchers("/pedidos/crear**").hasAnyAuthority("Pedido.Crear")

@@ -4,33 +4,29 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
     <div th:include="include/head :: head" th:remove="tag"></div>
-    <title>Pedidos</title>
-
+    <title>Clientes</title>
     <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
     <link th:href="@{/resources/css/icon.css}" rel="stylesheet" />
-
 
 </head>
 <body>
     <nav th:replace="include/navbar :: navbar"></nav>
     <div class="content-wrapper">
-
-        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
-        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
-        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
-        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
+        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Crear'')')}"/>
+        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Editar'')')}"/>
+        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Activar'')')}"/>
+        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Desactivar'')')}"/>
+        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Visualizar'')')}"/>
         <div class="tablasignar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
+
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Pedidos
-                <small>Lista de pedidos de la empresa.</small>
+                Clientes
+                <small>Lista de clientes del sistema.</small>
             </h1>
             <ol class="breadcrumb">
-                <a th:href="@{/pedidos/crear}" class="btn btn-primary" role="button">
-
-                    Crear
-                </a>
+                <a sec:authorize="hasRole('Cliente.Crear')"  href="clientes/crear" class="btn btn-primary" role="button">Crear</a>
             </ol>
         </section>
         <hr/>
@@ -54,9 +50,7 @@
     <script th:src="@{/resources/js/base.js}"></script>
     <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
-    <script th:src="@{/resources/js/pedidosListar.js}"></script>
-
-
+    <script th:src="@{/resources/js/clientesListar.js}"></script>
 
 
 </body>

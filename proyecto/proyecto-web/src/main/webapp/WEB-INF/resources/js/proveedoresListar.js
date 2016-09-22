@@ -8,6 +8,7 @@ $(document).ready(function(data) {
     var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
     var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
     var permisoVisualizar = parseBolean($(this).find('.tablvisualizar-permiso').text());
+    var permisoAsignar = parseBolean($(this).find('.tablasignar-permiso').text());
 
     var grid_selector = "#grid";
     var pager_selector = "#grid-pager";
@@ -18,23 +19,23 @@ $(document).ready(function(data) {
             $(grid_selector).jqGrid('setGridWidth', $(".content").width());
 
         }, 0);
-    }),
+    });
     $(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/empresas/listar',
+        url: CONTEXT_ROOT + '/proveedores/listar',
         datatype: 'json',
         mtype: 'GET',
         height: 310,
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'NOMBRE', 'RUC', 'DESCRIPCION', 'DIRECCION', 'TELEFONO', 'STATUS', ''],
+        colNames: ['ID', 'NOMBRE', 'RUC', 'DIRECCION', 'TELEFONO', 'EMAIL', 'STATUS', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'nombre', index: 'nombre', width: 90, editable: false},
             {name: 'ruc', index: 'ruc', width: 90, editable: false},
-            {name: 'descripcion', index: 'descripcion', width: 100, editable: false},
             {name: 'direccion', index: 'direccion', width: 150, editable: false},
             {name: 'telefono', index: 'telefono', width: 90, sortable: false},
+            {name: 'email', index: 'email', width: 90, sortable: false},
             {name: 'activo', index: 'activo', width: 90, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false
                         //formatter:'actions', 
@@ -56,15 +57,15 @@ $(document).ready(function(data) {
         emptyrecords: "No se encontaron datos.",
         pgtext: "Pagina {0} de {1}",
         postData: {
-            atributos:"id,nombre",
-            filters:null,
-            todos:false
+            atributos: "id,nombre",
+            filters: null,
+            todos: false
         },
         jsonReader: {
             root: 'retorno',
             page: 'page',
             total: 'total',
-            records: function(obj) { 
+            records: function(obj) {
                 if(obj.retorno !== null){
                     return obj.retorno.length;
                 }else{
@@ -103,13 +104,13 @@ $(document).ready(function(data) {
                     if (estado === 'S') {
                         var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
                         if (isEditarInline) {
-                            
+
                             edit = editInlineButton(cl, permisoEditar);
                             $(grid_selector).setRowData(ids[i], {act: edit});
-                            
+
                         } else {
 
-                            //asignar = asigButton(cl, true);
+                            asignar = "";
                             visuali = visualizarButton(cl, permisoVisualizar);
                             editForm = editFormButton(cl, permisoEditar);
                             desact = desactivarButton(cl, permisoDesactivar);
@@ -124,11 +125,11 @@ $(document).ready(function(data) {
                     }
                 } else {
                     if (isEditarInline) {
-                        
+
                         edit = editInlineButton(cl, permisoEditar);
                         $(grid_selector).setRowData(ids[i], {act: edit});
                     } else {
-                        
+
                         //asignar = asigButton(cl, true);
                         visuali = visualizarButton(cl, permisoVisualizar);
                         editForm = editFormButton(cl, permisoEditar);
@@ -140,7 +141,7 @@ $(document).ready(function(data) {
             }
         },
         editurl: "/editar", //nothing is saved
-        caption: "Empresas"
+        caption: "Proveedores"
 
     });
     $(window).triggerHandler('resize.jqGrid');
@@ -175,25 +176,4 @@ function parseBolean(val) {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            

@@ -5,6 +5,8 @@
  */
 package com.sistem.proyecto.web.controller;
 
+import com.google.gson.Gson;
+import com.sistem.proyecto.entity.Cliente;
 import com.sistem.proyecto.entity.Contacto;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Imagen;
@@ -12,7 +14,10 @@ import com.sistem.proyecto.entity.Proveedor;
 import com.sistem.proyecto.entity.Rol;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.Base64Bytes;
+import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.MensajeDTO;
+import com.sistem.proyecto.utils.ReglaDTO;
+import static com.sistem.proyecto.web.controller.BaseController.logger;
 //import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -28,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import py.com.pronet.utils.DTORetorno;
 
 /**
  *
@@ -44,27 +50,87 @@ public class ProveedorController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listaProveedores(Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("proveedores");
+        retorno.setViewName("proveedoresListar");       
+        return retorno;
 
+    }
+    
+    @RequestMapping(value = "/listar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno listar(@ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filtros,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos) {
+
+        DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-        List<Map<String, Object>> listMapProveedores;
+        ordenarPor = "nombre";
         Proveedor ejProveedor = new Proveedor();
         ejProveedor.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
 
+        List<Map<String, Object>> listMapGrupos = null;
         try {
+
             inicializarProveedorManager();
 
-            listMapProveedores = proveedorManager.listAtributos(ejProveedor, atributos.split(","), true);
+            Gson gson = new Gson();
+            String camposFiltros = null;
+            String valorFiltro = null;
 
-            model.addAttribute("proveedores", listMapProveedores);
+            if (filtrar) {
+                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
+                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
+                    for (ReglaDTO regla : filtro.getRules()) {
+                        if (camposFiltros == null) {
+                            camposFiltros = regla.getField();
+                            valorFiltro = regla.getData();
+                        } else {
+                            camposFiltros += "," + regla.getField();
+                        }
+                    }
+                } else {
+                    //ejemplo = generarEjemplo(filtro, ejemplo);
+                }
 
-        } catch (Exception ex) {
-            logger.debug("Error al listar proveedores", ex);
+            }
+            // ejemplo.setActivo("S");
+
+            pagina = pagina != null ? pagina : 1;
+            Integer total = 0;
+
+            if (!todos) {
+                total = proveedorManager.list(ejProveedor, true).size();
+            }
+
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+
+            if (total < inicio) {
+                inicio = total - total % cantidad;
+                pagina = total / cantidad;
+            }
+
+            listMapGrupos = proveedorManager.listAtributos(ejProveedor, atributos.split(","), todos, inicio, cantidad,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    null, null, null, null, null, null, null, null, true);
+
+            if (todos) {
+                total = listMapGrupos.size();
+            }
+            Integer totalPaginas = total / cantidad;
+
+            retorno.setTotal(totalPaginas + 1);
+            retorno.setRetorno(listMapGrupos);
+            retorno.setPage(pagina);
+
+        } catch (Exception e) {
+
+            logger.error("Error al listar", e);
         }
 
         return retorno;
-
     }
     
     @RequestMapping(value = "/crear", method = RequestMethod.GET)

@@ -6,7 +6,7 @@
 
 package com.sistem.proyecto.manager;
 
-import com.sistem.proyecto.entity.Anho;
+import com.sistem.proyecto.entity.Moneda;
 import javax.ejb.Local;
 
 /**
@@ -14,6 +14,7 @@ import javax.ejb.Local;
  * @author Miguel
  */
 @Local
-public interface AnhoManager extends GenericDao<Anho, Long> {
+public interface MonedaManager extends GenericDao<Moneda, Long>{
     
+
 }

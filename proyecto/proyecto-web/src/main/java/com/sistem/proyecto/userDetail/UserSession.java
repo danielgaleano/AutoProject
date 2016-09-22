@@ -106,7 +106,8 @@ public class UserSession implements AuthenticationProvider {
                 autoridades.add(new SimpleGrantedAuthority("Usuario.Editar"));
                 autoridades.add(new SimpleGrantedAuthority("Usuario.Desactivar"));
                 autoridades.add(new SimpleGrantedAuthority("Usuario.Activar"));
-                autoridades.add(new SimpleGrantedAuthority("Usuario.AsignarRol"));        
+                autoridades.add(new SimpleGrantedAuthority("Usuario.AsignarRol"));
+                autoridades.add(new SimpleGrantedAuthority("Configurar.Sistema"));
             } else {
                 
                 RolPermiso ejemplo = new RolPermiso();

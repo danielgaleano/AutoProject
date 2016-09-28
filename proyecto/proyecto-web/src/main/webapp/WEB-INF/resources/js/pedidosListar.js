@@ -8,7 +8,7 @@ $(document).ready(function(data) {
     var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
     var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
     var permisoVisualizar = parseBolean($(this).find('.tablvisualizar-permiso').text());
-    var permisoAsignar = parseBolean($(this).find('.tablasignar-permiso').text());
+    var permisoDetalle = parseBolean($(this).find('.tabldetalle-permiso').text());
 
     var grid_selector = "#grid";
     var pager_selector = "#grid-pager";
@@ -28,24 +28,53 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'NRO. PEDIDO', 'CODIGO', 'FECHA ENTREGA', 'CONFIRMADO', 'PROVEEDOR', 'STATUS', ''],
+        colNames: ['ID', 'NRO. PEDIDO', 'CODIGO', 'FECHA ENTREGA', 'APROBADOS', 'CANT. VEHICULOS', 'USUARIO', 'PROVEEDOR', 'STATUS', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'numeroPedido', index: 'numeroPedido', width: 90, editable: false},
             {name: 'codigo', index: 'codigo', width: 90, editable: false},
-            {name: 'fechaEntrega', index: 'fechaEntrega', width: 150, editable: false},
-            {name: 'confirmado', index: 'confirmado', width: 90, sortable: false},
+            {name: 'fechaEntrega', index: 'fechaEntrega', width: 150, editable: true},
+            {name: 'cantidadAprobados', index: 'cantidadAprobados', width: 90, sortable: false},
+            {name: 'cantidadTotal', index: 'cantidadTotal', width: 90, sortable: false},
+            {name: 'usuario.nombre', index: 'usuario.nombre', width: 90, sortable: false},
             {name: 'proveedor.nombre', index: 'proveedor.nombre', width: 90, sortable: false},
             {name: 'activo', index: 'activo', width: 90, editable: false},
-            {name: 'act', index: 'act', fixed: true, sortable: false, resize: false
-                        //formatter:'actions', 
-                        //formatoptions:{ 
-                        //	keys:true,
-                        //delbutton: false,//disable delete button
+            {name: 'act', index: 'act', width: 110, fixed: true, sortable: false, resize: false,
+                //               formatter: 'actions',
+                formatoptions: {
+                    onError: function(jqXHR, textStatus, errorThrwn) {
+                        if (textStatus.status !== 200) {
+                            $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    + '><i class="fa  fa-remove"></i></button>'
+                                    + '<strong>Error ' + textStatus.status + ' ! </strong>'
+                                    + 'Error al editar el registro'
+                                    + '</div>');
+                        }
 
-                        //	delOptions:{recreateForm: true, beforeShowForm:beforeDeleteCallback},
-                        //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
-                        //}
+                    },
+                    onSuccess: function(data) {
+                        if (data.responseJSON.error === true) {
+                            $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    + '><i class="fa  fa-remove"></i></button>'
+                                    + '<strong>Error! </strong>'
+                                    + data.responseJSON.mensaje
+                                    + '</div>');
+
+                        } else {
+                            $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                    + '<strong>Exito! </strong>'
+                                    + data.responseJSON.mensaje
+                                    + '</div>');
+                            $(grid_selector).trigger('reloadGrid');
+
+                        }
+                    }
+
+                }
             }
         ],
         viewrecords: true,
@@ -113,9 +142,10 @@ $(document).ready(function(data) {
 
                             asignar = "";
                             visuali = visualizarButton(cl, permisoVisualizar);
-                            editForm = editFormButton(cl, permisoEditar);
+                            edit = editInlineButton(cl, permisoEditar);
+                            editForm = pedidoDetalleButton(cl, permisoDetalle);
                             desact = desactivarButton(cl, permisoDesactivar);
-                            $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
+                            $(grid_selector).setRowData(ids[i], {act: ini + edit + editForm + visuali + desact + fin});
                         }
                         $(grid_selector).setRowData(ids[i], {activo: labelActivo});
                     } else {

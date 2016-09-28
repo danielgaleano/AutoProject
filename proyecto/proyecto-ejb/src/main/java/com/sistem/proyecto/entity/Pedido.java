@@ -45,11 +45,17 @@ public class Pedido extends Base {
 
     @Column(name = "descuento")
     private Double descuento;
+    
+    @Column(name = "cantidas_aprobados")
+    private Long cantidadAprobados;
+            
+    @Column(name = "cantidas_total")
+    private Long cantidadTotal;        
 
-    @Column(name = "total", nullable = false)
+    @Column(name = "total", nullable = true)
     private Double total;
 
-    @Column(name = "neto", nullable = false)
+    @Column(name = "neto", nullable = true)
     private Double neto;
     
     @ManyToOne
@@ -63,6 +69,9 @@ public class Pedido extends Base {
     @ManyToOne
     @JoinColumn(name = "empresa")
     private Empresa empresa;
+    
+    @Transient
+    private String fecha;
 
     public Pedido() {
     }
@@ -217,7 +226,7 @@ public class Pedido extends Base {
     public void setProveedor(Proveedor proveedor) {
         this.proveedor = proveedor;
     }
-
+  
 //    /**
 //     * @return the detallePedido
 //     */
@@ -231,6 +240,48 @@ public class Pedido extends Base {
 //    public void setDetallePedido(DetallePedido detallePedido) {
 //        this.detallePedido = detallePedido;
 //    }
+
+    /**
+     * @return the fecha
+     */
+    public String getFecha() {
+        return fecha;
+    }
+
+    /**
+     * @param fecha the fecha to set
+     */
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    /**
+     * @return the cantidadAprobados
+     */
+    public Long getCantidadAprobados() {
+        return cantidadAprobados;
+    }
+
+    /**
+     * @param cantidadAprobados the cantidadAprobados to set
+     */
+    public void setCantidadAprobados(Long cantidadAprobados) {
+        this.cantidadAprobados = cantidadAprobados;
+    }
+
+    /**
+     * @return the cantidadTotal
+     */
+    public Long getCantidadTotal() {
+        return cantidadTotal;
+    }
+
+    /**
+     * @param cantidadTotal the cantidadTotal to set
+     */
+    public void setCantidadTotal(Long cantidadTotal) {
+        this.cantidadTotal = cantidadTotal;
+    }
     
     
 }

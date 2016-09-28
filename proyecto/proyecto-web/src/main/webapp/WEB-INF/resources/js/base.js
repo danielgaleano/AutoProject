@@ -10,38 +10,38 @@ function customValidationMessage(val, colname) {
     }
 }
 
-function pickYear( cellvalue, options, cell ) {
+function pickYear(cellvalue, options, cell) {
     console.log('oooo');
-    setTimeout(function(){
-        $(cell) .find('input[type=text]')
-                .datepicker({format:'yyyy' , autoclose:true, startView:'year' , viewMode:'years',
-                 minViewMode:'years', minView:'year' , orientation:"bottom" ,endDate: new Date()}); 
+    setTimeout(function() {
+        $(cell).find('input[type=text]')
+                .datepicker({format: 'yyyy', autoclose: true, startView: 'year', viewMode: 'years',
+                    minViewMode: 'years', minView: 'year', orientation: "bottom", endDate: new Date()});
     }, 0);
 }
 
-function spinnerNumber( cellvalue, options, cell ) {
-    
-    setTimeout(function(){
+function spinnerNumber(cellvalue, options, cell) {
+
+    setTimeout(function() {
 //        $(cell) .append('<div class="input-group spinner" data-trigger="spinner" id="spinner"></div>'); 
 //        $('.spinner').append('<div class="input-group-addon">'
 //                +' <a href="javascript:;" class="spin-up" data-spin="up"><i class="fa fa-caret-up"></i></a>'
 //                +' <a href="javascript:;" class="spin-down" data-spin="down"><i class="fa fa-caret-down"></i></a>'
 //                +' </div>');
         var value = '<div class="input-group-addon">'
-                +' <a href="javascript:;" class="spin-up" data-spin="up"><i class="fa fa-caret-up"></i></a>'
-                +' <a href="javascript:;" class="spin-down" data-spin="down"><i class="fa fa-caret-down"></i></a>'
-                +' </div>';
-        $(cell) .find('input[type=text]').after('<div class="input-group input-group-sm spinner" data-trigger="spinner" id="spinner">'+value+'</div>');
-        
-        var input = $(cell) .find('input[type=text]').addClass('form-control text-center').attr('data-rule',"quantity").attr('data-min',"1").attr('data-max',"100").attr('value',cellvalue);        
-        
-        $(cell) .find('input[type=text]').remove();
-        
+                + ' <a href="javascript:;" class="spin-up" data-spin="up"><i class="fa fa-caret-up"></i></a>'
+                + ' <a href="javascript:;" class="spin-down" data-spin="down"><i class="fa fa-caret-down"></i></a>'
+                + ' </div>';
+        $(cell).find('input[type=text]').after('<div class="input-group input-group-sm spinner" data-trigger="spinner" id="spinner">' + value + '</div>');
+
+        var input = $(cell).find('input[type=text]').addClass('form-control text-center').attr('data-rule', "quantity").attr('data-min', "1").attr('data-max', "100").attr('value', cellvalue);
+
+        $(cell).find('input[type=text]').remove();
+
         $('.input-group-addon').before(input);
-        
+
         $('#spinner').spinner('changed', function(e, newVal, oldVal) {
-                $('#old-val').text(oldVal);
-                $('#new-val').text(newVal);
+            $('#old-val').text(oldVal);
+            $('#new-val').text(newVal);
         });
     }, 0);
 }
@@ -110,6 +110,18 @@ function activarButton(id, permisoActivar) {
                 + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');"'
                 + '  class="btn btn-xs btn-success" style="float:left;cursor:pointer;" type="button" title="Activar" onclick="activar(this,' + id + ');">'
                 + ' <span class="ace-icon fa fa-check bigger-120"></span></a>';
+    }
+
+    return button;
+}
+
+function pedidoDetalleButton(id, permisoDetalle) {
+    var button = '';
+    if (permisoDetalle) {
+        button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');"'
+                + '  class="btn btn-xs btn-warning" style="float:left;cursor:pointer;" type="button" title="Agregar Detalle" onclick="pedidoDetalle(this,' + id + ');">'
+                + ' <span class="ace-icon fa fa-fw fa-file-text-o bigger-120"></span></a>';
     }
 
     return button;
@@ -371,3 +383,27 @@ $.fn.mensaje = function(data) {
 
     return this;
 };
+
+function randomString(len, charSet) {
+    var char = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var randomString = '';
+    for (var i = 0; i < len; i++) {
+        var randomPoz = Math.floor(Math.random() * char.length);
+        randomString += char.substring(randomPoz, randomPoz + 1);
+    }
+    return charSet + '-' + randomString;
+}
+//Inicializar Fechas
+var hasta = new Date();
+var dia = hasta.getDate();
+var mes = hasta.getMonth() + 1;
+var anho = hasta.getFullYear();
+
+var fechaDesde = dia + "/" + mes + "/" + anho + " " + "00:00";
+$('#id-date-picker').datepicker({
+    //format: 'DD/MM/YYYY HH:mm',
+    language: 'es',
+    startDate: fechaDesde,
+    useCurrent: false,
+    minDate: new Date()
+});

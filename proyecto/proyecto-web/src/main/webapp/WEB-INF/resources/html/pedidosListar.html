@@ -15,11 +15,12 @@
     <nav th:replace="include/navbar :: navbar"></nav>
     <div class="content-wrapper">
 
-        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
-        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
-        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
-        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
-        <div class="tablasignar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
+        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Crear'')')}"/>
+        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Editar'')')}"/>
+        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Activar'')')}"/>
+        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Desactivar'')')}"/>
+        <div class="tabldetalle-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Detalle'')')}"/>
+        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Visualizar'')')}"/>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
@@ -27,7 +28,7 @@
                 <small>Lista de pedidos de la empresa.</small>
             </h1>
             <ol class="breadcrumb">
-                <a th:href="@{/pedidos/crear}" class="btn btn-primary" role="button">
+                <a sec:authorize="hasRole('Pedido.Crear')" th:href="@{/pedidos/crear}" class="btn btn-primary" role="button">
 
                     Crear
                 </a>

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package py.com.pronet.utils;
+package com.sistem.proyecto.utils;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author mojeda
  */
-public class DTORetorno {
+public class DTORetorno<T> {
     
     private boolean error;
     
@@ -24,7 +24,8 @@ public class DTORetorno {
     
     private Integer page;
     
-    
+    private T data;
+     
     private List<Map<String, Object>> retorno;
 
     /**
@@ -111,6 +112,20 @@ public class DTORetorno {
      */
     public void setRetorno(List<Map<String, Object>> retorno) {
         this.retorno = retorno;
+    }
+
+    /**
+     * @return the data
+     */
+    public T getData() {
+        return data;
+    }
+
+    /**
+     * @param data the data to set
+     */
+    public void setData(T data) {
+        this.data = data;
     }
 
     

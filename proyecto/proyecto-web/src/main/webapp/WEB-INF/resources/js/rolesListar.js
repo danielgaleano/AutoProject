@@ -30,7 +30,7 @@ $(document).ready(function(data) {
         colNames: ['ID', 'NOMBRE ROL', 'EMPRESA', 'EMPRESA', 'STATUS', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'nombre', index: 'nombre', width: 90, editable: true, editrules: { edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'nombre', index: 'nombre', width: 90, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'empresa.nombre', index: 'empresa.nombre', width: 90, editable: false,
                 cellattr: function(rowid, tv, rawObject, cm, rdata) {
                     if ($.isNumeric(rowid) !== true) {
@@ -60,7 +60,44 @@ $(document).ready(function(data) {
                     }
                 }},
             {name: 'activo', index: 'activo', width: 90, editable: false},
-            {name: 'act', index: 'act', align: 'center', fixed: true, sortable: false, resize: false}
+            {name: 'act', index: 'act', align: 'center', fixed: true, sortable: false, resize: false,
+//                formatter: 'actions',
+                formatoptions: {
+//                    keys: true,
+//                    delbutton: false, //disable delete button
+//                    editbutton: true,
+                    onError: function(jqXHR, textStatus, errorThrwn) {
+                        if (textStatus.status !== 200){
+                            $('#mensaje').append('<div class="alert alert-error">'
+                                + '<button class="close" data-dismiss="alert" type="button"'
+                                + '><i class="fa  fa-remove"></i></button>'
+                                + '<strong>Error ' + textStatus.status + ' ! </strong>'
+                                + 'Error al editar el registro'
+                                + '</div>');
+                        }
+                        
+                    },
+                    onSuccess: function(data) {
+                        if (data.responseJSON.error === true) {
+                            $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    + '><i class="fa  fa-remove"></i></button>'
+                                    + '<strong>Error! </strong>'
+                                    + data.responseJSON.mensaje
+                                    + '</div>');
+
+                        } else {
+                            $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                    + '<strong>Exito! </strong>'
+                                    + data.responseJSON.mensaje
+                                    + '</div>');
+                            $(grid_selector).trigger('reloadGrid');
+
+                        }
+                    }
+                }}
         ],
         viewrecords: true,
         rowNum: 10,
@@ -77,22 +114,22 @@ $(document).ready(function(data) {
             return data;
         },
         postData: {
-            atributos:"id,nombre",
-            filters:null,
-            todos:false
+            atributos: "id,nombre",
+            filters: null,
+            todos: false
         },
         jsonReader: {
             root: 'retorno',
             page: 'page',
             total: 'total',
             records: function(obj) {
-                if(obj.retorno !== null){
+                if (obj.retorno !== null) {
                     return obj.retorno.length;
-                }else{
-                    return 0 ;
+                } else {
+                    return 0;
                 }
             }
-        },        
+        },
         onSelectRow: edit,
         loadComplete: function(rowid, rowdata, rowelem) {
             var table = this;

@@ -11,6 +11,8 @@ package com.sistem.proyecto.utils;
  */
 public class MensajeDTO {
     
+    private Long id;
+    
     private boolean error;
     
     private String mensaje;
@@ -42,6 +44,20 @@ public class MensajeDTO {
      */
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
+    }
+
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(Long id) {
+        this.id = id;
     }
 
     

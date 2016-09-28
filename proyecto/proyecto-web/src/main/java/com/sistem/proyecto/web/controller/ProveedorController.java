@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import py.com.pronet.utils.DTORetorno;
+import com.sistem.proyecto.utils.DTORetorno;
 
 /**
  *
@@ -408,6 +408,7 @@ public class ProveedorController extends BaseController {
         MensajeDTO retorno = new MensajeDTO();
         String nombre = "";
         Proveedor ejProveedor = new Proveedor();
+        ejProveedor.setId(id);
         ejProveedor.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
         try {
 
@@ -452,6 +453,7 @@ public class ProveedorController extends BaseController {
         String nombre = "";
         
         Proveedor ejProveedor = new Proveedor();
+        ejProveedor.setId(id);
         ejProveedor.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
 
         try {

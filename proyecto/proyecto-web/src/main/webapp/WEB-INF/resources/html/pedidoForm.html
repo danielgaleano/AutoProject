@@ -5,12 +5,14 @@
     <head>  
     <div th:include="include/head :: head" th:remove="tag"></div>
     <link th:href="@{/resources/css/datepicker.min.css}" rel="stylesheet" />
-    <link th:href="@{/resources/css/datepicker.min.css}" rel="stylesheet" />
     <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
-    <link th:href="@{/resources/bootstrap/css/bootstrap-spinner.css}" rel="stylesheet" />
-    
-    <title>Pedido</title>
+    <link th:href="@{/resources/bootstrap/css/bootstrap-datetimepicker.min.css}" rel="stylesheet" />
 
+    <title>Pedido</title>
+    <script th:inline="javascript">
+        var id = /*[[${id}]]*/'';
+        var action = /*[[${action}]]*/'';
+    </script>
 </head>
 <body >
     <nav th:replace="include/navbar :: navbar"></nav>
@@ -44,14 +46,12 @@
                         <div class="col-xs-12">
 
                             <div class="col-xs-12 col-sm-12">
-                                <input th:if="${pedido} == null" id="idPedido" name="id" type="hidden"  class="form-control table-empresa-input" />
-                                <input th:if="${pedido} != null" th:value="${pedido.id}" id="idPedido" name="id" type="hidden"  class="form-control table-empresa-input" />
-
+                                <input  id="idPedido" name="id" type="hidden" th:value="${id}" class="form-control table-empresa-input" />
 
                                 <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                     <label class="col-lg-6 control-label">Codigo(*)</label>
                                     <div class="col-lg-6">
-                                        <input th:if="${pedido} == null" id="codigo" name="codigo" type="text" placeholder="Codigo Pedido" class="form-control tableusuario-input "/> 
+                                        <input id="codigo" name="codigo" type="text" disabled="disabled" placeholder="Codigo Pedido" class="form-control tableusuario-input "/> 
                                         <span class="glyphicon form-control-feedback" id="nombre1"></span>
                                     </div>
                                 </div>
@@ -69,14 +69,14 @@
                                 <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                     <label class="col-lg-6 control-label">Fecha Entrega(*)</label>
                                     <div class="col-lg-6">
-                                        <input class="form-control date-picker" id="id-date-picker-1" name="fechaEntrega" type="text" data-date-format="dd-mm-yyyy" />
-                                        <span class="glyphicon form-control-feedback" id="telefono1"></span>
+                                        <input class="form-control date-picker" id="id-date-picker" name="fechaEntrega" type="text" data-date-format="dd-mm-yyyy" />
+                                        <span class="add-on" ><i class="icon-calendar"></i></span>
                                     </div>
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                    <label class="col-lg-6 control-label">Estado</label>
+                                    <label class="col-lg-6 control-label">Aprobados</label>
                                     <div class="col-lg-6">
-                                        <input th:if="${pedido} == null" id="confirmado" name="confirmado" type="text" placeholder="Estado del Pedido" data-mask="" data-inputmask="'mask': '(999)999-999'"  class="form-control tableusuario-input "/> 
+                                        <input  id="confirmado" name="aprobados" type="text" disabled="disabled" placeholder="Cantidad Aprobados" data-mask="" data-inputmask="'mask': '(999)999-999'"  class="form-control tableusuario-input "/> 
                                         <span class="glyphicon form-control-feedback" id="fax1"></span>
                                     </div>
                                 </div>
@@ -85,7 +85,7 @@
                                 <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                     <label class="col-lg-6 control-label">Cantidad</label>
                                     <div class="col-lg-6">
-                                        <input th:if="${pedido} == null" id="pais" type="text" name="cantidad" placeholder="Cantidad Total" class="form-control tableusuario-input " /> 
+                                        <input id="cantidadTotal" type="text" name="cantidad" disabled="disabled" placeholder="Cantidad Total" class="form-control tableusuario-input " /> 
                                         <span class="glyphicon form-control-feedback" id="pais1"></span>
                                     </div>
                                 </div>
@@ -93,33 +93,31 @@
                                 <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                     <label class="col-lg-6 control-label">Monto Total</label>
                                     <div class="col-lg-6">
-                                        <input th:if="${pedido} == null" id="total" type="text" name="total" placeholder="Total" class="form-control tableusuario-input " /> 
+                                        <input  id="montoTotal" type="text" name="total" disabled="disabled" placeholder="Total" class="form-control tableusuario-input " /> 
                                         <span class="glyphicon form-control-feedback" id="direccion1"></span>
                                     </div>
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                     <label class="col-lg-6 control-label">Descuento %</label>
                                     <div class="col-lg-6">
-                                        <input th:if="${pedido} == null" id="descuento" type="text" name="descuento" placeholder="Descuentos" class="form-control tableusuario-input " /> 
+                                        <input id="descuento" type="text" name="descuento" placeholder="Descuentos" class="form-control tableusuario-input " /> 
                                         <span class="glyphicon form-control-feedback" id="pais1"></span>
                                     </div>
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                     <label class="col-lg-4 control-label">Neto</label>
                                     <div class="col-lg-8">
-                                        <input th:if="${pedido} == null" id="neto" type="text" name="neto" placeholder="Neto a Pagar" class="form-control tableusuario-input " /> 
+                                        <input  id="neto" type="text" name="neto" placeholder="Neto a Pagar" disabled="disabled" class="form-control tableusuario-input " /> 
                                         <span class="glyphicon form-control-feedback" id="direccion1"></span>
                                     </div>
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
                                     <label class="col-lg-2 control-label">Observacion</label>
                                     <div class="col-lg-10">
-                                        <input th:if="${pedido} == null" id="observacion" type="text" name="observacion" placeholder="Observacion" class="form-control tableusuario-input " /> 
+                                        <input id="observacion" type="text" name="observacion" placeholder="Observacion" class="form-control tableusuario-input " /> 
                                         <span class="glyphicon form-control-feedback" id="pais1"></span>
                                     </div>
-                                </div>
-
-
+                                </div>                               
                             </div>
 
                         </div>
@@ -141,13 +139,15 @@
         </section><!-- /.content -->
     </div>
     <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{~/proyecto/resources/js/lib/moment.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/lib/bootstrap-editable.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/dist/js/jquery.inputmask.bundle.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/lib/bootstrap-datepicker.min.js}" charset="UTF-8"></script>
-    <script th:src="@{~/proyecto/resources/dist/js/jquery.spinner.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/bootstrap/js/bootstrap-datetimepicker.min.js}" charset="UTF-8"></script>
     <script th:src="@{/resources/js/base.js}"></script>
     <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
+    <script th:src="@{/resources/js/pedidosForm.js}"></script>
     <script th:src="@{/resources/js/pedidos.js}"></script>
 
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>

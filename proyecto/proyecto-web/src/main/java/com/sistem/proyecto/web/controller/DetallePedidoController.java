@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping(value = "/pedido/detalles")
 public class DetallePedidoController extends BaseController {
 
-    String atributos = "id,caracteristica,trasmision,color,anho,cantidad,precio,total,tipo.id,tipo.nombre,activo,estadoPedido,moneda.id,moneda.nombre";
+    String atributos = "id,caracteristica,trasmision,color,anho,cantidad,precio,total,tipo.id,tipo.nombre,marca.id,marca.nombre,activo,estadoPedido,moneda.id,moneda.nombre";
 
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
     public @ResponseBody
@@ -195,6 +195,13 @@ public class DetallePedidoController extends BaseController {
                 mensaje.setMensaje("El tipo de vehiculo no puede estar vacio.");
                 return mensaje;
             }
+            
+            if (detalleRecibido.getMarca()== null || detalleRecibido.getMarca().getId() != null
+                    && detalleRecibido.getMarca().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("La marca de vehiculo no puede estar vacio.");
+                return mensaje;
+            }
 
             if (detalleRecibido.getAnho() == null || detalleRecibido.getAnho() != null
                     && detalleRecibido.getAnho().compareToIgnoreCase("") == 0) {
@@ -238,20 +245,21 @@ public class DetallePedidoController extends BaseController {
                 return mensaje;
             }
 
-            if (detalleRecibido.getCantidad() == null || detalleRecibido.getCantidad() != null
-                    && detalleRecibido.getCantidad().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El campo cantida no puede estar vacia.");
-                return mensaje;
-            }
+//            if (detalleRecibido.getCantidad() == null || detalleRecibido.getCantidad() != null
+//                    && detalleRecibido.getCantidad().toString().compareToIgnoreCase("") == 0) {
+//                mensaje.setError(true);
+//                mensaje.setMensaje("El campo cantida no puede estar vacia.");
+//                return mensaje;
+//            }
 
             ejDetalle.setPedido(ejPedido);
             ejDetalle.setAnho(detalleRecibido.getAnho());
-            ejDetalle.setCantidad(detalleRecibido.getCantidad());
+            ejDetalle.setCantidad(Long.parseLong("1"));
             ejDetalle.setCaracteristica(detalleRecibido.getCaracteristica());
             ejDetalle.setColor(detalleRecibido.getColor());
             ejDetalle.setMoneda(detalleRecibido.getMoneda());
             ejDetalle.setTipo(detalleRecibido.getTipo());
+            ejDetalle.setMarca(detalleRecibido.getMarca());
             ejDetalle.setTrasmision(detalleRecibido.getTrasmision());
             ejDetalle.setPrecio(detalleRecibido.getPrecio());
             ejDetalle.setActivo("S");
@@ -265,7 +273,7 @@ public class DetallePedidoController extends BaseController {
 
             ejDetalle.setCambioDia(cambio);
 
-            Double total = detalleRecibido.getPrecio() * detalleRecibido.getCantidad();
+            Double total = detalleRecibido.getPrecio() * 1;
             ejDetalle.setTotal(total);
             ejDetalle.setEstadoPedido(DetallePedido.PENDIENTE);
             
@@ -277,7 +285,7 @@ public class DetallePedidoController extends BaseController {
         } catch (Exception ex) {
             mensaje.setError(true);
             mensaje.setMensaje("Error al guardar el detalle del pedido");
-            logger.debug("Error al guardar el detalle del pedido ", ex);
+            logger.error("Error al guardar el detalle del pedido ", ex);
         }
 
         return mensaje;

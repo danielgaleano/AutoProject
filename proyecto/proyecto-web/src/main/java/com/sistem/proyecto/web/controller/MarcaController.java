@@ -10,10 +10,15 @@ import com.google.gson.GsonBuilder;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Permiso;
 import com.sistem.proyecto.entity.Marca;
+import com.sistem.proyecto.entity.Tipo;
 import com.sistem.proyecto.userDetail.UserDetail;
+import com.sistem.proyecto.utils.DTORetorno;
 import com.sistem.proyecto.utils.DatosDTO;
+import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.MensajeDTO;
+import com.sistem.proyecto.utils.ReglaDTO;
 import com.sistem.proyecto.web.controller.BaseController;
+import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +46,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/marcas")
 public class MarcaController extends BaseController {
 
-    String atributos = "id,nombre,activo";
+    String atributos = "id,nombre,activo,empresa.id,empresa.nombre";
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listarMarcas(Model model) {
@@ -63,6 +68,84 @@ public class MarcaController extends BaseController {
 
         } catch (Exception ex) {
             System.out.println("Error " + ex);
+        }
+
+        return retorno;
+    }
+    
+    @RequestMapping(value = "/listar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno listar(@ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filtros,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos) {
+
+        DTORetorno retorno = new DTORetorno();
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        ordenarPor = "nombre";
+        Marca ejemplo = new Marca();
+        ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+        List<Map<String, Object>> listMapGrupos = null;
+        try {
+
+            inicializarMarcaManager();
+
+            Gson gson = new Gson();
+            String camposFiltros = null;
+            String valorFiltro = null;
+
+            if (filtrar) {
+                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
+                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
+                    for (ReglaDTO regla : filtro.getRules()) {
+                        if (camposFiltros == null) {
+                            camposFiltros = regla.getField();
+                            valorFiltro = regla.getData();
+                        } else {
+                            camposFiltros += "," + regla.getField();
+                        }
+                    }
+                } else {
+                    //ejemplo = generarEjemplo(filtro, ejemplo);
+                }
+
+            }
+            // ejemplo.setActivo("S");
+
+            pagina = pagina != null ? pagina : 1;
+            Integer total = 0;
+
+            if (!todos) {
+                total = marcaManager.list(ejemplo, true).size();
+            }
+
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+
+            if (total < inicio) {
+                inicio = total - total % cantidad;
+                pagina = total / cantidad;
+            }
+
+            listMapGrupos = marcaManager.listAtributos(ejemplo, atributos.split(","), todos, inicio, cantidad,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    null, null, null, null, null, null, null, null, true);
+
+            if (todos) {
+                total = listMapGrupos.size();
+            }
+            Integer totalPaginas = total / cantidad;
+
+            retorno.setTotal(totalPaginas + 1);
+            retorno.setRetorno(listMapGrupos);
+            retorno.setPage(pagina);
+
+        } catch (Exception e) {
+
+            logger.error("Error al listar", e);
         }
 
         return retorno;

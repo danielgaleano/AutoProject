@@ -50,7 +50,24 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'marca.id', index: 'marca.id', width: 90, editable: false, hidden: true},
+            {name: 'marca.nombre', index: 'marca.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+                editoptions: {
+                    dataUrl: CONTEXT_ROOT + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
+                    buildSelect: function(resp) {
+
+                        var sel = '<select>';
+                        sel += '<option value="">Seleccione la opcion</option>';
+                        var obj = $.parseJSON(resp);
+//                        var sel_id = $(grid_selector).jqGrid('getGridParam', 'selrow');
+//                        var value = $(grid_selector).jqGrid('getCell',sel_id ,'tipo.id');
+
+                        $.each(obj.retorno, function() {
+                            sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
+                        });
+                        sel += '</select>';
+                        return sel;
+                    }
+                }},
             {name: 'caracteristica', index: 'caracteristica', width: 120, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
             {name: 'anho', index: 'anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'color', index: 'color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
@@ -73,9 +90,31 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'precio', index: 'precio', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'cantidad', index: 'cantidad', width: 90, sorttype: "number", editable: true, //unformat: spinnerNumber,
-                editoptions: {type: 'number', min: 1, max: 100,
+            {name: 'precio', index: 'precio', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
+                editoptions: {
+                    dataEvents: [
+                        {type: 'click', fn: function(e) {
+                                var total = this.value * 1;
+                                $('input[name="total"]').val(total);
+                            }},
+                        {type: 'keypress', fn: function(e) {
+                                var total;
+                                setTimeout(function() {
+                                    if ($.isNumeric(e.key) || e.key === 'Backspace') {
+                                        total = $('input[name="precio"]').val() * 1;
+                                        $('input[name="total"]').val(total);
+                                    } else {
+                                        $('input[name="precio"]').val('');
+                                        $.messager.alert('Error!!', 'Debe ingresar un valor numerico!!!');
+                                    }
+                                }, 0);
+
+                                
+                            }}
+
+                    ]}},
+            {name: 'cantidad', index: 'cantidad', width: 90, sorttype: "number", editable: false, //unformat: spinnerNumber,
+                editoptions: {defaultValue: '1', type: 'number', min: 1, max: 100,
                     dataEvents: [
                         {type: 'click', fn: function(e) {
                                 var precio = $('input[name="precio"]').val();
@@ -132,21 +171,26 @@ $(document).ready(function(data) {
         loadtext: "Cargando...",
         emptyrecords: "No se encontaron datos.",
         pgtext: "Pagina {0} de {1}",
+        afterInserRow: function(rowid, data){
+            console.log('dsdsdsdsdsdsdsds');
+        },
         serializeRowData: function(postData) {
             if ($.isNumeric(postData.id) !== true) {
                 postData.id = "";
             }
-            if( $("#idPedido").val() !== null && $("#idPedido").val() !== ""){
-               postData['pedido.id'] = $("#idPedido").val(); 
-            }else{
-               postData['pedido.codigo'] = $('#codigo').val();
-               postData['pedido.observacion'] = $('#observacion').val();
-               postData['pedido.fecha'] = $('#id-date-picker').val();
-               postData['pedido.proveedor.id'] = $('#proveedor').val();
+            if ($("#idPedido").val() !== null && $("#idPedido").val() !== "") {
+                postData['pedido.id'] = $("#idPedido").val();
+            } else {
+                postData['pedido.codigo'] = $('#codigo').val();
+                postData['pedido.observacion'] = $('#observacion').val();
+                postData['pedido.fecha'] = $('#id-date-picker').val();
+                postData['pedido.proveedor.id'] = $('#proveedor').val();
             }
             postData['tipo.id'] = postData['tipo.nombre'];
+            postData['marca.id'] = postData['marca.nombre'];
             postData['moneda.id'] = postData['moneda.nombre'];
             delete postData['tipo.nombre'];
+            delete postData['marca.nombre'];
             delete postData['moneda.nombre'];
             return postData;
         },
@@ -154,7 +198,7 @@ $(document).ready(function(data) {
             atributos: "id,nombre",
             filters: null,
             todos: false,
-            idPedido: function(){
+            idPedido: function() {
                 return $("#idPedido").val();
             }
         },
@@ -270,7 +314,7 @@ $(document).ready(function(data) {
                         datatype: 'json',
                         keys: true,
                         successfunc: function(data) {
-                            if(data.responseJSON.id !== null && data.responseJSON.id !== ""){
+                            if (data.responseJSON.id !== null && data.responseJSON.id !== "") {
                                 pedidoForm(data.responseJSON.id, "recargar");
                             }
                             if (data.responseJSON.error === true) {
@@ -288,8 +332,8 @@ $(document).ready(function(data) {
                                         + '<strong>Exito! </strong>'
                                         + data.responseJSON.mensaje
                                         + '</div>');
-                                $(grid_selector).setGridParam({postData:{idPedido : data.responseJSON.id ,todos: false,atributos: "id,nombre", filters: null}});
-    
+                                $(grid_selector).setGridParam({postData: {idPedido: data.responseJSON.id, todos: false, atributos: "id,nombre", filters: null}});
+
                                 $(grid_selector).trigger('reloadGrid');
 
                             }

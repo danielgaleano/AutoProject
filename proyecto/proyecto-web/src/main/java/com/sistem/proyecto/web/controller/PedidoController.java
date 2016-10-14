@@ -70,7 +70,7 @@ public class PedidoController extends BaseController {
 
         DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        ordenarPor = "numeroPedido";
+        ordenarPor = "fechaEntrega";
         Pedido ejemplo = new Pedido();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
 

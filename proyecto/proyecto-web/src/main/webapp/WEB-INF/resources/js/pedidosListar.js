@@ -39,7 +39,7 @@ $(document).ready(function(data) {
             {name: 'usuario.nombre', index: 'usuario.nombre', width: 90, sortable: false},
             {name: 'proveedor.nombre', index: 'proveedor.nombre', width: 90, sortable: false},
             {name: 'activo', index: 'activo', width: 90, editable: false},
-            {name: 'act', index: 'act', width: 110, fixed: true, sortable: false, resize: false,
+            {name: 'act', index: 'act', width: 160, fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {
                     onError: function(jqXHR, textStatus, errorThrwn) {

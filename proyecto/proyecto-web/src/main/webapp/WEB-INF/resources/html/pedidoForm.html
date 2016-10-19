@@ -66,9 +66,6 @@
                                     <div class="col-lg-8">
                                         <select  class="form-control tableusuario-input " id="proveedor"  name="proveedor.id" data-placeholder="Seleccione Proveedor">
 
-                                            <option value="">Seleccione Proveedor</option>
-                                            <option th:if="${pedido} == null" th:each="proveedor : ${proveedores}" th:value="${proveedor.id}" th:text="${proveedor.nombre}"/>
-
                                         </select>
                                     </div>
                                 </div>

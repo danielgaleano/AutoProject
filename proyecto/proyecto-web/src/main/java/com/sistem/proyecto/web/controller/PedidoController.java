@@ -49,29 +49,12 @@ public class PedidoController extends BaseController {
         retorno.setViewName("pedidosListar");
         return retorno;
     }
-    
+
     @RequestMapping(value = "/crear", method = RequestMethod.GET)
     public ModelAndView crear(Model model) {
-        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        List<Map<String, Object>> listMapProveedores = null;
-        try {
-            inicializarPedidoManager();
-            inicializarProveedorManager();
-
-            Proveedor ejProveedor = new Proveedor();
-            ejProveedor.setActivo("S");
-            ejProveedor.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-            listMapProveedores = proveedorManager.listAtributos(ejProveedor, "id,nombre".split(","));
-
-            model.addAttribute("action", "CREAR");
-            model.addAttribute("editar", false);
-            model.addAttribute("proveedores", listMapProveedores);
-
-        } catch (Exception ex) {
-            logger.debug("Error al crear pedidos", ex);
-        }
+        model.addAttribute("action", "CREAR");
+        model.addAttribute("editar", false);
         return new ModelAndView("pedidoForm");
-
     }
 
     @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
@@ -99,7 +82,7 @@ public class PedidoController extends BaseController {
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
 
         List<Map<String, Object>> listMapGrupos = null;
-        
+
         try {
 
             inicializarPedidoManager();
@@ -125,7 +108,7 @@ public class PedidoController extends BaseController {
 
             }
             // ejemplo.setActivo("S");
-            if(ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0){
+            if (ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0) {
                 ordenarPor = "numeroPedido";
             }
 
@@ -190,7 +173,6 @@ public class PedidoController extends BaseController {
         return retorno;
     }
 
-    
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO desactivar(@PathVariable("id") Long id) {
@@ -211,7 +193,6 @@ public class PedidoController extends BaseController {
             if (ejPedido != null) {
                 nombre = ejPedido.getCodigo().toString();
             }
-
 
             if (ejPedido != null && ejPedido.getActivo()
                     .compareToIgnoreCase("N") == 0) {
@@ -236,6 +217,7 @@ public class PedidoController extends BaseController {
         return retorno;
 
     }
+
     @RequestMapping(value = "/activar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO activar(@PathVariable("id") Long id) {

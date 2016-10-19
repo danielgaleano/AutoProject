@@ -261,20 +261,12 @@ public class DetallePedidoController extends BaseController {
 //                mensaje.setMensaje("El campo cantida no puede estar vacia.");
 //                return mensaje;
 //            }
-            
-            Pedido pedidoEj = new Pedido();
-            pedidoEj.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-            pedidoEj.setId(ejPedido.getId());
-            
-            ejDetalle =  new DetallePedido();
-            ejDetalle.setPedido(pedidoEj);
-            
-            Integer totalDetalle = detallePedidoManager.list(ejDetalle, true).size();
+                        
    
-            String codDetalle = randomString(6,"DET");     
+            String codDetalle = randomString(5,"DET");     
             
             ejDetalle =  new DetallePedido();
-            ejDetalle.setCodigoDetalle(totalDetalle+"-"+codDetalle);
+            ejDetalle.setCodigoDetalle(ejPedido.getId()+"-"+codDetalle);
             ejDetalle.setPedido(ejPedido);
             ejDetalle.setAnho(detalleRecibido.getAnho());
             ejDetalle.setCantidad(Long.parseLong("1"));
@@ -301,7 +293,15 @@ public class DetallePedidoController extends BaseController {
             ejDetalle.setEstadoPedido(DetallePedido.PENDIENTE);
 
             detallePedidoManager.save(ejDetalle);
-              
+            
+            Pedido pedidoEj = new Pedido();
+            pedidoEj.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            pedidoEj.setId(ejPedido.getId());
+            
+            ejDetalle =  new DetallePedido();
+            ejDetalle.setPedido(pedidoEj);
+            
+            Integer totalDetalle = detallePedidoManager.list(ejDetalle, true).size();
             pedidoEj = pedidoManager.get(ejPedido);
             pedidoEj.setCantidadTotal(Long.parseLong(totalDetalle+""));
             

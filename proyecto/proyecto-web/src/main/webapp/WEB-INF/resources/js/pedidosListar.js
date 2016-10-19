@@ -145,7 +145,7 @@ $(document).ready(function(data) {
                             edit = editInlineButton(cl, permisoEditar);
                             editForm = pedidoDetalleButton(cl, permisoDetalle);
                             desact = desactivarButton(cl, permisoDesactivar);
-                            $(grid_selector).setRowData(ids[i], {act: ini + edit + editForm + visuali + desact + fin});
+                            $(grid_selector).setRowData(ids[i], {act: ini + edit  + visuali + editForm + desact + fin});
                         }
                         $(grid_selector).setRowData(ids[i], {activo: labelActivo});
                     } else {

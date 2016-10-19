@@ -324,10 +324,11 @@ public class BaseController {
 
     
 
-    String randomString(int len) {
+    String randomString(int len, String variable) {
         StringBuilder sb = new StringBuilder(len);
         for (int i = 0; i < len; i++) {
-            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+            String rand = AB + variable;
+            sb.append(rand.charAt(rnd.nextInt(AB.length())));
         }
         return sb.toString();
     }

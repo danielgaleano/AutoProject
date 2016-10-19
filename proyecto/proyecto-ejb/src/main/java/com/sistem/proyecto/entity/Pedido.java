@@ -43,8 +43,8 @@ public class Pedido extends Base {
     private Boolean confirmado;
 
 
-    @Column(name = "descuento")
-    private Double descuento;
+//    @Column(name = "descuento")
+//    private Double descuento;
     
     @Column(name = "cantidas_aprobados")
     private Long cantidadAprobados;
@@ -55,8 +55,8 @@ public class Pedido extends Base {
     @Column(name = "total", nullable = true)
     private Double total;
 
-    @Column(name = "neto", nullable = true)
-    private Double neto;
+//    @Column(name = "neto", nullable = true)
+//    private Double neto;
     
     @ManyToOne
     @JoinColumn(name = "proveedor")
@@ -159,19 +159,19 @@ public class Pedido extends Base {
         this.confirmado = confirmado;
     }
 
-    /**
-     * @return the descuento
-     */
-    public Double getDescuento() {
-        return descuento;
-    }
-
-    /**
-     * @param d the descuento to set
-     */
-    public void setDescuento(Double d) {
-        this.descuento = d;
-    }
+//    /**
+//     * @return the descuento
+//     */
+//    public Double getDescuento() {
+//        return descuento;
+//    }
+//
+//    /**
+//     * @param d the descuento to set
+//     */
+//    public void setDescuento(Double d) {
+//        this.descuento = d;
+//    }
 
     /**
      * @return the total
@@ -186,19 +186,19 @@ public class Pedido extends Base {
     public void setTotal(Double total) {
         this.total = total;
     }
-   /**
-     * @return the neto
-     */
-    public Double getNeto() {
-        return neto;
-    }
-
-    /**
-     * @param neto the neto to set
-     */
-    public void setNeto(Double neto) {
-        this.neto = neto;
-    }
+//   /**
+//     * @return the neto
+//     */
+//    public Double getNeto() {
+//        return neto;
+//    }
+//
+//    /**
+//     * @param neto the neto to set
+//     */
+//    public void setNeto(Double neto) {
+//        this.neto = neto;
+//    }
   
     /**
      * @return la empresa del pedido

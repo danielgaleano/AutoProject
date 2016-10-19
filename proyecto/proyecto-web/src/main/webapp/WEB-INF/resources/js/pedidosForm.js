@@ -14,10 +14,18 @@ function pedidoForm(id, action) {
                 $('#idPedido').val(pedido.id);
                 $('#codigo').val(pedido.codigo);
                 $('#montoTotal').val(pedido.total);
+                $('#cantidadAprobados').val(pedido.cantidadAprobados);
+                $('#cantidadTotal').val(pedido.cantidadTotal);
                 $('#observacion').val(pedido.observacion);
-                $('#descuento').val(pedido.observacion);
-                $('#neto').val(pedido.neto);
+                $('#proveedor').val(pedido.proveedor.nombre);
                 $('#id-date-picker').val(pedido.fechaEntrega);
+                
+                if(action !== "CREAR"){
+                    $('#proveedor').attr("disabled",true);
+                    $('#id-date-picker').attr("disabled",true);
+                    $('#observacion').attr("disabled",true);
+                }
+                
             }
         });
     }else{

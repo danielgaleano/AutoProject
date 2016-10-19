@@ -27,6 +27,9 @@ public class DetallePedido extends Base {
     
     private static final long serialVersionUID = 798618560888L;
     
+    @Column(name = "codigo_detalle")
+    private String codigoDetalle;
+    
     @Column(name = "estado_pedido")
     private String estadoPedido;
     
@@ -305,6 +308,14 @@ public class DetallePedido extends Base {
      */
     public void setMarca(Marca marca) {
         this.marca = marca;
+    }
+
+    public String getCodigoDetalle() {
+        return codigoDetalle;
+    }
+
+    public void setCodigoDetalle(String codigoDetalle) {
+        this.codigoDetalle = codigoDetalle;
     }
 
     

@@ -6,18 +6,15 @@
 package com.sistem.proyecto.web.controller;
 
 import com.google.gson.Gson;
-import com.sistem.proyecto.entity.Cliente;
-import com.sistem.proyecto.entity.Contacto;
 import com.sistem.proyecto.entity.DetallePedido;
 import com.sistem.proyecto.entity.Empresa;
+import com.sistem.proyecto.entity.Marca;
 import com.sistem.proyecto.entity.Moneda;
 import com.sistem.proyecto.entity.Pedido;
-import com.sistem.proyecto.entity.Proveedor;
 import com.sistem.proyecto.entity.Usuario;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
-import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,7 +30,9 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -43,8 +42,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping(value = "/pedido/detalles")
 public class DetallePedidoController extends BaseController {
 
-    String atributos = "id,caracteristica,trasmision,color,anho,cantidad,precio,total,tipo.id,tipo.nombre,marca.id,marca.nombre,activo,estadoPedido,moneda.id,moneda.nombre";
+    String atributos = "id,caracteristica,trasmision,color,anho,cantidad,codigoDetalle,precio,total,tipo.id,tipo.nombre,marca.id,marca.nombre,activo,estadoPedido,moneda.id,moneda.nombre";
 
+    @RequestMapping(value = "/agregar/{id}", method = RequestMethod.GET)
+    public ModelAndView detalleAgregar(@PathVariable("id") Long id, Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("pedidoForm");
+        model.addAttribute("action", "AGREGAR");
+        model.addAttribute("id", id);
+        return retorno;
+    }
+    
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno listarDetalle(@ModelAttribute("_search") boolean filtrar,
@@ -58,7 +66,6 @@ public class DetallePedidoController extends BaseController {
 
         DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        ordenarPor = "tipo.nombre";
         DetallePedido ejemplo = new DetallePedido();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
         if (idPedido != null && idPedido.compareToIgnoreCase("") != 0) {
@@ -90,7 +97,10 @@ public class DetallePedidoController extends BaseController {
 
             }
             // ejemplo.setActivo("S");
-
+            if(ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0){
+                ordenarPor = "tipo.nombre";
+            }
+            
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
             if (idPedido != null && idPedido.compareToIgnoreCase("") != 0) {
@@ -163,11 +173,13 @@ public class DetallePedidoController extends BaseController {
                     return mensaje;
                 }
                 Date resultFecha = dateFormat.parse(detalleRecibido.getPedido().getFecha());
+                
                 Pedido pedidoEj = new Pedido();
                 pedidoEj.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-                Integer total = pedidoManager.list(pedidoEj, true).size();
                 
-                ejPedido.setNumeroPedido(total+1 +"");
+                Integer total = pedidoManager.list(pedidoEj, false).size();
+
+                ejPedido.setNumeroPedido(total + 1 + "");
                 ejPedido.setCodigo(detalleRecibido.getPedido().getCodigo());
                 ejPedido.setFechaEntrega(resultFecha);
                 ejPedido.setObservacion(detalleRecibido.getPedido().getObservacion());
@@ -177,14 +189,12 @@ public class DetallePedidoController extends BaseController {
                 ejPedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 ejPedido.setIdUsuarioCreacion(userDetail.getId());
                 ejPedido.setUsuario(new Usuario(userDetail.getId()));
-                ejPedido.setNeto(Double.parseDouble("0"));
                 ejPedido.setTotal(Double.parseDouble("0"));
                 ejPedido.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
                 pedidoManager.save(ejPedido);
-                
                 mensaje.setId(ejPedido.getId());
 
-            }else{
+            } else {
                 ejPedido.setId(detalleRecibido.getPedido().getId());
                 mensaje.setId(detalleRecibido.getPedido().getId());
             }
@@ -195,8 +205,8 @@ public class DetallePedidoController extends BaseController {
                 mensaje.setMensaje("El tipo de vehiculo no puede estar vacio.");
                 return mensaje;
             }
-            
-            if (detalleRecibido.getMarca()== null || detalleRecibido.getMarca().getId() != null
+
+            if (detalleRecibido.getMarca() == null || detalleRecibido.getMarca().getId() != null
                     && detalleRecibido.getMarca().getId().toString().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
                 mensaje.setMensaje("La marca de vehiculo no puede estar vacio.");
@@ -251,7 +261,20 @@ public class DetallePedidoController extends BaseController {
 //                mensaje.setMensaje("El campo cantida no puede estar vacia.");
 //                return mensaje;
 //            }
-
+            
+            Pedido pedidoEj = new Pedido();
+            pedidoEj.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            pedidoEj.setId(ejPedido.getId());
+            
+            ejDetalle =  new DetallePedido();
+            ejDetalle.setPedido(pedidoEj);
+            
+            Integer totalDetalle = detallePedidoManager.list(ejDetalle, true).size();
+   
+            String codDetalle = randomString(6,"DET");     
+            
+            ejDetalle =  new DetallePedido();
+            ejDetalle.setCodigoDetalle(totalDetalle+"-"+codDetalle);
             ejDetalle.setPedido(ejPedido);
             ejDetalle.setAnho(detalleRecibido.getAnho());
             ejDetalle.setCantidad(Long.parseLong("1"));
@@ -276,9 +299,14 @@ public class DetallePedidoController extends BaseController {
             Double total = detalleRecibido.getPrecio() * 1;
             ejDetalle.setTotal(total);
             ejDetalle.setEstadoPedido(DetallePedido.PENDIENTE);
-            
-            detallePedidoManager.save(ejDetalle);
 
+            detallePedidoManager.save(ejDetalle);
+              
+            pedidoEj = pedidoManager.get(ejPedido);
+            pedidoEj.setCantidadTotal(Long.parseLong(totalDetalle+""));
+            
+            pedidoManager.update(pedidoEj);           
+            
             mensaje.setError(false);
             mensaje.setMensaje("El detalle del pedido se guardo exitosamente.");
 
@@ -292,5 +320,120 @@ public class DetallePedidoController extends BaseController {
     }
     
     
+    @RequestMapping(value = "/activar/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    MensajeDTO aprobar(@PathVariable("id") Long id) {
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        MensajeDTO retorno = new MensajeDTO();
+        String nombre = "";
+        List<Map<String, Object>> listMapGrupos = null;
+        try {
+
+            inicializarDetallePedidoManager();
+            inicializarPedidoManager();
+            
+            DetallePedido detallePedido = detallePedidoManager.get(id);
+
+            if (detallePedido != null) {
+                nombre = detallePedido.getCodigoDetalle().toString();
+            }
+
+            if (detallePedido != null && detallePedido.getActivo().toString()
+                    .compareToIgnoreCase(DetallePedido.APROBADO) == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("El detalle " + nombre + " ya se encuentra aprobada.");
+                return retorno;
+            }
+
+            detallePedido.setEstadoPedido(DetallePedido.APROBADO);
+            detallePedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            detallePedido.setIdUsuarioModificacion(userDetail.getId());
+
+            detallePedidoManager.update(detallePedido);
+            
+            Long idPedido = detallePedido.getPedido().getId();
+            
+            detallePedido = new DetallePedido();
+            detallePedido.setPedido(new Pedido(idPedido));
+            detallePedido.setEstadoPedido(DetallePedido.APROBADO);
+            
+            Integer totalDetalle = detallePedidoManager.list(detallePedido, true).size();
+            
+            Pedido pedido = pedidoManager.get(idPedido);
+            pedido.setCantidadAprobados(Long.parseLong(totalDetalle+""));
+            pedidoManager.update(pedido);
+            
+            
+            retorno.setError(false);
+            retorno.setMensaje("El detalle " + nombre + " se aprobo exitosamente.");
+
+        } catch (Exception e) {
+            System.out.println("Error " + e);
+            retorno.setError(true);
+            retorno.setMensaje("Error al tratar de aprobar el detalle.");
+        }
+
+        return retorno;
+
+    }
+
+    @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    MensajeDTO rechazar(@PathVariable("id") Long id, Model model) {
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        ModelAndView view = new ModelAndView();
+        MensajeDTO retorno = new MensajeDTO();
+        String nombre = "";
+
+        try {
+            inicializarDetallePedidoManager();
+            inicializarPedidoManager();
+
+            DetallePedido detallePedido = detallePedidoManager.get(id);
+
+            if (detallePedido != null) {
+                nombre = detallePedido.getCodigoDetalle().toString();
+            }
+
+            if (detallePedido != null && detallePedido.getEstadoPedido().toString()
+                    .compareToIgnoreCase(DetallePedido.RECHAZADO) == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("El detalle " + nombre + " ya se encuentra rechazada.");
+                return retorno;
+            }
+
+            detallePedido.setEstadoPedido(DetallePedido.RECHAZADO);
+            detallePedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            detallePedido.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
+            detallePedido.setIdUsuarioEliminacion(userDetail.getId());
+
+            detallePedidoManager.update(detallePedido);
+            
+            Long idPedido = detallePedido.getPedido().getId();
+            
+            detallePedido = new DetallePedido();
+            detallePedido.setPedido(new Pedido(idPedido));
+            detallePedido.setEstadoPedido(DetallePedido.APROBADO);
+            
+            Integer totalDetalle = detallePedidoManager.list(detallePedido, true).size();
+            
+            Pedido pedido = pedidoManager.get(idPedido);
+            pedido.setCantidadAprobados(Long.parseLong(totalDetalle+""));
+            pedidoManager.update(pedido);
+            
+            retorno.setError(false);
+            retorno.setMensaje("El detalle " + nombre + " fue rechazado exitosamente.");
+
+        } catch (Exception e) {
+            System.out.println("Error " + e);
+            retorno.setError(true);
+            retorno.setMensaje("Error al tratar de rechazado el detalle.");
+        }
+
+        return retorno;
+
+    }
 
 }

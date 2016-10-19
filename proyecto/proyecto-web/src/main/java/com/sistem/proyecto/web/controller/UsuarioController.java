@@ -672,7 +672,7 @@ public class UsuarioController extends BaseController {
             Usuario usuario = usuarioManager.get(id);
             toUser.add(usuario.getEmail());
             
-            String nuevaContraseña = randomString(10);
+            String nuevaContraseña = randomString(10,"COD");
             String antiguaContraseña = usuario.getClaveAcceso();
             
             String mensajeUsuario = mensajeCambioPass(usuario.getNombre() +" " +usuario.getApellido(),nuevaContraseña);

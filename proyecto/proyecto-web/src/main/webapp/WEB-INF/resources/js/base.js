@@ -115,12 +115,37 @@ function activarButton(id, permisoActivar) {
     return button;
 }
 
+function rechazarButton(id, permisoDesactivar) {
+    var content = window.location.href;
+    var button = '';
+    if (permisoDesactivar) {
+        button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');"'
+                + '  class=" btn btn-xs btn-danger" style="float:left;cursor:pointer;" type="button" title="Rechazar" onclick="rechazar(this,' + id + ');">'
+                + ' <span class="glyphicon glyphicon-trash"></span></a>';
+    }
+
+    return button;
+}
+function aprobarButton(id, permisoActivar) {
+    var button = '';
+    if (permisoActivar) {
+        button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');"'
+                + '  class="btn btn-xs btn-success" style="float:left;cursor:pointer;" type="button" title="Aprobar" onclick="aprobar(this,' + id + ');">'
+                + ' <span class="ace-icon fa fa-check bigger-120"></span></a>';
+    }
+
+    return button;
+}
+
 function pedidoDetalleButton(id, permisoDetalle) {
     var button = '';
     if (permisoDetalle) {
-        button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
-                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');"'
-                + '  class="btn btn-xs btn-warning" style="float:left;cursor:pointer;" type="button" title="Agregar Detalle" onclick="pedidoDetalle(this,' + id + ');">'
+
+         button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + CONTEXT_ROOT + '/pedido/detalles/agregar/' + id + '"'
+                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Agregar Detalle">'
                 + ' <span class="ace-icon fa fa-fw fa-file-text-o bigger-120"></span></a>';
     }
 
@@ -210,6 +235,62 @@ function activar(content, id) {
                             + data.mensaje
                             + '</div>');
                     $('#grid').trigger('reloadGrid');
+                }
+            });
+        }
+    });
+
+}
+
+function rechazar(content, id) {
+    $.messager.confirm('Confirm', 'Esta Seguro que desea rechazar el registro?', function(r) {
+        if (r) {
+            var jqXHR = $.get(CONTEXT_ROOT + "/pedido/detalles/desactivar/" + id, function(data, textStatus, jqXHR) {
+                if (data.error === true) {
+                    $('#mensaje').append('<div class="alert alert-error">'
+                            + '<button class="close" data-dismiss="alert" type="button"'
+                            + '><i class="fa  fa-remove"></i></button>'
+                            + '<strong>Error! </strong>'
+                            + data.mensaje
+                            + '</div>');
+
+                } else {
+                    $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                            + '<button type="button" class="close" data-dismiss="alert"'
+                            + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                            + '<strong>Exito! </strong>'
+                            + data.mensaje
+                            + '</div>');
+                    $('#grid').trigger('reloadGrid');
+                    pedidoForm($("#idPedido").val(), action);
+                }
+            });
+        }
+    });
+
+}
+function aprobar(content, id) {
+    var content = window.location.href;
+    $.messager.confirm('Confirm', 'Esta Seguro que desea aprobar el registro?', function(r) {
+        if (r) {
+            var jqXHR = $.get(CONTEXT_ROOT + "/pedido/detalles/activar/" + id, function(data, textStatus, jqXHR) {
+                if (data.error === true) {
+                    $('#mensaje').append('<div class="alert alert-error">'
+                            + '<button class="close" data-dismiss="alert" type="button"'
+                            + '><i class="fa  fa-remove"></i></button>'
+                            + '<strong>Error! </strong>'
+                            + data.mensaje
+                            + '</div>');
+
+                } else {
+                    $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                            + '<button type="button" class="close" data-dismiss="alert"'
+                            + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                            + '<strong>Exito! </strong>'
+                            + data.mensaje
+                            + '</div>');
+                    $('#grid').trigger('reloadGrid');
+                    pedidoForm($("#idPedido").val(), action);
                 }
             });
         }

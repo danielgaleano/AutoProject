@@ -38,7 +38,7 @@ import java.sql.Timestamp;
 @RequestMapping(value = "/pedidos")
 public class PedidoController extends BaseController {
 
-    String atributos = "id,numeroPedido,codigo,fechaEntrega,observacion,confirmado,descuento,total,neto,proveedor.id,"
+    String atributos = "id,numeroPedido,codigo,fechaEntrega,observacion,confirmado,total,proveedor.id,"
             + "proveedor.nombre,activo,usuario.nombre,cantidadAprobados,cantidadTotal";
     String atributosDetalle = "id,numeroPedido,codigo,fechaEntrega,observacion,confirmado,descuento,total,neto,proveedor.id,"
             + "proveedor.nombre";
@@ -49,11 +49,36 @@ public class PedidoController extends BaseController {
         retorno.setViewName("pedidosListar");
         return retorno;
     }
+    
+    @RequestMapping(value = "/crear", method = RequestMethod.GET)
+    public ModelAndView crear(Model model) {
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        List<Map<String, Object>> listMapProveedores = null;
+        try {
+            inicializarPedidoManager();
+            inicializarProveedorManager();
+
+            Proveedor ejProveedor = new Proveedor();
+            ejProveedor.setActivo("S");
+            ejProveedor.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            listMapProveedores = proveedorManager.listAtributos(ejProveedor, "id,nombre".split(","));
+
+            model.addAttribute("action", "CREAR");
+            model.addAttribute("editar", false);
+            model.addAttribute("proveedores", listMapProveedores);
+
+        } catch (Exception ex) {
+            logger.debug("Error al crear pedidos", ex);
+        }
+        return new ModelAndView("pedidoForm");
+
+    }
 
     @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
     public ModelAndView formView(@PathVariable("id") Long id, Model model) {
         ModelAndView retorno = new ModelAndView();
         retorno.setViewName("pedidoForm");
+        model.addAttribute("action", "VISUALIZAR");
         model.addAttribute("id", id);
         return retorno;
     }
@@ -70,11 +95,11 @@ public class PedidoController extends BaseController {
 
         DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        ordenarPor = "fechaEntrega";
         Pedido ejemplo = new Pedido();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
 
         List<Map<String, Object>> listMapGrupos = null;
+        
         try {
 
             inicializarPedidoManager();
@@ -100,6 +125,9 @@ public class PedidoController extends BaseController {
 
             }
             // ejemplo.setActivo("S");
+            if(ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0){
+                ordenarPor = "numeroPedido";
+            }
 
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
@@ -162,29 +190,7 @@ public class PedidoController extends BaseController {
         return retorno;
     }
 
-    @RequestMapping(value = "/crear", method = RequestMethod.GET)
-    public ModelAndView crear(Model model) {
-        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        List<Map<String, Object>> listMapProveedores = null;
-        try {
-            inicializarPedidoManager();
-            inicializarProveedorManager();
-
-            Proveedor ejProveedor = new Proveedor();
-            ejProveedor.setActivo("S");
-            ejProveedor.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-            listMapProveedores = proveedorManager.listAtributos(ejProveedor, "id,nombre".split(","));
-
-            model.addAttribute("tipo", "Crear");
-            model.addAttribute("editar", false);
-            model.addAttribute("proveedores", listMapProveedores);
-
-        } catch (Exception ex) {
-            logger.debug("Error al crear pedidos", ex);
-        }
-        return new ModelAndView("pedidoForm");
-
-    }
+    
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO desactivar(@PathVariable("id") Long id) {

@@ -16,6 +16,12 @@
 </head>
 <body >
     <nav th:replace="include/navbar :: navbar"></nav>
+    
+    <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetallePedido.Crear'')')}"/>
+    <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetallePedido.Editar'')')}"/>
+    <div class="tablaprobar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetallePedido.Aprobar'')')}"/>
+    <div class="tablrechazar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetallePedido.Rechazar'')')}"/>
+   
     <div class="content-wrapper">
         <!-- Content Header (Page header) --> 
         <!-- Main content -->
@@ -76,7 +82,7 @@
                                 <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                     <label class="col-lg-6 control-label">Aprobados</label>
                                     <div class="col-lg-6">
-                                        <input  id="confirmado" name="aprobados" type="text" disabled="disabled" placeholder="Cantidad Aprobados" data-mask="" data-inputmask="'mask': '(999)999-999'"  class="form-control tableusuario-input "/> 
+                                        <input  id="cantidadAprobados" name="cantidadAprobados" type="text" disabled="disabled" placeholder="Cantidad Aprobados" data-mask="" data-inputmask="'mask': '(999)999-999'"  class="form-control tableusuario-input "/> 
                                         <span class="glyphicon form-control-feedback" id="fax1"></span>
                                     </div>
                                 </div>
@@ -85,7 +91,7 @@
                                 <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                     <label class="col-lg-6 control-label">Cantidad</label>
                                     <div class="col-lg-6">
-                                        <input id="cantidadTotal" type="text" name="cantidad" disabled="disabled" placeholder="Cantidad Total" class="form-control tableusuario-input " /> 
+                                        <input id="cantidadTotal" type="text" name="cantidadTotal" disabled="disabled" placeholder="Cantidad Total" class="form-control tableusuario-input " /> 
                                         <span class="glyphicon form-control-feedback" id="pais1"></span>
                                     </div>
                                 </div>
@@ -94,20 +100,6 @@
                                     <label class="col-lg-6 control-label">Monto Total</label>
                                     <div class="col-lg-6">
                                         <input  id="montoTotal" type="text" name="total" disabled="disabled" placeholder="Total" class="form-control tableusuario-input " /> 
-                                        <span class="glyphicon form-control-feedback" id="direccion1"></span>
-                                    </div>
-                                </div>
-                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                    <label class="col-lg-6 control-label">Descuento %</label>
-                                    <div class="col-lg-6">
-                                        <input id="descuento" type="text" name="descuento" placeholder="Descuentos" class="form-control tableusuario-input " /> 
-                                        <span class="glyphicon form-control-feedback" id="pais1"></span>
-                                    </div>
-                                </div>
-                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                    <label class="col-lg-4 control-label">Neto</label>
-                                    <div class="col-lg-8">
-                                        <input  id="neto" type="text" name="neto" placeholder="Neto a Pagar" disabled="disabled" class="form-control tableusuario-input " /> 
                                         <span class="glyphicon form-control-feedback" id="direccion1"></span>
                                     </div>
                                 </div>

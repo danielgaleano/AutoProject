@@ -16,6 +16,8 @@ import com.sistem.proyecto.manager.RolManager;
 import com.sistem.proyecto.manager.RolPermisoManager;
 import com.sistem.proyecto.manager.TipoManager;
 import com.sistem.proyecto.manager.MarcaManager;
+import com.sistem.proyecto.manager.ModeloManager;
+import com.sistem.proyecto.manager.VehiculoManager;
 import com.sistem.proyecto.manager.MonedaManager;
 import com.sistem.proyecto.manager.PedidoManager;
 import com.sistem.proyecto.manager.UsuarioManager;
@@ -58,6 +60,10 @@ public class BaseController {
     protected TipoManager tipoManager;
     
     protected MarcaManager marcaManager;
+    
+    protected ModeloManager modeloManager;
+    
+    protected VehiculoManager vehiculoManager;
     
     protected ContactoManager contactoManager;
     
@@ -244,6 +250,42 @@ public class BaseController {
             try {
 
                 marcaManager = (MarcaManager) context.lookup("java:app/proyecto-ejb/MarcaManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
+    }
+    
+    protected void inicializarModeloManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
+        if (marcaManager == null) {
+            try {
+
+                marcaManager = (MarcaManager) context.lookup("java:app/proyecto-ejb/ModeloManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
+    }
+    
+    protected void inicializarVehiculoManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
+        if (marcaManager == null) {
+            try {
+
+                marcaManager = (MarcaManager) context.lookup("java:app/proyecto-ejb/VehiculoManagerImpl");
             } catch (NamingException ne) {
                 throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
             }

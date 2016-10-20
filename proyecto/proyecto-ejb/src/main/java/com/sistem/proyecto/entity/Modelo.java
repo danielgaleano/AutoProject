@@ -17,7 +17,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 public class Modelo extends Base{
     
-    private static long serialVersionUID = -959680520407250259L;
+    private static long serialVersionUID = -95960520407250259L;
     
     @NotNull
     @NotEmpty

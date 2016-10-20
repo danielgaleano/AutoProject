@@ -121,6 +121,22 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/proveedores/desactivar/*").hasAnyAuthority("Proveedor.Desactivar")
                 .antMatchers("/proveedores/editar/**").hasAnyAuthority("Proveedor.Editar")
                 .antMatchers("/proveedores/visualizar/**").hasAnyAuthority("Proveedor.Visualizar")
+                //------Marca----//
+                .antMatchers("/marcas**").hasAnyAuthority("Marca.Listar")
+                .antMatchers("/marcas/crear**").hasAnyAuthority("Marca.Crear")
+                .antMatchers("/marcas/guardar**").hasAnyAuthority("Marca.Crear")
+                .antMatchers("/marcas/activar/*").hasAnyAuthority("Marca.Activar")
+                .antMatchers("/marcas/desactivar/*").hasAnyAuthority("Marca.Desactivar")
+                .antMatchers("/marcas/editar/**").hasAnyAuthority("Marca.Editar")
+                //------Modelos----//
+                .antMatchers("/modelos**").hasAnyAuthority("Modelo.Listar")
+                .antMatchers("/modelos/crear**").hasAnyAuthority("Modelo.Crear")
+                .antMatchers("/modelos/guardar**").hasAnyAuthority("Modelo.Crear")
+                .antMatchers("/modelos/activar/*").hasAnyAuthority("Modelo.Activar")
+                .antMatchers("/modelos/desactivar/*").hasAnyAuthority("Modelo.Desactivar")
+                .antMatchers("/modelos/editar/**").hasAnyAuthority("Modelo.Editar")
+                .antMatchers("/modelos/visualizar/**").hasAnyAuthority("Modelo.Visualizar")
+                .antMatchers("/modelos/agregar/**").hasAnyAuthority("Modelo.Crear")
                //------Movil----//
                 .antMatchers("/movil/guardarImagen**").permitAll()
                 .antMatchers("/obtenerImagen/*/*").permitAll()

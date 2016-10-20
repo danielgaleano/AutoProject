@@ -36,7 +36,7 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'CODIGO', 'TIPO VEHICULO', 'MARCA', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'PRECIO', 'CANTIDAD', 'TOTAL', 'CONFIRMADO', ''],
+        colNames: ['ID', 'CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'PRECIO', 'CANTIDAD', 'TOTAL', 'CONFIRMADO', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'codigoDetalle', index: 'codigoDetalle', key: true, width: 100,  editable: false},
@@ -59,6 +59,24 @@ $(document).ready(function(data) {
                     }
                 }},
             {name: 'marca.nombre', index: 'marca.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+                editoptions: {
+                    dataUrl: CONTEXT_ROOT + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
+                    buildSelect: function(resp) {
+
+                        var sel = '<select>';
+                        sel += '<option value="">Seleccione la opcion</option>';
+                        var obj = $.parseJSON(resp);
+//                        var sel_id = $(grid_selector).jqGrid('getGridParam', 'selrow');
+//                        var value = $(grid_selector).jqGrid('getCell',sel_id ,'tipo.id');
+
+                        $.each(obj.retorno, function() {
+                            sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
+                        });
+                        sel += '</select>';
+                        return sel;
+                    }
+                }},
+            {name: 'modelo.nombre', index: 'modelo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     dataUrl: CONTEXT_ROOT + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {

@@ -151,21 +151,22 @@ public class PedidoController extends BaseController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno pedidoForm(@PathVariable("id") Long id) {
-        DTORetorno<Pedido> retorno = new DTORetorno<>();
+        DTORetorno<Map<String,Object>> retorno = new DTORetorno<>();
         List<Map<String, Object>> listMapGrupos = null;
         try {
             inicializarPedidoManager();
-            Pedido ejPedido = new Pedido();
-            ejPedido.setId(id);
-
-            ejPedido = pedidoManager.get(ejPedido);
+            Pedido pedido =  new Pedido();
+            pedido.setId(id);
+            
+            Map<String,Object> ejPedido = pedidoManager.getAtributos(pedido,
+                    "id,codigo,fechaEntrega,observacion,proveedor.id,cantidadAprobados,cantidadTotal".split(","));
 
             retorno.setData(ejPedido);
             retorno.setError(false);
             retorno.setMensaje("Se obtuvo exitosamente el pedido");
 
         } catch (Exception ex) {
-            logger.debug("Error al obtener el pedido", ex);
+            logger.error("Error al obtener el pedido", ex);
             retorno.setError(true);
             retorno.setMensaje("Error al obtener el pedido");
         }
@@ -211,7 +212,7 @@ public class PedidoController extends BaseController {
         } catch (Exception ex) {
             retorno.setError(true);
             retorno.setMensaje("Error al tratar de desactivar el pedido.");
-            logger.debug("Error al tratar de desactivar el pedido ", ex);
+            logger.error("Error al tratar de desactivar el pedido ", ex);
         }
 
         return retorno;
@@ -257,7 +258,7 @@ public class PedidoController extends BaseController {
         } catch (Exception ex) {
             retorno.setError(true);
             retorno.setMensaje("Error al tratar de activar el pedido.");
-            logger.debug("Error al tratar de activar el pedido ", ex);
+            logger.error("Error al tratar de activar el pedido ", ex);
         }
 
         return retorno;

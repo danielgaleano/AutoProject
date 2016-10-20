@@ -141,9 +141,9 @@ $(document).ready(function(data) {
                         } else {
 
                             asignar = "";
-                            visuali = visualizarButton(cl, permisoVisualizar);
+                            visuali = visualizarButton(cl, permisoVisualizar,null);
                             edit = editInlineButton(cl, permisoEditar);
-                            editForm = pedidoDetalleButton(cl, permisoDetalle);
+                            editForm = detalleButton(cl, permisoDetalle,null);
                             desact = desactivarButton(cl, permisoDesactivar);
                             $(grid_selector).setRowData(ids[i], {act: ini + edit  + visuali + editForm + desact + fin});
                         }
@@ -162,7 +162,7 @@ $(document).ready(function(data) {
                     } else {
 
                         //asignar = asigButton(cl, true);
-                        visuali = visualizarButton(cl, permisoVisualizar);
+                        visuali = visualizarButton(cl, permisoVisualizar,null);
                         editForm = editFormButton(cl, permisoEditar);
                         $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
                     }

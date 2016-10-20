@@ -37,15 +37,42 @@ $(document).ready(function(data) {
             {name: 'telefono', index: 'telefono', width: 90, sortable: false},
             {name: 'email', index: 'email', width: 90, sortable: false},
             {name: 'activo', index: 'activo', width: 90, editable: false},
-            {name: 'act', index: 'act', fixed: true, sortable: false, resize: false
-                        //formatter:'actions', 
-                        //formatoptions:{ 
-                        //	keys:true,
-                        //delbutton: false,//disable delete button
+            {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
+                //               formatter: 'actions',
+                formatoptions: {
+                    onError: function(jqXHR, textStatus, errorThrwn) {
+                        if (textStatus.status !== 200) {
+                            $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    + '><i class="fa  fa-remove"></i></button>'
+                                    + '<strong>Error ' + textStatus.status + ' ! </strong>'
+                                    + 'Error al editar el registro'
+                                    + '</div>');
+                        }
 
-                        //	delOptions:{recreateForm: true, beforeShowForm:beforeDeleteCallback},
-                        //editformbutton:true, editOptions:{recreateForm: true, beforeShowForm:beforeEditCallback}
-                        //}
+                    },
+                    onSuccess: function(data) {
+                        if (data.responseJSON.error === true) {
+                            $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    + '><i class="fa  fa-remove"></i></button>'
+                                    + '<strong>Error! </strong>'
+                                    + data.responseJSON.mensaje
+                                    + '</div>');
+
+                        } else {
+                            $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                    + '<strong>Exito! </strong>'
+                                    + data.responseJSON.mensaje
+                                    + '</div>');
+                            $(grid_selector).trigger('reloadGrid');
+
+                        }
+                    }
+
+                }
             }
         ],
         viewrecords: true,
@@ -115,7 +142,7 @@ $(document).ready(function(data) {
                         } else {
 
                             asignar = "";
-                            visuali = visualizarButton(cl, permisoVisualizar);
+                            visuali = visualizarButton(cl, permisoVisualizar,null);
                             editForm = editFormButton(cl, permisoEditar);
                             desact = desactivarButton(cl, permisoDesactivar);
                             $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
@@ -135,7 +162,7 @@ $(document).ready(function(data) {
                     } else {
 
                         //asignar = asigButton(cl, true);
-                        visuali = visualizarButton(cl, permisoVisualizar);
+                        visuali = visualizarButton(cl, permisoVisualizar,null);
                         editForm = editFormButton(cl, permisoEditar);
                         $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
                     }

@@ -9,6 +9,7 @@ package com.sistem.proyecto.web.controller;
 import com.google.gson.Gson;
 import com.sistem.proyecto.entity.Modelo;
 import com.sistem.proyecto.entity.Empresa;
+import com.sistem.proyecto.entity.Marca;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.MensajeDTO;
@@ -30,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import com.sistem.proyecto.utils.DTORetorno;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -49,6 +52,42 @@ public class ModeloController extends BaseController{
 
     }
     
+    @RequestMapping(value = "/agregar/{id}", method = RequestMethod.GET)
+    public ModelAndView agregarView(@PathVariable("id") Long id, Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("modelosListar");
+        model.addAttribute("action", "AGREGAR");
+        model.addAttribute("id", id);
+        
+        try {
+            inicializarMarcaManager();
+            Marca ejMarca = marcaManager.get(id);
+             model.addAttribute("nombre", ejMarca.getNombre());
+        
+        } catch (Exception ex) {
+            logger.error("Error ", ex);
+        }
+        
+        return retorno;
+    }
+    
+    @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
+    public ModelAndView formView(@PathVariable("id") Long id, Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("modelosListar");
+        model.addAttribute("action", "VISUALIZAR");
+        model.addAttribute("id", id);
+        try {
+            inicializarMarcaManager();
+            Marca ejMarca = marcaManager.get(id);
+            model.addAttribute("nombre", ejMarca.getNombre());
+        
+        } catch (Exception ex) {
+            logger.error("Error ", ex);
+        }
+        return retorno;
+    }
+    
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno listar(@ModelAttribute("_search") boolean filtrar,
@@ -56,6 +95,7 @@ public class ModeloController extends BaseController{
             @ModelAttribute("page") Integer pagina,
             @ModelAttribute("rows") Integer cantidad,
             @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("idMarca") String idMarca,
             @ModelAttribute("sord") String sentidoOrdenamiento,
             @ModelAttribute("todos") boolean todos) {
 
@@ -64,7 +104,8 @@ public class ModeloController extends BaseController{
         ordenarPor = "nombre";
         Modelo ejModelo = new Modelo();
         ejModelo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-
+        ejModelo.setMarca(new Marca(Long.parseLong(idMarca)));
+        
         List<Map<String, Object>> listMapGrupos = null;
         try {
 
@@ -168,15 +209,16 @@ public class ModeloController extends BaseController{
             }
 
             ejModelo.setNombre(modeloRecibido.getNombre());
+            ejModelo.setMarca(new Marca(modeloRecibido.getMarca().getId()));
+            
+            Map<String, Object> modeloMap = modeloManager.getLike(ejModelo, "id".split(","));
 
-//            Map<String, Object> modeloMap = modeloManager.getLike(ejModelo, "id".split(","));
-//
-//            if (modeloMap != null && !modeloMap.isEmpty()) {
-//                mensaje.setError(true);
-//                mensaje.setMensaje("El modelo de vehiculo ya se encuentra registrado.");
-//                return mensaje;
-//
-//            }
+            if (modeloMap != null && !modeloMap.isEmpty()) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El modelo de vehiculo ya se encuentra registrado.");
+                return mensaje;
+
+            }
 
             ejModelo = new Modelo();
             ejModelo.setActivo("S");

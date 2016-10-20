@@ -51,25 +51,7 @@ public class MarcaController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listarMarcas(Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("marca");
-        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        try {
-            inicializarMarcaManager();
-            inicializarEmpresaManager();
-            System.out.println(userDetail.getNombre());
-
-            Marca ejemplo = new Marca();
-            ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-
-            List<Map<String, Object>> listMapMarcas = marcaManager.listAtributos(ejemplo, atributos.split(","), true);
-
-            model.addAttribute("marcas", listMapMarcas);
-
-
-        } catch (Exception ex) {
-            System.out.println("Error " + ex);
-        }
-
+        retorno.setViewName("marcasListar");
         return retorno;
     }
     
@@ -86,6 +68,7 @@ public class MarcaController extends BaseController {
         DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         ordenarPor = "nombre";
+        
         Marca ejemplo = new Marca();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
 
@@ -144,7 +127,6 @@ public class MarcaController extends BaseController {
             retorno.setPage(pagina);
 
         } catch (Exception e) {
-
             logger.error("Error al listar", e);
         }
 
@@ -214,6 +196,7 @@ public class MarcaController extends BaseController {
                 retorno.setMensaje("El campo nombre no puede estar vacio.");
                 return retorno;
             }
+            ejMarca.setNombre(marcaRecibido.getNombre());
             
             Map<String, Object> marcaMap = marcaManager.getLike(ejMarca, "id".split(","));
 

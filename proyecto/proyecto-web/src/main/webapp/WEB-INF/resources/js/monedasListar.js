@@ -43,7 +43,43 @@ $(document).ready(function(data) {
             formatter:'checkbox'
             },
             {name: 'activo', index: 'activo', width: 90, editable: false},
-            {name: 'act', index: 'act', fixed: true, sortable: false, resize: false}
+            {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
+                //               formatter: 'actions',
+                formatoptions: {
+                    onError: function(jqXHR, textStatus, errorThrwn) {
+                        if (textStatus.status !== 200) {
+                            $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    + '><i class="fa  fa-remove"></i></button>'
+                                    + '<strong>Error ' + textStatus.status + ' ! </strong>'
+                                    + 'Error al editar el registro'
+                                    + '</div>');
+                        }
+
+                    },
+                    onSuccess: function(data) {
+                        if (data.responseJSON.error === true) {
+                            $('#mensaje').append('<div class="alert alert-error">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    + '><i class="fa  fa-remove"></i></button>'
+                                    + '<strong>Error! </strong>'
+                                    + data.responseJSON.mensaje
+                                    + '</div>');
+
+                        } else {
+                            $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                    + '<strong>Exito! </strong>'
+                                    + data.responseJSON.mensaje
+                                    + '</div>');
+                            $(grid_selector).trigger('reloadGrid');
+
+                        }
+                    }
+
+                }
+            }
         ],
         viewrecords: true,
         rowNum: 10,

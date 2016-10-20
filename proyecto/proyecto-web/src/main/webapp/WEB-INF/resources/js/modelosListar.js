@@ -1,13 +1,19 @@
 
 $(document).ready(function(data) {
 
-    var isEditarInline = false;
+    var isEditarInline = true;
     var isStatus = true;
-
-    var permisoActivar = parseBolean($(this).find('.tablactivate-permiso').text());
-    var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
-    var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
-    var permisoVisualizar = parseBolean($(this).find('.tablvisualizar-permiso').text());
+    if(action === "CREAR" || action === "AGREGAR"){
+        var permisoActivar = parseBolean($(this).find('.tablactivate-permiso').text());
+        var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
+        var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
+        var permisoAgregar = parseBolean($(this).find('.tabladd-permiso').text());
+    }else{
+        var permisoActivar = false;
+        var permisoDesactivar = false;
+        var permisoEditar = false;
+        var permisoAgegar = false;
+    }
 
     var grid_selector = "#grid";
     var pager_selector = "#grid-pager";
@@ -18,24 +24,20 @@ $(document).ready(function(data) {
             $(grid_selector).jqGrid('setGridWidth', $(".content").width());
 
         }, 0);
-    }),
+    });
     $(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/empresas/listar',
+        url: CONTEXT_ROOT + '/modelos/listar',
         datatype: 'json',
         mtype: 'GET',
-        height: 310,
+        height: 340,
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'NOMBRE', 'RUC', 'DESCRIPCION', 'DIRECCION', 'TELEFONO', 'STATUS', ''],
+        colNames: ['ID', 'MODELO', 'STATUS', ''],
         colModel: [
-            {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'nombre', index: 'nombre', width: 90, editable: false},
-            {name: 'ruc', index: 'ruc', width: 90, editable: false},
-            {name: 'descripcion', index: 'descripcion', width: 100, editable: false},
-            {name: 'direccion', index: 'direccion', width: 150, editable: false},
-            {name: 'telefono', index: 'telefono', width: 90, sortable: false},
-            {name: 'activo', index: 'activo', width: 90, editable: false},
+            {name: 'id', index: 'id', key: true, hidden: true, width: 100, sorttype: "int", editable: false},
+            {name: 'nombre', index: 'nombre', width: 120, editable: true, editrules: { edithidden: true, custom: true, custom_func: customValidationMessage}},           
+            {name: 'activo', index: 'activo', width: 100, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {
@@ -82,25 +84,35 @@ $(document).ready(function(data) {
         loadtext: "Cargando...",
         emptyrecords: "No se encontaron datos.",
         pgtext: "Pagina {0} de {1}",
+        serializeRowData: function(data) {
+            if ($.isNumeric(data.id) !== true) {
+                data.id = "";
+            }
+            if ($("#idMarca").val() !== null && $("#idMarca").val() !== "") {
+                data['marca.id'] = $("#idMarca").val();
+            }
+            return data;
+        },
         postData: {
             atributos:"id,nombre",
             filters:null,
-            todos:false
+            todos:false,
+            idMarca: $("#idMarca").val()          
+            
         },
         jsonReader: {
             root: 'retorno',
             page: 'page',
             total: 'total',
-            records: function(obj) { 
+            records: function(obj) {
                 if(obj.retorno !== null){
                     return obj.retorno.length;
                 }else{
                     return 0 ;
                 }
             }
-        },
-        //toppager: true,
-        loadComplete: function() {
+        },        
+        loadComplete: function(rowid, rowdata, rowelem) {
             var table = this;
             setTimeout(function() {
                 //styleCheckbox(table);
@@ -117,7 +129,7 @@ $(document).ready(function(data) {
             for (var i = 0; i < ids.length; i++) {
                 var cl = ids[i];
                 var dato = $(grid_selector).jqGrid('getRowData', cl);
-                var asignar = '';
+                var moneda = '';
                 var editForm = '';
                 var ce = '';
                 var visuali = '';
@@ -130,20 +142,26 @@ $(document).ready(function(data) {
                     if (estado === 'S') {
                         var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
                         if (isEditarInline) {
-                            
+                            console.log(dato.porDefecto);
+                            if(dato.porDefecto === 'false'){
+                                console.log(dato.porDefecto);
+                                 moneda = monedaButton(cl, permisoEditar);
+                            }
                             edit = editInlineButton(cl, permisoEditar);
-                            $(grid_selector).setRowData(ids[i], {act: edit});
-                            
+                            desact = desactivarButton(cl, permisoDesactivar);
+                           
+                            $(grid_selector).setRowData(ids[i], {act: ini + edit  + desact + moneda + fin});
+
                         } else {
 
                             //asignar = asigButton(cl, true);
-                            visuali = visualizarButton(cl, permisoVisualizar,null);
+                            //visuali = visualizarButton(cl, permisoVisualizar);
                             editForm = editFormButton(cl, permisoEditar);
                             desact = desactivarButton(cl, permisoDesactivar);
                             $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
                         }
                         $(grid_selector).setRowData(ids[i], {activo: labelActivo});
-                    } else {
+                    } else if (estado === 'N') {
                         var labelInactivo = '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
                         activar = activarButton(cl, permisoActivar);
                         $(grid_selector).setRowData(ids[i], {act: ini + activar + fin});
@@ -151,28 +169,120 @@ $(document).ready(function(data) {
                     }
                 } else {
                     if (isEditarInline) {
-                        
+
                         edit = editInlineButton(cl, permisoEditar);
                         $(grid_selector).setRowData(ids[i], {act: edit});
                     } else {
-                        
+
                         //asignar = asigButton(cl, true);
-                        visuali = visualizarButton(cl, permisoVisualizar,null);
+                        //visuali = visualizarButton(cl, permisoVisualizar);
                         editForm = editFormButton(cl, permisoEditar);
                         $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
                     }
                 }
 
-
             }
         },
-        editurl: "/editar", //nothing is saved
-        caption: "Empresas"
+        editurl: CONTEXT_ROOT + "/modelos/editar", //nothing is saved
+        caption: "Modelos"
+
 
     });
+
+
+
     $(window).triggerHandler('resize.jqGrid');
     $(grid_selector).jqGrid('setGridWidth', $(".content").width());
     $(grid_selector).jqGrid('navGrid', pager_selector, {edit: false, add: false, del: false, search: false});
+
+    $(grid_selector).jqGrid('inlineNav', pager_selector,
+            {
+                edit: false,
+                add: permisoAgregar,
+                addtext: 'Agregar',
+                addicon: "ui-icon ace-icon fa fa-plus-circle purple",
+                save: permisoAgregar,
+                savetext: 'Guardar',
+                saveicon: "ui-icon-disk",
+                cancel: permisoAgregar,
+                cancelicon: "ui-icon-cancel",
+                canceltext: 'Cancelar',
+                refresh: true,
+                cloneToTop: true,
+                "view": false,
+                addParams: {
+                    //position: 'last',
+                    useDefValues: true,
+                    addRowParams: {
+                        url: CONTEXT_ROOT + '/modelos/guardar',
+                        mtype: "POST",
+                        datatype: 'json',
+                        keys: true,
+                        successfunc: function(data) {
+                            if (data.responseJSON.error === true) {
+                                $('#mensaje').append('<div class="alert alert-error">'
+                                        + '<button class="close" data-dismiss="alert" type="button"'
+                                        + '><i class="fa  fa-remove"></i></button>'
+                                        + '<strong>Error! </strong>'
+                                        + data.responseJSON.mensaje
+                                        + '</div>');
+
+                            } else {
+                                $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                        + '<button type="button" class="close" data-dismiss="alert"'
+                                        + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                        + '<strong>Exito! </strong>'
+                                        + data.responseJSON.mensaje
+                                        + '</div>');
+                                $(grid_selector).trigger('reloadGrid');
+                                console.log('reload');
+
+
+                            }
+
+                        }
+                    },
+                    addEditParams: {
+                        successfunc: function(data) {
+                            if (data.responseJSON.error === true) {
+                                $('#mensaje').append('<div class="alert alert-error">'
+                                        + '<button class="close" data-dismiss="alert" type="button"'
+                                        + '><i class="fa  fa-remove"></i></button>'
+                                        + '<strong>Error! </strong>'
+                                        + data.responseJSON.mensaje
+                                        + '</div>');
+
+                            } else {
+                                $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                        + '<button type="button" class="close" data-dismiss="alert"'
+                                        + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                        + '<strong>Exito! </strong>'
+                                        + data.responseJSON.mensaje
+                                        + '</div>');
+                                $(grid_selector).trigger('reloadGrid');
+                                console.log('reload');
+
+
+                            }
+
+                        }
+                    },
+                    afterSubmit: function(response, postdata) {
+                        if (response.responseText === "") {
+                            $(this).jqGrid('setGridParam',
+                                    {datatype: 'json'}).trigger('reloadGrid'); //Reloads the grid after Add
+                            return [true, ''];
+                        } else {
+                            $(this).jqGrid('setGridParam',
+                                    {datatype: 'json'}).trigger('reloadGrid'); //Reloads the grid after Add
+                            return [false, response.responseText];
+                        }
+                    }
+                }
+
+
+            });
+
 });
 
 function updatePagerIcons(table) {
@@ -192,7 +302,14 @@ function updatePagerIcons(table) {
     });
 }
 
+function guardarRegistro() {
+    if (val.toLowerCase() === 'true') {
+        return true;
+    } else if (val.toLowerCase() === 'false' || val.toLowerCase() === '') {
+        return false;
+    }
 
+}
 
 function parseBolean(val) {
     if (val.toLowerCase() === 'true') {
@@ -204,23 +321,4 @@ function parseBolean(val) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            

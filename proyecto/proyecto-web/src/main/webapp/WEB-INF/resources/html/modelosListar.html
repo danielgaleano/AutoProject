@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+    <div th:include="include/head :: head" th:remove="tag"></div>
+    <title>Marcas</title>
+    <script th:inline="javascript">
+        var id = /*[[${id}]]*/'';
+        var action = /*[[${action}]]*/'';
+    </script>
+    <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
+    <link th:href="@{/resources/css/icon.css}" rel="stylesheet" />
+
+
+</head>
+<body>
+    <nav th:replace="include/navbar :: navbar"></nav>
+    <div class="content-wrapper">
+
+        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Modelo.Crear'')')}"/>
+        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Modelo.Editar'')')}"/>
+        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Modelo.Activar'')')}"/>
+        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Modelo.Desactivar'')')}"/>
+<!--        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Desactivar'')')}"/>
+        <div class="tabldetalle-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Detalle'')')}"/>
+        -->
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Modelos
+                <small th:text="'Modelos de la marca ' + ${nombre}"></small>
+            </h1>
+            <ol class="breadcrumb">
+                <a th:href="@{/marcas}" class="btn btn-primary btn-light bigger" role="button">
+                            <i class="ace-icon fa fa-arrow-left"></i>
+                            Volver
+                        </a> 
+            </ol>
+        </section>
+        <hr/>
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <input  id="idMarca" name="id" type="hidden" th:value="${id}" class="form-control table-empresa-input" />
+                <div class="col-xs-12">
+
+                    <div id="mensaje"></div>
+                    <table id="grid" style="width: 100%;"></table>
+                    <div id="grid-pager"></div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>    
+    <!-- /.content -->
+    <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{/resources/js/base.js}"></script>
+    <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
+    <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
+    <script th:src="@{/resources/js/modelosListar.js}"></script>
+
+
+
+
+</body>
+</html>

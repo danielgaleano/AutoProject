@@ -1,15 +1,20 @@
 package com.sistem.proyecto.entity;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  * @author Miguel Ojeda
@@ -65,7 +70,10 @@ public class Pedido extends Base {
 //    @ManyToOne
 //    @JoinColumn(name = "detalle_pedido")
 //    private DetallePedido detallePedido ;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pedido")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Collection<DetallePedido> detallePedidoCollection;
+    
     @ManyToOne
     @JoinColumn(name = "empresa")
     private Empresa empresa;
@@ -281,6 +289,20 @@ public class Pedido extends Base {
      */
     public void setCantidadTotal(Long cantidadTotal) {
         this.cantidadTotal = cantidadTotal;
+    }
+
+    /**
+     * @return the detallePedidoCollection
+     */
+    public Collection<DetallePedido> getDetallePedidoCollection() {
+        return detallePedidoCollection;
+    }
+
+    /**
+     * @param detallePedidoCollection the detallePedidoCollection to set
+     */
+    public void setDetallePedidoCollection(Collection<DetallePedido> detallePedidoCollection) {
+        this.detallePedidoCollection = detallePedidoCollection;
     }
     
     

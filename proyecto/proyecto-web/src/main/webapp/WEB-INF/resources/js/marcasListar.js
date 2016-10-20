@@ -7,7 +7,9 @@ $(document).ready(function(data) {
     var permisoActivar = parseBolean($(this).find('.tablactivate-permiso').text());
     var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
     var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
-    var permisoAsignar = parseBolean($(this).find('.tablasignar-permiso').text());
+    var permisoVisualizar = parseBolean($(this).find('.tablvisualizar-permiso').text());
+    var permisoAgregar = parseBolean($(this).find('.tabladd-permiso').text());
+    var permisoModeloAgregar = parseBolean($(this).find('.tabladdmodelo-permiso').text());
 
     var grid_selector = "#grid";
     var pager_selector = "#grid-pager";
@@ -20,47 +22,19 @@ $(document).ready(function(data) {
         }, 0);
     });
     $(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/roles/listar',
+        url: CONTEXT_ROOT + '/marcas/listar',
         datatype: 'json',
         mtype: 'GET',
         height: 360,
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'NOMBRE ROL', 'EMPRESA', 'EMPRESA', 'STATUS', ''],
+        colNames: ['ID', 'MARCA', 'STATUS', ''],
         colModel: [
-            {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'nombre', index: 'nombre', width: 90, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'empresa.nombre', index: 'empresa.nombre', width: 90, editable: false,
-                cellattr: function(rowid, tv, rawObject, cm, rdata) {
-                    if ($.isNumeric(rowid) !== true) {
-                        return 'class="tableedit-combo-disable"';
-                    }
-                }
-            },
-            {name: 'empresa.id', index: 'empresa.id', width: 90, editable: true, hidden: true, editrules: {edithidden: false, custom: true, custom_func: customValidationMessage}, clearSearch: true,
-                cellattr: function(rowid, tv, rawObject, cm, rdata) {
-                    if ($.isNumeric(rowid) !== true) {
-                        return 'class="tableedit-combo"';
-                    }
-                },
-                edittype: 'select',
-                editoptions: {
-                    dataUrl: CONTEXT_ROOT + '/empresas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
-                    buildSelect: function(resp) {
-
-                        var sel = '<select>';
-                        sel += '<option value="">Seleccione la opcion</option>';
-                        var obj = $.parseJSON(resp);
-                        $.each(obj.retorno, function() {
-                            sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
-                        });
-                        sel += '</select>';
-                        return sel;
-                    }
-                }},
-            {name: 'activo', index: 'activo', width: 90, editable: false},
-            {name: 'act', index: 'act', align: 'center', fixed: true, sortable: false, resize: false,
+            {name: 'id', index: 'id', key: true, hidden: true, width: 150, sorttype: "int", editable: false},
+            {name: 'nombre', index: 'nombre', width: 120, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'activo', index: 'activo', width: 100, editable: false},
+            {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
 //                formatter: 'actions',
                 formatoptions: {
 //                    keys: true,
@@ -164,8 +138,9 @@ $(document).ready(function(data) {
 
                             edit = editInlineButton(cl, permisoEditar);
                             desact = desactivarButton(cl, permisoDesactivar);
-                            asignar = asigButton(cl, permisoAsignar);
-                            $(grid_selector).setRowData(ids[i], {act: ini + edit + asignar + desact + fin});
+                            asignar = detalleButton(cl, permisoModeloAgregar,"Agregar Modelos","modelos/agregar");
+                            visuali = visualizarButton(cl, permisoVisualizar,"Visualizar Modelos","modelos/visualizar");
+                            $(grid_selector).setRowData(ids[i], {act: ini + edit + asignar + visuali + desact + fin});
 
                         } else {
 
@@ -190,7 +165,7 @@ $(document).ready(function(data) {
                     } else {
 
                         //asignar = asigButton(cl, true);
-                        visuali = visualizarButton(cl, permisoVisualizar,null);
+                        visuali = visualizarButton(cl, permisoVisualizar);
                         editForm = editFormButton(cl, permisoEditar);
                         $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
                     }
@@ -198,8 +173,8 @@ $(document).ready(function(data) {
 
             }
         },
-        editurl: CONTEXT_ROOT + "/roles/editar", //nothing is saved
-        caption: "Roles"
+        editurl: CONTEXT_ROOT + "/marcas/editar", //nothing is saved
+        caption: "Marcas"
 
 
     });
@@ -213,13 +188,13 @@ $(document).ready(function(data) {
     $(grid_selector).jqGrid('inlineNav', pager_selector,
             {
                 edit: false,
-                add: permisoAsignar,
+                add: permisoAgregar,
                 addtext: 'Agregar',
                 addicon: "ui-icon ace-icon fa fa-plus-circle purple",
-                save: permisoAsignar,
+                save: permisoAgregar,
                 savetext: 'Guardar',
                 saveicon: "ui-icon-disk",
-                cancel: permisoAsignar,
+                cancel: permisoAgregar,
                 cancelicon: "ui-icon-cancel",
                 canceltext: 'Cancelar',
                 refresh: true,
@@ -229,7 +204,7 @@ $(document).ready(function(data) {
                     //position: 'last',
                     useDefValues: true,
                     addRowParams: {
-                        url: CONTEXT_ROOT + '/roles/guardar',
+                        url: CONTEXT_ROOT + '/marcas/guardar',
                         mtype: "POST",
                         datatype: 'json',
                         keys: true,

@@ -53,14 +53,23 @@ function estado(cellvalue, options, rowObject) {
         return '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
     }
 }
-function visualizarButton(id, permisoVisualizar) {
+function visualizarButton(id, permisoVisualizar, title, url) {
     var content = window.location.href;
     var button = '';
     if (permisoVisualizar) {
-        button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+        console.log(title);
+        if(title !== null && url !== null && title !== "" && url !== ""){
+            button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + CONTEXT_ROOT + '/'+url+'/' + id + '"'
+                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="'+title+'">'
+                + ' <span class="ace-icon fa fa-external-link"></span></a>';
+        }else{
+            button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
                 + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + content + '/visualizar/' + id + '"'
                 + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Visualizar">'
                 + ' <span class="ace-icon fa fa-external-link"></span></a>';
+        }
+        
     }
 
     return button;
@@ -139,14 +148,21 @@ function aprobarButton(id, permisoActivar) {
     return button;
 }
 
-function pedidoDetalleButton(id, permisoDetalle) {
+function detalleButton(id, permisoDetalle, title, url) {
     var button = '';
     if (permisoDetalle) {
-
-         button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+        if(title !== null && url !== null){
+            button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + CONTEXT_ROOT + '/'+url+'/' + id + '"'
+                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="'+title+'">'
+                + ' <span class="ace-icon fa fa-fw fa-plus-square"></span></a>';
+        }else{
+            button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
                 + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + CONTEXT_ROOT + '/pedido/detalles/agregar/' + id + '"'
                 + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Agregar Detalle">'
-                + ' <span class="ace-icon fa fa-fw fa-file-text-o bigger-120"></span></a>';
+                + ' <span class="ace-icon fa fa-fw fa-plus-square"></span></a>';
+        }
+         
     }
 
     return button;

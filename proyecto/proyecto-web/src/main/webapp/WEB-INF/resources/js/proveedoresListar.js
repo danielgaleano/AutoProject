@@ -111,7 +111,7 @@ $(document).ready(function(data) {
                         } else {
 
                             asignar = "";
-                            visuali = visualizarButton(cl, permisoVisualizar);
+                            visuali = visualizarButton(cl, permisoVisualizar,null);
                             editForm = editFormButton(cl, permisoEditar);
                             desact = desactivarButton(cl, permisoDesactivar);
                             $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
@@ -131,7 +131,7 @@ $(document).ready(function(data) {
                     } else {
 
                         //asignar = asigButton(cl, true);
-                        visuali = visualizarButton(cl, permisoVisualizar);
+                        visuali = visualizarButton(cl, permisoVisualizar,null);
                         editForm = editFormButton(cl, permisoEditar);
                         $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
                     }

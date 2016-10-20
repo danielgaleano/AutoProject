@@ -75,6 +75,10 @@ public class DetallePedido extends Base {
     @JoinColumn(name = "marca", referencedColumnName = "id")
     private Marca marca;
     
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "modelo", referencedColumnName = "id")
+    private Modelo modelo;
+    
     @ManyToOne
     @JoinColumn(name = "moneda")
     private Moneda moneda; 
@@ -316,6 +320,20 @@ public class DetallePedido extends Base {
 
     public void setCodigoDetalle(String codigoDetalle) {
         this.codigoDetalle = codigoDetalle;
+    }
+
+    /**
+     * @return the modelo
+     */
+    public Modelo getModelo() {
+        return modelo;
+    }
+
+    /**
+     * @param modelo the modelo to set
+     */
+    public void setModelo(Modelo modelo) {
+        this.modelo = modelo;
     }
 
     

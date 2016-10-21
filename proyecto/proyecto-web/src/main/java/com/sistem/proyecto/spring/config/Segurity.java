@@ -108,6 +108,7 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/pedidos/desactivar/*").hasAnyAuthority("Pedido.Desactivar")
                 .antMatchers("/pedidos/editar/**").hasAnyAuthority("Pedido.Editar")
                 .antMatchers("/pedidos/visualizar/**").hasAnyAuthority("Pedido.Visualizar")
+                .antMatchers("/pedido/detalles/agregar/**").hasAnyAuthority("Pedido.Visualizar")
                 //------Tipos----//
                 .antMatchers("/tipos**").hasAnyAuthority("Tipo.Listar")
                 .antMatchers("/tipos/crear**").hasAnyAuthority("Tipo.Crear")

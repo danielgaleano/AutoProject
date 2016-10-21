@@ -69,26 +69,51 @@
 
                                 <div class="col-xs-12 col-sm-12">
 
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                        <label class="col-lg-2 control-label">Documento(*)</label>
-                                        <div class="col-lg-2">
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-6">
+                                        <label class="col-lg-6 control-label">Documento(*)</label>
+                                        <div class="col-lg-6">
                                             <input th:if="${cliente} != null" th:value="${cliente.documento}" id="documento" name="documento" type="text" placeholder="Documento/Ruc" disabled="disabled" data-mask="" data-inputmask-regex="^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$" class="form-control tableusuario-input "/> 
                                             <input th:if="${cliente} == null"  id="documento" name="documento" type="text" placeholder="Documento" data-mask="" data-inputmask-regex="^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$"  class="form-control tableusuario-input "/>
                                             <span class="glyphicon form-control-feedback" id="documento1"></span> 
                                         </div>
                                     </div>
 
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                        <label class="col-lg-2 control-label">Razon Social(*)</label>
-                                        <div class="col-lg-4">
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                        <label class="col-lg-6 control-label">Razon Social(*)</label>
+                                        <div class="col-lg-6">
                                             <input th:if="${cliente} == null" id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input "/> 
                                             <input th:if="${editar} and ${cliente} != null" th:value="${cliente.nombre}" id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input "/>
                                             <input th:if="!${editar} and ${cliente} != null" disabled="disabled" th:value="${cliente.nombre}" id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input "/>
                                             <span class="glyphicon form-control-feedback" id="nombre1"></span>
                                         </div>
                                     </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                        <label class="col-lg-6 control-label">Fecha Nacimiento</label>
+                                        <div class="col-lg-6">
+                                            <input class="form-control date-picker" id="id-date-picker" name="fechaEntrega" type="text" data-date-format="dd-mm-yyyy" />
+                                            <span class="add-on" ><i class="icon-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                        <label class="col-lg-4 control-label">Sexo</label>
+                                        <div class="col-lg-6">
+                                            <select  class="form-control tableusuario-input " id="sexo"  name="sexo" data-placeholder="Seleccione opcion">
+                                                <option value="M">Masculino</option>
+                                                <option value="F">Femenino</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                        <label class="col-lg-2 control-label">Pais(*)</label>
+                                        <div class="col-lg-8">
+                                            <input th:if="${cliente} == null" id="pais" name="pais" type="text" placeholder="Pais" class="form-control tableusuario-input "/> 
+                                            <input th:if="${editar} and ${cliente} != null" th:value="${cliente.pais}" id="email" name="pais" type="text" placeholder="Pais" class="form-control tableusuario-input "/> 
+                                            <input th:if="!${editar} and ${cliente} != null" disabled="disabled" th:value="${cliente.pais}" id="email" name="pais" type="text" placeholder="Pais" class="form-control tableusuario-input "/> 
+                                            <span class="glyphicon form-control-feedback" id="pais"></span>
+                                        </div>
+                                    </div>
 
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                         <label class="col-lg-2 control-label">Email(*)</label>
                                         <div class="col-lg-4">
                                             <input th:if="${cliente} == null" id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input "/> 
@@ -99,10 +124,7 @@
                                     </div>
 
 
-
-
-
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                         <label class="col-lg-2 control-label">Telefono(*)</label>
                                         <div class="col-lg-3">
                                             <input th:if="${cliente} == null" id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input "/> 

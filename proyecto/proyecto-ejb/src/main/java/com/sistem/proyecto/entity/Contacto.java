@@ -23,6 +23,9 @@ public class Contacto extends Base {
 
     @Column(name = "nombre", nullable = false, length = 128)
     private String nombre;
+    
+    @Column(name = "documento")
+    private String documento;
 
     @Column(name = "cargo")
     private String cargo;

@@ -159,7 +159,7 @@ function detalleButton(id, permisoDetalle, title, url) {
         }else{
             button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
                 + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + CONTEXT_ROOT + '/pedido/detalles/agregar/' + id + '"'
-                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Agregar Detalle">'
+                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Detalle">'
                 + ' <span class="ace-icon fa fa-fw fa-plus-square"></span></a>';
         }
          

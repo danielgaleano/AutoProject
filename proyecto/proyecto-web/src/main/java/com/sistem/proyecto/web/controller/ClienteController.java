@@ -42,8 +42,8 @@ import com.sistem.proyecto.utils.DTORetorno;
 @RequestMapping(value = "/clientes")
 public class ClienteController extends BaseController {
 
-    String atributos = "id,nombre,documento,email,telefono,telefonoMovil,comentario,contacto.id,"
-            + "contacto.nombre,contacto.cargo,contacto.telefono,contacto.email,"
+    String atributos = "id,nombre,documento,email,telefono,telefonoMovil,comentario,pais,sexo,fechaNacimiento,contacto.id,"
+            + "contacto.nombre,actividad,contacto.cargo,contacto.telefono,contacto.email,"
             + "contacto.comentario,empresa.id,empresa.nombre,direccion,activo";
 
     @RequestMapping(method = RequestMethod.GET)

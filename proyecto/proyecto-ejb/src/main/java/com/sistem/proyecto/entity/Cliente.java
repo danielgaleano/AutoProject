@@ -1,10 +1,12 @@
 package com.sistem.proyecto.entity;
 
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 
 /**
  * @author mojeda
@@ -23,12 +25,25 @@ public class Cliente extends Base {
 
     @Column(name = "documento", nullable = false)
     private String documento;
+    
+    @Column(name = "fechaNacimiento")
+    private Timestamp fechaNacimiento;
+    
+    @Size(max = 1)
+    @Column(name = "sexo")
+    private String sexo;
 
     @Column(name = "email")
     private String email;
     
     @Column(name = "direccion")
     private String direccion;
+    
+    @Column(name = "actividad")
+    private String actividad;
+    
+    @Column(name = "pais")
+    private String pais;
 
     @Column(name = "comentario")
     private String comentario;
@@ -237,6 +252,62 @@ public class Cliente extends Base {
 
     public void setIdContacto(Long idContacto) {
         this.idContacto = idContacto;
+    }
+
+    /**
+     * @return the fechaNacimiento
+     */
+    public Timestamp getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    /**
+     * @param fechaNacimiento the fechaNacimiento to set
+     */
+    public void setFechaNacimiento(Timestamp fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    /**
+     * @return the sexo
+     */
+    public String getSexo() {
+        return sexo;
+    }
+
+    /**
+     * @param sexo the sexo to set
+     */
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
+    /**
+     * @return the actividad
+     */
+    public String getActividad() {
+        return actividad;
+    }
+
+    /**
+     * @param actividad the actividad to set
+     */
+    public void setActividad(String actividad) {
+        this.actividad = actividad;
+    }
+
+    /**
+     * @return the pais
+     */
+    public String getPais() {
+        return pais;
+    }
+
+    /**
+     * @param pais the pais to set
+     */
+    public void setPais(String pais) {
+        this.pais = pais;
     }
     
     

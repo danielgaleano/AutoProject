@@ -28,7 +28,7 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'NOMBRE', 'DOCUMENTO', 'DIRECCION', 'TELEFONO', 'EMAIL', 'STATUS', ''],
+        colNames: ['ID', 'RAZON SOCIAL', 'DOCUMENTO/RUC', 'DIRECCION', 'TELEFONO', 'EMAIL', 'CONTACTO', 'STATUS', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'nombre', index: 'nombre', width: 90, editable: false},
@@ -36,6 +36,7 @@ $(document).ready(function(data) {
             {name: 'direccion', index: 'direccion', width: 150, editable: false},
             {name: 'telefono', index: 'telefono', width: 90, sortable: false},
             {name: 'email', index: 'email', width: 90, sortable: false},
+            {name: 'contacto.nombre', index: 'contacto.nombre', width: 90, sortable: false},
             {name: 'activo', index: 'activo', width: 90, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',

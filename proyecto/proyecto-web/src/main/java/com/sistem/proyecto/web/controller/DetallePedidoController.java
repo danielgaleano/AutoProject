@@ -212,6 +212,13 @@ public class DetallePedidoController extends BaseController {
                 mensaje.setMensaje("La marca de vehiculo no puede estar vacio.");
                 return mensaje;
             }
+            
+            if (detalleRecibido.getModelo()== null || detalleRecibido.getModelo().getId() != null
+                    && detalleRecibido.getModelo().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El modelo del vehiculo no puede estar vacio.");
+                return mensaje;
+            }
 
             if (detalleRecibido.getAnho() == null || detalleRecibido.getAnho() != null
                     && detalleRecibido.getAnho().compareToIgnoreCase("") == 0) {
@@ -275,6 +282,7 @@ public class DetallePedidoController extends BaseController {
             ejDetalle.setMoneda(detalleRecibido.getMoneda());
             ejDetalle.setTipo(detalleRecibido.getTipo());
             ejDetalle.setMarca(detalleRecibido.getMarca());
+            ejDetalle.setModelo(detalleRecibido.getModelo());
             ejDetalle.setTrasmision(detalleRecibido.getTrasmision());
             ejDetalle.setPrecio(detalleRecibido.getPrecio());
             ejDetalle.setActivo("S");

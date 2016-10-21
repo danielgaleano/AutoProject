@@ -3,13 +3,13 @@ $(document).ready(function(data) {
 
     var isEditarInline = true;
     var isStatus = true;
-    
-    if(action === "CREAR" || action === "AGREGAR"){
+
+    if (action === "CREAR" || action === "AGREGAR") {
         var permisoAprobar = parseBolean($(this).find('.tablaprobar-permiso').text());
         var permisoRechazar = parseBolean($(this).find('.tablrechazar-permiso').text());
         var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
-        var permisoAgegar = parseBolean($(this).find('.tabladd-permiso').text()); 
-    }else{
+        var permisoAgegar = parseBolean($(this).find('.tabladd-permiso').text());
+    } else {
         var permisoAprobar = false;
         var permisoRechazar = false;
         var permisoEditar = false;
@@ -39,7 +39,7 @@ $(document).ready(function(data) {
         colNames: ['ID', 'CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'PRECIO', 'CANTIDAD', 'TOTAL', 'CONFIRMADO', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'codigoDetalle', index: 'codigoDetalle', key: true, width: 100,  editable: false},
+            {name: 'codigoDetalle', index: 'codigoDetalle', key: true, width: 100, editable: false},
             {name: 'tipo.nombre', index: 'tipo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     dataUrl: CONTEXT_ROOT + '/tipos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
@@ -60,6 +60,22 @@ $(document).ready(function(data) {
                 }},
             {name: 'marca.nombre', index: 'marca.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
+                    dataEvents: [
+                        {type: 'change', fn: function(e) {
+                                var jqXHR = $.get(CONTEXT_ROOT + "/modelos/listar?_search=false&todos=true&idMarca=" + this.value + "&rows=10&page=1&sidx=&sord=asc", function(response, textStatus, jqXHR) {
+                                    var sel = '<option value="">Seleccione opcion</option>';
+                                    $.each(response.retorno, function() {
+
+                                        sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
+
+                                    });
+                                    console.log($('select[name="modelo.nombre"]'));
+                                    $('select[name="modelo.nombre"]').empty().append(sel);
+                                });
+
+                            }}
+
+                    ],
                     dataUrl: CONTEXT_ROOT + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
 
@@ -76,24 +92,10 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'modelo.nombre', index: 'modelo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
-                editoptions: {
-                    dataUrl: CONTEXT_ROOT + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
-                    buildSelect: function(resp) {
-
-                        var sel = '<select>';
-                        sel += '<option value="">Seleccione la opcion</option>';
-                        var obj = $.parseJSON(resp);
-//                        var sel_id = $(grid_selector).jqGrid('getGridParam', 'selrow');
-//                        var value = $(grid_selector).jqGrid('getCell',sel_id ,'tipo.id');
-
-                        $.each(obj.retorno, function() {
-                            sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
-                        });
-                        sel += '</select>';
-                        return sel;
-                    }
-                }},
+            {name: 'modelo.nombre', index: 'modelo.nombre', width: 100, editable: true, edittype: 'select',
+                editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+                editoptions:{value:{'':'Seleccione Opcion'}}
+            },
             {name: 'caracteristica', index: 'caracteristica', width: 130, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
             {name: 'anho', index: 'anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'color', index: 'color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
@@ -135,7 +137,7 @@ $(document).ready(function(data) {
                                     }
                                 }, 0);
 
-                                
+
                             }}
 
                     ]}},
@@ -197,7 +199,7 @@ $(document).ready(function(data) {
         loadtext: "Cargando...",
         emptyrecords: "No se encontaron datos.",
         pgtext: "Pagina {0} de {1}",
-        afterInserRow: function(rowid, data){
+        afterInserRow: function(rowid, data) {
             console.log('dsdsdsdsdsdsdsds');
         },
         serializeRowData: function(postData) {
@@ -214,9 +216,11 @@ $(document).ready(function(data) {
             }
             postData['tipo.id'] = postData['tipo.nombre'];
             postData['marca.id'] = postData['marca.nombre'];
+            postData['modelo.id'] = postData['modelo.nombre'];
             postData['moneda.id'] = postData['moneda.nombre'];
             delete postData['tipo.nombre'];
             delete postData['marca.nombre'];
+            delete postData['modelo.nombre'];
             delete postData['moneda.nombre'];
             return postData;
         },
@@ -269,15 +273,15 @@ $(document).ready(function(data) {
                 if (isStatus) {
                     var estado = dato.estadoPedido;
                     if (estado === 'PENDIENTE') {
-                       // var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
+                        // var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
                         if (isEditarInline) {
-                            
-                            activar =  aprobarButton(cl, permisoAprobar)
+
+                            activar = aprobarButton(cl, permisoAprobar)
                             desact = rechazarButton(cl, permisoRechazar);
                             edit = editInlineButton(cl, permisoEditar);
                             $(grid_selector).setRowData(ids[i], {act: ini + edit + activar + desact + fin});
 
-                        } 
+                        }
 //                        else {
 //
 //                            asignar = "";
@@ -286,16 +290,16 @@ $(document).ready(function(data) {
 //                            desact = desactivarButton(cl, permisoDesactivar);
 //                            $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
 //                        }
-                       // $(grid_selector).setRowData(ids[i], {activo: labelActivo});
+                        // $(grid_selector).setRowData(ids[i], {activo: labelActivo});
                     } else if (estado === 'APROBADO') {
-                       
+
                         //var labelInactivo = '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
                         desact = rechazarButton(cl, permisoRechazar);
-                        
+
                         $(grid_selector).setRowData(ids[i], {act: ini + desact + fin});
                         //$(grid_selector).setRowData(ids[i], {activo: labelInactivo});
                     }
-                } 
+                }
 //                else {
 //                    if (isEditarInline) {
 //
@@ -317,6 +321,10 @@ $(document).ready(function(data) {
         caption: "Detalle del Pedido"
 
     });
+    $('select[name="marca.nombre"]').change(function(e) {
+        console.log(e);
+    });
+
     $(window).triggerHandler('resize.jqGrid');
     $(grid_selector).jqGrid('setGridWidth', $(".content").width());
     $(grid_selector).jqGrid('navGrid', pager_selector, {edit: false, add: false, del: false, search: false});

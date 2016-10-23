@@ -12,6 +12,7 @@ import com.sistem.proyecto.entity.Marca;
 import com.sistem.proyecto.entity.Moneda;
 import com.sistem.proyecto.entity.Pedido;
 import com.sistem.proyecto.entity.Usuario;
+import com.sistem.proyecto.entity.Vehiculo;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.sistem.proyecto.utils.DTORetorno;
-import com.sistem.proyecto.utils.MensajeDTO;
+import com.sistem.proyecto.manager.utils.MensajeDTO;
 import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -42,7 +43,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/pedido/detalles")
 public class DetallePedidoController extends BaseController {
 
-    String atributos = "id,caracteristica,trasmision,color,anho,cantidad,codigoDetalle,precio,total,tipo.id,tipo.nombre,modelo.id,modelo.nombre,marca.id,marca.nombre,activo,estadoPedido,moneda.id,moneda.nombre";
+    String atributos = "id,neto,vehiculo.caracteristica,vehiculo.transmision,vehiculo.color,vehiculo.anho,vehiculo.codigo,precio,total,vehiculo.tipo.id,vehiculo.tipo.nombre,vehiculo.modelo.id,vehiculo.modelo.nombre,vehiculo.marca.id,vehiculo.marca.nombre,activo,estadoPedido,moneda.id,moneda.nombre,moneda.valor";
 
     @RequestMapping(value = "/agregar/{id}", method = RequestMethod.GET)
     public ModelAndView detalleAgregar(@PathVariable("id") Long id, Model model) {
@@ -150,6 +151,7 @@ public class DetallePedidoController extends BaseController {
             inicializarDetallePedidoManager();
             inicializarPedidoManager();
             inicializarMonedaManager();
+            inicializarVehiculoManager();
 
             if (detalleRecibido.getPedido().getId() == null || detalleRecibido.getPedido().getId() != null
                     && detalleRecibido.getPedido().getId().toString().compareToIgnoreCase("") == 0) {
@@ -191,6 +193,7 @@ public class DetallePedidoController extends BaseController {
                 ejPedido.setUsuario(new Usuario(userDetail.getId()));
                 ejPedido.setTotal(Double.parseDouble("0"));
                 ejPedido.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+                
                 pedidoManager.save(ejPedido);
                 mensaje.setId(ejPedido.getId());
 
@@ -199,125 +202,10 @@ public class DetallePedidoController extends BaseController {
                 mensaje.setId(detalleRecibido.getPedido().getId());
             }
 
-            if (detalleRecibido.getTipo() == null || detalleRecibido.getTipo().getId() != null
-                    && detalleRecibido.getTipo().getId().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El tipo de vehiculo no puede estar vacio.");
-                return mensaje;
-            }
 
-            if (detalleRecibido.getMarca() == null || detalleRecibido.getMarca().getId() != null
-                    && detalleRecibido.getMarca().getId().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("La marca de vehiculo no puede estar vacio.");
-                return mensaje;
-            }
-            
-            if (detalleRecibido.getModelo()== null || detalleRecibido.getModelo().getId() != null
-                    && detalleRecibido.getModelo().getId().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El modelo del vehiculo no puede estar vacio.");
-                return mensaje;
-            }
-
-            if (detalleRecibido.getAnho() == null || detalleRecibido.getAnho() != null
-                    && detalleRecibido.getAnho().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El año del vehiculo no puede estar vacio.");
-                return mensaje;
-            }
-
-            if (detalleRecibido.getColor() == null || detalleRecibido.getColor() != null
-                    && detalleRecibido.getColor().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El color del vehiculo no puede estar vacio.");
-                return mensaje;
-            }
-
-            if (detalleRecibido.getColor() == null || detalleRecibido.getColor() != null
-                    && detalleRecibido.getColor().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El color del vehiculo no puede estar vacio.");
-                return mensaje;
-            }
-
-            if (detalleRecibido.getTrasmision() == null || detalleRecibido.getTrasmision() != null
-                    && detalleRecibido.getTrasmision().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("La transmision del vehiculo no puede estar vacia.");
-                return mensaje;
-            }
-
-            if (detalleRecibido.getMoneda() == null || detalleRecibido.getMoneda().getId() != null
-                    && detalleRecibido.getMoneda().getId().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El campo moneda no puede estar vacia.");
-                return mensaje;
-            }
-
-            if (detalleRecibido.getPrecio() == null || detalleRecibido.getPrecio() != null
-                    && detalleRecibido.getPrecio().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El campo precio no puede estar vacio.");
-                return mensaje;
-            }
-
-//            if (detalleRecibido.getCantidad() == null || detalleRecibido.getCantidad() != null
-//                    && detalleRecibido.getCantidad().toString().compareToIgnoreCase("") == 0) {
-//                mensaje.setError(true);
-//                mensaje.setMensaje("El campo cantida no puede estar vacia.");
-//                return mensaje;
-//            }
-                        
-   
-            String codDetalle = randomString(5,"DET");     
-            
-            ejDetalle =  new DetallePedido();
-            ejDetalle.setCodigoDetalle(ejPedido.getId()+"-"+codDetalle);
-            ejDetalle.setPedido(ejPedido);
-            ejDetalle.setAnho(detalleRecibido.getAnho());
-            ejDetalle.setCantidad(Long.parseLong("1"));
-            ejDetalle.setCaracteristica(detalleRecibido.getCaracteristica());
-            ejDetalle.setColor(detalleRecibido.getColor());
-            ejDetalle.setMoneda(detalleRecibido.getMoneda());
-            ejDetalle.setTipo(detalleRecibido.getTipo());
-            ejDetalle.setMarca(detalleRecibido.getMarca());
-            ejDetalle.setModelo(detalleRecibido.getModelo());
-            ejDetalle.setTrasmision(detalleRecibido.getTrasmision());
-            ejDetalle.setPrecio(detalleRecibido.getPrecio());
-            ejDetalle.setActivo("S");
-            ejDetalle.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-            ejDetalle.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-            ejDetalle.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-
-            Moneda ejMoneda = monedaManager.get(detalleRecibido.getMoneda());
-
-            Double cambio = Double.parseDouble(ejMoneda.getValor());
-
-            ejDetalle.setCambioDia(cambio);
-
-            Double total = detalleRecibido.getPrecio() * 1;
-            ejDetalle.setTotal(total);
-            ejDetalle.setEstadoPedido(DetallePedido.PENDIENTE);
-
-            detallePedidoManager.save(ejDetalle);
-            
-            Pedido pedidoEj = new Pedido();
-            pedidoEj.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-            pedidoEj.setId(ejPedido.getId());
-            
-            ejDetalle =  new DetallePedido();
-            ejDetalle.setPedido(pedidoEj);
-            
-            Integer totalDetalle = detallePedidoManager.list(ejDetalle, true).size();
-            pedidoEj = pedidoManager.get(ejPedido);
-            pedidoEj.setCantidadTotal(Long.parseLong(totalDetalle+""));
-            
-            pedidoManager.update(pedidoEj);           
-            
-            mensaje.setError(false);
-            mensaje.setMensaje("El detalle del pedido se guardo exitosamente.");
-
+            mensaje = detallePedidoManager.guardarDetalle(detalleRecibido.getVehiculo(), detalleRecibido.getMoneda(),
+                    detalleRecibido, true, ejPedido, userDetail.getIdEmpresa(), userDetail.getId());
+ 
         } catch (Exception ex) {
             mensaje.setError(true);
             mensaje.setMensaje("Error al guardar el detalle del pedido");
@@ -344,37 +232,18 @@ public class DetallePedidoController extends BaseController {
             DetallePedido detallePedido = detallePedidoManager.get(id);
 
             if (detallePedido != null) {
-                nombre = detallePedido.getCodigoDetalle().toString();
+                nombre = detallePedido.getVehiculo().getCodigo().toString();
             }
 
             if (detallePedido != null && detallePedido.getActivo().toString()
                     .compareToIgnoreCase(DetallePedido.APROBADO) == 0) {
                 retorno.setError(true);
-                retorno.setMensaje("El detalle " + nombre + " ya se encuentra aprobada.");
+                retorno.setMensaje("El pedido del vehiculo " + nombre + " ya se encuentra aprobada.");
                 return retorno;
             }
-
-            detallePedido.setEstadoPedido(DetallePedido.APROBADO);
-            detallePedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-            detallePedido.setIdUsuarioModificacion(userDetail.getId());
-
-            detallePedidoManager.update(detallePedido);
             
-            Long idPedido = detallePedido.getPedido().getId();
-            
-            detallePedido = new DetallePedido();
-            detallePedido.setPedido(new Pedido(idPedido));
-            detallePedido.setEstadoPedido(DetallePedido.APROBADO);
-            
-            Integer totalDetalle = detallePedidoManager.list(detallePedido, true).size();
-            
-            Pedido pedido = pedidoManager.get(idPedido);
-            pedido.setCantidadAprobados(Long.parseLong(totalDetalle+""));
-            pedidoManager.update(pedido);
-            
-            
-            retorno.setError(false);
-            retorno.setMensaje("El detalle " + nombre + " se aprobo exitosamente.");
+            retorno = detallePedidoManager.aprobar(id, detallePedido.getPedido().getId(),
+                    userDetail.getIdEmpresa(), userDetail.getId());
 
         } catch (Exception e) {
             System.out.println("Error " + e);
@@ -402,37 +271,18 @@ public class DetallePedidoController extends BaseController {
             DetallePedido detallePedido = detallePedidoManager.get(id);
 
             if (detallePedido != null) {
-                nombre = detallePedido.getCodigoDetalle().toString();
+                nombre = detallePedido.getVehiculo().getCodigo().toString();
             }
 
             if (detallePedido != null && detallePedido.getEstadoPedido().toString()
                     .compareToIgnoreCase(DetallePedido.RECHAZADO) == 0) {
                 retorno.setError(true);
-                retorno.setMensaje("El detalle " + nombre + " ya se encuentra rechazada.");
+                retorno.setMensaje("El pedido del vehiculo " + nombre + " ya se encuentra rechazada.");
                 return retorno;
             }
 
-            detallePedido.setEstadoPedido(DetallePedido.RECHAZADO);
-            detallePedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-            detallePedido.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
-            detallePedido.setIdUsuarioEliminacion(userDetail.getId());
-
-            detallePedidoManager.update(detallePedido);
-            
-            Long idPedido = detallePedido.getPedido().getId();
-            
-            detallePedido = new DetallePedido();
-            detallePedido.setPedido(new Pedido(idPedido));
-            detallePedido.setEstadoPedido(DetallePedido.APROBADO);
-            
-            Integer totalDetalle = detallePedidoManager.list(detallePedido, true).size();
-            
-            Pedido pedido = pedidoManager.get(idPedido);
-            pedido.setCantidadAprobados(Long.parseLong(totalDetalle+""));
-            pedidoManager.update(pedido);
-            
-            retorno.setError(false);
-            retorno.setMensaje("El detalle " + nombre + " fue rechazado exitosamente.");
+            retorno = detallePedidoManager.rechazar(id, detallePedido.getPedido().getId(),
+                    userDetail.getIdEmpresa(), userDetail.getId());
 
         } catch (Exception e) {
             System.out.println("Error " + e);

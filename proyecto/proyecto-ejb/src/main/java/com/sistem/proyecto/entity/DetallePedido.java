@@ -12,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  *
@@ -27,33 +26,10 @@ public class DetallePedido extends Base {
     
     private static final long serialVersionUID = 798618560888L;
     
-    @Column(name = "codigo_detalle")
-    private String codigoDetalle;
     
     @Column(name = "estado_pedido")
     private String estadoPedido;
-    
-    @Column(name = "caracteristica")
-    private String caracteristica;
-    
-    @NotNull
-    @NotEmpty
-    @Column(name = "trasmision")
-    private String trasmision;
-    
-    @NotNull
-    @NotEmpty
-    @Column(name = "color")
-    private String color;
-    
-    @NotNull
-    @NotEmpty
-    @Column(name = "anho")
-    private String anho;
-    
-    @NotNull
-    @Column(name = "cantidad")
-    private Long cantidad;
+
     
     @NotNull
     @Column(name = "precio")
@@ -64,20 +40,12 @@ public class DetallePedido extends Base {
     private Double cambioDia;
     
     @NotNull
+    @Column(name = "neto")
+    private Double neto;
+    
+    @NotNull
     @Column(name = "total")
     private Double total;
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "tipo", referencedColumnName = "id")
-    private Tipo tipo;
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "marca", referencedColumnName = "id")
-    private Marca marca;
-    
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "modelo", referencedColumnName = "id")
-    private Modelo modelo;
     
     @ManyToOne
     @JoinColumn(name = "moneda")
@@ -89,6 +57,10 @@ public class DetallePedido extends Base {
     
     @Transient
     private String fecha;
+    
+    @ManyToOne
+    @JoinColumn(name = "vehiculo")
+    private Vehiculo vehiculo;
     
     @ManyToOne
     @JoinColumn(name = "pedido")
@@ -107,127 +79,17 @@ public class DetallePedido extends Base {
     }
 
     /**
-     * @return the caracteristica
+     * @return the estadoPedido
      */
-    public String getCaracteristica() {
-        return caracteristica;
+    public String getEstadoPedido() {
+        return estadoPedido;
     }
 
     /**
-     * @param caracteristica the caracteristica to set
+     * @param estadoPedido the estadoPedido to set
      */
-    public void setCaracteristica(String caracteristica) {
-        this.caracteristica = caracteristica;
-    }
-
-    /**
-     * @return the trasmision
-     */
-    public String getTrasmision() {
-        return trasmision;
-    }
-
-    /**
-     * @param trasmision the trasmision to set
-     */
-    public void setTrasmision(String trasmision) {
-        this.trasmision = trasmision;
-    }
-
-    /**
-     * @return the color
-     */
-    public String getColor() {
-        return color;
-    }
-
-    /**
-     * @param color the color to set
-     */
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    /**
-     * @return the cantidad
-     */
-    public Long getCantidad() {
-        return cantidad;
-    }
-
-    /**
-     * @param cantidad the cantidad to set
-     */
-    public void setCantidad(Long cantidad) {
-        this.cantidad = cantidad;
-    }
-
-   
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    /**
-     * @param empresa the empresa to set
-     */
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
-
-    /**
-     * @return the anho
-     */
-    public String getAnho() {
-        return anho;
-    }
-
-    /**
-     * @param anho the anho to set
-     */
-    public void setAnho(String anho) {
-        this.anho = anho;
-    }
-
-    /**
-     * @return the tipo
-     */
-    public Tipo getTipo() {
-        return tipo;
-    }
-
-    /**
-     * @param tipo the tipo to set
-     */
-    public void setTipo(Tipo tipo) {
-        this.tipo = tipo;
-    }
-
-    /**
-     * @return the moneda
-     */
-    public Moneda getMoneda() {
-        return moneda;
-    }
-
-    /**
-     * @param moneda the moneda to set
-     */
-    public void setMoneda(Moneda moneda) {
-        this.moneda = moneda;
-    }
-
-    /**
-     * @return the pedido
-     */
-    public Pedido getPedido() {
-        return pedido;
-    }
-
-    /**
-     * @param pedido the pedido to set
-     */
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
+    public void setEstadoPedido(String estadoPedido) {
+        this.estadoPedido = estadoPedido;
     }
 
     /**
@@ -273,67 +135,73 @@ public class DetallePedido extends Base {
     }
 
     /**
-     * @return the fecha
+     * @return the moneda
      */
-    public String getFecha() {
-        return fecha;
+    public Moneda getMoneda() {
+        return moneda;
     }
 
     /**
-     * @param fecha the fecha to set
+     * @param moneda the moneda to set
      */
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public void setMoneda(Moneda moneda) {
+        this.moneda = moneda;
     }
 
     /**
-     * @return the estadoPedido
+     * @return the empresa
      */
-    public String getEstadoPedido() {
-        return estadoPedido;
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
     /**
-     * @param estadoPedido the estadoPedido to set
+     * @param empresa the empresa to set
      */
-    public void setEstadoPedido(String estadoPedido) {
-        this.estadoPedido = estadoPedido;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     /**
-     * @return the marca
+     * @return the vehiculo
      */
-    public Marca getMarca() {
-        return marca;
+    public Vehiculo getVehiculo() {
+        return vehiculo;
     }
 
     /**
-     * @param marca the marca to set
+     * @param vehiculo the vehiculo to set
      */
-    public void setMarca(Marca marca) {
-        this.marca = marca;
-    }
-
-    public String getCodigoDetalle() {
-        return codigoDetalle;
-    }
-
-    public void setCodigoDetalle(String codigoDetalle) {
-        this.codigoDetalle = codigoDetalle;
+    public void setVehiculo(Vehiculo vehiculo) {
+        this.vehiculo = vehiculo;
     }
 
     /**
-     * @return the modelo
+     * @return the pedido
      */
-    public Modelo getModelo() {
-        return modelo;
+    public Pedido getPedido() {
+        return pedido;
     }
 
     /**
-     * @param modelo the modelo to set
+     * @param pedido the pedido to set
      */
-    public void setModelo(Modelo modelo) {
-        this.modelo = modelo;
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
+
+    /**
+     * @return the cotizacion
+     */
+    public Double getNeto() {
+        return neto;
+    }
+
+    /**
+     * @param cotizacion the cotizacion to set
+     */
+    public void setNeto(Double neto) {
+        this.neto = neto;
     }
 
     

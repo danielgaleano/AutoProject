@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+    <div th:include="include/head :: head" th:remove="tag"></div>
+    <title>Pedidos</title>
+
+    <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
+    <link th:href="@{/resources/css/icon.css}" rel="stylesheet" />
+
+
+</head>
+<body>
+    <nav th:replace="include/navbar :: navbar"></nav>
+    <div class="content-wrapper">
+
+        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Crear'')')}"/>
+        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Editar'')')}"/>
+        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Activar'')')}"/>
+        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Desactivar'')')}"/>
+        <div class="tabldetalle-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Detalle'')')}"/>
+        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Visualizar'')')}"/>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Pedidos
+                <small>Lista de pedidos de la empresa.</small>
+            </h1>
+            <ol class="breadcrumb">
+                <a sec:authorize="hasRole('Pedido.Crear')" th:href="@{/pedidos/crear}" class="btn btn-primary" role="button">
+
+                    Crear
+                </a>
+            </ol>
+        </section>
+        <hr/>
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <div id="mensaje"></div>
+                    <table id="grid" style="width: 100%;"></table>
+                    <div id="grid-pager"></div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>    
+    <!-- /.content -->
+    <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{/resources/js/base.js}"></script>
+    <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
+    <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
+    <script th:src="@{/resources/js/pedidosListar.js}"></script>
+
+
+
+
+</body>
+</html>

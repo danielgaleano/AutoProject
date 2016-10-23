@@ -36,11 +36,11 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'PRECIO', 'CANTIDAD', 'TOTAL', 'CONFIRMADO', ''],
+        colNames: ['ID', 'CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'COTIZACION', 'PRECIO', 'TOTAL', 'NETO', 'CONFIRMADO', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'codigoDetalle', index: 'codigoDetalle', key: true, width: 100, editable: false},
-            {name: 'tipo.nombre', index: 'tipo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+            {name: 'vehiculo.codigo', index: 'vehiculo.codigo', key: true, width: 150, editable: false},
+            {name: 'vehiculo.tipo.nombre', index: 'vehiculo.tipo.nombre', width: 190, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     dataUrl: CONTEXT_ROOT + '/tipos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
@@ -58,7 +58,7 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'marca.nombre', index: 'marca.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+            {name: 'vehiculo.marca.nombre', index: 'vehiculo.marca.nombre', width: 150, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     dataEvents: [
                         {type: 'change', fn: function(e) {
@@ -69,8 +69,8 @@ $(document).ready(function(data) {
                                         sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
 
                                     });
-                                    console.log($('select[name="modelo.nombre"]'));
-                                    $('select[name="modelo.nombre"]').empty().append(sel);
+                                    console.log($('select[name="vehiculo.modelo.nombre"]'));
+                                    $('select[name="vehiculo.modelo.nombre"]').empty().append(sel);
                                 });
 
                             }}
@@ -92,16 +92,25 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'modelo.nombre', index: 'modelo.nombre', width: 100, editable: true, edittype: 'select',
+            {name: 'vehiculo.modelo.nombre', index: 'vehiculo.modelo.nombre', width: 130, editable: true, edittype: 'select',
                 editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
-                editoptions:{value:{'':'Seleccione Opcion'}}
+                editoptions: {value: {'': 'Seleccione Opcion'}}
             },
-            {name: 'caracteristica', index: 'caracteristica', width: 130, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
-            {name: 'anho', index: 'anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'color', index: 'color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'trasmision', index: 'trasmision', width: 110, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
-            {name: 'moneda.nombre', index: 'moneda.nombre', width: 90, editable: true, edittype: "select",
+            {name: 'vehiculo.caracteristica', index: 'caracteristica', width: 200, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
+            {name: 'vehiculo.anho', index: 'anho', width: 80, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'vehiculo.color', index: 'color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'vehiculo.transmision', index: 'trasmision', width: 180, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
+            {name: 'moneda.nombre', index: 'moneda.nombre', width: 120, editable: true, edittype: "select",
                 editoptions: {
+                    dataEvents: [
+                        {type: 'change', fn: function(e) {
+                                var jqXHR = $.get(CONTEXT_ROOT + "/monedas/"+ this.value, function(response, textStatus, jqXHR) {
+                                    $('input[name="moneda.valor"]').val(response.data.valor);
+                                });
+
+                            }}
+
+                    ],
                     dataUrl: CONTEXT_ROOT + '/monedas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
 
@@ -118,6 +127,7 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
+            {name: 'moneda.valor', index: 'moneda.valor', width: 120, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'precio', index: 'precio', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
@@ -141,18 +151,19 @@ $(document).ready(function(data) {
                             }}
 
                     ]}},
-            {name: 'cantidad', index: 'cantidad', width: 90, sorttype: "number", editable: false, //unformat: spinnerNumber,
-                editoptions: {defaultValue: '1', type: 'number', min: 1, max: 100,
-                    dataEvents: [
-                        {type: 'click', fn: function(e) {
-                                var precio = $('input[name="precio"]').val();
-                                console.log(precio);
-                                var total = this.value * precio;
-                                $('input[name="total"]').val(total);
-                            }}
-                    ]}},
-            {name: 'total', index: 'total', width: 90, sortable: false, editable: true},
-            {name: 'estadoPedido', index: 'estadoPedido', width: 110, editable: false},
+//            {name: 'cantidad', index: 'cantidad', width: 90, sorttype: "number", editable: false, //unformat: spinnerNumber,
+//                editoptions: {defaultValue: '1', type: 'number', min: 1, max: 100,
+//                    dataEvents: [
+//                        {type: 'click', fn: function(e) {
+//                                var precio = $('input[name="precio"]').val();
+//                                console.log(precio);
+//                                var total = this.value * precio;
+//                                $('input[name="total"]').val(total);
+//                            }}
+//                    ]}},
+            {name: 'total', index: 'total', width: 110, sortable: false, editable: true},
+            {name: 'neto', index: 'neto', width: 150, sortable: false, editable: false},
+            {name: 'estadoPedido', index: 'estadoPedido', width: 150, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {
@@ -214,13 +225,13 @@ $(document).ready(function(data) {
                 postData['pedido.fecha'] = $('#id-date-picker').val();
                 postData['pedido.proveedor.id'] = $('#proveedor').val();
             }
-            postData['tipo.id'] = postData['tipo.nombre'];
-            postData['marca.id'] = postData['marca.nombre'];
-            postData['modelo.id'] = postData['modelo.nombre'];
+            postData['vehiculo.tipo.id'] = postData['vehiculo.tipo.nombre'];
+            postData['vehiculo.marca.id'] = postData['vehiculo.marca.nombre'];
+            postData['vehiculo.modelo.id'] = postData['vehiculo.modelo.nombre'];
             postData['moneda.id'] = postData['moneda.nombre'];
-            delete postData['tipo.nombre'];
-            delete postData['marca.nombre'];
-            delete postData['modelo.nombre'];
+            delete postData['vehiculo.tipo.nombre'];
+            delete postData['vehiculo.marca.nombre'];
+            delete postData['vehiculo.modelo.nombre'];
             delete postData['moneda.nombre'];
             return postData;
         },
@@ -229,7 +240,9 @@ $(document).ready(function(data) {
             filters: null,
             todos: false,
             idPedido: function() {
+
                 return $("#idPedido").val();
+
             }
         },
         jsonReader: {

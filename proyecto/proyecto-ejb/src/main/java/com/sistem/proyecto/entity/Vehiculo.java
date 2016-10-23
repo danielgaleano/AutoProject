@@ -27,7 +27,11 @@ public class Vehiculo extends Base {
 
     @Column(name = "codigo")
     private String codigo;
-
+    
+    @ManyToOne
+    @JoinColumn(name = "tipo")
+    private Tipo tipo;
+    
     @ManyToOne
     @JoinColumn(name = "marca")
     private Marca marca;
@@ -151,6 +155,20 @@ public class Vehiculo extends Base {
      */
     public void setProveedor(Proveedor proveedor) {
         this.proveedor = proveedor;
+    }
+
+    /**
+     * @return the tipo
+     */
+    public Tipo getTipo() {
+        return tipo;
+    }
+
+    /**
+     * @param tipo the tipo to set
+     */
+    public void setTipo(Tipo tipo) {
+        this.tipo = tipo;
     }
 
     

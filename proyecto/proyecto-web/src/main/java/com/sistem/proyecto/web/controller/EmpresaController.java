@@ -12,7 +12,7 @@ import com.sistem.proyecto.entity.Imagen;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.Base64Bytes;
 import com.sistem.proyecto.utils.FilterDTO;
-import com.sistem.proyecto.utils.MensajeDTO;
+import com.sistem.proyecto.manager.utils.MensajeDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
 import java.sql.Timestamp;
 import java.util.HashMap;

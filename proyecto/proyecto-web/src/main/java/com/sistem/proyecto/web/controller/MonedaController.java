@@ -16,7 +16,7 @@ import com.sistem.proyecto.entity.Usuario;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.DatosDTO;
 import com.sistem.proyecto.utils.FilterDTO;
-import com.sistem.proyecto.utils.MensajeDTO;
+import com.sistem.proyecto.manager.utils.MensajeDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
 import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;
@@ -374,6 +374,32 @@ public class MonedaController extends BaseController {
             System.out.println("Error " + e);
             retorno.setError(true);
             retorno.setMensaje("Error al tratar de desactivar el rol.");
+        }
+        return retorno;
+
+    }
+    
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno obtenerMoneda(@PathVariable("id") Long id, Model model) {
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        DTORetorno<Moneda> retorno = new DTORetorno<Moneda>();
+        String nombre = "";
+
+        try {
+
+            inicializarMonedaManager();
+
+            Moneda ejMoneda = monedaManager.get(id);
+
+            retorno.setData(ejMoneda);
+            retorno.setError(false);
+            retorno.setMensaje("La moneda se obtuvo exitosamente.");
+
+        } catch (Exception e) {
+            System.out.println("Error " + e);
+            retorno.setError(true);
+            retorno.setMensaje("Error al obtener la moneda.");
         }
         return retorno;
 

@@ -282,10 +282,10 @@ public class BaseController {
                 throw new RuntimeException("No se puede inicializar el contexto", e1);
             }
         }
-        if (marcaManager == null) {
+        if (vehiculoManager == null) {
             try {
 
-                marcaManager = (MarcaManager) context.lookup("java:app/proyecto-ejb/VehiculoManagerImpl");
+                vehiculoManager = (VehiculoManager) context.lookup("java:app/proyecto-ejb/VehiculoManagerImpl");
             } catch (NamingException ne) {
                 throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
             }

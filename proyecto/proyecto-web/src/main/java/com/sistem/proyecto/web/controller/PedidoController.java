@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import com.sistem.proyecto.utils.DTORetorno;
-import com.sistem.proyecto.utils.MensajeDTO;
+import com.sistem.proyecto.manager.utils.MensajeDTO;
 import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;
 
@@ -159,7 +159,7 @@ public class PedidoController extends BaseController {
             pedido.setId(id);
             
             Map<String,Object> ejPedido = pedidoManager.getAtributos(pedido,
-                    "id,codigo,fechaEntrega,observacion,proveedor.id,cantidadAprobados,cantidadTotal".split(","));
+                    "id,codigo,fechaEntrega,observacion,proveedor.id,cantidadAprobados,cantidadTotal,total".split(","));
 
             retorno.setData(ejPedido);
             retorno.setError(false);

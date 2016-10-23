@@ -13,7 +13,7 @@ import com.sistem.proyecto.entity.Rol;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.Base64Bytes;
 import com.sistem.proyecto.utils.FilterDTO;
-import com.sistem.proyecto.utils.MensajeDTO;
+import com.sistem.proyecto.manager.utils.MensajeDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
 import com.sistem.proyecto.utils.SendMail;
 import static com.sistem.proyecto.web.controller.BaseController.logger;

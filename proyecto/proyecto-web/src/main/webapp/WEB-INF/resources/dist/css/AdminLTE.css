@@ -4971,3 +4971,6 @@ input.block{display:block;margin-bottom:9px}textarea.autosize-transition{-webkit
     display:none!important
 }
 }
+.form-search{
+    text-align: right;
+}

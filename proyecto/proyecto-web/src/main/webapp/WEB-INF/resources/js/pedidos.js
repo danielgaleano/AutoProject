@@ -127,8 +127,8 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'moneda.valor', index: 'moneda.valor', width: 120, sortable: false, formatter:'number', editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'precio', index: 'precio', width: 90, sortable: false, editable: true, formatter:'number', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
+            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter:'number', editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter:'number', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
                         {type: 'click', fn: function(e) {
@@ -161,7 +161,7 @@ $(document).ready(function(data) {
 //                                $('input[name="total"]').val(total);
 //                            }}
 //                    ]}},
-            {name: 'total', index: 'total', width: 110, sortable: false, formatter:'number', editable: true},
+            {name: 'total', index: 'total', width: 160, sortable: false, formatter:'number', editable: true},
             {name: 'neto', index: 'neto', width: 150, sortable: false, formatter:'number', editable: false},
             {name: 'estadoPedido', index: 'estadoPedido', width: 150, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
@@ -385,12 +385,15 @@ $(document).ready(function(data) {
                                         + '<strong>Exito! </strong>'
                                         + data.responseJSON.mensaje
                                         + '</div>');
-                                postData = $(grid_selector).jqGrid("getGridParam", "postData");
+                                setTimeout(function() {
+                                    postData = $(grid_selector).jqGrid("getGridParam", "postData");
                                 
-                                postData.filters = JSON.stringify({
-                                    todos: false,
-                                    idPedido: data.responseJSON.id
-                                });
+                                    postData.filters = JSON.stringify({
+                                        todos: false,
+                                        idPedido: data.responseJSON.id
+                                    });
+                                }, 0);
+                                
 
                                 $(grid_selector).trigger('reloadGrid');
 

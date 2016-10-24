@@ -140,7 +140,7 @@ $(document).ready(function(data) {
                             desact = desactivarButton(cl, permisoDesactivar);
                             asignar = detalleButton(cl, permisoModeloAgregar,"Agregar Modelos","modelos/agregar");
                             visuali = visualizarButton(cl, permisoVisualizar,"Visualizar Modelos","modelos/visualizar");
-                            $(grid_selector).setRowData(ids[i], {act: ini + edit + asignar + visuali + desact + fin});
+                            $(grid_selector).setRowData(ids[i], {act: ini + edit + asignar + desact + fin});
 
                         } else {
 
@@ -148,7 +148,7 @@ $(document).ready(function(data) {
                             //visuali = visualizarButton(cl, permisoVisualizar);
                             editForm = editFormButton(cl, permisoEditar);
                             desact = desactivarButton(cl, permisoDesactivar);
-                            $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
+                            $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar  + desact + fin});
                         }
                         $(grid_selector).setRowData(ids[i], {activo: labelActivo});
                     } else if (estado === 'N') {
@@ -167,14 +167,57 @@ $(document).ready(function(data) {
                         //asignar = asigButton(cl, true);
                         visuali = visualizarButton(cl, permisoVisualizar);
                         editForm = editFormButton(cl, permisoEditar);
-                        $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
+                        $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar  + fin});
                     }
                 }
 
             }
         },
         editurl: CONTEXT_ROOT + "/marcas/editar", //nothing is saved
-        caption: "Marcas"
+        caption: "Marcas",
+        subGrid: true,
+        subGridOptions:{
+            plusicon : 'fa fa-fw fa-sort-amount-asc',
+            minusicon : 'fa fa-fw fa-arrow-up'
+        },
+        subGridRowExpanded: function(subgrid_id, row_id) {
+        // we pass two parameters
+        // subgrid_id is a id of the div tag created within a table
+        // the row_id is the id of the row
+        // If we want to pass additional parameters to the url we can use
+        // the method getRowData(row_id) - which returns associative array in type name-value
+        // here we can easy construct the following
+           var subgrid_table_id;
+           subgrid_table_id = subgrid_id+"_t";
+           $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table>");
+           $("#"+subgrid_table_id).jqGrid({
+                url:CONTEXT_ROOT + '/modelos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idMarca='+row_id,
+                datatype: 'json',
+                mtype: 'GET',
+                colNames: ['MODELO'],
+                colModel: [
+                    {name:"nombre",index:"nombre",width:200,key:true}
+                  ],
+                height: '100%',
+                rowNum:10,
+                sortname: 'num',
+                sortorder: "asc",
+                caption: "Modelos",
+                jsonReader: {
+                    root: 'retorno',
+                    page: 'page',
+                    total: 'total',
+                    records: function(obj) {
+                        if(obj.retorno !== null){
+                            return obj.retorno.length;
+                        }else{
+                            return 0 ;
+                        }
+                        
+                    }
+              }
+           });
+       }
 
 
     });

@@ -172,7 +172,58 @@ $(document).ready(function(data) {
             }
         },
         editurl: "/editar", //nothing is saved
-        caption: "Pedidos"
+        caption: "Pedidos",
+        subGrid: true,
+        subGridOptions:{
+            plusicon : 'fa fa-fw fa-sort-amount-asc',
+            minusicon : 'fa fa-fw fa-arrow-up'
+        },
+        subGridRowExpanded: function(subgrid_id, row_id) {
+        // we pass two parameters
+        // subgrid_id is a id of the div tag created within a table
+        // the row_id is the id of the row
+        // If we want to pass additional parameters to the url we can use
+        // the method getRowData(row_id) - which returns associative array in type name-value
+        // here we can easy construct the following
+           var subgrid_table_id;
+           subgrid_table_id = subgrid_id+"_t";
+           $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table>");
+           $("#"+subgrid_table_id).jqGrid({
+                url:CONTEXT_ROOT + '/pedido/detalles/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idPedido='+row_id,
+                datatype: 'json',
+                mtype: 'GET',
+                colNames: ['CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO','TRASMISION','MONEDA', 'PRECIO', 'NETO', 'CONFIRMADO'],
+                colModel: [
+                    {name:"vehiculo.codigo",index:"vehiculo.codigo",width:80,key:true},
+                    {name:"vehiculo.tipo.nombre",index:"vehiculo.tipo.nombre",width:130},
+                    {name:"vehiculo.marca.nombre",index:"vehiculo.marca.nombre",width:80,align:"right"},
+                    {name:"vehiculo.modelo.nombre",index:"vehiculo.modelo.nombre",width:80,align:"right"},           
+                    {name:"vehiculo.anho",index:"vehiculo.anho",width:100,align:"right",sortable:false},
+                    {name:"vehiculo.transmision",index:"vehiculo.transmision",width:100,align:"right",sortable:false},
+                    {name:"moneda.nombre",index:"moneda.nombre",width:100,align:"right",sortable:false},
+                    {name:"precio",index:"precio",width:100,align:"right", formatter:'number',sortable:false},
+                    {name:"neto",index:"neto",width:100,align:"right", formatter:'number',sortable:false},
+                    {name:"estadoPedido",index:"estadoPedido",width:100,align:"right",sortable:false}
+                  ],
+                height: '100%',
+                rowNum:10,
+                sortname: 'num',
+                sortorder: "asc",
+                jsonReader: {
+                    root: 'retorno',
+                    page: 'page',
+                    total: 'total',
+                    records: function(obj) {
+                        if(obj.retorno !== null){
+                            return obj.retorno.length;
+                        }else{
+                            return 0 ;
+                        }
+                        
+                    }
+              }
+           });
+       }
 
     });
     $(window).triggerHandler('resize.jqGrid');

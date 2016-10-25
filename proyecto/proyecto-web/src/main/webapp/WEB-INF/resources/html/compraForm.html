@@ -17,10 +17,10 @@
 <body >
     <nav th:replace="include/navbar :: navbar"></nav>
     
-    <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetallePedido.Crear'')')}"/>
-    <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetallePedido.Editar'')')}"/>
-    <div class="tablaprobar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetallePedido.Aprobar'')')}"/>
-    <div class="tablrechazar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetallePedido.Rechazar'')')}"/>
+    <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetalleCompra.Crear'')')}"/>
+    <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetalleCompra.Editar'')')}"/>
+    <div class="tablaprobar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetalleCompra.Aprobar'')')}"/>
+    <div class="tablrechazar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetalleCompra.Rechazar'')')}"/>
    
     <div class="content-wrapper">
         <!-- Content Header (Page header) --> 
@@ -30,13 +30,13 @@
 
                 <div class="widget-header widget-header-flat widget-header-large">
                     <h3 class="widget-title">
-                        <span th:if="${proveedor} == null" class="middle">Pedido</span>
-                        <span th:if="${editar}" class="middle">Editar Pedido</span>
-                        <span th:if="!${editar} and ${proveedor} != null" class="middle">Visualizar Pedido</span>
+                        <span th:if="${proveedor} == null" class="middle">Compra</span>
+                        <span th:if="${editar}" class="middle">Editar Compra</span>
+                        <span th:if="!${editar} and ${proveedor} != null" class="middle">Visualizar Compra</span>
                     </h3>
 
                     <div class="widget-toolbar no-border">
-                        <a sec:authorize="hasRole('Pedido.Editar')" id="botonEditar" th:if="!${editar} and ${pedido} != null" th:href="@{'/pedidos/editar/'+${proveedor.id}}" class="btn btn-primary bigger" role="button">Editar</a>
+                        <a sec:authorize="hasRole('Compra.Editar')" id="botonEditar" th:if="!${editar} and ${pedido} != null" th:href="@{'/pedidos/editar/'+${proveedor.id}}" class="btn btn-primary bigger" role="button">Editar</a>
                         <a th:href="@{/pedidos}" class="btn btn-primary btn-light bigger" role="button">
                             <i class="ace-icon fa fa-arrow-left"></i>
                             Volver
@@ -52,61 +52,192 @@
                         <div class="col-xs-12">
 
                             <div class="col-xs-12 col-sm-12">
-                                <input  id="idPedido" name="id" type="hidden" th:value="${id}" class="form-control table-empresa-input" />
+                              <div class="col-lg-4 col-md-4 col-xs-12 col-sm-12">
 
-                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                    <label class="col-lg-6 control-label">Codigo(*)</label>
+                                <input  id="idCompra" name="id" type="hidden" th:value="${id}" class="form-control table-empresa-input" />
+
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-6 control-label">Nro. Factura(*)</label>
                                     <div class="col-lg-6">
-                                        <input id="codigo" name="codigo" type="text" disabled="disabled" placeholder="Codigo Pedido" class="form-control tableusuario-input "/> 
+                                        <input id="factura" name="factura" type="text" placeholder="Nro. de factura" class="form-control tableusuario-input "/> 
+                                        <span class="glyphicon form-control-feedback" id="factura1"></span>
+                                    </div>
+                                </div>
+                                <span>Datos de Cliente</span>
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-6 control-label">RUC/Documento</label>
+                                    <div class="col-lg-6">
+                                        <input id="ruc" name="ruc" type="text" placeholder="Nro. de ruc" class="form-control tableusuario-input "/> 
+                                        <span class="glyphicon form-control-feedback" id="ruc1"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-6 control-label">Nombre o Razon Social</label>
+                                    <div class="col-lg-6">
+                                        <input id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input "/> 
                                         <span class="glyphicon form-control-feedback" id="nombre1"></span>
                                     </div>
                                 </div>
-                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                    <label class="col-lg-4 control-label">Proveedor(*)</label>
-                                    <div class="col-lg-8">
-                                        <select  class="form-control tableusuario-input " id="proveedor"  name="proveedor.id" data-placeholder="Seleccione Proveedor">
-
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                    <label class="col-lg-6 control-label">Fecha Entrega(*)</label>
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-6 control-label">Direccion</label>
                                     <div class="col-lg-6">
-                                        <input class="form-control date-picker" id="id-date-picker" name="fechaEntrega" type="text" data-date-format="dd-mm-yyyy" />
-                                        <span class="add-on" ><i class="icon-calendar"></i></span>
-                                    </div>
-                                </div>
-                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                    <label class="col-lg-6 control-label">Aprobados</label>
-                                    <div class="col-lg-6">
-                                        <input  id="cantidadAprobados" name="cantidadAprobados" type="text" disabled="disabled" placeholder="Cantidad Aprobados" data-mask="" data-inputmask="'mask': '(999)999-999'"  class="form-control tableusuario-input "/> 
-                                        <span class="glyphicon form-control-feedback" id="fax1"></span>
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                    <label class="col-lg-6 control-label">Cantidad</label>
-                                    <div class="col-lg-6">
-                                        <input id="cantidadTotal" type="text" name="cantidadTotal" disabled="disabled" placeholder="Cantidad Total" class="form-control tableusuario-input " /> 
-                                        <span class="glyphicon form-control-feedback" id="pais1"></span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                    <label class="col-lg-6 control-label">Monto Total</label>
-                                    <div class="col-lg-6">
-                                        <input  id="montoTotal" type="text" name="montoTotal" disabled="disabled" placeholder="Total" class="form-control tableusuario-input " /> 
+                                        <input id="direccion" name="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input "/> 
                                         <span class="glyphicon form-control-feedback" id="direccion1"></span>
                                     </div>
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                    <label class="col-lg-2 control-label">Observacion</label>
-                                    <div class="col-lg-10">
-                                        <input id="observacion" type="text" name="observacion" placeholder="Observacion" class="form-control tableusuario-input " /> 
-                                        <span class="glyphicon form-control-feedback" id="pais1"></span>
+                                    <label class="col-lg-6 control-label">Telefono</label>
+                                    <div class="col-lg-6">
+                                        <input id="telefono" name="telefono" type="text" placeholder="Nro. de telefono" class="form-control tableusuario-input "/> 
+                                        <span class="glyphicon form-control-feedback" id="telefono1"></span>
                                     </div>
-                                </div>                               
+                                </div>
+            
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-6 control-label">Fecha de Compra</label>
+                                    <div class="col-lg-6">
+                                        <input class="form-control date-picker" id="id-date-picker-compra" name="fechaCompra" type="text" data-date-format="dd-mm-yyyy" />
+                                        <span class="add-on" ><i class="icon-calendar"></i></span>
+                                    </div>
+                                </div>
+
+                              </div>
+                              
+                              <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12">
+
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                  <label class="col-lg-4 control-label">Forma de pago</label>
+                                    <div class="radio col-lg-4">
+                                      <label>
+                                        <input type="radio" name="optionsPago" id="contado" value="option1">
+                                        Contado
+                                      </label>
+                                    </div>
+                                    <div class="radio col-lg-4">
+                                      <label>
+                                        <input type="radio" name="optionsPago" id="credito" value="option2">
+                                        Credito
+                                      </label>
+                                    </div>
+                                </div>
+                                
+                              <div class="col-lg-5 col-md-5 col-xs-12 col-sm-12">
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-4 control-label">Monto Total</label>
+                                    <div class="col-lg-8">
+                                        <input  id="montoTotal" type="text" name="total" disabled="disabled" placeholder="Total" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="total1"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                  <label class="col-lg-12 control-label">Tipo de descuento</label>
+                                    <div class="radio col-lg-6">
+                                      <label>
+                                        <input type="radio" name="optionsDescuento" id="general" value="option1">
+                                        General
+                                      </label>
+                                    </div>
+                                    <div class="radio col-lg-6">
+                                      <label>
+                                        <input type="radio" name="optionsDescuento" id="detallado" value="option2">
+                                        Detallado
+                                      </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-8 control-label">% Descuento</label>
+                                    <div class="col-lg-4">
+                                        <input  id="descuento" type="text" name="descuento" placeholder="% Descuento" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="descuento1"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-4 control-label">Monto Descuento</label>
+                                    <div class="col-lg-8">
+                                        <input  id="montoDescuento" type="text" name="montoDescuento" disabled="disabled" placeholder="Monto de Descuento" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="montoDescuento1"></span>
+                                    </div>
+                                </div>
+
+                              </div> 
+
+                              <div class="col-lg-7 col-md-7 col-xs-12 col-sm-12">
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-2 control-label">Cuotas</label>
+                                    <div class="col-lg-3">
+                                        <input  id="cantCuotas" type="text" name="cantCuotas" placeholder="Nro de Cuotas" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="cantCuotas1"></span>
+                                    </div>
+                                
+                                    <label class="col-lg-2 control-label">Monto</label>
+                                    <div class="col-lg-5 ">
+                                        <input  id="montoCuota" type="text" name="montoCuota" disabled="disabled" placeholder="Monto Cuota" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="montoCuota1"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-2 control-label">% Interes</label>
+                                    <div class="col-lg-3">
+                                        <input  id="interes" type="text" name="interes" placeholder="% interes" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="interes1"></span>
+                                    </div>
+                                
+                                    <label class="col-lg-2 control-label">Monto Interes</label>
+                                    <div class="col-lg-5">
+                                        <input  id="montoInteres" type="text" name="montoInteres" disabled="disabled" placeholder="%" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="montoInteres1"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-9 control-label">% Interes Mora</label>
+                                    <div class="col-lg-3">
+                                        <input  id="interesMora" type="text" name="interesMora" placeholder="% interesMora" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="interesMora1"></span>
+                                    </div>
+                                
+                                </div>
+
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-6 control-label">Fecha 1ra cuota</label>
+                                    <div class="col-lg-6">
+                                        <input class="form-control date-picker" id="id-date-picker-cuota" name="fechaCuota" type="text" data-date-format="dd-mm-yyyy" />
+                                        <span class="add-on" ><i class="icon-calendar"></i></span>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-4 control-label">Entrega</label>
+                                    <div class="col-lg-8">
+                                        <input  id="entrega" type="text" name="entrega" placeholder="Entrega" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="entrega1"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-4 control-label">Saldo</label>
+                                    <div class="col-lg-8">
+                                        <input  id="saldo" type="text" name="saldo" disabled="disabled" placeholder="Saldo" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="saldo1"></span>
+                                    </div>
+                                </div>
+
+                              </div>
+                              
+                              <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                    <label class="col-lg-4 control-label">Neto a pagar</label>
+                                    <div class="col-lg-6">
+                                        <input  id="neto" type="text" name="neto" disabled="disabled" placeholder="Neto a pagar" class="form-control tableusuario-input " /> 
+                                        <span class="glyphicon form-control-feedback" id="neto1"></span>
+                                    </div>
+                                </div>
+                                   
+                              </div>                            
                             </div>
 
                         </div>
@@ -136,8 +267,8 @@
     <script th:src="@{/resources/js/base.js}"></script>
     <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
-    <script th:src="@{/resources/js/pedidosForm.js}"></script>
-    <script th:src="@{/resources/js/pedidos.js}"></script>
+    <script th:src="@{/resources/js/comprasForm.js}"></script>
+    <script th:src="@{/resources/js/compras.js}"></script>
 
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>
     <!--    <script th:src="@{~/proyecto/resources/js/lib/dropzone.js}"></script>

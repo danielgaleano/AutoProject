@@ -1,3 +1,30 @@
+$(document).ready(function (data) {
+    
+    $("#credito").click(function () {
+        if(this.checked) { //chequear status del select
+            $("#formCredito").show();
+        }
+    });
+    $("#contado").click(function () {
+        if(this.checked) { //chequear status del select
+            $("#formCredito").hide();
+        }
+    });
+    $("#general").click(function () {
+        if(this.checked) { //chequear status del select
+            $("#formDescuento").show();
+        }
+    });
+    $("#detallado").click(function () {
+        if(this.checked) { //chequear status del select
+            $("#formDescuento").hide();
+        }
+    });
+    
+});
+
+
+
 function compraForm(id, action) {
     
     if (action !== "CREAR") {

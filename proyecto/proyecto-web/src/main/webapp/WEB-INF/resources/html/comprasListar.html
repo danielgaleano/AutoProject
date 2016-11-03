@@ -15,12 +15,12 @@
     <nav th:replace="include/navbar :: navbar"></nav>
     <div class="content-wrapper">
 
-        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Crear'')')}"/>
-        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Editar'')')}"/>
-        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Activar'')')}"/>
-        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Desactivar'')')}"/>
-        <div class="tabldetalle-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Detalle'')')}"/>
-        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Visualizar'')')}"/>
+        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Realizar'')')}"/>
+        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Editar'')')}"/>
+        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Activar'')')}"/>
+        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Desactivar'')')}"/>
+        <div class="tabldetalle-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Detalle'')')}"/>
+        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Visualizar'')')}"/>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
@@ -28,7 +28,7 @@
                 <small>Lista de compras de la empresa.</small>
             </h1>
             <ol class="breadcrumb">
-                <a sec:authorize="hasRole('Compra.Crear')" th:href="@{/pedidos/crear}" class="btn btn-primary" role="button">
+                <a sec:authorize="hasRole('Compra.Realizar')" th:href="@{/compras/directa/crear}" class="btn btn-primary" role="button">
                     Compra Directa
                 </a>
             </ol>
@@ -63,7 +63,7 @@
     <script th:src="@{/resources/js/base.js}"></script>
     <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
-    <script th:src="@{/resources/js/pedidosListar.js}"></script>
+    <script th:src="@{/resources/js/comprasListar.js}"></script>
 
 
 

@@ -368,6 +368,7 @@ $(document).ready(function(data) {
                         keys: true,
                         successfunc: function(data) {
                             if (data.responseJSON.id !== null && data.responseJSON.id !== "") {
+                                $('#idPedido').val(data.responseJSON.id);
                                 pedidoForm(data.responseJSON.id, "recargar");
                             }
                             if (data.responseJSON.error === true) {
@@ -385,14 +386,17 @@ $(document).ready(function(data) {
                                         + '<strong>Exito! </strong>'
                                         + data.responseJSON.mensaje
                                         + '</div>');
-                                setTimeout(function() {
-                                    postData = $(grid_selector).jqGrid("getGridParam", "postData");
                                 
-                                    postData.filters = JSON.stringify({
-                                        todos: false,
-                                        idPedido: data.responseJSON.id
-                                    });
-                                }, 0);
+                                $(grid_selector).setGridParam({postData:{todos: false,
+                                        idPedido: data.responseJSON.id}});
+//                                setTimeout(function() {
+//                                    postData = $(grid_selector).jqGrid("getGridParam", "postData");
+//                                
+//                                    postData.filters = JSON.stringify({
+//                                        todos: false,
+//                                        idPedido: data.responseJSON.id
+//                                    });
+//                                }, 0);
                                 
 
                                 $(grid_selector).trigger('reloadGrid');

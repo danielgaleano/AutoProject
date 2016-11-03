@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
     <div th:include="include/head :: head" th:remove="tag"></div>
-    <title>Pedidos</title>
+    <title>Compras</title>
 
     <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
     <link th:href="@{/resources/css/icon.css}" rel="stylesheet" />
@@ -24,13 +24,12 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Pedidos
-                <small>Lista de pedidos de la empresa.</small>
+                Compras
+                <small>Lista de compras de la empresa.</small>
             </h1>
             <ol class="breadcrumb">
-                <a sec:authorize="hasRole('Pedido.Crear')" th:href="@{/pedidos/crear}" class="btn btn-primary" role="button">
-
-                    Crear
+                <a sec:authorize="hasRole('Compra.Crear')" th:href="@{/pedidos/crear}" class="btn btn-primary" role="button">
+                    Compra Directa
                 </a>
             </ol>
         </section>

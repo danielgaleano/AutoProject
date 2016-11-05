@@ -118,6 +118,7 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
+            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter:'number', editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'precio', index: 'precio', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
@@ -141,18 +142,23 @@ $(document).ready(function(data) {
                             }}
 
                     ]}},
-            {name: 'cantidad', index: 'cantidad', width: 90, sorttype: "number", editable: false, //unformat: spinnerNumber,
-                editoptions: {defaultValue: '1', type: 'number', min: 1, max: 100,
-                    dataEvents: [
-                        {type: 'click', fn: function(e) {
-                                var precio = $('input[name="precio"]').val();
-                                console.log(precio);
-                                var total = this.value * precio;
-                                $('input[name="total"]').val(total);
-                            }}
-                    ]}},
+            // {name: 'cantidad', index: 'cantidad', width: 90, sorttype: "number", editable: false, //unformat: spinnerNumber,
+            //     editoptions: {defaultValue: '1', type: 'number', min: 1, max: 100,
+            //         dataEvents: [
+            //             {type: 'click', fn: function(e) {
+            //                     var precio = $('input[name="precio"]').val();
+            //                     console.log(precio);
+            //                     var total = this.value * precio;
+            //                     $('input[name="total"]').val(total);
+            //                 }}
+            //         ]}},
             {name: 'total', index: 'total', width: 90, sortable: false, editable: true},
-            {name: 'estadoCompra', index: 'estadoCompra', width: 110, editable: false},
+            {name: 'porcentajeDescuento', index: 'porcentajeDescuento', width: 90, sortable: false, editable: true},
+            {name: 'montoDescuento', index: 'montoDescuento', width: 90, sortable: false, editable: true},
+            {name: 'neto', index: 'neto', width: 90, sortable: false, editable: true},
+
+
+            // {name: 'estadoCompra', index: 'estadoCompra', width: 110, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {

@@ -57,23 +57,23 @@
                                     <input  id="idCompra" name="id" type="hidden" th:value="${id}" class="form-control table-empresa-input" />
 
                                     <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                        <label class="col-lg-6 control-label">Nro. Factura(*)</label>
-                                        <div class="col-lg-6">
+                                        <label class="col-lg-5 control-label">Nro. Factura(*)</label>
+                                        <div class="col-lg-7">
                                             <input id="factura" name="factura" type="text" placeholder="Nro. de factura" class="form-control tableusuario-input "/> 
                                             <span class="glyphicon form-control-feedback" id="factura1"></span>
                                         </div>
                                     </div>
                                     <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                        <label class="col-lg-6 control-label">Monto Total:</label>
-                                        <div class="col-lg-6">
-                                            <input id="factura" name="factura" type="text" placeholder="Monto Total" class="form-control tableusuario-input "/> 
+                                        <label class="col-lg-5 control-label">Monto Total:</label>
+                                        <div class="col-lg-7">
+                                            <input id="montoTotal" name="montoTotal" type="text" disabled="disabled" placeholder="Monto Total" class="form-control tableusuario-input "/> 
                                             <span class="glyphicon form-control-feedback" id="factura1"></span>
                                         </div>
                                     </div>
                                     <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                        <label class="col-lg-6 control-label">Entrega:</label>
-                                        <div class="col-lg-6">
-                                            <input id="factura" name="factura" type="text" placeholder="Entrega" class="form-control tableusuario-input "/> 
+                                        <label class="col-lg-5 control-label">Entrega:</label>
+                                        <div class="col-lg-7">
+                                            <input id="entrega" name="entrega" type="text" placeholder="Entrega" class="form-control tableusuario-input "/> 
                                             <span class="glyphicon form-control-feedback" id="factura1"></span>
                                         </div>
                                     </div>
@@ -120,45 +120,45 @@
                                     <div id="formCredito" style="display:none;">
                                         <div class="row">
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-2 col-md-2">
-                                                <label class="col-lg-6 control-label">%Interes(*)</label>
+                                                <label class="col-lg-6 control-label">%Interes</label>
                                                 <div class="col-lg-6">
-                                                    <input th:if="${proveedor} == null"  id="nombreContacto" name="interes" type="text" placeholder="Interes" class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="nombreContacto1"></span>
+                                                    <input th:if="${proveedor} == null"  id="interes" name="interes" type="text"  class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="interes1"></span>
                                                 </div>
                                             </div>
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                <label class="col-lg-6 control-label">Monto Interes(*)</label>
-                                                <div class="col-lg-6">
-                                                    <input th:if="${proveedor} == null"  id="contactoCargo" name="contactoCargo" type="text" placeholder="Monto Interes" class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="contactoCargo1"></span>
+                                                <label class="col-lg-5 control-label">Monto Interes</label>
+                                                <div class="col-lg-7">
+                                                    <input th:if="${proveedor} == null"  id="montoInteres" name="montoInteres" type="text" placeholder="Monto Interes" class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="montoInteres1"></span>
                                                 </div>
                                             </div>
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-2 col-md-2">
-                                                <label class="col-lg-6 control-label">Cuotas(*)</label>
-                                                <div class="col-lg-6">
-                                                    <input th:if="${proveedor} == null"  id="nombreContacto" name="interes" type="text" placeholder="Cuotas" class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="nombreContacto1"></span>
+                                                <label class="col-lg-5 control-label">Cuotas</label>
+                                                <div class="col-lg-7">
+                                                    <input th:if="${proveedor} == null"  id="cuotas" name="cuotas" type="number"  class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="cuotas1"></span>
                                                 </div>
                                             </div>
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                <label class="col-lg-6 control-label">Monto Cuotas(*)</label>
-                                                <div class="col-lg-6">
-                                                    <input th:if="${proveedor} == null"  id="contactoCargo" name="contactoCargo" type="text" placeholder="Monto Cuotas" class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="contactoCargo1"></span>
+                                                <label class="col-lg-5 control-label">Monto Cuotas</label>
+                                                <div class="col-lg-7">
+                                                    <input th:if="${proveedor} == null"  id="montoCuota" name="montoCuota" type="text" placeholder="Monto Cuotas" class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="montoCuota1"></span>
                                                 </div>
                                             </div>
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                <label class="col-lg-4 control-label">Fecha 1ra cuota(*)</label>
-                                                <div class="col-lg-6">
-                                                    <input class="form-control date-picker" id="id-date-picker" name="fechaEntrega" type="text" data-date-format="dd-mm-yyyy" />
-                                                    <span class="glyphicon form-control-feedback" id="contactoCargo1"></span>
+                                                <label class="col-lg-4 control-label">Fecha 1ra cuota</label>
+                                                <div class="col-lg-5">
+                                                    <input class="form-control date-picker" id="id-date-picker" name="fechaCuota" type="text" data-date-format="dd-mm-yyyy" />
+                                                    <span class="glyphicon form-control-feedback" id="fechaCuota1"></span>
                                                 </div>
                                             </div>
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                <label class="col-lg-6 control-label">%Interes por Mora(*)</label>
-                                                <div class="col-lg-3">
-                                                    <input th:if="${proveedor} == null"  id="nombreContacto" name="interes" type="text" placeholder="Interes" class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="nombreContacto1"></span>
+                                                <label class="col-lg-6 control-label">%Interes por Mora</label>
+                                                <div class="col-lg-2">
+                                                    <input th:if="${proveedor} == null"  id="interesMora" name="interesMora" type="text"  class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="interesMora1"></span>
                                                 </div>
                                             </div>
                                         </div>    
@@ -180,19 +180,22 @@
                                     </div>
                                     <div id="formDescuento" style="display:none;">
                                         <div class="row">
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                <label class="col-lg-6 control-label">Descuento %(*)</label>
-                                                <div class="col-lg-4">
-                                                    <input th:if="${proveedor} == null"  id="nombreContacto" name="interes" type="text" placeholder="Interes" class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="nombreContacto1"></span>
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                <label class="col-lg-6 control-label">Descuento %</label>
+                                                <div class="col-lg-3">
+                                                    <input th:if="${proveedor} == null"  id="descuento" name="descuento" type="text" class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="descuento1"></span>
                                                 </div>
                                             </div>
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                <label class="col-lg-6 control-label">Monto Descuento(*)</label>
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                <label class="col-lg-6 control-label">Monto Descuento</label>
                                                 <div class="col-lg-6">
-                                                    <input th:if="${proveedor} == null"  id="contactoCargo" name="contactoCargo" type="text" placeholder="Monto Cuotas" class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="contactoCargo1"></span>
+                                                    <input th:if="${proveedor} == null"  id="montoDescuento" name="montoDescuento" type="text" placeholder="Monto Descuento" class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="montoDescuento1"></span>
                                                 </div>
+                                            </div>
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -245,6 +248,11 @@
     <script th:src="@{/resources/js/compras.js}"></script>
 
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.number.min.js}" charset="UTF-8"></script>
+    <script type="text/javascript">
+          $('#entrega, #montoTotal, #montoDescuento, #montoCuota, #montoInteres, #saldo, #neto').number( true, 0, ',', '.' );
+          //console.log($.number( 5020.2364, 2 )); // Outputs: 5,020.24)
+    </script>
     <!--    <script th:src="@{~/proyecto/resources/js/lib/dropzone.js}"></script>
         <script th:src="@{~/proyecto/resources/js/upload_image.js}"></script> -->
 

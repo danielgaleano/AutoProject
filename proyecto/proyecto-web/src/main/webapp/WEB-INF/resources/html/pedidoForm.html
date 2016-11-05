@@ -149,6 +149,11 @@
     <script th:src="@{/resources/js/pedidos.js}"></script>
 
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.number.min.js}" charset="UTF-8"></script>
+    <script type="text/javascript">
+          $('#entrega, #montoTotal').number( true, 0, ',', '.' );
+          //console.log($.number( 5020.2364, 2 )); // Outputs: 5,020.24)
+    </script>
     <!--    <script th:src="@{~/proyecto/resources/js/lib/dropzone.js}"></script>
         <script th:src="@{~/proyecto/resources/js/upload_image.js}"></script> -->
 

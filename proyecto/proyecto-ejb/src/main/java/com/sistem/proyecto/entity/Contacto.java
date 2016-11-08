@@ -32,6 +32,9 @@ public class Contacto extends Base {
 
     @Column(name = "telefono")
     private String telefono;
+    
+    @Column(name = "movil")
+    private String movil;
 
     @Column(name = "email")
     private String email;
@@ -50,6 +53,20 @@ public class Contacto extends Base {
         setId(id);
     }
 
+    /**
+     * @return the documento
+     */
+    public String getDocumento() {
+        return documento;
+    }
+
+    /**
+     * @param documento the documento to set
+     */
+    public void setDocumento(String documento) {
+        this.documento = documento;
+    }
+    
     /**
      * @return the nombre
      */
@@ -76,6 +93,20 @@ public class Contacto extends Base {
      */
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+    
+    /**
+     * @return the movil
+     */
+    public String getMovil() {
+        return movil;
+    }
+
+    /**
+     * @param movil the movil to set
+     */
+    public void setMovil(String movil) {
+        this.movil = movil;
     }
 
     /**

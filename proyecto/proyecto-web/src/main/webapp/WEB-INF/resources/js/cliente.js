@@ -2,13 +2,16 @@
 $(document).ready(function (data) {
     $(":input").inputmask();
     $("#documento").inputmask("Regex", {
-        regex: "^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$"
+        regex: "^[0-9]{5}([0-9])?([0-9])?([0-9])?(-)?([0-9])?$"
+    });
+    $("#documentoContacto").inputmask("Regex", {
+        regex: "^[0-9]{5}([0-9])?([0-9])?([0-9])?$"
     });
 
 
     $.validator.addMethod("regx", function (value, element, regexpr) {
         return regexpr.test(value);
-    }, "Debe ingresar un número de documento válido!");
+    }, "Debe ingresar un número de RUC o CI válido!");
 
     $('#validation-form').validate({
         errorElement: 'span',
@@ -18,42 +21,88 @@ $(document).ready(function (data) {
             documento: {
                 required: true,
                 //expresion regular para validar el documento
-                regx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$/,
+                regx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?(-)?([0-9])?$/,
                 minlength: 5,
                 maxlength: 10
             },           
             nombre: {
                 required: true
             },
-            telefono: {
+            /*telefono: {
                 required: true
+            },*/
+            telefonoMovil: {
+                required: true,
             },
             email: {
                 required: true,
                 email: true
             },
+            direccion: {
+                required: true,
+            },
+
+            documentoContacto: {
+                required: function (element){
+                    if($("#id-disable-check").is(':checked')){
+                         return true;                           
+                     }
+                     else
+                     {
+                         return false;
+                     } 
+                },
+                regx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?$/,
+            },
             nombreContacto: {
-                required: true
+                required: function (element){
+                    if($("#id-disable-check").is(':checked')){
+                         return true;                           
+                     }
+                     else
+                     {
+                         return false;
+                     } 
+                }
             },
-            contactoCargo: {
-                required: true
+            movilContacto: {
+                required: function (element){
+                    if($("#id-disable-check").is(':checked')){
+                         return true;                           
+                     }
+                     else
+                     {
+                         return false;
+                     } 
+                }
             },
-            telefonoContacto: {
-                required: true
+            emailContacto: {
+                required: function (element){
+                    if($("#id-disable-check").is(':checked')){
+                         return true;                           
+                     }
+                     else
+                     {
+                         return false;
+                     } 
+                },
+                email: true
             }
         },
         messages: {
             documento: {
-                required: "Debe ingresar un número de documento!",
+                required: "Debe ingresar el número de RUC o CI del contacto!",
                 minlength: "Longitud mínima de 5 números!",
                 maxlength: "Longitud máxima de 10 números!",   
             },
             nombre: "Debe ingresar el nombre del cliente!",
-            telefono: "Debe ingresar el numero de telefono del cliente!",
-            email: "Debe ingresar un email valido!",
+            telefonoMovil: "Debe ingresar el teléfono móvil del cliente!",
+            email: "Debe ingresar un email válido!",
+            direccion: "Debe ingresar la dirección del cliente!",
+            documentoContacto: "Debe ingresar la CI del contacto!",
             nombreContacto: "Debe ingresar nombre del contacto!",
-            contactoCargo: "Debe ingresar el cargo del contacto!",
-            telefonoContacto: "Debe ingresar teléfono del contacto!"
+            emailContacto: "Debe ingresar el email del contacto!",
+            movilContacto: "Debe ingresar el teléfono móvil del contacto!"
         },
         invalidHandler: function (event, validator) { //display error alert on form submit   
             $('.alert-error', $('.login-form')).show();

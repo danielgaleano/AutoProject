@@ -43,7 +43,7 @@ import com.sistem.proyecto.utils.DTORetorno;
 public class ClienteController extends BaseController {
 
     String atributos = "id,nombre,documento,email,telefono,telefonoMovil,comentario,pais,sexo,fechaNacimiento,contacto.id,"
-            + "contacto.nombre,actividad,contacto.cargo,contacto.telefono,contacto.email,"
+            + "contacto.documento,contacto.nombre,actividad,contacto.cargo,contacto.telefono,contacto.movil,contacto.email,"
             + "contacto.comentario,empresa.id,empresa.nombre,direccion,activo";
 
     @RequestMapping(method = RequestMethod.GET)
@@ -162,7 +162,7 @@ public class ClienteController extends BaseController {
             if (clienteRecibido.getDocumento() == null || clienteRecibido.getDocumento() != null
                     && clienteRecibido.getDocumento().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
-                mensaje.setMensaje("El documento del cliente no puede estar vacio.");
+                mensaje.setMensaje("El RUC/CI del cliente no puede estar vacio.");
                 return mensaje;
             }
 
@@ -173,12 +173,12 @@ public class ClienteController extends BaseController {
                 return mensaje;
             }
 
-            if (clienteRecibido.getTelefono() == null || clienteRecibido.getTelefono() != null
-                    && clienteRecibido.getTelefono().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El telefono del cliente no puede estar vacia.");
-                return mensaje;
-            }
+//            if (clienteRecibido.getTelefono() == null || clienteRecibido.getTelefono() != null
+//                    && clienteRecibido.getTelefono().compareToIgnoreCase("") == 0) {
+//                mensaje.setError(true);
+//                mensaje.setMensaje("El telefono del cliente no puede estar vacia.");
+//                return mensaje;
+//            }
 
             ejCliente.setDocumento(clienteRecibido.getDocumento());
 
@@ -194,6 +194,13 @@ public class ClienteController extends BaseController {
             ejCliente = new Cliente();
 
             if (clienteRecibido.isTieneContacto()) {
+                
+                if (clienteRecibido != null && (clienteRecibido.getDocumentoContacto() == null
+                        || clienteRecibido.getDocumentoContacto().compareToIgnoreCase("") == 0)) {
+                    mensaje.setError(true);
+                    mensaje.setMensaje("La CI del contacto es obligaria.");
+                    return mensaje;
+                }
 
                 if (clienteRecibido != null && (clienteRecibido.getNombreContacto() == null
                         || clienteRecibido.getNombreContacto().compareToIgnoreCase("") == 0)) {
@@ -202,10 +209,10 @@ public class ClienteController extends BaseController {
                     return mensaje;
                 }
 
-                if (clienteRecibido != null && (clienteRecibido.getTelefonoContacto() == null
-                        || clienteRecibido.getTelefonoContacto().compareToIgnoreCase("") == 0)) {
+                if (clienteRecibido != null && (clienteRecibido.getMovilContacto() == null
+                        || clienteRecibido.getMovilContacto().compareToIgnoreCase("") == 0)) {
                     mensaje.setError(true);
-                    mensaje.setMensaje("El telefono del contacto es obligario.");
+                    mensaje.setMensaje("El telefono movil del contacto es obligario.");
                     return mensaje;
                 }
 
@@ -214,11 +221,13 @@ public class ClienteController extends BaseController {
                 ejContacto.setActivo("S");
                 ejContacto.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                 ejContacto.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                ejContacto.setCargo(clienteRecibido.getContactoCargo());
+                ejContacto.setCargo(clienteRecibido.getCargoContacto());
                 ejContacto.setComentario(clienteRecibido.getContactoComentario());
-                ejContacto.setEmail(clienteRecibido.getContactoEmail());
+                ejContacto.setEmail(clienteRecibido.getEmailContacto());
+                ejContacto.setDocumento(clienteRecibido.getDocumentoContacto());
                 ejContacto.setNombre(clienteRecibido.getNombreContacto());
                 ejContacto.setTelefono(clienteRecibido.getTelefonoContacto());
+                ejContacto.setMovil(clienteRecibido.getMovilContacto());
                 ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
 
                 contactoManager.save(ejContacto);
@@ -277,12 +286,12 @@ public class ClienteController extends BaseController {
                 return mensaje;
             }
 
-            if (clienteRecibido.getTelefono() == null || clienteRecibido.getTelefono() != null
-                    && clienteRecibido.getTelefono().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El telefono del cliente no puede estar vacia.");
-                return mensaje;
-            }
+//            if (clienteRecibido.getTelefono() == null || clienteRecibido.getTelefono() != null
+//                    && clienteRecibido.getTelefono().compareToIgnoreCase("") == 0) {
+//                mensaje.setError(true);
+//                mensaje.setMensaje("El telefono del cliente no puede estar vacia.");
+//                return mensaje;
+//            }
 
             Cliente ejClienteUp = new Cliente();
             ejClienteUp = clienteManager.get(clienteRecibido.getId());
@@ -295,10 +304,10 @@ public class ClienteController extends BaseController {
                     return mensaje;
                 }
 
-                if (clienteRecibido != null && (clienteRecibido.getTelefonoContacto() == null
-                        || clienteRecibido.getTelefonoContacto().compareToIgnoreCase("") == 0)) {
+                if (clienteRecibido != null && (clienteRecibido.getMovilContacto() == null
+                        || clienteRecibido.getMovilContacto().compareToIgnoreCase("") == 0)) {
                     mensaje.setError(true);
-                    mensaje.setMensaje("El telefono del contacto es obligario.");
+                    mensaje.setMensaje("El telefono movil del contacto es obligario.");
                     return mensaje;
                 }
 
@@ -322,11 +331,13 @@ public class ClienteController extends BaseController {
 
                     ejContacto = contactoManager.get(clienteRecibido.getIdContacto());
 
-                    ejContacto.setCargo(clienteRecibido.getContactoCargo());
+                    ejContacto.setCargo(clienteRecibido.getCargoContacto());
                     ejContacto.setComentario(clienteRecibido.getContactoComentario());
-                    ejContacto.setEmail(clienteRecibido.getContactoEmail());
+                    ejContacto.setEmail(clienteRecibido.getEmailContacto());
+                    ejContacto.setDocumento(clienteRecibido.getDocumentoContacto());
                     ejContacto.setNombre(clienteRecibido.getNombreContacto());
                     ejContacto.setTelefono(clienteRecibido.getTelefonoContacto());
+                    ejContacto.setMovil(clienteRecibido.getMovilContacto());
 
                     contactoManager.update(ejContacto);
 
@@ -348,9 +359,9 @@ public class ClienteController extends BaseController {
                     ejContacto.setActivo("S");
                     ejContacto.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                     ejContacto.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                    ejContacto.setCargo(clienteRecibido.getContactoCargo());
+                    ejContacto.setCargo(clienteRecibido.getCargoContacto());
                     ejContacto.setComentario(clienteRecibido.getContactoComentario());
-                    ejContacto.setEmail(clienteRecibido.getContactoEmail());
+                    ejContacto.setEmail(clienteRecibido.getEmailContacto());
                     ejContacto.setNombre(clienteRecibido.getNombreContacto());
                     ejContacto.setTelefono(clienteRecibido.getTelefonoContacto());
                     ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
@@ -498,14 +509,18 @@ public class ClienteController extends BaseController {
 
                 if (entry.getKey().compareToIgnoreCase("contacto.id") == 0) {
                     retornoMap.put("idContacto", entry.getValue());
+                } else if (entry.getKey().compareToIgnoreCase("contacto.documento") == 0) {
+                    retornoMap.put("documentoContacto", entry.getValue());
                 } else if (entry.getKey().compareToIgnoreCase("contacto.nombre") == 0) {
                     retornoMap.put("nombreContacto", entry.getValue());
                 } else if (entry.getKey().compareToIgnoreCase("contacto.cargo") == 0) {
-                    retornoMap.put("contactoCargo", entry.getValue());
+                    retornoMap.put("cargoContacto", entry.getValue());
                 } else if (entry.getKey().compareToIgnoreCase("contacto.telefono") == 0) {
                     retornoMap.put("telefonoContacto", entry.getValue());
+                } else if (entry.getKey().compareToIgnoreCase("contacto.movil") == 0) {
+                    retornoMap.put("movilContacto", entry.getValue());
                 } else if (entry.getKey().compareToIgnoreCase("contacto.email") == 0) {
-                    retornoMap.put("contactoEmail", entry.getValue());
+                    retornoMap.put("emailContacto", entry.getValue());
                 } else if (entry.getKey().compareToIgnoreCase("contacto.comentario") == 0) {
                     retornoMap.put("contactoComentario", entry.getValue());
                 }
@@ -548,14 +563,18 @@ public class ClienteController extends BaseController {
 
                 if (entry.getKey().compareToIgnoreCase("contacto.id") == 0) {
                     retornoMap.put("idContacto", entry.getValue());
+                } else if (entry.getKey().compareToIgnoreCase("contacto.documento") == 0) {
+                    retornoMap.put("documentoContacto", entry.getValue());
                 } else if (entry.getKey().compareToIgnoreCase("contacto.nombre") == 0) {
                     retornoMap.put("nombreContacto", entry.getValue());
                 } else if (entry.getKey().compareToIgnoreCase("contacto.cargo") == 0) {
-                    retornoMap.put("contactoCargo", entry.getValue());
+                    retornoMap.put("cargoContacto", entry.getValue());
                 } else if (entry.getKey().compareToIgnoreCase("contacto.telefono") == 0) {
                     retornoMap.put("telefonoContacto", entry.getValue());
+                } else if (entry.getKey().compareToIgnoreCase("contacto.movil") == 0) {
+                    retornoMap.put("movilContacto", entry.getValue());
                 } else if (entry.getKey().compareToIgnoreCase("contacto.email") == 0) {
-                    retornoMap.put("contactoEmail", entry.getValue());
+                    retornoMap.put("emailContacto", entry.getValue());
                 } else if (entry.getKey().compareToIgnoreCase("contacto.comentario") == 0) {
                     retornoMap.put("contactoComentario", entry.getValue());
                 }

@@ -10,6 +10,7 @@ import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Imagen;
 import com.sistem.proyecto.entity.Cliente;
 import com.sistem.proyecto.entity.Contacto;
+import com.sistem.proyecto.entity.Empleo;
 import com.sistem.proyecto.entity.Rol;
 import com.sistem.proyecto.entity.Usuario;
 import com.sistem.proyecto.userDetail.UserDetail;
@@ -44,7 +45,8 @@ public class ClienteController extends BaseController {
 
     String atributos = "id,nombre,documento,email,telefono,telefonoMovil,comentario,pais,sexo,fechaNacimiento,contacto.id,"
             + "contacto.nombre,actividad,contacto.cargo,contacto.telefono,contacto.email,"
-            + "contacto.comentario,empresa.id,empresa.nombre,direccion,activo";
+            + "contacto.comentario,empresa.id,empresa.nombre,direccion,activo,"
+            + "empleo.id,empleo.nombreEmpresa,empleo.cargo,empleo.antiguedad,empleo.salario,empleo.telefono,empleo.direccion,empleo.actividad,empleo.comentario";
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listaClientes(Model model) {
@@ -52,6 +54,33 @@ public class ClienteController extends BaseController {
         retorno.setViewName("clientesListar");
         return retorno;
 
+    }
+
+    @RequestMapping(value = "/crear", method = RequestMethod.GET)
+    public ModelAndView crear(Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("cliente");
+        model.addAttribute("action", "CREAR");
+        return retorno;
+
+    }
+
+    @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
+    public ModelAndView formView(@PathVariable("id") Long id, Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("cliente");
+        model.addAttribute("action", "VISUALIZAR");
+        model.addAttribute("id", id);
+        return retorno;
+    }
+
+    @RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
+    public ModelAndView formEdit(@PathVariable("id") Long id, Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("cliente");
+        model.addAttribute("action", "EDITAR");
+        model.addAttribute("id", id);
+        return retorno;
     }
 
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
@@ -132,21 +161,6 @@ public class ClienteController extends BaseController {
         return retorno;
     }
 
-    @RequestMapping(value = "/crear", method = RequestMethod.GET)
-    public ModelAndView crear(Model model) {
-
-        try {
-            inicializarEmpresaManager();
-            model.addAttribute("tipo", "Crear");
-            model.addAttribute("editar", false);
-
-        } catch (Exception ex) {
-            logger.debug("Error al crear cliente", ex);
-        }
-        return new ModelAndView("cliente");
-
-    }
-
     @RequestMapping(value = "/guardar", method = RequestMethod.POST)
     public @ResponseBody
     MensajeDTO guardar(@ModelAttribute("Cliente") Cliente clienteRecibido) {
@@ -193,40 +207,6 @@ public class ClienteController extends BaseController {
 
             ejCliente = new Cliente();
 
-            if (clienteRecibido.isTieneContacto()) {
-
-                if (clienteRecibido != null && (clienteRecibido.getNombreContacto() == null
-                        || clienteRecibido.getNombreContacto().compareToIgnoreCase("") == 0)) {
-                    mensaje.setError(true);
-                    mensaje.setMensaje("El nombre del contacto es obligario.");
-                    return mensaje;
-                }
-
-                if (clienteRecibido != null && (clienteRecibido.getTelefonoContacto() == null
-                        || clienteRecibido.getTelefonoContacto().compareToIgnoreCase("") == 0)) {
-                    mensaje.setError(true);
-                    mensaje.setMensaje("El telefono del contacto es obligario.");
-                    return mensaje;
-                }
-
-                ejContacto = new Contacto();
-
-                ejContacto.setActivo("S");
-                ejContacto.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejContacto.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                ejContacto.setCargo(clienteRecibido.getContactoCargo());
-                ejContacto.setComentario(clienteRecibido.getContactoComentario());
-                ejContacto.setEmail(clienteRecibido.getContactoEmail());
-                ejContacto.setNombre(clienteRecibido.getNombreContacto());
-                ejContacto.setTelefono(clienteRecibido.getTelefonoContacto());
-                ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-
-                contactoManager.save(ejContacto);
-
-                ejCliente.setContacto(ejContacto);
-
-            }
-
             ejCliente.setActivo("S");
             ejCliente.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
             ejCliente.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
@@ -235,12 +215,14 @@ public class ClienteController extends BaseController {
             ejCliente.setDocumento(clienteRecibido.getDocumento());
             ejCliente.setEmail(clienteRecibido.getEmail());
             ejCliente.setNombre(clienteRecibido.getNombre());
+            ejCliente.setPais(clienteRecibido.getPais());
             ejCliente.setComentario(clienteRecibido.getComentario());
             ejCliente.setTelefono(clienteRecibido.getTelefono());
             ejCliente.setTelefonoMovil(clienteRecibido.getTelefonoMovil());
 
             clienteManager.save(ejCliente);
-
+            
+            mensaje.setId(ejCliente.getId());
             mensaje.setError(false);
             mensaje.setMensaje("El cliente " + clienteRecibido.getNombre() + " se guardo exitosamente.");
 
@@ -251,6 +233,31 @@ public class ClienteController extends BaseController {
         }
 
         return mensaje;
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno pedidoForm(@PathVariable("id") Long id) {
+        DTORetorno<Map<String, Object>> retorno = new DTORetorno<>();
+        List<Map<String, Object>> listMapGrupos = null;
+        try {
+            inicializarClienteManager();
+            Cliente ejCliente = new Cliente();
+            ejCliente.setId(id);
+
+            Map<String, Object> ejPedido = clienteManager.getAtributos(ejCliente, atributos.split(","));
+
+            retorno.setData(ejPedido);
+            retorno.setError(false);
+            retorno.setMensaje("Se obtuvo exitosamente el cliente");
+
+        } catch (Exception ex) {
+            logger.error("Error al obtener el cliente", ex);
+            retorno.setError(true);
+            retorno.setMensaje("Error al obtener el cliente");
+        }
+
+        return retorno;
     }
 
     @RequestMapping(value = "/editar", method = RequestMethod.POST)
@@ -385,6 +392,315 @@ public class ClienteController extends BaseController {
         return mensaje;
     }
 
+    @RequestMapping(value = "/{id}/contacto/guardar", method = RequestMethod.POST)
+    public @ResponseBody
+    MensajeDTO guardarContacto(@PathVariable("id") Long id, @ModelAttribute("Contacto") Contacto contacto) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        MensajeDTO mensaje = new MensajeDTO();
+        Cliente ejCliente = new Cliente();
+        Contacto ejContacto = new Contacto();
+        try {
+            inicializarClienteManager();
+            inicializarContactoManager();
+            
+            if (id == null) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Se debe guardar los datos personales del cliente.");
+                return mensaje;
+            }
+            
+            ejCliente = clienteManager.get(id);
+            
+            if (contacto != null && (contacto.getNombre() == null
+                    || contacto.getNombre().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El nombre del contacto es obligario.");
+                return mensaje;
+            }
+
+            if (contacto != null && (contacto.getTelefono() == null
+                    || contacto.getTelefono().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El telefono del contacto es obligario.");
+                return mensaje;
+            }
+
+            ejContacto = new Contacto();
+
+            ejContacto.setActivo("S");
+            ejContacto.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+            ejContacto.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejContacto.setCargo(contacto.getCargo());
+            ejContacto.setComentario(contacto.getComentario());
+            ejContacto.setEmail(contacto.getEmail());
+            ejContacto.setNombre(contacto.getNombre());
+            ejContacto.setTelefono(contacto.getTelefono());
+            ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+            contactoManager.save(ejContacto);
+
+            ejCliente.setContacto(ejContacto);
+
+            clienteManager.update(ejCliente);
+            
+            mensaje.setId(ejContacto.getId());
+            mensaje.setError(false);
+            mensaje.setMensaje("El contacto " + ejContacto.getNombre() + " se guardo exitosamente.");
+
+        } catch (Exception ex) {
+            mensaje.setError(true);
+            mensaje.setMensaje("Error a guardar el contacto");
+            logger.error("Error al guardar contacto ", ex);
+        }
+
+        return mensaje;
+    }
+    
+    @RequestMapping(value = "/contacto/editar", method = RequestMethod.POST)
+    public @ResponseBody
+    MensajeDTO editarContacto(@ModelAttribute("Contacto") Contacto contacto) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        MensajeDTO mensaje = new MensajeDTO();
+        Cliente ejCliente = new Cliente();
+        Contacto ejContacto = new Contacto();
+        try {
+            inicializarClienteManager();
+            inicializarContactoManager();
+            
+            if (contacto.getId() == null) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Error al editar los datos del contacto.");
+                return mensaje;
+            }
+            
+            if (contacto != null && (contacto.getNombre() == null
+                    || contacto.getNombre().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El nombre del contacto es obligario.");
+                return mensaje;
+            }
+
+            if (contacto != null && (contacto.getTelefono() == null
+                    || contacto.getTelefono().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El telefono del contacto es obligario.");
+                return mensaje;
+            }
+
+            ejContacto = contactoManager.get(contacto.getId());
+
+            ejContacto.setActivo("S");
+            ejContacto.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+            ejContacto.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejContacto.setCargo(contacto.getCargo());
+            ejContacto.setComentario(contacto.getComentario());
+            ejContacto.setEmail(contacto.getEmail());
+            ejContacto.setNombre(contacto.getNombre());
+            ejContacto.setTelefono(contacto.getTelefono());
+            ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+            contactoManager.update(ejContacto);
+
+            
+            mensaje.setId(ejContacto.getId());
+            mensaje.setError(false);
+            mensaje.setMensaje("El contacto " + ejContacto.getNombre() + " se modifico exitosamente.");
+
+        } catch (Exception ex) {
+            mensaje.setError(true);
+            mensaje.setMensaje("Error al editar el contacto");
+            logger.error("Error al editar contacto ", ex);
+        }
+
+        return mensaje;
+    }
+    
+    @RequestMapping(value = "/{id}/empleo/guardar", method = RequestMethod.POST)
+    public @ResponseBody
+    MensajeDTO guardarEmpleo(@PathVariable("id") Long id, @ModelAttribute("Empleo") Empleo empleo) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        MensajeDTO mensaje = new MensajeDTO();
+        Cliente ejCliente = new Cliente();
+        Empleo ejEmpleo = new Empleo();
+        try {
+            inicializarClienteManager();
+            inicializarEmpleoManager();
+            
+            if (id == null) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Se debe guardar los datos personales del cliente.");
+                return mensaje;
+            }
+            
+            ejCliente = clienteManager.get(id);
+            
+            if (empleo != null && (empleo.getNombreEmpresa()== null
+                    || empleo.getNombreEmpresa().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El nombre de la Empresa es obligario.");
+                return mensaje;
+            }
+            
+            if (empleo != null && (empleo.getActividad()== null
+                    || empleo.getActividad().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El campo actividad es obligario.");
+                return mensaje;
+            }
+            
+            if (empleo != null && (empleo.getCargo()== null
+                    || empleo.getCargo().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El campo cargo es obligario.");
+                return mensaje;
+            }
+            
+            if (empleo != null && (empleo.getAntiguedad()== null
+                    || empleo.getAntiguedad().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El campo antiguedad es obligario.");
+                return mensaje;
+            }
+            
+            if (empleo != null && (empleo.getSalario()== null
+                    || empleo.getSalario().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El campo salario es obligario.");
+                return mensaje;
+            }
+
+            if (empleo != null && (empleo.getTelefono() == null
+                    || empleo.getTelefono().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El telefono del contacto es obligario.");
+                return mensaje;
+            }
+
+            ejEmpleo = new Empleo();
+
+            ejEmpleo.setActivo("S");
+            ejEmpleo.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+            ejEmpleo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejEmpleo.setCargo(empleo.getCargo());
+            ejEmpleo.setComentario(empleo.getComentario());
+            ejEmpleo.setAntiguedad(empleo.getAntiguedad());
+            ejEmpleo.setNombreEmpresa(empleo.getNombreEmpresa());
+            ejEmpleo.setTelefono(empleo.getTelefono());
+            ejEmpleo.setSalario(empleo.getSalario());
+            ejEmpleo.setActividad(empleo.getActividad());
+            ejEmpleo.setDireccion(empleo.getDireccion());
+
+            empleoManager.save(ejEmpleo);
+
+            ejCliente.setEmpleo(ejEmpleo);
+
+            clienteManager.update(ejCliente);
+
+            mensaje.setId(ejEmpleo.getId());
+            mensaje.setError(false);
+            mensaje.setMensaje("El dato laboral se guardo exitosamente.");
+
+        } catch (Exception ex) {
+            mensaje.setError(true);
+            mensaje.setMensaje("Error a guardar el dato laboral");
+            logger.error("Error al guardar dato laboral ", ex);
+        }
+
+        return mensaje;
+    }
+    
+    @RequestMapping(value = "/empleo/editar", method = RequestMethod.POST)
+    public @ResponseBody
+    MensajeDTO editarEmpleo( @ModelAttribute("Empleo") Empleo empleo) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        MensajeDTO mensaje = new MensajeDTO();
+        Cliente ejCliente = new Cliente();
+        Empleo ejEmpleo = new Empleo();
+        try {
+            inicializarClienteManager();
+            inicializarEmpleoManager();
+            
+            if (empleo.getId() == null) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Error al editar los datos laborales.");
+                return mensaje;
+            }                       
+            
+            if (empleo != null && (empleo.getNombreEmpresa()== null
+                    || empleo.getNombreEmpresa().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El nombre de la Empresa es obligario.");
+                return mensaje;
+            }
+            
+            if (empleo != null && (empleo.getActividad()== null
+                    || empleo.getActividad().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El campo actividad es obligario.");
+                return mensaje;
+            }
+            
+            if (empleo != null && (empleo.getCargo()== null
+                    || empleo.getCargo().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El campo cargo es obligario.");
+                return mensaje;
+            }
+            
+            if (empleo != null && (empleo.getAntiguedad()== null
+                    || empleo.getAntiguedad().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El campo antiguedad es obligario.");
+                return mensaje;
+            }
+            
+            if (empleo != null && (empleo.getSalario()== null
+                    || empleo.getSalario().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El campo salario es obligario.");
+                return mensaje;
+            }
+
+            if (empleo != null && (empleo.getTelefono() == null
+                    || empleo.getTelefono().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El telefono del contacto es obligario.");
+                return mensaje;
+            }
+
+            ejEmpleo = empleoManager.get(empleo.getId());
+
+            ejEmpleo.setActivo("S");
+            ejEmpleo.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+            ejEmpleo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejEmpleo.setCargo(empleo.getCargo());
+            ejEmpleo.setComentario(empleo.getComentario());
+            ejEmpleo.setAntiguedad(empleo.getAntiguedad());
+            ejEmpleo.setNombreEmpresa(empleo.getNombreEmpresa());
+            ejEmpleo.setTelefono(empleo.getTelefono());
+            ejEmpleo.setSalario(empleo.getSalario());
+            ejEmpleo.setActividad(empleo.getActividad());
+            ejEmpleo.setDireccion(empleo.getDireccion());
+
+            empleoManager.update(ejEmpleo);
+
+            mensaje.setId(ejEmpleo.getId());
+            mensaje.setError(false);
+            mensaje.setMensaje("El dato laboral se guardo exitosamente.");
+
+        } catch (Exception ex) {
+            mensaje.setError(true);
+            mensaje.setMensaje("Error al editar el dato laboral");
+            logger.error("Error al editar dato laboral ", ex);
+        }
+
+        return mensaje;
+    }
+
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO desactivar(@PathVariable("id") Long id) {
@@ -476,102 +792,101 @@ public class ClienteController extends BaseController {
 
     }
 
-    @RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
-    public @ResponseBody
-    ModelAndView editar(@PathVariable("id") Long id, Model model) {
-        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("cliente");
-        String nombre = "";
-        Map<String, Object> retornoMap = new HashMap<String, Object>();
-        try {
-
-            inicializarClienteManager();
-            inicializarEmpresaManager();
-
-            Map<String, Object> cliente = clienteManager.getAtributos(
-                    new Cliente(id), atributos.split(","), false, true);
-
-            retornoMap.putAll(cliente);
-
-            for (Map.Entry<String, Object> entry : cliente.entrySet()) {
-
-                if (entry.getKey().compareToIgnoreCase("contacto.id") == 0) {
-                    retornoMap.put("idContacto", entry.getValue());
-                } else if (entry.getKey().compareToIgnoreCase("contacto.nombre") == 0) {
-                    retornoMap.put("nombreContacto", entry.getValue());
-                } else if (entry.getKey().compareToIgnoreCase("contacto.cargo") == 0) {
-                    retornoMap.put("contactoCargo", entry.getValue());
-                } else if (entry.getKey().compareToIgnoreCase("contacto.telefono") == 0) {
-                    retornoMap.put("telefonoContacto", entry.getValue());
-                } else if (entry.getKey().compareToIgnoreCase("contacto.email") == 0) {
-                    retornoMap.put("contactoEmail", entry.getValue());
-                } else if (entry.getKey().compareToIgnoreCase("contacto.comentario") == 0) {
-                    retornoMap.put("contactoComentario", entry.getValue());
-                }
-
-            }
-
-            model.addAttribute("cliente", retornoMap);
-
-            model.addAttribute("editar", true);
-
-        } catch (Exception ex) {
-
-            logger.debug("Error al tratar de editar el cliente ", ex);
-        }
-
-        return retorno;
-
-    }
-
-    @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
-    public @ResponseBody
-    ModelAndView visualizar(@PathVariable("id") Long id, Model model) {
-
-        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-        ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("cliente");
-        String nombre = "";
-        Map<String, Object> retornoMap = new HashMap<String, Object>();
-        try {
-
-            inicializarClienteManager();
-            inicializarEmpresaManager();
-
-            Map<String, Object> cliente = clienteManager.getAtributos(
-                    new Cliente(id), atributos.split(","), false, true);
-            retornoMap.putAll(cliente);
-
-            for (Map.Entry<String, Object> entry : cliente.entrySet()) {
-
-                if (entry.getKey().compareToIgnoreCase("contacto.id") == 0) {
-                    retornoMap.put("idContacto", entry.getValue());
-                } else if (entry.getKey().compareToIgnoreCase("contacto.nombre") == 0) {
-                    retornoMap.put("nombreContacto", entry.getValue());
-                } else if (entry.getKey().compareToIgnoreCase("contacto.cargo") == 0) {
-                    retornoMap.put("contactoCargo", entry.getValue());
-                } else if (entry.getKey().compareToIgnoreCase("contacto.telefono") == 0) {
-                    retornoMap.put("telefonoContacto", entry.getValue());
-                } else if (entry.getKey().compareToIgnoreCase("contacto.email") == 0) {
-                    retornoMap.put("contactoEmail", entry.getValue());
-                } else if (entry.getKey().compareToIgnoreCase("contacto.comentario") == 0) {
-                    retornoMap.put("contactoComentario", entry.getValue());
-                }
-
-            }
-
-            model.addAttribute("cliente", retornoMap);
-
-            model.addAttribute("editar", false);
-
-        } catch (Exception ex) {
-
-            logger.debug("Error al tratar de visualizar el cliente ", ex);
-        }
-
-        return retorno;
-
-    }
+//    @RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
+//    public @ResponseBody
+//    ModelAndView editar(@PathVariable("id") Long id, Model model) {
+//        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+//        ModelAndView retorno = new ModelAndView();
+//        retorno.setViewName("cliente");
+//        String nombre = "";
+//        Map<String, Object> retornoMap = new HashMap<String, Object>();
+//        try {
+//
+//            inicializarClienteManager();
+//            inicializarEmpresaManager();
+//
+//            Map<String, Object> cliente = clienteManager.getAtributos(
+//                    new Cliente(id), atributos.split(","), false, true);
+//
+//            retornoMap.putAll(cliente);
+//
+//            for (Map.Entry<String, Object> entry : cliente.entrySet()) {
+//
+//                if (entry.getKey().compareToIgnoreCase("contacto.id") == 0) {
+//                    retornoMap.put("idContacto", entry.getValue());
+//                } else if (entry.getKey().compareToIgnoreCase("contacto.nombre") == 0) {
+//                    retornoMap.put("nombreContacto", entry.getValue());
+//                } else if (entry.getKey().compareToIgnoreCase("contacto.cargo") == 0) {
+//                    retornoMap.put("contactoCargo", entry.getValue());
+//                } else if (entry.getKey().compareToIgnoreCase("contacto.telefono") == 0) {
+//                    retornoMap.put("telefonoContacto", entry.getValue());
+//                } else if (entry.getKey().compareToIgnoreCase("contacto.email") == 0) {
+//                    retornoMap.put("contactoEmail", entry.getValue());
+//                } else if (entry.getKey().compareToIgnoreCase("contacto.comentario") == 0) {
+//                    retornoMap.put("contactoComentario", entry.getValue());
+//                }
+//
+//            }
+//
+//            model.addAttribute("cliente", retornoMap);
+//
+//            model.addAttribute("editar", true);
+//
+//        } catch (Exception ex) {
+//
+//            logger.debug("Error al tratar de editar el cliente ", ex);
+//        }
+//
+//        return retorno;
+//
+//    }
+//    @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
+//    public @ResponseBody
+//    ModelAndView visualizar(@PathVariable("id") Long id, Model model) {
+//
+//        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+//
+//        ModelAndView retorno = new ModelAndView();
+//        retorno.setViewName("cliente");
+//        String nombre = "";
+//        Map<String, Object> retornoMap = new HashMap<String, Object>();
+//        try {
+//
+//            inicializarClienteManager();
+////            inicializarEmpresaManager();
+////
+////            Map<String, Object> cliente = clienteManager.getAtributos(
+////                    new Cliente(id), atributos.split(","), false, true);
+////            retornoMap.putAll(cliente);
+////
+////            for (Map.Entry<String, Object> entry : cliente.entrySet()) {
+////
+////                if (entry.getKey().compareToIgnoreCase("contacto.id") == 0) {
+////                    retornoMap.put("idContacto", entry.getValue());
+////                } else if (entry.getKey().compareToIgnoreCase("contacto.nombre") == 0) {
+////                    retornoMap.put("nombreContacto", entry.getValue());
+////                } else if (entry.getKey().compareToIgnoreCase("contacto.cargo") == 0) {
+////                    retornoMap.put("contactoCargo", entry.getValue());
+////                } else if (entry.getKey().compareToIgnoreCase("contacto.telefono") == 0) {
+////                    retornoMap.put("telefonoContacto", entry.getValue());
+////                } else if (entry.getKey().compareToIgnoreCase("contacto.email") == 0) {
+////                    retornoMap.put("contactoEmail", entry.getValue());
+////                } else if (entry.getKey().compareToIgnoreCase("contacto.comentario") == 0) {
+////                    retornoMap.put("contactoComentario", entry.getValue());
+////                }
+////
+////            }
+////
+////            model.addAttribute("cliente", retornoMap);
+//
+//            model.addAttribute("editar", false);
+//
+//        } catch (Exception ex) {
+//
+//            logger.debug("Error al tratar de visualizar el cliente ", ex);
+//        }
+//
+//        return retorno;
+//
+//    }
 }

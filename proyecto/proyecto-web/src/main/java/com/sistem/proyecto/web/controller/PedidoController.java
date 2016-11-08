@@ -159,7 +159,7 @@ public class PedidoController extends BaseController {
             pedido.setId(id);
             
             Map<String,Object> ejPedido = pedidoManager.getAtributos(pedido,
-                    "id,codigo,fechaEntrega,observacion,proveedor.id,cantidadAprobados,cantidadTotal,total".split(","));
+                    "id,codigo,fechaEntrega,observacion,proveedor.id,proveedor.nombre,proveedor.ruc,proveedor.direccion,proveedor.telefono,cantidadAprobados,cantidadTotal,total".split(","));
 
             retorno.setData(ejPedido);
             retorno.setError(false);

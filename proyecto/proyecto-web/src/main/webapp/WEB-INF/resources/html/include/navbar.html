@@ -107,7 +107,13 @@ and open the template in the editor.
                   <li><a sec:authorize="hasRole('Cliente.Listar')" th:href="@{/clientes}"><i class="fa fa-users"></i> <span>Clientes</span></a></li>
                   <li><a sec:authorize="hasRole('Proveedor.Listar')" th:href="@{/proveedores}"><i class="fa fa-truck"></i> <span>Proveedores</span></a></li>
                   <li><a sec:authorize="hasRole('Pedido.Listar')" th:href="@{/pedidos}"><i class="fa fa-fw fa-file-powerpoint-o"></i> <span>Pedidos</span></a></li>
-                  <li><a sec:authorize="hasRole('Compra.Listar')" th:href="@{/compras}"><i class="fa fa-fw fa-cart-plus"></i> <span>Compras</span></a></li>
+                  <li class="treeview">
+                    <a sec:authorize="hasRole('Compra.Listar')" href="#"><i class="fa fa-fw fa-cart-plus"></i> <span>Compras</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    <ul class="treeview-menu">
+                      <li><a th:href="@{/compras}">Orden Compra</a></li>
+                      <li><a th:href="@{/ventas}">Compras Realizadas</a></li>
+                    </ul>
+                  </li>
                   <li><a sec:authorize="hasRole('Venta.Listar')" th:href="@{/ventas}"><i class="fa fa-truck"></i> <span>Ventas</span></a></li>
                   <li class="treeview">
                     <a sec:authorize="hasRole('Caja.Listar')" href="#"><i class="fa fa-car"></i> <span>Caja</span> <i class="fa fa-angle-left pull-right"></i></a>

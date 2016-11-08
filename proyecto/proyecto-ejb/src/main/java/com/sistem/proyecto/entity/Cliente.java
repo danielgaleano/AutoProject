@@ -57,6 +57,10 @@ public class Cliente extends Base {
     @ManyToOne
     @JoinColumn(name = "contacto")
     private Contacto contacto;
+    
+    @ManyToOne
+    @JoinColumn(name = "empleo")
+    private Empleo empleo;
 
     @ManyToOne
     @JoinColumn(name = "empresa")
@@ -308,6 +312,14 @@ public class Cliente extends Base {
      */
     public void setPais(String pais) {
         this.pais = pais;
+    }
+
+    public Empleo getEmpleo() {
+        return empleo;
+    }
+
+    public void setEmpleo(Empleo empleo) {
+        this.empleo = empleo;
     }
     
     

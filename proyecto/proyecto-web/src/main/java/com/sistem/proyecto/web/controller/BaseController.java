@@ -8,6 +8,7 @@ package com.sistem.proyecto.web.controller;
 import com.sistem.proyecto.manager.ClienteManager;
 import com.sistem.proyecto.manager.ContactoManager;
 import com.sistem.proyecto.manager.DetallePedidoManager;
+import com.sistem.proyecto.manager.EmpleoManager;
 import com.sistem.proyecto.manager.ProveedorManager;
 import com.sistem.proyecto.manager.EmpresaManager;
 import com.sistem.proyecto.manager.ImagenManager;
@@ -72,6 +73,8 @@ public class BaseController {
     protected DetallePedidoManager detallePedidoManager;
     
     protected MonedaManager monedaManager;
+    
+    protected EmpleoManager empleoManager;
 
     public static final Logger logger = LoggerFactory
             .getLogger("proyecto");
@@ -88,6 +91,24 @@ public class BaseController {
             try {
 
                 imagenManager = (ImagenManager) context.lookup("java:app/proyecto-ejb/ImagenManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
+    }
+    
+    protected void inicializarEmpleoManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
+        if (empleoManager == null) {
+            try {
+
+                empleoManager = (EmpleoManager) context.lookup("java:app/proyecto-ejb/EmpleoManagerImpl");
             } catch (NamingException ne) {
                 throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
             }

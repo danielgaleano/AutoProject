@@ -10,7 +10,8 @@
     <link rel="stylesheet" th:href="@{/resources/dist/css/style.css}" type="text/css"/>
     <title>Clientes</title>
     <script th:inline="javascript">
-        var cliente = /*[[${cliente}]]*/'';
+        var action = /*[[${action}]]*/'';
+        var id = /*[[${id}]]*/'';
     </script>
 </head>
 <body >
@@ -23,9 +24,7 @@
 
                 <div class="widget-header widget-header-flat widget-header-large">
                     <h3 class="widget-title">
-                        <span th:if="${cliente} == null" class="middle">Crear Cliente</span>
-                        <span th:if="${editar}" class="middle">Editar Cliente</span>
-                        <span th:if="!${editar} and ${cliente} != null" class="middle">Visualizar Cliente</span>
+                        <span class="middle">Cliente</span>                      
                     </h3>
 
                     <div class="widget-toolbar no-border">
@@ -39,216 +38,362 @@
                 <!-- <form:input path="fichero" type="file" class="hidden" />
                 <form:input path="nuevoFichero" type="boolean" class="hidden" /> -->
 
-                <form id="validation-form" class="form-horizontal dropzone" enctype="multipart/form-data">
-                    <div class="box-body">
-                        <div id="mensaje"/>   
-                        <div class="col-xs-12">
 
-                            <div id="user-profile-1" class="user-profile row" style="padding-top: 2em; padding-left: 1em; padding-right: 1em;">
-                                <!--                                <div class="col-xs-12 col-sm-3 center">
-                                                                    <div>
-                                                                        <div id="img-boton">
-                                                                            <div class="profile-picture">
-                                                                                <input  name="imagenPort" type="hidden"  class="form-control tableusuario-input" />
-                                                                                <img th:if="${cliente} == null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{/resources/img/usuario.jpg}" alt="Seleccione una nueva imagen"/>
-                                
-                                                                                <img th:if="${cliente} != null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{'/obtenerImagen/usuario/'+${usuario.id}}" alt="Seleccione una nueva imagen"/>
-                                
-                                                                                <div class="caption">
-                                                                                    <a th:if="${editar} and ${usuario} != null or ${usuario} == null" class="btn btn-warning boton-imagen" role="button" data-campo="imagenPort" data-ancho="200" data-alto="400" data-img="imgPortada">Elegir imagen</a>
-                                                                                    <input class="form-control tableusuario-input hidden" name="imagenPortInput" id="imagenPortInput" type="file"/>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                
-                                                                    </div>
-                                
-                                                                </div>-->
-                                <input th:if="${cliente} == null" id="idCliente" name="id" type="hidden"  class="form-control tableusuario-input" />
-                                <input th:if="${cliente} != null" th:value="${cliente.id}" id="idCliente" name="id" type="hidden"  class="form-control tableusuario-input" />
+                <div>
+                    <div class="tabbable">
+                        <ul class="nav nav-tabs padding-12 tab-color-blue background-blue" id="myTab4">
+                            <li class="active">
+                                <a data-toggle="tab" href="#home4">Datos Personales</a>
+                            </li>
 
-                                <div class="col-xs-12 col-sm-12">
+                            <li>
+                                <a data-toggle="tab" href="#profile4">Datos Laborales</a>
+                            </li>
 
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-6">
-                                        <label class="col-lg-6 control-label">Documento(*)</label>
-                                        <div class="col-lg-6">
-                                            <input th:if="${cliente} != null" th:value="${cliente.documento}" id="documento" name="documento" type="text" placeholder="Documento/Ruc" disabled="disabled" data-mask="" data-inputmask-regex="^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$" class="form-control tableusuario-input "/> 
-                                            <input th:if="${cliente} == null"  id="documento" name="documento" type="text" placeholder="Documento" data-mask="" data-inputmask-regex="^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$"  class="form-control tableusuario-input "/>
-                                            <span class="glyphicon form-control-feedback" id="documento1"></span> 
-                                        </div>
-                                    </div>
+                            <li>
+                                <a data-toggle="tab" href="#dropdown14">Datos Contacto</a>
+                            </li>
+                        </ul>
 
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                        <label class="col-lg-6 control-label">Razon Social(*)</label>
-                                        <div class="col-lg-6">
-                                            <input th:if="${cliente} == null" id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input "/> 
-                                            <input th:if="${editar} and ${cliente} != null" th:value="${cliente.nombre}" id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input "/>
-                                            <input th:if="!${editar} and ${cliente} != null" disabled="disabled" th:value="${cliente.nombre}" id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input "/>
-                                            <span class="glyphicon form-control-feedback" id="nombre1"></span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                        <label class="col-lg-6 control-label">Fecha Nacimiento</label>
-                                        <div class="col-lg-6">
-                                            <input class="form-control date-picker" id="id-date-picker" name="fechaEntrega" type="text" data-date-format="dd-mm-yyyy" />
-                                            <span class="add-on" ><i class="icon-calendar"></i></span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                        <label class="col-lg-4 control-label">Sexo</label>
-                                        <div class="col-lg-6">
-                                            <select  class="form-control tableusuario-input " id="sexo"  name="sexo" data-placeholder="Seleccione opcion">
-                                                <option value="M">Masculino</option>
-                                                <option value="F">Femenino</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                        <label class="col-lg-2 control-label">Pais(*)</label>
-                                        <div class="col-lg-8">
-                                            <input th:if="${cliente} == null" id="pais" name="pais" type="text" placeholder="Pais" class="form-control tableusuario-input "/> 
-                                            <input th:if="${editar} and ${cliente} != null" th:value="${cliente.pais}" id="email" name="pais" type="text" placeholder="Pais" class="form-control tableusuario-input "/> 
-                                            <input th:if="!${editar} and ${cliente} != null" disabled="disabled" th:value="${cliente.pais}" id="email" name="pais" type="text" placeholder="Pais" class="form-control tableusuario-input "/> 
-                                            <span class="glyphicon form-control-feedback" id="pais"></span>
-                                        </div>
-                                    </div>
+                        <div class="tab-content">
+                            <div id="mensaje"/> 
+                            <div id="home4" class="tab-pane in active">
+                                <form id="validation-form" class="form-horizontal dropzone" enctype="multipart/form-data">
+                                    <div class="box-body">
+                                          
+                                        <div class="col-xs-12">
 
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                        <label class="col-lg-2 control-label">Email(*)</label>
-                                        <div class="col-lg-4">
-                                            <input th:if="${cliente} == null" id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input "/> 
-                                            <input th:if="${editar} and ${cliente} != null" th:value="${cliente.email}" id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input "/> 
-                                            <input th:if="!${editar} and ${cliente} != null" disabled="disabled" th:value="${cliente.email}" id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input "/> 
-                                            <span class="glyphicon form-control-feedback" id="email1"></span>
-                                        </div>
-                                    </div>
+                                            <div id="user-profile-1" class="user-profile row" style="padding-top: 2em; padding-left: 1em; padding-right: 1em;">
+                                                <!--                                <div class="col-xs-12 col-sm-3 center">
+                                                                                    <div>
+                                                                                        <div id="img-boton">
+                                                                                            <div class="profile-picture">
+                                                                                                <input  name="imagenPort" type="hidden"  class="form-control tableusuario-input" />
+                                                                                                <img th:if="${cliente} == null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{/resources/img/usuario.jpg}" alt="Seleccione una nueva imagen"/>
+                                                
+                                                                                                <img th:if="${cliente} != null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{'/obtenerImagen/usuario/'+${usuario.id}}" alt="Seleccione una nueva imagen"/>
+                                                
+                                                                                                <div class="caption">
+                                                                                                    <a th:if="${editar} and ${usuario} != null or ${usuario} == null" class="btn btn-warning boton-imagen" role="button" data-campo="imagenPort" data-ancho="200" data-alto="400" data-img="imgPortada">Elegir imagen</a>
+                                                                                                    <input class="form-control tableusuario-input hidden" name="imagenPortInput" id="imagenPortInput" type="file"/>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                
+                                                                                    </div>
+                                                
+                                                                                </div>-->
+                                                <input id="idCliente" name="id" type="hidden"  class="form-control tableusuario-input" />
+                                                <div class="col-xs-12 col-sm-12">
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-6">
+                                                        <label class="col-lg-6 control-label">Documento(*)</label>
+                                                        <div class="col-lg-6">
+                                                            <input  id="documento" name="documento" type="text" placeholder="Documento" data-mask="" data-inputmask-regex="^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$"  class="form-control tableusuario-input "/>
+                                                            <span class="glyphicon form-control-feedback" id="documento1"></span> 
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-6 control-label">Razon Social(*)</label>
+                                                        <div class="col-lg-6">
+                                                            <input  id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input "/> 
+                                                            <span class="glyphicon form-control-feedback" id="nombre1"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-6 control-label">Fecha Nacimiento</label>
+                                                        <div class="col-lg-6">
+                                                            <input class="form-control date-picker" id="id-date-picker" name="fechaEntrega" type="text" data-date-format="dd-mm-yyyy" />
+                                                            <span class="add-on" ><i class="icon-calendar"></i></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Sexo</label>
+                                                        <div class="col-lg-6">
+                                                            <select  class="form-control tableusuario-input " id="sexo"  name="sexo" data-placeholder="Seleccione opcion">
+                                                                <option value="M">Masculino</option>
+                                                                <option value="F">Femenino</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-2 control-label">Pais(*)</label>
+                                                        <div class="col-lg-8">
+                                                            <input id="pais" name="pais" type="text" placeholder="Pais" class="form-control tableusuario-input "/> 
+                                                            <span class="glyphicon form-control-feedback" id="pais"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-2 control-label">Email(*)</label>
+                                                        <div class="col-lg-4">
+                                                            <input id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input "/> 
+                                                            <span class="glyphicon form-control-feedback" id="email1"></span>
+                                                        </div>
+                                                    </div>
 
 
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                        <label class="col-lg-2 control-label">Telefono(*)</label>
-                                        <div class="col-lg-3">
-                                            <input th:if="${cliente} == null" id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input "/> 
-                                            <input th:if="${editar} and ${cliente} != null" th:value="${cliente.telefono}" id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input "/>
-                                            <input th:if="!${editar} and ${cliente} != null" disabled="disabled" th:value="${cliente.telefono}" id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input "/>
-                                            <span class="glyphicon form-control-feedback" id="telefono1"></span>
-                                        </div>
-                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-2 control-label">Telefono(*)</label>
+                                                        <div class="col-lg-3">
+                                                            <input  id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input "/> 
+                                                            <span class="glyphicon form-control-feedback" id="telefono1"></span>
+                                                        </div>
+                                                    </div>
 
 
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                        <label class="col-lg-2 control-label">Direccion</label>
-                                        <div class="col-lg-6">
-                                            <input th:if="${cliente} == null" id="direccion" type="text" name="direccion" placeholder="Direccion" class="form-control tableusuario-input " /> 
-                                            <input th:if="${editar} and ${cliente} != null" th:value="${cliente.direccion}" name="direccion" id="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input " />
-                                            <input th:if="!${editar} and ${cliente} != null" disabled="disabled" th:value="${cliente.direccion}" name="direccion" id="direccion" type="text" placeholder="Direccion" class="form-control tableusuario-input " />
-                                            <span class="glyphicon form-control-feedback" id="direccion1"></span>
-                                        </div>
-                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                                        <label class="col-lg-2 control-label">Direccion</label>
+                                                        <div class="col-lg-6">
+                                                            <input  id="direccion" type="text" name="direccion" placeholder="Direccion" class="form-control tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="direccion1"></span>
+                                                        </div>
+                                                    </div>
 
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                        <label class="col-lg-2 control-label">Comentario</label>
-                                        <div class="col-lg-6">
-                                            <textarea rows="3"   th:if="${cliente} == null" id="comentario" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " /> 
-                                            <textarea rows="3"   th:if="${editar} and ${cliente} != null" th:value="${cliente.comentario}" id="comentario" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " />
-                                            <textarea rows="3"   th:if="!${editar} and ${cliente} != null" disabled="disabled" th:value="${cliente.comentario}" id="comentario" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " />
-                                            <span class="glyphicon form-control-feedback" id="comentario1"></span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                        <label class="col-lg-2 control-label">Contacto</label>
-                                        <div class="col-lg-5">
-                                            <span class="col-xs-12 col-sm-7">
-                                                <label class="middle">
-                                                    <input type="checkbox" id="id-disable-check"/>
-                                                    <input id="tieneContacto" name="tieneContacto" type="hidden"  class="tableusuario-input" />
-                                                </label>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div id="formContacto" style="display:none;">
-                                        <div class="row" >
-                                            <div class="col-lg-2">
-                                                <h2 class="pull-right">
-                                                    Contacto
-                                                </h2>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <input th:if="${cliente} == null" id="idContacto" name="idContacto" type="hidden"  class="form-control tableusuario-input" />
-                                            <input th:if="${cliente} != null" th:value="${cliente.idContacto}" id="idContacto" name="idContacto" type="hidden"  class="form-control tableusuario-input" />
-
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                <label class="col-lg-4 control-label">Nombre(*)</label>
-                                                <div class="col-lg-6">
-                                                    <input th:if="!${editar} and ${cliente} != null" th:value="${cliente.nombreContacto}" id="nombreContacto" name="nombreContacto" type="text" placeholder="Nombre del Contacto" disabled="disabled" class="form-control tableusuario-input"/>
-                                                    <input th:if="${editar} and ${cliente} != null" th:value="${cliente.nombreContacto}" id="nombreContacto" name="nombreContacto" type="text" placeholder="Nombre del Contacto" class="form-control tableusuario-input"/> 
-                                                    <input th:if="${cliente} == null"  id="nombreContacto" name="nombreContacto" type="text" placeholder="Nombre del Contacto" class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="nombreContacto1"></span>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                                        <label class="col-lg-2 control-label">Comentario</label>
+                                                        <div class="col-lg-6">
+                                                            <textarea rows="3"    id="comentario" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="comentario1"></span>
+                                                        </div>
+                                                    </div>                                                    
                                                 </div>
-                                            </div>
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                <label class="col-lg-4 control-label">Cargo(*)</label>
-                                                <div class="col-lg-6">
-                                                    <input th:if="!${editar} and ${cliente} != null" th:value="${cliente.contactoCargo}" id="contactoCargo" name="contactoCargo" type="text" placeholder="Cargo del Contacto" disabled="disabled" class="form-control tableusuario-input"/>
-                                                    <input th:if="${editar} and ${cliente} != null" th:value="${cliente.contactoCargo}" id="contactoCargo" name="contactoCargo" type="text" placeholder="Cargo del Contacto" class="form-control tableusuario-input"/> 
-                                                    <input th:if="${cliente} == null"  id="contactoCargo" name="contactoCargo" type="text" placeholder="Cargo del Contacto" class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="contactoCargo1"></span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                <label class="col-lg-4 control-label">Telefono Movil(*)</label>
-                                                <div class="col-lg-4">
-                                                    <input th:if="!${editar} and ${cliente} != null" th:value="${cliente.telefonoContacto}" id="telefonoContacto" name="telefonoContacto" type="text" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" placeholder="Telefono" disabled="disabled" class="form-control tableusuario-input"/>
-                                                    <input th:if="${editar} and ${cliente} != null" th:value="${cliente.telefonoContacto}" id="telefonoContacto" name="telefonoContacto" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control tableusuario-input"/>
-                                                    <input th:if="${cliente} == null"  id="telefonoContacto" name="telefonoContacto" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                <label class="col-lg-4 control-label">Email</label>
-                                                <div class="col-lg-6">
-                                                    <input th:if="!${editar} and ${cliente} != null" th:value="${cliente.contactoEmail}" id="contactoEmail" name="contactoEmail" type="text"  placeholder="Email" disabled="disabled" class="form-control tableusuario-input"/>
-                                                    <input th:if="${editar} and ${cliente} != null" th:value="${cliente.contactoEmail}" id="contactoEmail" name="contactoEmail" type="text" placeholder="Email"  class="form-control tableusuario-input"/>
-                                                    <input th:if="${cliente} == null"  id="contactoEmail" name="contactoEmail" type="text" placeholder="Email"  class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                <label class="col-lg-4 control-label">Comentario</label>
-                                                <div class="col-lg-8">
-                                                    <input th:if="${cliente} == null" id="telefonoMovilContacto" name="contactoComentario" type="text" placeholder="Comentario"  class="form-control tableusuario-input"/> 
-                                                    <input th:if="${editar} and ${cliente} != null" th:value="${cliente.contactoComentario}" id="contactoComentario" name="contactoComentario" type="text" placeholder="Comentario"  class="form-control tableusuario-input"/>
-                                                    <input th:if="!${editar} and ${cliente} != null" disabled="disabled" th:value="${cliente.contactoComentario}" id="contactoComentario" name="contactoComentario" type="text" placeholder="Comentario"  class="form-control tableusuario-input"/>
 
-                                                </div>
                                             </div>
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div id="buttonOption" class="clearfix box-footer">
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button id="aceptar" class="btn btn-primary" type="submit">
+                                                <i class="fa fa-check bigger-110"></i>
+                                                Guardar
+                                            </button>
+                                            &nbsp; &nbsp; &nbsp;
+                                            <button id="cancelar" class="btn btn-default" type="reset" >
+                                                <i class="fa fa-undo bigger-110"></i>
+                                                Cancelar
+                                            </button>
+
                                         </div>
                                     </div>
 
-                                </div>
-
+                                </form>
                             </div>
 
+                            <div id="profile4" class="tab-pane">
+                                <form id="validation-formEmpleo" class="form-horizontal dropzone" enctype="multipart/form-data">
+                                    <div class="box-body">
+                                        <div id="mensaje"/>   
+                                        <div class="col-xs-12">
+
+                                            <div id="user-profile-1" class="user-profile row" style="padding-top: 2em; padding-left: 1em; padding-right: 1em;">
+                                                <!--                                <div class="col-xs-12 col-sm-3 center">
+                                                                                    <div>
+                                                                                        <div id="img-boton">
+                                                                                            <div class="profile-picture">
+                                                                                                <input  name="imagenPort" type="hidden"  class="form-control tableusuario-input" />
+                                                                                                <img th:if="${cliente} == null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{/resources/img/usuario.jpg}" alt="Seleccione una nueva imagen"/>
+                                                
+                                                                                                <img th:if="${cliente} != null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{'/obtenerImagen/usuario/'+${usuario.id}}" alt="Seleccione una nueva imagen"/>
+                                                
+                                                                                                <div class="caption">
+                                                                                                    <a th:if="${editar} and ${usuario} != null or ${usuario} == null" class="btn btn-warning boton-imagen" role="button" data-campo="imagenPort" data-ancho="200" data-alto="400" data-img="imgPortada">Elegir imagen</a>
+                                                                                                    <input class="form-control tableusuario-input hidden" name="imagenPortInput" id="imagenPortInput" type="file"/>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                
+                                                                                    </div>
+                                                
+                                                                                </div>-->
+                                                <input id="idEmpleo" name="id" type="hidden"  class="form-control tableusuario-input" />
+                                                <div class="col-xs-12 col-sm-12">
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-4 control-label">Empresa(*)</label>
+                                                        <div class="col-lg-8">
+                                                            <input id="nombreEmpresa" name="nombreEmpresa" type="text" placeholder="Empresa"  class="form-control tableusuario-input "/>
+                                                            <span class="glyphicon form-control-feedback" id="documento1"></span> 
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-4 control-label">Actividad(*)</label>
+                                                        <div class="col-lg-8">
+                                                            <input id="actividad" name="actividad" type="text" placeholder="Actividad"  class="form-control tableusuario-input "/>
+                                                            <span class="glyphicon form-control-feedback" id="documento1"></span> 
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-4 control-label">Cargo(*)</label>
+                                                        <div class="col-lg-8">
+                                                            <input id="cargo" name="cargo" type="text" placeholder="Cargo" class="form-control tableusuario-input "/> 
+                                                            <span class="glyphicon form-control-feedback" id="nombre1"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-4 control-label">Antiguedad(*)</label>
+                                                        <div class="col-lg-8">
+                                                            <input id="antiguedad" name="antiguedad" type="text" placeholder="Antiguedad" class="form-control tableusuario-input "/> 
+                                                            <span class="glyphicon form-control-feedback" id="nombre1"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-4 control-label">Salario(*)</label>
+                                                        <div class="col-lg-6">
+                                                            <input id="salario" name="salario" type="text" placeholder="Salario" class="form-control tableusuario-input "/> 
+                                                            <span class="glyphicon form-control-feedback" id="nombre1"></span>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-2 control-label">Telefono(*)</label>
+                                                        <div class="col-lg-6">
+                                                            <input id="telefonoEmpleo" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input "/> 
+                                                            <span class="glyphicon form-control-feedback" id="telefono1"></span>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                                        <label class="col-lg-2 control-label">Direccion</label>
+                                                        <div class="col-lg-6">
+                                                            <input  id="direccionEmpleo" type="text" name="direccion" placeholder="Direccion" class="form-control tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="direccion1"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                                        <label class="col-lg-2 control-label">Comentario</label>
+                                                        <div class="col-lg-6">
+                                                            <textarea rows="3"   id="comentarioEmpleo" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="comentario1"></span>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div id="buttonOptionEmpleo" class="clearfix box-footer">
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button id="aceptar" class="btn btn-primary" type="submit">
+                                                <i class="fa fa-check bigger-110"></i>
+                                                Guardar
+                                            </button>
+                                            &nbsp; &nbsp; &nbsp;
+                                            <button id="cancelar" class="btn btn-default" type="reset" >
+                                                <i class="fa fa-undo bigger-110"></i>
+                                                Cancelar
+                                            </button>
+
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+
+                            <div id="dropdown14" class="tab-pane">
+                                <form id="validation-formContacto" class="form-horizontal dropzone" enctype="multipart/form-data">
+                                    <div class="box-body">
+                                        <div id="mensaje"/>   
+                                        <div class="col-xs-12">
+
+                                            <div id="user-profile-1" class="user-profile row" style="padding-top: 2em; padding-left: 1em; padding-right: 1em;">
+                                                <!--                                <div class="col-xs-12 col-sm-3 center">
+                                                                                    <div>
+                                                                                        <div id="img-boton">
+                                                                                            <div class="profile-picture">
+                                                                                                <input  name="imagenPort" type="hidden"  class="form-control tableusuario-input" />
+                                                                                                <img th:if="${cliente} == null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{/resources/img/usuario.jpg}" alt="Seleccione una nueva imagen"/>
+                                                
+                                                                                                <img th:if="${cliente} != null" id="imgPortada" style="max-width: 100%; height: auto" th:src="@{'/obtenerImagen/usuario/'+${usuario.id}}" alt="Seleccione una nueva imagen"/>
+                                                
+                                                                                                <div class="caption">
+                                                                                                    <a th:if="${editar} and ${usuario} != null or ${usuario} == null" class="btn btn-warning boton-imagen" role="button" data-campo="imagenPort" data-ancho="200" data-alto="400" data-img="imgPortada">Elegir imagen</a>
+                                                                                                    <input class="form-control tableusuario-input hidden" name="imagenPortInput" id="imagenPortInput" type="file"/>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                
+                                                                                    </div>
+                                                
+                                                                                </div>-->
+                                                <input id="idContacto" name="id" type="hidden"  class="form-control tableusuario-input" />
+                                                <div class="col-xs-12 col-sm-12">
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-4 control-label">Nombre(*)</label>
+                                                        <div class="col-lg-8">
+                                                            <input id="nombreContacto" name="nombre" type="text" placeholder="Nombre"  class="form-control tableusuario-input "/>
+                                                            <span class="glyphicon form-control-feedback" id="documento1"></span> 
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-4 control-label">Cargo(*)</label>
+                                                        <div class="col-lg-8">
+                                                            <input id="cargoContacto" name="cargo" type="text" placeholder="Cargo"  class="form-control tableusuario-input "/>
+                                                            <span class="glyphicon form-control-feedback" id="documento1"></span> 
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-4 control-label">Telefono Movil(*)</label>
+                                                        <div class="col-lg-4">
+                                                            <input  id="telefonoContacto" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control tableusuario-input"/> 
+                                                            <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                                        <label class="col-lg-2 control-label">Email</label>
+                                                        <div class="col-lg-6">
+                                                            <input  id="contactoEmail" name="contactoEmail" type="text" placeholder="Email"  class="form-control tableusuario-input"/> 
+                                                            <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                                        <label class="col-lg-2 control-label">Comentario</label>
+                                                        <div class="col-lg-6">
+                                                            <textarea rows="3"  id="comentarioContacto" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="comentario1"></span>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div id="buttonOptionContacto" class="clearfix box-footer" >
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button id="aceptar" class="btn btn-primary" type="submit">
+                                                <i class="fa fa-check bigger-110"></i>
+                                                Guardar
+                                            </button>
+                                            &nbsp; &nbsp; &nbsp;
+                                            <button id="cancelar" class="btn btn-default" type="reset" >
+                                                <i class="fa fa-undo bigger-110"></i>
+                                                Cancelar
+                                            </button>
+
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
                         </div>
                     </div>
-                    <div class="clearfix box-footer" th:if="${editar} and ${cliente} != null or ${cliente} == null">
-                        <div class="col-md-offset-3 col-md-9">
-                            <button id="aceptar" class="btn btn-primary" type="submit">
-                                <i class="fa fa-check bigger-110"></i>
-                                Guardar
-                            </button>
-                            &nbsp; &nbsp; &nbsp;
-                            <button id="cancelar" class="btn btn-default" type="reset" >
-                                <i class="fa fa-undo bigger-110"></i>
-                                Cancelar
-                            </button>
-
-                        </div>
-                    </div>
-
-                </form>
+                </div>
             </div>
             <!-- Your Page Content Here -->
 
@@ -257,7 +402,10 @@
     <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
     <script th:src="@{~/proyecto/resources/js/lib/bootstrap-editable.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/dist/js/jquery.inputmask.bundle.js}" charset="UTF-8"></script>
-    <script th:src="@{~/proyecto/resources/js/cliente.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/clienteDatos.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/clienteForm.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/EmpleoForm.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/ContactoForm.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/base.js}" charset="UTF-8"></script>
 
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>

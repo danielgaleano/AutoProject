@@ -67,16 +67,22 @@ public class Cliente extends Base {
     private Empresa empresa;
     
     @Transient
+    private String fecha;
+    
+    @Transient
     private String nombreContacto;
     
     @Transient
     private String telefonoContacto;
     
     @Transient
-    private String contactoCargo;
+    private String movilContacto;
     
     @Transient
-    private String contactoEmail;
+    private String cargoContacto;
+    
+    @Transient
+    private String emailContacto;
     
     @Transient
     private String contactoComentario;
@@ -202,6 +208,16 @@ public class Cliente extends Base {
         this.contacto = contacto;
     }
 
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    
+    
     public String getNombreContacto() {
         return nombreContacto;
     }
@@ -217,21 +233,29 @@ public class Cliente extends Base {
     public void setTelefonoContacto(String telefonoContacto) {
         this.telefonoContacto = telefonoContacto;
     }
-
-    public String getContactoCargo() {
-        return contactoCargo;
+    
+    public String getMovilContacto() {
+        return movilContacto;
     }
 
-    public void setContactoCargo(String contactoCargo) {
-        this.contactoCargo = contactoCargo;
+    public void setMovilContacto(String movilContacto) {
+        this.movilContacto = movilContacto;
     }
 
-    public String getContactoEmail() {
-        return contactoEmail;
+    public String getCargoContacto() {
+        return cargoContacto;
     }
 
-    public void setContactoEmail(String contactoEmail) {
-        this.contactoEmail = contactoEmail;
+    public void setCargoContacto(String contactoCargo) {
+        this.cargoContacto = contactoCargo;
+    }
+
+    public String getEmailContacto() {
+        return emailContacto;
+    }
+
+    public void setEmailContacto(String emailContacto) {
+        this.emailContacto = emailContacto;
     }
 
     public String getContactoComentario() {

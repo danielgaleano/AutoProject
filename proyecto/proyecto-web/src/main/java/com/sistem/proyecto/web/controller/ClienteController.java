@@ -44,9 +44,10 @@ import com.sistem.proyecto.utils.DTORetorno;
 public class ClienteController extends BaseController {
 
     String atributos = "id,nombre,documento,email,telefono,telefonoMovil,comentario,pais,sexo,fechaNacimiento,contacto.id,"
-            + "contacto.nombre,actividad,contacto.cargo,contacto.telefono,contacto.email,"
+            + "contacto.nombre,contacto.documento,actividad,contacto.cargo,contacto.telefono,contacto.movil,contacto.email,"
             + "contacto.comentario,empresa.id,empresa.nombre,direccion,activo,"
             + "empleo.id,empleo.nombreEmpresa,empleo.cargo,empleo.antiguedad,empleo.salario,empleo.telefono,empleo.direccion,empleo.actividad,empleo.comentario";
+
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listaClientes(Model model) {
@@ -176,7 +177,7 @@ public class ClienteController extends BaseController {
             if (clienteRecibido.getDocumento() == null || clienteRecibido.getDocumento() != null
                     && clienteRecibido.getDocumento().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
-                mensaje.setMensaje("El documento del cliente no puede estar vacio.");
+                mensaje.setMensaje("El RUC/CI del cliente no puede estar vacio.");
                 return mensaje;
             }
 
@@ -187,12 +188,12 @@ public class ClienteController extends BaseController {
                 return mensaje;
             }
 
-            if (clienteRecibido.getTelefono() == null || clienteRecibido.getTelefono() != null
-                    && clienteRecibido.getTelefono().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El telefono del cliente no puede estar vacia.");
-                return mensaje;
-            }
+//            if (clienteRecibido.getTelefono() == null || clienteRecibido.getTelefono() != null
+//                    && clienteRecibido.getTelefono().compareToIgnoreCase("") == 0) {
+//                mensaje.setError(true);
+//                mensaje.setMensaje("El telefono del cliente no puede estar vacia.");
+//                return mensaje;
+//            }
 
             ejCliente.setDocumento(clienteRecibido.getDocumento());
 
@@ -284,96 +285,22 @@ public class ClienteController extends BaseController {
                 return mensaje;
             }
 
-            if (clienteRecibido.getTelefono() == null || clienteRecibido.getTelefono() != null
-                    && clienteRecibido.getTelefono().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El telefono del cliente no puede estar vacia.");
-                return mensaje;
-            }
+//            if (clienteRecibido.getTelefono() == null || clienteRecibido.getTelefono() != null
+//                    && clienteRecibido.getTelefono().compareToIgnoreCase("") == 0) {
+//                mensaje.setError(true);
+//                mensaje.setMensaje("El telefono del cliente no puede estar vacia.");
+//                return mensaje;
+//            }
 
             Cliente ejClienteUp = new Cliente();
             ejClienteUp = clienteManager.get(clienteRecibido.getId());
-            if (clienteRecibido.isTieneContacto()) {
-
-                if (clienteRecibido != null && (clienteRecibido.getNombreContacto() == null
-                        || clienteRecibido.getNombreContacto().compareToIgnoreCase("") == 0)) {
-                    mensaje.setError(true);
-                    mensaje.setMensaje("El nombre del contacto es obligario.");
-                    return mensaje;
-                }
-
-                if (clienteRecibido != null && (clienteRecibido.getTelefonoContacto() == null
-                        || clienteRecibido.getTelefonoContacto().compareToIgnoreCase("") == 0)) {
-                    mensaje.setError(true);
-                    mensaje.setMensaje("El telefono del contacto es obligario.");
-                    return mensaje;
-                }
-
-                if (clienteRecibido.getIdContacto() != null && clienteRecibido.getIdContacto()
-                        .toString().compareToIgnoreCase("") != 0) {
-
-                    ejContacto.setNombre(clienteRecibido.getNombre());
-                    ejContacto.setEmpresa(ejClienteUp.getEmpresa());
-
-                    Map<String, Object> contactoNombre = contactoManager.getLike(ejContacto, "id".split(","));
-
-                    if (contactoNombre != null && !contactoNombre.isEmpty()
-                            && contactoNombre.get("id").toString()
-                            .compareToIgnoreCase(clienteRecibido.getIdContacto().toString()) != 0) {
-                        mensaje.setError(true);
-                        mensaje.setMensaje("El nombre del contacto ya se encuentra registrado.");
-                        return mensaje;
-
-                    }
-                    ejContacto = new Contacto();
-
-                    ejContacto = contactoManager.get(clienteRecibido.getIdContacto());
-
-                    ejContacto.setCargo(clienteRecibido.getContactoCargo());
-                    ejContacto.setComentario(clienteRecibido.getContactoComentario());
-                    ejContacto.setEmail(clienteRecibido.getContactoEmail());
-                    ejContacto.setNombre(clienteRecibido.getNombreContacto());
-                    ejContacto.setTelefono(clienteRecibido.getTelefonoContacto());
-
-                    contactoManager.update(ejContacto);
-
-                    ejClienteUp.setContacto(ejContacto);
-                } else {
-
-                    ejContacto.setNombre(clienteRecibido.getNombre());
-                    ejContacto.setEmpresa(ejClienteUp.getEmpresa());
-
-                    Map<String, Object> contactoNombre = contactoManager.getLike(ejContacto, "id".split(","));
-
-                    if (contactoNombre != null && !contactoNombre.isEmpty()) {
-                        mensaje.setError(true);
-                        mensaje.setMensaje("El nombre del contacto ya se encuentra registrado.");
-                        return mensaje;
-
-                    }
-                    ejContacto = new Contacto();
-                    ejContacto.setActivo("S");
-                    ejContacto.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                    ejContacto.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                    ejContacto.setCargo(clienteRecibido.getContactoCargo());
-                    ejContacto.setComentario(clienteRecibido.getContactoComentario());
-                    ejContacto.setEmail(clienteRecibido.getContactoEmail());
-                    ejContacto.setNombre(clienteRecibido.getNombreContacto());
-                    ejContacto.setTelefono(clienteRecibido.getTelefonoContacto());
-                    ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-
-                    contactoManager.save(ejContacto);
-
-                    ejClienteUp.setContacto(ejContacto);
-                }
-
-            }
-
+            
             ejClienteUp.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
             ejClienteUp.setComentario(clienteRecibido.getComentario());
             ejClienteUp.setDireccion(clienteRecibido.getDireccion());
             ejClienteUp.setEmail(clienteRecibido.getEmail());
             ejClienteUp.setNombre(clienteRecibido.getNombre());
+            ejClienteUp.setPais(clienteRecibido.getPais());
             ejClienteUp.setTelefono(clienteRecibido.getTelefono());
             ejClienteUp.setTelefonoMovil(clienteRecibido.getTelefonoMovil());
 
@@ -434,6 +361,8 @@ public class ClienteController extends BaseController {
             ejContacto.setCargo(contacto.getCargo());
             ejContacto.setComentario(contacto.getComentario());
             ejContacto.setEmail(contacto.getEmail());
+            ejContacto.setDocumento(contacto.getDocumento());
+            ejContacto.setMovil(contacto.getMovil());
             ejContacto.setNombre(contacto.getNombre());
             ejContacto.setTelefono(contacto.getTelefono());
             ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
@@ -498,6 +427,8 @@ public class ClienteController extends BaseController {
             ejContacto.setComentario(contacto.getComentario());
             ejContacto.setEmail(contacto.getEmail());
             ejContacto.setNombre(contacto.getNombre());
+            ejContacto.setDocumento(contacto.getDocumento());
+            ejContacto.setMovil(contacto.getMovil());
             ejContacto.setTelefono(contacto.getTelefono());
             ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
 
@@ -889,4 +820,5 @@ public class ClienteController extends BaseController {
 //        return retorno;
 //
 //    }
+
 }

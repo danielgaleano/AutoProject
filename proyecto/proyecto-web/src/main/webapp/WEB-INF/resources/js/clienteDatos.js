@@ -28,6 +28,8 @@ $(document).ready(function(data) {
         $('#telefonoContacto').attr("disabled", true);
         $('#contactoEmail').attr("disabled", true);
         $('#comentarioContacto').attr("disabled", true);
+        $('#movilContacto').attr("disabled", true);
+        $('#documentoContacto').attr("disabled", true);
     }else if (action === 'EDITAR'){
         $('#documento').attr("disabled", true);
     }
@@ -65,6 +67,8 @@ $(document).ready(function(data) {
                 $('#telefonoEmpleo').val(cliente['empleo.telefono']);
                 $('#direccionEmpleo').val(cliente['empleo.direccion']);
                 $('#comentarioEmpleo').val(cliente['empleo.comentario']);
+                $('#movilContacto').val(cliente['contacto.movil']);
+                $('#documentoContacto').val(cliente['contacto.documento']);
                 $('#nombreContacto').val(cliente['contacto.nombre']);
                 $('#cargoContacto').val(cliente['contacto.cargo']);
                 $('#telefonoContacto').val(cliente['contacto.telefono']);

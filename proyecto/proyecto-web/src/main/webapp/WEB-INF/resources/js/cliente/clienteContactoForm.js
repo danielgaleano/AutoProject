@@ -5,7 +5,14 @@ $(document).ready(function (data) {
         errorElement: 'span',
         errorClass: 'help-inline',
         focusInvalid: false,
-        rules: {             
+        rules: {
+            documento: {
+                required: true,
+                //expresion regular para validar el documento
+                regx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$/,
+                minlength: 5,
+                maxlength: 10
+            },
             nombre: {
                 required: true
             },
@@ -21,7 +28,11 @@ $(document).ready(function (data) {
             }
         },
         messages: {
-           
+            documento: {
+                required: "Debe ingresar un número de documento!",
+                minlength: "Longitud mínima de 5 números!",
+                maxlength: "Longitud máxima de 10 números!",   
+            },
             nombre: "Debe ingresar el nombre del contacto!",
             cargo: "Debe ingresar el cargo del contacto!",
             telefono: "Debe ingresar el numero de telefono del contacto!",

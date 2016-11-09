@@ -172,7 +172,7 @@ $(document).ready(function(data) {
             }
         },
         editurl: "/editar", //nothing is saved
-        caption: "Pedidos",
+        caption: "Orden de Compras",
         subGrid: true,
         subGridOptions:{
             plusicon : 'fa fa-fw fa-sort-amount-asc',

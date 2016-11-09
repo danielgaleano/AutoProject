@@ -2,16 +2,13 @@
 $(document).ready(function (data) {
     $(":input").inputmask();
     $("#documento").inputmask("Regex", {
-        regex: "^[0-9]{5}([0-9])?([0-9])?([0-9])?(-)?([0-9])?$"
-    });
-    $("#documentoContacto").inputmask("Regex", {
-        regex: "^[0-9]{5}([0-9])?([0-9])?([0-9])?$"
+        regex: "^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$"
     });
 
 
     $.validator.addMethod("regx", function (value, element, regexpr) {
         return regexpr.test(value);
-    }, "Debe ingresar un número de RUC o CI válido!");
+    }, "Debe ingresar un número de documento válido!");
 
     $('#validation-form').validate({
         errorElement: 'span',
@@ -21,88 +18,42 @@ $(document).ready(function (data) {
             documento: {
                 required: true,
                 //expresion regular para validar el documento
-                regx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?(-)?([0-9])?$/,
+                regx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$/,
                 minlength: 5,
                 maxlength: 10
             },           
             nombre: {
                 required: true
             },
-            /*telefono: {
+            telefono: {
                 required: true
-            },*/
-            telefonoMovil: {
-                required: true,
             },
             email: {
                 required: true,
                 email: true
             },
-            direccion: {
-                required: true,
+            fecha: {
+                required: true
             },
-
-            documentoContacto: {
-                required: function (element){
-                    if($("#id-disable-check").is(':checked')){
-                         return true;                           
-                     }
-                     else
-                     {
-                         return false;
-                     } 
-                },
-                regx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?$/,
+            sexo: {
+                required: true
             },
-            nombreContacto: {
-                required: function (element){
-                    if($("#id-disable-check").is(':checked')){
-                         return true;                           
-                     }
-                     else
-                     {
-                         return false;
-                     } 
-                }
-            },
-            movilContacto: {
-                required: function (element){
-                    if($("#id-disable-check").is(':checked')){
-                         return true;                           
-                     }
-                     else
-                     {
-                         return false;
-                     } 
-                }
-            },
-            emailContacto: {
-                required: function (element){
-                    if($("#id-disable-check").is(':checked')){
-                         return true;                           
-                     }
-                     else
-                     {
-                         return false;
-                     } 
-                },
-                email: true
+            pais: {
+                required: true
             }
         },
         messages: {
             documento: {
-                required: "Debe ingresar el número de RUC o CI del contacto!",
+                required: "Debe ingresar un número de documento!",
                 minlength: "Longitud mínima de 5 números!",
                 maxlength: "Longitud máxima de 10 números!",   
             },
             nombre: "Debe ingresar el nombre del cliente!",
-            telefonoMovil: "Debe ingresar el teléfono móvil del cliente!",
-            email: "Debe ingresar un email válido!",
-            direccion: "Debe ingresar la dirección del cliente!",
-            documentoContacto: "Debe ingresar la CI del contacto!",
-            nombreContacto: "Debe ingresar nombre del contacto!",
-            emailContacto: "Debe ingresar el email del contacto!",
-            movilContacto: "Debe ingresar el teléfono móvil del contacto!"
+            telefono: "Debe ingresar el numero de telefono del cliente!",
+            email: "Debe ingresar un email valido!",
+            fecha: "Debe ingresar fecha de nacimiento del cliente!",
+            sexo: "Debe ingresar el sexo del cliente!",
+            pais: "Debe ingresar el pais del cliente!"
         },
         invalidHandler: function (event, validator) { //display error alert on form submit   
             $('.alert-error', $('.login-form')).show();
@@ -142,8 +93,9 @@ $(document).ready(function (data) {
             }
             var $form = $('#validation-form');
             var serialize = $form.find('.tableusuario-input').serialize();
+            var idCliente = $('#idCliente').val();
             
-            if (cliente == null) {
+            if (idCliente === null || idCliente === '') {
                 var jqXHR = $.post(CONTEXT_ROOT + '/clientes/guardar', serialize, function (data, textStatus, jqXHR) {
                     if (data.error) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
@@ -153,24 +105,28 @@ $(document).ready(function (data) {
                                 + data.mensaje
                                 + '</div>');
                     } else {
+                        $('#idCliente').val(data.id);
                         $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
                                 + '<button type="button" class="close" data-dismiss="alert"'
                                 + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
                                 + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
                                 + data.mensaje
                                 + '</div>');
-//                        setTimeout(function () {
-//                            window.location = CONTEXT_ROOT + "/clientes";
-//                        }, 1500);
+
 
                     }
 
                 });
 
                 jqXHR.fail(function (jqXHR, textStatus, errorThrown) {
-
+                    $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                        + '<button class="close" data-dismiss="alert" type="button"'
+                        + '><i class="fa  fa-remove"></i></button>'
+                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                        + 'Error! Favor comunicarse con el Administrador'
+                        + '</div>');
                 });
-            } else {
+            } else{
                 var jqXHR = $.post(CONTEXT_ROOT + '/clientes/editar', serialize, function (data, textStatus, jqXHR) {
                     if (data.error) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
@@ -186,28 +142,22 @@ $(document).ready(function (data) {
                                 + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
                                 + data.mensaje
                                 + '</div>');
-//                        setTimeout(function () {
-//                            window.location = CONTEXT_ROOT + "/clientes";
-//                        }, 1500);
 
                     }
 
                 });
 
                 jqXHR.fail(function (jqXHR, textStatus, errorThrown) {
-
+                    $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                        + '<button class="close" data-dismiss="alert" type="button"'
+                        + '><i class="fa  fa-remove"></i></button>'
+                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                        + 'Error! Favor comunicarse con el Administrador'
+                        + '</div>');
                 });
             }
 
         }
     });
-    
-    $("#id-disable-check").click(function () {
-        if(this.checked) { //chequear status del select
-            $("#formContacto").show();
-        }else{
-            $("#formContacto").hide();        
-        }
-    });
-
+  
 });

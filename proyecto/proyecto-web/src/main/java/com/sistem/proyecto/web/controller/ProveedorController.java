@@ -44,7 +44,7 @@ import com.sistem.proyecto.utils.DTORetorno;
 public class ProveedorController extends BaseController {
 
     String atributos = "id,nombre,ruc,email,telefono,telefonoMovil,comentario,fax,ciudad,pais,codigoPostal,contacto.id,"
-            + "contacto.nombre,contacto.cargo,contacto.telefono,contacto.email,"
+            + "contacto.nombre,contacto.documento,contacto.movil,contacto.cargo,contacto.telefono,contacto.email,"
             + "contacto.comentario,empresa.id,empresa.nombre,direccion,activo";
 
     @RequestMapping(method = RequestMethod.GET)
@@ -53,6 +53,58 @@ public class ProveedorController extends BaseController {
         retorno.setViewName("proveedoresListar");       
         return retorno;
 
+    }
+    
+    @RequestMapping(value = "/crear", method = RequestMethod.GET)
+    public ModelAndView crear(Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("proveedorForm");
+        model.addAttribute("action", "CREAR");
+        return retorno;
+
+    }
+
+    @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
+    public ModelAndView formView(@PathVariable("id") Long id, Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("proveedorForm");
+        model.addAttribute("action", "VISUALIZAR");
+        model.addAttribute("id", id);
+        return retorno;
+    }
+
+    @RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
+    public ModelAndView formEdit(@PathVariable("id") Long id, Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("proveedorForm");
+        model.addAttribute("action", "EDITAR");
+        model.addAttribute("id", id);
+        return retorno;
+    }
+    
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno proveedorForm(@PathVariable("id") Long id) {
+        DTORetorno<Map<String, Object>> retorno = new DTORetorno<>();
+        List<Map<String, Object>> listMapGrupos = null;
+        try {
+            inicializarProveedorManager();
+            Proveedor ejProveedor = new Proveedor();
+            ejProveedor.setId(id);
+
+            Map<String, Object> mapProveedor = proveedorManager.getAtributos(ejProveedor, atributos.split(","));
+
+            retorno.setData(mapProveedor);
+            retorno.setError(false);
+            retorno.setMensaje("Se obtuvo exitosamente el proveedor");
+
+        } catch (Exception ex) {
+            logger.error("Error al obtener el cliente", ex);
+            retorno.setError(true);
+            retorno.setMensaje("Error al obtener el proveedor");
+        }
+
+        return retorno;
     }
     
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
@@ -132,21 +184,7 @@ public class ProveedorController extends BaseController {
 
         return retorno;
     }
-    
-    @RequestMapping(value = "/crear", method = RequestMethod.GET)
-    public ModelAndView crear(Model model) {
-        
-        try {
-            inicializarEmpresaManager();
-            model.addAttribute("tipo", "Crear");
-            model.addAttribute("editar", false);
-
-        } catch (Exception ex) {
-            logger.debug("Error al crear proveedor", ex);
-        }
-        return new ModelAndView("proveedor");
-
-    }
+   
 
     @RequestMapping(value = "/guardar", method = RequestMethod.POST)
     public @ResponseBody
@@ -194,41 +232,6 @@ public class ProveedorController extends BaseController {
             }
 
             ejProveedor = new Proveedor();
-            
-            if (proveedorRecibido.isTieneContacto()) {
-
-                if (proveedorRecibido != null && (proveedorRecibido.getNombreContacto() == null
-                        || proveedorRecibido.getNombreContacto().compareToIgnoreCase("") == 0)) {
-                    mensaje.setError(true);
-                    mensaje.setMensaje("El nombre del contacto es obligario.");
-                    return mensaje;
-                }
-
-                if (proveedorRecibido != null && (proveedorRecibido.getTelefonoContacto() == null
-                        || proveedorRecibido.getTelefonoContacto().compareToIgnoreCase("") == 0)) {
-                    mensaje.setError(true);
-                    mensaje.setMensaje("El telefono del contacto es obligario.");
-                    return mensaje;
-                }
-
-
-                ejContacto = new Contacto();
-
-                ejContacto.setActivo("S");
-                ejContacto.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejContacto.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                ejContacto.setCargo(proveedorRecibido.getContactoCargo());
-                ejContacto.setComentario(proveedorRecibido.getContactoComentario());
-                ejContacto.setEmail(proveedorRecibido.getContactoEmail());
-                ejContacto.setNombre(proveedorRecibido.getNombreContacto());
-                ejContacto.setTelefono(proveedorRecibido.getTelefonoContacto());
-                ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-
-                contactoManager.save(ejContacto);
-
-                ejProveedor.setContacto(ejContacto);
-
-            }
 
             ejProveedor.setActivo("S");
             ejProveedor.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
@@ -248,7 +251,7 @@ public class ProveedorController extends BaseController {
 
             proveedorManager.save(ejProveedor);
            
-
+            mensaje.setId(ejProveedor.getId());
             mensaje.setError(false);
             mensaje.setMensaje("El proveedor " + proveedorRecibido.getNombre()+ " se guardo exitosamente.");
 
@@ -294,83 +297,7 @@ public class ProveedorController extends BaseController {
             }
 
             Proveedor ejProveedorUp = new Proveedor();
-            ejProveedorUp = proveedorManager.get(proveedorRecibido.getId());
-            if (proveedorRecibido.isTieneContacto()) {
-
-                if (proveedorRecibido != null && (proveedorRecibido.getNombreContacto() == null
-                        || proveedorRecibido.getNombreContacto().compareToIgnoreCase("") == 0)) {
-                    mensaje.setError(true);
-                    mensaje.setMensaje("El nombre del contacto es obligario.");
-                    return mensaje;
-                }
-
-                if (proveedorRecibido != null && (proveedorRecibido.getTelefonoContacto() == null
-                        || proveedorRecibido.getTelefonoContacto().compareToIgnoreCase("") == 0)) {
-                    mensaje.setError(true);
-                    mensaje.setMensaje("El telefono del contacto es obligario.");
-                    return mensaje;
-                }
-
-                if (proveedorRecibido.getIdContacto() != null && proveedorRecibido.getIdContacto()
-                        .toString().compareToIgnoreCase("") != 0) {
-
-                    ejContacto.setNombre(proveedorRecibido.getNombre());
-                    ejContacto.setEmpresa(ejProveedorUp.getEmpresa());
-                    
-                    Map<String, Object> contactoNombre = contactoManager.getLike(ejContacto, "id".split(","));
-
-                    if (contactoNombre != null && !contactoNombre.isEmpty() 
-                            && contactoNombre.get("id").toString()
-                                    .compareToIgnoreCase(proveedorRecibido.getIdContacto().toString())  != 0) {
-                        mensaje.setError(true);
-                        mensaje.setMensaje("El nombre del contacto ya se encuentra registrado.");
-                        return mensaje;
-
-                    }
-                    ejContacto = new Contacto();
-
-                    ejContacto = contactoManager.get(proveedorRecibido.getIdContacto());
-
-                    ejContacto.setCargo(proveedorRecibido.getContactoCargo());
-                    ejContacto.setComentario(proveedorRecibido.getContactoComentario());
-                    ejContacto.setEmail(proveedorRecibido.getContactoEmail());
-                    ejContacto.setNombre(proveedorRecibido.getNombreContacto());
-                    ejContacto.setTelefono(proveedorRecibido.getTelefonoContacto());
-
-                    contactoManager.update(ejContacto);
-                    
-                    ejProveedorUp.setContacto(ejContacto);
-                } else {
-                    
-                    ejContacto.setNombre(proveedorRecibido.getNombre());
-                    ejContacto.setEmpresa(ejProveedorUp.getEmpresa());
-                    
-                    Map<String, Object> contactoNombre = contactoManager.getLike(ejContacto, "id".split(","));
-
-                    if (contactoNombre != null && !contactoNombre.isEmpty() ) {
-                        mensaje.setError(true);
-                        mensaje.setMensaje("El nombre del contacto ya se encuentra registrado.");
-                        return mensaje;
-
-                    }
-                    ejContacto = new Contacto();
-                    ejContacto.setActivo("S");
-                    ejContacto.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                    ejContacto.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                    ejContacto.setCargo(proveedorRecibido.getContactoCargo());
-                    ejContacto.setComentario(proveedorRecibido.getContactoComentario());
-                    ejContacto.setEmail(proveedorRecibido.getContactoEmail());
-                    ejContacto.setNombre(proveedorRecibido.getNombreContacto());
-                    ejContacto.setTelefono(proveedorRecibido.getTelefonoContacto());
-                    ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-
-                    contactoManager.save(ejContacto);
-                    
-                    ejProveedorUp.setContacto(ejContacto);
-                }
-                
-
-            }
+            ejProveedorUp = proveedorManager.get(proveedorRecibido.getId());          
 
             ejProveedorUp.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
             ejProveedorUp.setComentario(proveedorRecibido.getComentario());
@@ -489,110 +416,133 @@ public class ProveedorController extends BaseController {
         return retorno;
 
     }
-
-    @RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
+    
+    @RequestMapping(value = "/{id}/contacto/guardar", method = RequestMethod.POST)
     public @ResponseBody
-    ModelAndView editar(@PathVariable("id") Long id, Model model) {
+    MensajeDTO guardarContacto(@PathVariable("id") Long id, @ModelAttribute("Contacto") Contacto contacto) {
+
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("proveedor");
-        String nombre = "";
-        Map<String, Object> retornoMap = new HashMap<String, Object>();
+        MensajeDTO mensaje = new MensajeDTO();
+        Proveedor ejProveedor = new Proveedor();
+        Contacto ejContacto = new Contacto();
         try {
-
             inicializarProveedorManager();
-            inicializarEmpresaManager();
-
-            Map<String, Object> proveedor = proveedorManager.getAtributos(
-                    new Proveedor(id), atributos.split(","), false, true);
+            inicializarContactoManager();
             
-            retornoMap.putAll(proveedor);
-            
-            for (Map.Entry<String, Object> entry : proveedor.entrySet()) {
-                
-                
-                    if (entry.getKey().compareToIgnoreCase("contacto.id") == 0) {
-                        retornoMap.put("idContacto", entry.getValue());
-                    } else if (entry.getKey().compareToIgnoreCase("contacto.nombre") == 0) {
-                        retornoMap.put("nombreContacto", entry.getValue());
-                    } else if (entry.getKey().compareToIgnoreCase("contacto.cargo") == 0) {
-                        retornoMap.put("contactoCargo", entry.getValue());
-                    } else if (entry.getKey().compareToIgnoreCase("contacto.telefono") == 0) {
-                        retornoMap.put("telefonoContacto", entry.getValue());
-                    } else if (entry.getKey().compareToIgnoreCase("contacto.email") == 0) {
-                        retornoMap.put("contactoEmail", entry.getValue());
-                    } else if (entry.getKey().compareToIgnoreCase("contacto.comentario") == 0) {
-                        retornoMap.put("contactoComentario", entry.getValue());
-                    }
-               
+            if (id == null) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Se debe guardar los datos personales del cliente.");
+                return mensaje;
             }
-           
+            
+            ejProveedor = proveedorManager.get(id);
+            
+            if (contacto != null && (contacto.getNombre() == null
+                    || contacto.getNombre().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El nombre del contacto es obligario.");
+                return mensaje;
+            }
 
-            model.addAttribute("proveedor", retornoMap);
 
-            model.addAttribute("editar", true);
+            if (contacto != null && (contacto.getTelefono() == null
+                    || contacto.getTelefono().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El telefono del contacto es obligario.");
+                return mensaje;
+            }
 
+            ejContacto = new Contacto();
+            ejContacto.setActivo("S");
+            ejContacto.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+            ejContacto.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejContacto.setCargo(contacto.getCargo());
+            ejContacto.setComentario(contacto.getComentario());
+            ejContacto.setEmail(contacto.getEmail());
+            ejContacto.setDocumento(contacto.getDocumento());
+            ejContacto.setMovil(contacto.getMovil());
+            ejContacto.setNombre(contacto.getNombre());
+            ejContacto.setTelefono(contacto.getTelefono());
+            ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+            contactoManager.save(ejContacto);
+
+            ejProveedor.setContacto(ejContacto);
+
+            proveedorManager.update(ejProveedor);
+            
+            mensaje.setId(ejContacto.getId());
+            mensaje.setError(false);
+            mensaje.setMensaje("El contacto " + ejContacto.getNombre() + " se guardo exitosamente.");
 
         } catch (Exception ex) {
-
-            logger.debug("Error al tratar de editar el proveedor ", ex);
+            mensaje.setError(true);
+            mensaje.setMensaje("Error a guardar el contacto");
+            logger.error("Error al guardar contacto ", ex);
         }
 
-        return retorno;
-
+        return mensaje;
     }
-
-    @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
+    
+    @RequestMapping(value = "/contacto/editar", method = RequestMethod.POST)
     public @ResponseBody
-    ModelAndView visualizar(@PathVariable("id") Long id, Model model) {
-        
+    MensajeDTO editarContacto(@ModelAttribute("Contacto") Contacto contacto) {
+
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        
-        ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("proveedor");
-        String nombre = "";
-        Map<String, Object> retornoMap = new HashMap<String, Object>();
+        MensajeDTO mensaje = new MensajeDTO();
+        Contacto ejContacto = new Contacto();
         try {
-
-            inicializarProveedorManager();
-            inicializarEmpresaManager();
-
-            Map<String, Object> proveedor = proveedorManager.getAtributos(
-                    new Proveedor(id), atributos.split(","), false, true);
+            inicializarContactoManager();
             
-            retornoMap.putAll(proveedor);
+            if (contacto.getId() == null) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Error al editar los datos del contacto.");
+                return mensaje;
+            }
             
-            for (Map.Entry<String, Object> entry : proveedor.entrySet()) {
-                
-                
-                    if (entry.getKey().compareToIgnoreCase("contacto.id") == 0) {
-                        retornoMap.put("idContacto", entry.getValue());
-                    } else if (entry.getKey().compareToIgnoreCase("contacto.nombre") == 0) {
-                        retornoMap.put("nombreContacto", entry.getValue());
-                    } else if (entry.getKey().compareToIgnoreCase("contacto.cargo") == 0) {
-                        retornoMap.put("contactoCargo", entry.getValue());
-                    } else if (entry.getKey().compareToIgnoreCase("contacto.telefono") == 0) {
-                        retornoMap.put("telefonoContacto", entry.getValue());
-                    } else if (entry.getKey().compareToIgnoreCase("contacto.email") == 0) {
-                        retornoMap.put("contactoEmail", entry.getValue());
-                    } else if (entry.getKey().compareToIgnoreCase("contacto.comentario") == 0) {
-                        retornoMap.put("contactoComentario", entry.getValue());
-                    }
-               
+            if (contacto != null && (contacto.getNombre() == null
+                    || contacto.getNombre().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El nombre del contacto es obligario.");
+                return mensaje;
             }
 
-            model.addAttribute("proveedor", retornoMap);
+            if (contacto != null && (contacto.getTelefono() == null
+                    || contacto.getTelefono().compareToIgnoreCase("") == 0)) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El telefono del contacto es obligario.");
+                return mensaje;
+            }
 
-            model.addAttribute("editar", false);
+            ejContacto = contactoManager.get(contacto.getId());
+
+            ejContacto.setActivo("S");
+            ejContacto.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+            ejContacto.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejContacto.setCargo(contacto.getCargo());
+            ejContacto.setComentario(contacto.getComentario());
+            ejContacto.setEmail(contacto.getEmail());
+            ejContacto.setNombre(contacto.getNombre());
+            ejContacto.setDocumento(contacto.getDocumento());
+            ejContacto.setMovil(contacto.getMovil());
+            ejContacto.setTelefono(contacto.getTelefono());
+            ejContacto.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+            contactoManager.update(ejContacto);
 
             
-        } catch (Exception ex) {
+            mensaje.setId(ejContacto.getId());
+            mensaje.setError(false);
+            mensaje.setMensaje("El contacto " + ejContacto.getNombre() + " se modifico exitosamente.");
 
-            logger.debug("Error al tratar de visualizar el proveedor ", ex);
+
+        } catch (Exception ex) {
+            mensaje.setError(true);
+            mensaje.setMensaje("Error al editar el contacto");
+            logger.error("Error al editar contacto ", ex);
         }
 
-        return retorno;
-
+        return mensaje;
     }
 }
 

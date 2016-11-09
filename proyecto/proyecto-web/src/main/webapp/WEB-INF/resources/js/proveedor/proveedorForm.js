@@ -1,25 +1,25 @@
 
 $(document).ready(function (data) {
     $(":input").inputmask();
-    $("#documento").inputmask("Regex", {
-        regex: "^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$"
+    $("#ruc").inputmask("Regex", {
+        regex: "^[0-9]{5}[0-9]?[0-9]?[0-9]?-[0-9]$"
     });
 
 
     $.validator.addMethod("regx", function (value, element, regexpr) {
         return regexpr.test(value);
-    }, "Debe ingresar un número de documento válido!");
+    }, "Debe ingresar un número de Ruc válido!");
 
     $('#validation-form').validate({
         errorElement: 'span',
         errorClass: 'help-inline',
         focusInvalid: false,
         rules: {
-            documento: {
+            ruc: {
                 required: true,
-                //expresion regular para validar el documento
-                regx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$/,
-                minlength: 5,
+                //expresion regular para validar el ruc
+                regx: /^[0-9]{5}[0-9]?[0-9]?[0-9]?-[0-9]$/,
+                minlength: 7,
                 maxlength: 10
             },           
             nombre: {
@@ -43,13 +43,13 @@ $(document).ready(function (data) {
             }
         },
         messages: {
-            documento: {
-                required: "Debe ingresar un número de documento!",
+            ruc: {
+                required: "Debe ingresar un número de ruc!",
                 minlength: "Longitud mínima de 5 números!",
                 maxlength: "Longitud máxima de 10 números!",   
             },
-            nombre: "Debe ingresar el nombre del cliente!",
-            telefono: "Debe ingresar el numero de telefono del cliente!",
+            nombre: "Debe ingresar el nombre del proveedor!",
+            telefono: "Debe ingresar el numero de telefono del proveedor!",
             email: "Debe ingresar un email valido!",
             nombreContacto: "Debe ingresar nombre del contacto!",
             contactoCargo: "Debe ingresar el cargo del contacto!",
@@ -86,17 +86,13 @@ $(document).ready(function (data) {
             $(id_attr).removeClass('glyphicon-remove').addClass('glyphicon-ok');
         },
         submitHandler: function (form) {
-            if($("#id-disable-check").is(':checked')){
-               $("#tieneContacto").val(true);
-            }else{
-               $("#tieneContacto").val(false); 
-            }
+            
             var $form = $('#validation-form');
             var serialize = $form.find('.tableusuario-input').serialize();
-            var idCliente = $('#idCliente').val();
+            var idProveedor = $('#idProveedor').val();
             
-            if (idCliente === null || idCliente === '') {
-                var jqXHR = $.post(CONTEXT_ROOT + '/clientes/guardar', serialize, function (data, textStatus, jqXHR) {
+            if (idProveedor === null || idProveedor === '') {
+                var jqXHR = $.post(CONTEXT_ROOT + '/proveedores/guardar', serialize, function (data, textStatus, jqXHR) {
                     if (data.error) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                 + '<button class="close" data-dismiss="alert" type="button"'
@@ -105,7 +101,8 @@ $(document).ready(function (data) {
                                 + data.mensaje
                                 + '</div>');
                     } else {
-                        $('#idCliente').val(data.id);
+                        $('#idProveedor').val(data.id);
+                        
                         $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
                                 + '<button type="button" class="close" data-dismiss="alert"'
                                 + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
@@ -121,8 +118,8 @@ $(document).ready(function (data) {
                 jqXHR.fail(function (jqXHR, textStatus, errorThrown) {
 
                 });
-            } else{
-                var jqXHR = $.post(CONTEXT_ROOT + '/clientes/editar', serialize, function (data, textStatus, jqXHR) {
+            } else {
+                var jqXHR = $.post(CONTEXT_ROOT + '/proveedores/editar', serialize, function (data, textStatus, jqXHR) {
                     if (data.error) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                 + '<button class="close" data-dismiss="alert" type="button"'
@@ -137,9 +134,6 @@ $(document).ready(function (data) {
                                 + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
                                 + data.mensaje
                                 + '</div>');
-//                        setTimeout(function () {
-//                            window.location = CONTEXT_ROOT + "/clientes";
-//                        }, 1500);
 
                     }
 

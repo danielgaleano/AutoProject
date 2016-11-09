@@ -29,7 +29,7 @@ public class Cliente extends Base {
     @Column(name = "fechaNacimiento")
     private Timestamp fechaNacimiento;
     
-    @Size(max = 1)
+    @Size(max = 10)
     @Column(name = "sexo")
     private String sexo;
 

@@ -1,35 +1,27 @@
 
 $(document).ready(function(data) {
     
+     
+    $("#editButton").click(function () {
+        $('#buttonOption').show();
+        $('#buttonOptionContacto').show();
+        $('#buttonOptionEmpleo').show();
+        
+        $('#validation-form').find('.tableusuario-input').attr("disabled", false);
+        $('#validation-formEmpleo').find('.tableusuario-input').attr("disabled", false);
+        $('#validation-formContacto').find('.tableusuario-input').attr("disabled", false);
+    });
+
+    
     if (action === 'VISUALIZAR') {
         $('#buttonOption').hide();
         $('#buttonOptionContacto').hide();
         $('#buttonOptionEmpleo').hide();
-        $('#idCliente').attr("disabled", true);
-        $('#documento').attr("disabled", true);
-        $('#nombre').attr("disabled", true);
-        $('#id-date-picker').attr("disabled", true);
-        $('#sexo').attr("disabled", true);
-        $('#pais').attr("disabled", true);
-        $('#email').attr("disabled", true);
-        $('#telefono').attr("disabled", true);
-        $('#direccion').attr("disabled", true);
-        $('#comentario').attr("disabled", true);
-        $('#nombreEmpresa').attr("disabled", true);
-        $('#actividad').attr("disabled", true);
-        $('#cargo').attr("disabled", true);
-        $('#antiguedad').attr("disabled", true);
-        $('#salario').attr("disabled", true);
-        $('#telefonoEmpleo').attr("disabled", true);
-        $('#direccionEmpleo').attr("disabled", true);
-        $('#comentarioEmpleo').attr("disabled", true);
-        $('#nombreContacto').attr("disabled", true);
-        $('#cargoContacto').attr("disabled", true);
-        $('#telefonoContacto').attr("disabled", true);
-        $('#contactoEmail').attr("disabled", true);
-        $('#comentarioContacto').attr("disabled", true);
-        $('#movilContacto').attr("disabled", true);
-        $('#documentoContacto').attr("disabled", true);
+        
+        $('#validation-form').find('.tableusuario-input').attr("disabled", true);
+        $('#validation-formEmpleo').find('.tableusuario-input').attr("disabled", true);
+        $('#validation-formContacto').find('.tableusuario-input').attr("disabled", true);
+
     }else if (action === 'EDITAR'){
         $('#documento').attr("disabled", true);
     }
@@ -87,7 +79,12 @@ $(document).ready(function(data) {
         });
 
         jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
-
+            $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                        + '<button class="close" data-dismiss="alert" type="button"'
+                        + '><i class="fa  fa-remove"></i></button>'
+                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                        + 'Error! Favor comunicarse con el Administrador'
+                        + '</div>');
         });
     }
 });

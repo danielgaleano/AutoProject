@@ -216,6 +216,7 @@ public class ClienteController extends BaseController {
             ejCliente.setDocumento(clienteRecibido.getDocumento());
             ejCliente.setEmail(clienteRecibido.getEmail());
             ejCliente.setNombre(clienteRecibido.getNombre());
+            ejCliente.setSexo(clienteRecibido.getSexo());
             ejCliente.setPais(clienteRecibido.getPais());
             ejCliente.setComentario(clienteRecibido.getComentario());
             ejCliente.setTelefono(clienteRecibido.getTelefono());
@@ -301,6 +302,7 @@ public class ClienteController extends BaseController {
             ejClienteUp.setEmail(clienteRecibido.getEmail());
             ejClienteUp.setNombre(clienteRecibido.getNombre());
             ejClienteUp.setPais(clienteRecibido.getPais());
+            ejClienteUp.setSexo(clienteRecibido.getSexo());
             ejClienteUp.setTelefono(clienteRecibido.getTelefono());
             ejClienteUp.setTelefonoMovil(clienteRecibido.getTelefonoMovil());
 
@@ -346,6 +348,7 @@ public class ClienteController extends BaseController {
                 return mensaje;
             }
 
+
             if (contacto != null && (contacto.getTelefono() == null
                     || contacto.getTelefono().compareToIgnoreCase("") == 0)) {
                 mensaje.setError(true);
@@ -354,7 +357,6 @@ public class ClienteController extends BaseController {
             }
 
             ejContacto = new Contacto();
-
             ejContacto.setActivo("S");
             ejContacto.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
             ejContacto.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
@@ -411,6 +413,7 @@ public class ClienteController extends BaseController {
                 return mensaje;
             }
 
+
             if (contacto != null && (contacto.getTelefono() == null
                     || contacto.getTelefono().compareToIgnoreCase("") == 0)) {
                 mensaje.setError(true);
@@ -451,7 +454,6 @@ public class ClienteController extends BaseController {
     @RequestMapping(value = "/{id}/empleo/guardar", method = RequestMethod.POST)
     public @ResponseBody
     MensajeDTO guardarEmpleo(@PathVariable("id") Long id, @ModelAttribute("Empleo") Empleo empleo) {
-
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO mensaje = new MensajeDTO();
         Cliente ejCliente = new Cliente();
@@ -722,6 +724,7 @@ public class ClienteController extends BaseController {
         return retorno;
 
     }
+
 
 //    @RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
 //    public @ResponseBody

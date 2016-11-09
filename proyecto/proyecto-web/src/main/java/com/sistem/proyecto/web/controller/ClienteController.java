@@ -413,7 +413,6 @@ public class ClienteController extends BaseController {
                 return mensaje;
             }
 
-
             if (contacto != null && (contacto.getTelefono() == null
                     || contacto.getTelefono().compareToIgnoreCase("") == 0)) {
                 mensaje.setError(true);
@@ -441,6 +440,7 @@ public class ClienteController extends BaseController {
             mensaje.setId(ejContacto.getId());
             mensaje.setError(false);
             mensaje.setMensaje("El contacto " + ejContacto.getNombre() + " se modifico exitosamente.");
+
 
         } catch (Exception ex) {
             mensaje.setError(true);

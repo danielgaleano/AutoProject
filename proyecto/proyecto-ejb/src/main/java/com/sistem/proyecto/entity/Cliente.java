@@ -78,7 +78,7 @@ public class Cliente extends Base {
     
     @Transient
     private String movilContacto;
-    
+
     @Transient
     private String cargoContacto;
     
@@ -215,8 +215,8 @@ public class Cliente extends Base {
 
     public void setFecha(String fecha) {
         this.fecha = fecha;
+
     }
-    
     public String getNombreContacto() {
         return nombreContacto;
     }

@@ -31,15 +31,6 @@ $(document).ready(function (data) {
             email: {
                 required: true,
                 email: true
-            },
-            fecha: {
-                required: true
-            },
-            sexo: {
-                required: true
-            },
-            pais: {
-                required: true
             }
         },
         messages: {
@@ -50,10 +41,7 @@ $(document).ready(function (data) {
             },
             nombre: "Debe ingresar el nombre del cliente!",
             telefono: "Debe ingresar el numero de telefono del cliente!",
-            email: "Debe ingresar un email valido!",
-            fecha: "Debe ingresar fecha de nacimiento del cliente!",
-            sexo: "Debe ingresar el sexo del cliente!",
-            pais: "Debe ingresar el pais del cliente!"
+            email: "Debe ingresar un email valido!"
         },
         invalidHandler: function (event, validator) { //display error alert on form submit   
             $('.alert-error', $('.login-form')).show();

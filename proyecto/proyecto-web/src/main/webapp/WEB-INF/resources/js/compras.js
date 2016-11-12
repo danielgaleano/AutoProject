@@ -3,20 +3,20 @@ $(document).ready(function(data) {
 
     var isEditarInline = true;
     var isStatus = false;
-    
+
     /*if(action === "CREAR" || action === "AGREGAR"){
-    */    
-        var permisoAprobar = parseBolean($(this).find('.tablaprobar-permiso').text());
-        var permisoRechazar = parseBolean($(this).find('.tablrechazar-permiso').text());
-        var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
-        var permisoAgegar = parseBolean($(this).find('.tabladd-permiso').text()); 
+     */
+    var permisoAprobar = parseBolean($(this).find('.tablaprobar-permiso').text());
+    var permisoRechazar = parseBolean($(this).find('.tablrechazar-permiso').text());
+    var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
+    var permisoAgegar = parseBolean($(this).find('.tabladd-permiso').text());
     /*
-    }else{
-        var permisoAprobar = false;
-        var permisoRechazar = false;
-        var permisoEditar = false;
-        var permisoAgegar = false;
-    }*/
+     }else{
+     var permisoAprobar = false;
+     var permisoRechazar = false;
+     var permisoEditar = false;
+     var permisoAgegar = false;
+     }*/
 
     var grid_selector = "#grid";
     var pager_selector = "#grid-pager";
@@ -38,13 +38,13 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA','COTIZACION', 'PRECIO', 'TOTAL','', ''],
+        colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'COTIZACION', 'PRECIO', 'TOTAL', '', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'vehiculo.codigo', index: 'vehiculo.codigo', key: true, width: 100,  editable: false},
+            {name: 'vehiculo.codigo', index: 'vehiculo.codigo', key: true, width: 100, editable: false},
             {name: 'vehiculo.tipo.nombre', index: 'vehiculo.tipo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
-                    dataUrl: '/tipos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
+                    dataUrl: CONTEXT_ROOT + '/tipos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
 
                         var sel = '<select>';
@@ -62,7 +62,7 @@ $(document).ready(function(data) {
                 }},
             {name: 'vehiculo.marca.nombre', index: 'vehiculo.marca.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
-                    dataUrl:  + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
+                    dataUrl: CONTEXT_ROOT +'/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
 
                         var sel = '<select>';
@@ -80,7 +80,7 @@ $(document).ready(function(data) {
                 }},
             {name: 'vehiculo.modelo.nombre', index: 'vehiculo.modelo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
-                    dataUrl:  + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
+                    dataUrl: CONTEXT_ROOT +'/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
 
                         var sel = '<select>';
@@ -102,7 +102,7 @@ $(document).ready(function(data) {
             {name: 'vehiculo.trasmision', index: 'trasmision', width: 110, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
             {name: 'moneda.nombre', index: 'moneda.nombre', width: 90, editable: false, edittype: "select",
                 editoptions: {
-                    dataUrl:  + '/monedas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
+                    dataUrl: +'/monedas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
 
                         var sel = '<select>';
@@ -118,8 +118,8 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter:'number', editable: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'precio', index: 'precio', width: 90, sortable: false, editable: false, formatter:'number', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
+            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter: 'number', editable: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'precio', index: 'precio', width: 90, sortable: false, editable: false, formatter: 'number', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
                         {type: 'click', fn: function(e) {
@@ -138,7 +138,7 @@ $(document).ready(function(data) {
                                     }
                                 }, 0);
 
-                                
+
                             }}
 
                     ]}},
@@ -152,7 +152,7 @@ $(document).ready(function(data) {
             //                     $('input[name="total"]').val(total);
             //                 }}
             //         ]}},
-            {name: 'neto', index: 'neto', width: 90, sortable: false, formatter:'number', editable: false},
+            {name: 'neto', index: 'neto', width: 90, sortable: false, formatter: 'number', editable: false},
             {name: 'estadoCompra', index: 'estadoCompra', hidden: true, width: 110, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
@@ -200,7 +200,7 @@ $(document).ready(function(data) {
         loadtext: "Cargando...",
         emptyrecords: "No se encontaron datos.",
         pgtext: "Pagina {0} de {1}",
-        afterInserRow: function(rowid, data){
+        afterInserRow: function(rowid, data) {
             console.log('dsdsdsdsdsdsdsds');
         },
         serializeRowData: function(postData) {
@@ -269,27 +269,31 @@ $(document).ready(function(data) {
                 var visuali = '';
                 var desact = '';
                 var activar = '';
+                var button = '';
                 var ini = '<div style="float: none;" class="btn-group btn-group-sm">';
                 var fin = '</div>';
                 
-                button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
-                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" onclick="descuentoModal('+cl+')"'
-                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Agregar Descuento">'
-                + ' <span class="ace-icon fa fa-external-link"></span></a>';
-        
+                if ($('#detallado').is(':checked')) {
+                    button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                            + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" onclick="descuentoModal(' + cl + ')"'
+                            + '  class=" btn btn-xs btn-grey" style="float:left;cursor:pointer;" title="Agregar Descuento">'
+                            + ' <span class="ace-icon fa fa-fw fa-money"></span></a>';
+                }
+
+
                 if (isStatus) {
                     var estado = dato.estadoCompra;
                     if (estado === 'APROBADO') {
-                       // var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
+                        // var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
                         if (isEditarInline) {
-                            
-                            activar =  aprobarButton(cl, permisoAprobar)
+
+                            activar = aprobarButton(cl, permisoAprobar)
                             desact = rechazarButton(cl, permisoRechazar);
-                            visuali = visualizarButton(cl,true);
+                            visuali = visualizarButton(cl, true);
                             edit = editInlineButton(cl, permisoEditar);
                             $(grid_selector).setRowData(ids[i], {act: ini + edit + button + activar + desact + fin});
 
-                        } 
+                        }
 //                        else {
 //
 //                            asignar = "";
@@ -298,16 +302,16 @@ $(document).ready(function(data) {
 //                            desact = desactivarButton(cl, permisoDesactivar);
 //                            $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
 //                        }
-                       // $(grid_selector).setRowData(ids[i], {activo: labelActivo});
+                        // $(grid_selector).setRowData(ids[i], {activo: labelActivo});
                     } else if (estado === 'APROBADO') {
-                       
+
                         //var labelInactivo = '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
                         desact = rechazarButton(cl, permisoRechazar);
-                        
+
                         $(grid_selector).setRowData(ids[i], {act: ini + desact + fin});
                         //$(grid_selector).setRowData(ids[i], {activo: labelInactivo});
                     }
-                } 
+                }
                 else {
                     if (isEditarInline) {
 
@@ -353,7 +357,7 @@ $(document).ready(function(data) {
                     useDefValues: true,
                     reloadAfterSubmit: true,
                     addRowParams: {
-                        url:  + '/compra/detalles/guardar',
+                        url: +'/compra/detalles/guardar',
                         mtype: "POST",
                         datatype: 'json',
                         keys: true,
@@ -459,29 +463,29 @@ function descuentoModal(val) {
     $('#idDetPedido').val(val);
     var jqXHR = $.get(CONTEXT_ROOT + "/pedido/detalles/" + val, function(response, textStatus, jqXHR) {
 
-            if (response.error) {
-                $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
-                        + '<button class="close" data-dismiss="alert" type="button"'
-                        + '><i class="fa  fa-remove"></i></button>'
-                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
-                        + response.mensaje
-                        + '</div>');
-            } else {
-                var pedido = response.data;               
-                $('#precioCompra').val(pedido.neto);
- 
-            }
-
-        });
-
-        jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
+        if (response.error) {
             $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
-                        + '<button class="close" data-dismiss="alert" type="button"'
-                        + '><i class="fa  fa-remove"></i></button>'
-                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
-                        + 'Error! Favor comunicarse con el Administrador'
-                        + '</div>');
-        });
+                    + '<button class="close" data-dismiss="alert" type="button"'
+                    + '><i class="fa  fa-remove"></i></button>'
+                    + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                    + response.mensaje
+                    + '</div>');
+        } else {
+            var pedido = response.data;
+            $('#precioCompra').val(pedido.neto);
+
+        }
+
+    });
+
+    jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
+        $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                + '<button class="close" data-dismiss="alert" type="button"'
+                + '><i class="fa  fa-remove"></i></button>'
+                + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                + 'Error! Favor comunicarse con el Administrador'
+                + '</div>');
+    });
     $('#ex1').appendTo('body').modal();
 }
             

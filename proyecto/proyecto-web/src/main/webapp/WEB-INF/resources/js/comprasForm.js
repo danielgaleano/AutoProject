@@ -35,12 +35,13 @@ $(document).ready(function(data) {
     });
     $("#general").click(function() {
         if (this.checked) { //chequear status del select
+            $('#grid').trigger('reloadGrid');
             $("#formDescuento").show();
         }
     });
     $("#detallado").click(function() {
         if (this.checked) { //chequear status del select
-            
+            $('#grid').trigger('reloadGrid');
             $("#formDescuento").hide();
         }
     });

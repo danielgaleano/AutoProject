@@ -100,7 +100,7 @@ $(document).ready(function(data) {
             {name: 'vehiculo.anho', index: 'vehiculo.anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.color', index: 'vehiculo.color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.trasmision', index: 'trasmision', width: 110, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
-            {name: 'moneda.nombre', index: 'moneda.nombre', width: 90, editable: true, edittype: "select",
+            {name: 'moneda.nombre', index: 'moneda.nombre', width: 90, editable: false, edittype: "select",
                 editoptions: {
                     dataUrl:  + '/monedas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
@@ -118,8 +118,8 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter:'number', editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'precio', index: 'precio', width: 90, sortable: false, editable: true, formatter:'number', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
+            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter:'number', editable: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'precio', index: 'precio', width: 90, sortable: false, editable: false, formatter:'number', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
                         {type: 'click', fn: function(e) {
@@ -152,7 +152,7 @@ $(document).ready(function(data) {
             //                     $('input[name="total"]').val(total);
             //                 }}
             //         ]}},
-            {name: 'neto', index: 'neto', width: 90, sortable: false, formatter:'number', editable: true},
+            {name: 'neto', index: 'neto', width: 90, sortable: false, formatter:'number', editable: false},
             {name: 'estadoCompra', index: 'estadoCompra', hidden: true, width: 110, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
@@ -230,7 +230,7 @@ $(document).ready(function(data) {
             estado: 'APROBADO',
             todos: false,
             idPedido: function() {
-                return $("#idCompra").val();
+                return $("#idPedido").val();
             }
         },
         jsonReader: {
@@ -468,7 +468,7 @@ function descuentoModal(val) {
                         + '</div>');
             } else {
                 var pedido = response.data;               
-                $('#precio').val(pedido.neto);
+                $('#precioCompra').val(pedido.neto);
  
             }
 

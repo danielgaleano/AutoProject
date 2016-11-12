@@ -1,10 +1,26 @@
 
 $(document).ready(function(data) {
+
+    $("#porcentajeDescuento").keypress(function(e) {
+        setTimeout(function() {
+            if ($.isNumeric(e.key) || e.key === 'Backspace') {
+                var precio = $("#precioCompra").val();
+                var interes = precio * $("#porcentajeDescuento").val() / 100;
+                $("#montoDescuentoCompra").val(interes);
+                var neto = precio - interes;
+                $("#netoCompra").val(neto);
+            } else {
+                $.messager.alert('Error!!', 'Debe ingresar un valor numerico!!!');
+            }
+        }, 0);
+
+    });
+
     $('#validation-formDescuento').validate({
         errorElement: 'span',
         errorClass: 'help-inline',
         focusInvalid: false,
-        rules: {           
+        rules: {
             porcentajeDescuento: {
                 required: true
             }
@@ -45,8 +61,9 @@ $(document).ready(function(data) {
         submitHandler: function(form) {
             var $form = $('#validation-formContacto');
             var serialize = $form.find('.tableusuario-input').serialize();
-            var id = $('#idCliente').val();
-            var idContacto = $('#idContacto').val();
+            var id = $('#idCompra').val();
+
+            var idContacto = $('#idCompra').val();
             if (id === null || id === '') {
                 $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                         + '<button class="close" data-dismiss="alert" type="button"'

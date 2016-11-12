@@ -55,8 +55,8 @@
                             <div class="col-xs-12 col-sm-12">
                                 <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
 
-                                    <input  id="idCompra" name="id" type="hidden" th:value="${id}" class="form-control table-empresa-input" />
-
+                                    <input  id="idPedido" name="id" type="hidden" th:value="${id}" class="form-control table-empresa-input" />
+                                    <input  id="idCompra" name="id" type="hidden"  class="form-control table-empresa-input" />
                                     <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                         <label class="col-lg-5 control-label">Nro. Factura(*)</label>
                                         <div class="col-lg-7">
@@ -133,28 +133,28 @@
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-2 col-md-2">
                                                 <label class="col-lg-6 control-label">%Interes</label>
                                                 <div class="col-lg-6">
-                                                    <input th:if="${proveedor} == null"  id="interes" name="interes" type="text"  class="form-control tableusuario-input"/> 
+                                                    <input   id="interes" name="interes" type="text"  class="form-control tableusuario-input"/> 
                                                     <span class="glyphicon form-control-feedback" id="interes1"></span>
                                                 </div>
                                             </div>
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                                 <label class="col-lg-5 control-label">Monto Interes</label>
                                                 <div class="col-lg-7">
-                                                    <input th:if="${proveedor} == null"  id="montoInteres" name="montoInteres" type="text" placeholder="Monto Interes" class="form-control tableusuario-input"/> 
+                                                    <input   id="montoInteres" disabled="disabled" name="montoInteres" type="text" placeholder="Monto Interes" class="form-control tableusuario-input"/> 
                                                     <span class="glyphicon form-control-feedback" id="montoInteres1"></span>
                                                 </div>
                                             </div>
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-2 col-md-2">
                                                 <label class="col-lg-5 control-label">Cuotas</label>
                                                 <div class="col-lg-7">
-                                                    <input th:if="${proveedor} == null"  id="cuotas" name="cuotas" type="number"  class="form-control tableusuario-input"/> 
+                                                    <input  id="cuotas" name="cuotas" type="number"  class="form-control tableusuario-input"/> 
                                                     <span class="glyphicon form-control-feedback" id="cuotas1"></span>
                                                 </div>
                                             </div>
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                                 <label class="col-lg-5 control-label">Monto Cuotas</label>
                                                 <div class="col-lg-7">
-                                                    <input th:if="${proveedor} == null"  id="montoCuota" name="montoCuota" type="text" placeholder="Monto Cuotas" class="form-control tableusuario-input"/> 
+                                                    <input   id="montoCuota" disabled="disabled" name="montoCuota" type="text" placeholder="Monto Cuotas" class="form-control tableusuario-input"/> 
                                                     <span class="glyphicon form-control-feedback" id="montoCuota1"></span>
                                                 </div>
                                             </div>
@@ -168,7 +168,7 @@
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                 <label class="col-lg-6 control-label">%Interes por Mora</label>
                                                 <div class="col-lg-2">
-                                                    <input th:if="${proveedor} == null"  id="interesMora" name="interesMora" type="text"  class="form-control tableusuario-input"/> 
+                                                    <input   id="interesMora" name="interesMora" type="text"  class="form-control tableusuario-input"/> 
                                                     <span class="glyphicon form-control-feedback" id="interesMora1"></span>
                                                 </div>
                                             </div>
@@ -194,14 +194,14 @@
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                                 <label class="col-lg-6 control-label">Descuento %</label>
                                                 <div class="col-lg-3">
-                                                    <input th:if="${proveedor} == null"  id="descuento" name="descuento" type="text" class="form-control tableusuario-input"/> 
+                                                    <input   id="descuento" name="descuento" type="text" class="form-control tableusuario-input"/> 
                                                     <span class="glyphicon form-control-feedback" id="descuento1"></span>
                                                 </div>
                                             </div>
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                                 <label class="col-lg-6 control-label">Monto Descuento</label>
                                                 <div class="col-lg-6">
-                                                    <input th:if="${proveedor} == null"  id="montoDescuento" name="montoDescuento" type="text" placeholder="Monto Descuento" class="form-control tableusuario-input"/> 
+                                                    <input   id="montoDescuento" name="montoDescuento" type="text" placeholder="Monto Descuento" class="form-control tableusuario-input"/> 
                                                     <span class="glyphicon form-control-feedback" id="montoDescuento1"></span>
                                                 </div>
                                             </div>
@@ -252,15 +252,15 @@
                                     <input id="idDetPedido" name="id" type="hidden"  class="form-control tableusuario-input" />
                                     <div class="col-xs-12 col-sm-12">
                                         <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                            <label class="col-lg-8 control-label">Precio</label>
-                                            <div class="col-lg-4">
-                                                <input  id="precio"  disabled="disabled" name="precio" type="text"  placeholder="Precio" class="form-control tableusuario-input"/> 
+                                            <label class="col-lg-4 control-label">Precio</label>
+                                            <div class="col-lg-8">
+                                                <input  id="precioCompra"  disabled="disabled" name="precio" type="text"  placeholder="Precio" class="form-control tableusuario-input"/> 
                                                 <span class="glyphicon form-control-feedback" id="documentoContacto1"></span>
                                             </div>
                                         </div>
                                         <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                            <label class="col-lg-8 control-label">Descuento Porcentaje(*)</label>
-                                            <div class="col-lg-4">
+                                            <label class="col-lg-5 control-label">Descuento %(*)</label>
+                                            <div class="col-lg-7">
                                                 <input  id="porcentajeDescuento" name="porcentajeDescuento" type="text"  placeholder="Interes" class="form-control tableusuario-input"/> 
                                                 <span class="glyphicon form-control-feedback" id="documentoContacto1"></span>
                                             </div>
@@ -268,7 +268,7 @@
                                         <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
                                             <label class="col-lg-6 control-label">Monto Interes</label>
                                             <div class="col-lg-6">
-                                                <input id="montoDescuento" disabled="disabled" name="montoDescuento" type="text" placeholder="Monto"  class="form-control tableusuario-input "/>
+                                                <input id="montoDescuentoCompra" disabled="disabled" name="montoDescuento" type="text" placeholder="Monto"  class="form-control tableusuario-input "/>
                                                 <span class="glyphicon form-control-feedback" id="documento1"></span> 
                                             </div>
                                         </div>
@@ -276,7 +276,7 @@
                                         <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
                                             <label class="col-lg-6 control-label">Neto</label>
                                             <div class="col-lg-6">
-                                                <input id="neto" name="neto" disabled="disabled" type="text" placeholder="Neto"  class="form-control tableusuario-input "/>
+                                                <input id="netoCompra" name="neto" disabled="disabled" type="text" placeholder="Neto"  class="form-control tableusuario-input "/>
                                                 <span class="glyphicon form-control-feedback" id="documento1"></span> 
                                             </div>
                                         </div>
@@ -317,7 +317,7 @@
     <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
     <script th:src="@{/resources/js/comprasForm.js}"></script>
-    <script th:src="@{/resources/js/descuentoForm.js}"></script>
+    <script th:src="@{/resources/js/compra/descuentoForm.js}"></script>
     <script th:src="@{/resources/js/compras.js}"></script>
 
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>

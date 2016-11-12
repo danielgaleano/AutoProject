@@ -1,4 +1,140 @@
 $(document).ready(function(data) {
+
+    $("#factura").inputmask("Regex", {
+        regex: "^[0-9]{3}-[0-9]{3}-[0-9]{6}$"
+    });
+
+    $('#validation-form').validate({
+        errorElement: 'span',
+        errorClass: 'help-inline',
+        focusInvalid: false,
+        rules: {
+            factura: {
+                required: true,
+                //expresion regular para validar el factura
+                regx: /^[0-9]{3}-[0-9]{3}-[0-9]{6}$/
+            },           
+            optionsPago: {
+                required: true
+            },
+            optionsDescuento: {
+                required: true
+            }
+        },
+        messages: {
+            factura: {
+                required: "Debe ingresar un número de factura!"
+            },
+            optionsPago: "Debe seleccionar un tipo de pago!",
+            optionsDescuento: "Debe seleccionar un tipo de descuento!"
+        },
+        invalidHandler: function (event, validator) { //display error alert on form submit   
+            $('.alert-error', $('.login-form')).show();
+        },
+        highlight: function (element) {
+            var id_attr = "#" + $(element).attr("id") + "1";
+            $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
+            $(id_attr).removeClass('glyphicon-ok').addClass('glyphicon-remove');
+            //$(e).closest('.form-group').removeClass('has-info').addClass('has-error');
+        },
+        success: function (e) {
+            $(e).closest('.form-group').removeClass('has-error').addClass('has-info');
+            $(e).remove();
+        },
+        errorPlacement: function (error, element) {
+            if (element.is(':checkbox') || element.is(':radio')) {
+                var controls = element.closest('.controls');
+                if (controls.find(':checkbox,:radio').length > 1)
+                    controls.append(error);
+                else
+                    error.insertAfter(element.nextAll('.lbl').eq(0));
+            } else if (element.is('.chzn-select')) {
+                error.insertAfter(element.nextAll('[class*="chzn-container"]').eq(0));
+            } else
+                error.insertAfter(element);
+        },
+        unhighlight: function (element) {
+            var id_attr = "#" + $(element).attr("id") + "1";
+            $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+            $(id_attr).removeClass('glyphicon-remove').addClass('glyphicon-ok');
+        },
+        submitHandler: function (form) {
+            if($("#id-disable-check").is(':checked')){
+               $("#tieneContacto").val(true);
+            }else{
+               $("#tieneContacto").val(false); 
+            }
+            var $form = $('#validation-form');
+            var serialize = $form.find('.tableusuario-input').serialize();
+            var idCliente = $('#idCliente').val();
+            
+            if (idCliente === null || idCliente === '') {
+                var jqXHR = $.post(CONTEXT_ROOT + '/compras/guardar', serialize, function (data, textStatus, jqXHR) {
+                    if (data.error) {
+                        $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                                + '<button class="close" data-dismiss="alert" type="button"'
+                                + '><i class="fa  fa-remove"></i></button>'
+                                + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                                + data.mensaje
+                                + '</div>');
+                    } else {
+                        $('#idCliente').val(data.id);
+                        $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
+                                + '<button type="button" class="close" data-dismiss="alert"'
+                                + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
+                                + data.mensaje
+                                + '</div>');
+
+
+                    }
+
+                });
+
+                jqXHR.fail(function (jqXHR, textStatus, errorThrown) {
+                    $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                        + '<button class="close" data-dismiss="alert" type="button"'
+                        + '><i class="fa  fa-remove"></i></button>'
+                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                        + 'Error! Favor comunicarse con el Administrador'
+                        + '</div>');
+                });
+            } else{
+                var jqXHR = $.post(CONTEXT_ROOT + '/compras/editar', serialize, function (data, textStatus, jqXHR) {
+                    if (data.error) {
+                        $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                                + '<button class="close" data-dismiss="alert" type="button"'
+                                + '><i class="fa  fa-remove"></i></button>'
+                                + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                                + data.mensaje
+                                + '</div>');
+                    } else {
+                        $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
+                                + '<button type="button" class="close" data-dismiss="alert"'
+                                + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
+                                + data.mensaje
+                                + '</div>');
+
+                    }
+
+                });
+
+                jqXHR.fail(function (jqXHR, textStatus, errorThrown) {
+                    $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                        + '<button class="close" data-dismiss="alert" type="button"'
+                        + '><i class="fa  fa-remove"></i></button>'
+                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                        + 'Error! Favor comunicarse con el Administrador'
+                        + '</div>');
+                });
+            }
+
+        }
+    });
+
+
+
     
     var jqXHR = $.get(CONTEXT_ROOT + "/pedidos/" + id, function(response, textStatus, jqXHR) {
         if (response.error === true) {

@@ -2,7 +2,7 @@
 $(document).ready(function(data) {
 
     var isEditarInline = true;
-    var isStatus = true;
+    var isStatus = false;
     
     /*if(action === "CREAR" || action === "AGREGAR"){
     */    
@@ -31,18 +31,18 @@ $(document).ready(function(data) {
     //compraForm($("#idCompra").val(), action);
 
     $(grid_selector).jqGrid({
-        url: 'http://localhost:9090/proyecto/compras/listar',
+        url: CONTEXT_ROOT + '/pedido/detalles/listar',
         datatype: 'json',
         mtype: 'GET',
         height: 150,
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'COTIZACION', 'PRECIO', 'TOTAL', '% DESCUENTO', 'MONTO DESCUENTO','NETO', ''],
+        colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA','COTIZACION', 'PRECIO', 'TOTAL','', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'codigoDetalle', index: 'codigoDetalle', key: true, width: 100,  editable: false},
-            {name: 'tipo.nombre', index: 'tipo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+            {name: 'vehiculo.codigo', index: 'vehiculo.codigo', key: true, width: 100,  editable: false},
+            {name: 'vehiculo.tipo.nombre', index: 'vehiculo.tipo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     dataUrl: '/tipos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
@@ -60,7 +60,7 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'marca.nombre', index: 'marca.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+            {name: 'vehiculo.marca.nombre', index: 'vehiculo.marca.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     dataUrl:  + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
@@ -78,7 +78,7 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'modelo.nombre', index: 'modelo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+            {name: 'vehiculo.modelo.nombre', index: 'vehiculo.modelo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     dataUrl:  + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
@@ -96,10 +96,10 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'caracteristica', index: 'caracteristica', width: 130, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
-            {name: 'anho', index: 'anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'color', index: 'color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'trasmision', index: 'trasmision', width: 110, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
+            {name: 'vehiculo.caracteristica', index: 'vehiculo.caracteristica', width: 130, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
+            {name: 'vehiculo.anho', index: 'vehiculo.anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'vehiculo.color', index: 'vehiculo.color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'vehiculo.trasmision', index: 'trasmision', width: 110, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
             {name: 'moneda.nombre', index: 'moneda.nombre', width: 90, editable: true, edittype: "select",
                 editoptions: {
                     dataUrl:  + '/monedas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
@@ -119,7 +119,7 @@ $(document).ready(function(data) {
                     }
                 }},
             {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter:'number', editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'precio', index: 'precio', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
+            {name: 'precio', index: 'precio', width: 90, sortable: false, editable: true, formatter:'number', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
                         {type: 'click', fn: function(e) {
@@ -152,13 +152,8 @@ $(document).ready(function(data) {
             //                     $('input[name="total"]').val(total);
             //                 }}
             //         ]}},
-            {name: 'total', index: 'total', width: 90, sortable: false, editable: true},
-            {name: 'porcentajeDescuento', index: 'porcentajeDescuento', width: 90, sortable: false, editable: true},
-            {name: 'montoDescuento', index: 'montoDescuento', width: 90, sortable: false, editable: true},
-            {name: 'neto', index: 'neto', width: 90, sortable: false, editable: true},
-
-
-            // {name: 'estadoCompra', index: 'estadoCompra', width: 110, editable: false},
+            {name: 'neto', index: 'neto', width: 90, sortable: false, formatter:'number', editable: true},
+            {name: 'estadoCompra', index: 'estadoCompra', hidden: true, width: 110, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {
@@ -232,8 +227,9 @@ $(document).ready(function(data) {
         postData: {
             atributos: "id,nombre",
             filters: null,
+            estado: 'APROBADO',
             todos: false,
-            idCompra: function() {
+            idPedido: function() {
                 return $("#idCompra").val();
             }
         },
@@ -275,16 +271,23 @@ $(document).ready(function(data) {
                 var activar = '';
                 var ini = '<div style="float: none;" class="btn-group btn-group-sm">';
                 var fin = '</div>';
+                
+                button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" onclick="descuentoModal('+cl+')"'
+                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Agregar Descuento">'
+                + ' <span class="ace-icon fa fa-external-link"></span></a>';
+        
                 if (isStatus) {
                     var estado = dato.estadoCompra;
-                    if (estado === 'PENDIENTE') {
+                    if (estado === 'APROBADO') {
                        // var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
                         if (isEditarInline) {
                             
                             activar =  aprobarButton(cl, permisoAprobar)
                             desact = rechazarButton(cl, permisoRechazar);
+                            visuali = visualizarButton(cl,true);
                             edit = editInlineButton(cl, permisoEditar);
-                            $(grid_selector).setRowData(ids[i], {act: ini + edit + activar + desact + fin});
+                            $(grid_selector).setRowData(ids[i], {act: ini + edit + button + activar + desact + fin});
 
                         } 
 //                        else {
@@ -305,19 +308,19 @@ $(document).ready(function(data) {
                         //$(grid_selector).setRowData(ids[i], {activo: labelInactivo});
                     }
                 } 
-//                else {
-//                    if (isEditarInline) {
-//
-//                        edit = editInlineButton(cl, permisoEditar);
-//                        $(grid_selector).setRowData(ids[i], {act: edit});
-//                    } else {
-//
-//                        //asignar = asigButton(cl, true);
-//                        visuali = visualizarButton(cl, permisoVisualizar);
-//                        editForm = editFormButton(cl, permisoEditar);
-//                        $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
-//                    }
-//                }
+                else {
+                    if (isEditarInline) {
+
+                        edit = editInlineButton(cl, true);
+                        $(grid_selector).setRowData(ids[i], {act: ini + edit + button + activar + desact + fin});
+                    } else {
+
+                        //asignar = asigButton(cl, true);
+                        visuali = visualizarButton(cl, permisoVisualizar);
+                        editForm = editFormButton(cl, permisoEditar);
+                        $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
+                    }
+                }
 
 
             }
@@ -450,5 +453,35 @@ function parseBolean(val) {
         return false;
     }
 
+}
+
+function descuentoModal(val) {
+    $('#idDetPedido').val(val);
+    var jqXHR = $.get(CONTEXT_ROOT + "/pedido/detalles/" + val, function(response, textStatus, jqXHR) {
+
+            if (response.error) {
+                $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                        + '<button class="close" data-dismiss="alert" type="button"'
+                        + '><i class="fa  fa-remove"></i></button>'
+                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                        + response.mensaje
+                        + '</div>');
+            } else {
+                var pedido = response.data;               
+                $('#precio').val(pedido.neto);
+ 
+            }
+
+        });
+
+        jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
+            $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                        + '<button class="close" data-dismiss="alert" type="button"'
+                        + '><i class="fa  fa-remove"></i></button>'
+                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                        + 'Error! Favor comunicarse con el Administrador'
+                        + '</div>');
+        });
+    $('#ex1').appendTo('body').modal();
 }
             

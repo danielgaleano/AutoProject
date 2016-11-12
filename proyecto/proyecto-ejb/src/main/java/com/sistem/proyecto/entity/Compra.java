@@ -24,8 +24,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Entity
 public class Compra extends Base{
     
-    @Column(name = "nro_factura", nullable = false)
-    private Long nroFactura;
+    @Column(name = "nro_factura", nullable = true)
+    private String nroFactura;
     
     @Column(name = "fechaCompra")
     private Timestamp fechaCompra;
@@ -92,6 +92,9 @@ public class Compra extends Base{
     @JoinColumn(name = "empresa")
     private Empresa empresa;
     
+    @Column(name = "estado")
+    private String estadoCompra;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "compra")
     @LazyCollection(LazyCollectionOption.FALSE)
     private Collection<DetalleCompra> detalleCompraCollection;
@@ -99,14 +102,14 @@ public class Compra extends Base{
     /**
      * @return the nroFactura
      */
-    public Long getNroFactura() {
+    public String getNroFactura() {
         return nroFactura;
     }
 
     /**
      * @param nroFactura the nroFactura to set
      */
-    public void setNroFactura(Long nroFactura) {
+    public void setNroFactura(String nroFactura) {
         this.nroFactura = nroFactura;
     }
 
@@ -417,5 +420,15 @@ public class Compra extends Base{
     public void setDetalleCompraCollection(Collection<DetalleCompra> detalleCompraCollection) {
         this.detalleCompraCollection = detalleCompraCollection;
     }
+
+    public String getEstadoCompra() {
+        return estadoCompra;
+    }
+
+    public void setEstadoCompra(String estadoCompra) {
+        this.estadoCompra = estadoCompra;
+    }
+    
+    
      
 }

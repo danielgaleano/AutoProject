@@ -1,5 +1,5 @@
 $(document).ready(function(data) {
-
+    
     var jqXHR = $.get(CONTEXT_ROOT + "/pedidos/" + id, function(response, textStatus, jqXHR) {
         if (response.error === true) {
             $('#mensaje').append('<div class="alert alert-error">'
@@ -11,19 +11,6 @@ $(document).ready(function(data) {
 
         } else {
             var pedido = response.data;
-
-//            var jqXHR = $.get(CONTEXT_ROOT + "/proveedores/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc", function(response, textStatus, jqXHR) {
-//                var sel = '<option value="">Seleccione opcion</option>';
-//                $.each(response.retorno, function() {
-//                    if (this['id'] === pedido['proveedor.id']) {
-//                        sel += '<option value="' + this['id'] + '" selected>' + this['nombre'] + '</option>'; // label and value are returned from Java layer
-//                    } else {
-//                        sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
-//                    }
-//
-//                });
-//                $('#proveedor').append(sel);
-//            });
 
             $('#idPedido').val(pedido.id);
             $('#ruc').val(pedido['proveedor.ruc']);
@@ -53,6 +40,7 @@ $(document).ready(function(data) {
     });
     $("#detallado").click(function() {
         if (this.checked) { //chequear status del select
+            
             $("#formDescuento").hide();
         }
     });

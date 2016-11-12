@@ -63,6 +63,7 @@ public class DetallePedidoController extends BaseController {
             @ModelAttribute("sidx") String ordenarPor,
             @ModelAttribute("sord") String sentidoOrdenamiento,
             @ModelAttribute("idPedido") String idPedido,
+            @ModelAttribute("estado") String estado,
             @ModelAttribute("todos") boolean todos) {
 
         DTORetorno retorno = new DTORetorno();
@@ -74,6 +75,10 @@ public class DetallePedidoController extends BaseController {
         }
         List<Map<String, Object>> listMapGrupos = null;
         try {
+            
+            if(estado != null && estado.compareToIgnoreCase("") != 0){
+                ejemplo.setEstadoPedido(DetallePedido.APROBADO);
+            }
 
             inicializarDetallePedidoManager();
 
@@ -133,6 +138,31 @@ public class DetallePedidoController extends BaseController {
         } catch (Exception e) {
 
             logger.error("Error al listar", e);
+        }
+
+        return retorno;
+    }
+    
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno pedidoForm(@PathVariable("id") Long id) {
+        DTORetorno<Map<String, Object>> retorno = new DTORetorno<>();
+        List<Map<String, Object>> listMapGrupos = null;
+        try {
+            inicializarDetallePedidoManager();
+            DetallePedido ejemplo = new DetallePedido();
+            ejemplo.setId(id);
+
+            Map<String, Object> ejPedido = detallePedidoManager.getAtributos(ejemplo, atributos.split(","));
+
+            retorno.setData(ejPedido);
+            retorno.setError(false);
+            retorno.setMensaje("Se obtuvo exitosamente el detalle pedido");
+
+        } catch (Exception ex) {
+            logger.error("Error al obtener el pedido", ex);
+            retorno.setError(true);
+            retorno.setMensaje("Error al obtener el pedido");
         }
 
         return retorno;

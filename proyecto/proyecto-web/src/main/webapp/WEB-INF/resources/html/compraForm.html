@@ -242,7 +242,7 @@
                     </div>
                 </div>
                 <div id="ex1" style="display:none;">
-                    <form id="validation-formContacto" class="form-horizontal dropzone" enctype="multipart/form-data">
+                    <form id="validation-formDescuento" class="form-horizontal dropzone" enctype="multipart/form-data">
                         <div class="box-body">
                             <div id="mensaje"/>   
                             <div class="col-xs-12">
@@ -252,16 +252,23 @@
                                     <input id="idDetPedido" name="id" type="hidden"  class="form-control tableusuario-input" />
                                     <div class="col-xs-12 col-sm-12">
                                         <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                            <label class="col-lg-8 control-label">Precio</label>
+                                            <div class="col-lg-4">
+                                                <input  id="precio"  disabled="disabled" name="precio" type="text"  placeholder="Precio" class="form-control tableusuario-input"/> 
+                                                <span class="glyphicon form-control-feedback" id="documentoContacto1"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
                                             <label class="col-lg-8 control-label">Descuento Porcentaje(*)</label>
                                             <div class="col-lg-4">
-                                                <input  id="documentoContacto" name="documento" type="text"  placeholder="Interes" class="form-control tableusuario-input"/> 
+                                                <input  id="porcentajeDescuento" name="porcentajeDescuento" type="text"  placeholder="Interes" class="form-control tableusuario-input"/> 
                                                 <span class="glyphicon form-control-feedback" id="documentoContacto1"></span>
                                             </div>
                                         </div>
                                         <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
                                             <label class="col-lg-6 control-label">Monto Interes</label>
                                             <div class="col-lg-6">
-                                                <input id="nombreContacto" name="nombre" type="text" placeholder="Monto"  class="form-control tableusuario-input "/>
+                                                <input id="montoDescuento" disabled="disabled" name="montoDescuento" type="text" placeholder="Monto"  class="form-control tableusuario-input "/>
                                                 <span class="glyphicon form-control-feedback" id="documento1"></span> 
                                             </div>
                                         </div>
@@ -269,7 +276,7 @@
                                         <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
                                             <label class="col-lg-6 control-label">Neto</label>
                                             <div class="col-lg-6">
-                                                <input id="cargoContacto" name="cargo" type="text" placeholder="Neto"  class="form-control tableusuario-input "/>
+                                                <input id="neto" name="neto" disabled="disabled" type="text" placeholder="Neto"  class="form-control tableusuario-input "/>
                                                 <span class="glyphicon form-control-feedback" id="documento1"></span> 
                                             </div>
                                         </div>
@@ -277,7 +284,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="buttonOptionContacto" class="clearfix box-footer" >
+                        <div  class="clearfix box-footer" >
                             <div class="col-md-offset-3 col-md-9">
                                 <button id="aceptar" class="btn btn-primary" type="submit">
                                     <i class="fa fa-check bigger-110"></i>
@@ -310,6 +317,7 @@
     <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
     <script th:src="@{/resources/js/comprasForm.js}"></script>
+    <script th:src="@{/resources/js/descuentoForm.js}"></script>
     <script th:src="@{/resources/js/compras.js}"></script>
 
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>

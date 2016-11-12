@@ -31,7 +31,7 @@ public class DetalleCompra extends Base {
     private String porcentajeDescuento;
     
     @Column(name = "monto_descuento")
-    private Double MontoDescuento;
+    private Double montoDescuento;
     
     @Column(name = "neto")
     private Double neto;
@@ -103,14 +103,14 @@ public class DetalleCompra extends Base {
      * @return the MontoDescuento
      */
     public Double getMontoDescuento() {
-        return MontoDescuento;
+        return montoDescuento;
     }
 
     /**
-     * @param MontoDescuento the MontoDescuento to set
+     * @param montoDescuento the MontoDescuento to set
      */
-    public void setMontoDescuento(Double MontoDescuento) {
-        this.MontoDescuento = MontoDescuento;
+    public void setMontoDescuento(Double montoDescuento) {
+        this.montoDescuento = montoDescuento;
     }
 
     /**

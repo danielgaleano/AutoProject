@@ -1,8 +1,8 @@
 $(document).ready(function(data) {
 
-    $("#factura").inputmask("Regex", {
+    /*$("#factura").inputmask("Regex", {
         regex: "^[0-9]{3}-[0-9]{3}-[0-9]{6}$"
-    });
+    });*/
 
     $('#validation-form').validate({
         errorElement: 'span',
@@ -12,7 +12,7 @@ $(document).ready(function(data) {
             factura: {
                 required: true,
                 //expresion regular para validar el factura
-                regx: /^[0-9]{3}-[0-9]{3}-[0-9]{6}$/
+                //regx: /^[0-9]{3}-[0-9]{3}-[0-9]{6}$/
             },           
             optionsPago: {
                 required: true

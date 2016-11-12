@@ -6,6 +6,7 @@
     <div th:include="include/head :: head" th:remove="tag"></div>
     <link th:href="@{/resources/css/datepicker.min.css}" rel="stylesheet" />
     <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
+    <link th:href="@{/resources/dist/css/jquery.modal.css}" rel="stylesheet" />
     <link th:href="@{/resources/bootstrap/css/bootstrap-datetimepicker.min.css}" rel="stylesheet" />
 
     <title>Pedido</title>
@@ -40,7 +41,7 @@
                         <a th:href="@{/pedidos}" class="btn btn-primary btn-light bigger" role="button">
                             <i class="ace-icon fa fa-arrow-left"></i>
                             Volver
-                        </a>                 
+                        </a> 
                     </div>   
                 </div>
                 <!-- <form:input path="fichero" type="file" class="hidden" />
@@ -195,7 +196,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                
+
                                             </div>
                                         </div>
                                     </div>
@@ -230,12 +231,66 @@
 
                     </div>
                 </div>
+                <div id="ex1" style="display:none;">
+                    <form id="validation-formContacto" class="form-horizontal dropzone" enctype="multipart/form-data">
+                        <div class="box-body">
+                            <div id="mensaje"/>   
+                            <div class="col-xs-12">
+
+                                <div id="user-profile-1" class="user-profile row" style="padding-top: 2em; padding-left: 1em; padding-right: 1em;">
+                               
+                                    <input id="idDetPedido" name="id" type="hidden"  class="form-control tableusuario-input" />
+                                    <div class="col-xs-12 col-sm-12">
+                                        <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                            <label class="col-lg-8 control-label">Descuento Porcentaje(*)</label>
+                                            <div class="col-lg-4">
+                                                <input  id="documentoContacto" name="documento" type="text"  placeholder="Interes" class="form-control tableusuario-input"/> 
+                                                <span class="glyphicon form-control-feedback" id="documentoContacto1"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                            <label class="col-lg-6 control-label">Monto Interes</label>
+                                            <div class="col-lg-6">
+                                                <input id="nombreContacto" name="nombre" type="text" placeholder="Monto"  class="form-control tableusuario-input "/>
+                                                <span class="glyphicon form-control-feedback" id="documento1"></span> 
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                            <label class="col-lg-6 control-label">Neto</label>
+                                            <div class="col-lg-6">
+                                                <input id="cargoContacto" name="cargo" type="text" placeholder="Neto"  class="form-control tableusuario-input "/>
+                                                <span class="glyphicon form-control-feedback" id="documento1"></span> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="buttonOptionContacto" class="clearfix box-footer" >
+                            <div class="col-md-offset-3 col-md-9">
+                                <button id="aceptar" class="btn btn-primary" type="submit">
+                                    <i class="fa fa-check bigger-110"></i>
+                                    Guardar
+                                </button>
+                                &nbsp; &nbsp; &nbsp;
+                                <a href="#" rel="modal:close" class="btn btn-default" type="button">
+                                    <i class="fa fa-undo bigger-110"></i>
+                                    Cancelar
+                                </a>
+
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
             </div>
             <!-- Your Page Content Here -->
 
         </section><!-- /.content -->
     </div>
     <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.modal.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/lib/moment.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/lib/bootstrap-editable.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/dist/js/jquery.inputmask.bundle.js}" charset="UTF-8"></script>
@@ -250,8 +305,8 @@
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/lib/jquery.number.min.js}" charset="UTF-8"></script>
     <script type="text/javascript">
-          $('#entrega, #montoTotal, #montoDescuento, #montoCuota, #montoInteres, #saldo, #neto').number( true, 0, ',', '.' );
-          //console.log($.number( 5020.2364, 2 )); // Outputs: 5,020.24)
+        $('#entrega, #montoTotal, #montoDescuento, #montoCuota, #montoInteres, #saldo, #neto').number(true, 0, ',', '.');
+        //console.log($.number( 5020.2364, 2 )); // Outputs: 5,020.24)
     </script>
     <!--    <script th:src="@{~/proyecto/resources/js/lib/dropzone.js}"></script>
         <script th:src="@{~/proyecto/resources/js/upload_image.js}"></script> -->

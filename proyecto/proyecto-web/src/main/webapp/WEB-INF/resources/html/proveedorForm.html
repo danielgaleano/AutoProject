@@ -64,9 +64,9 @@
                                                 <div class="col-xs-12 col-sm-12">
 
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">RUC(*)</label>
+                                                        <label class="col-lg-4 control-label">RUC/Documento(*)</label>
                                                         <div class="col-lg-4">
-                                                            <input  id="ruc" name="ruc" type="text" placeholder="ruc" data-mask="" data-inputmask-regex="^[0-9]{5}[0-9]?[0-9]?[0-9]?-[0-9]$"  class="form-control tableusuario-input "/>
+                                                            <input  id="ruc" name="ruc" type="text" placeholder="ruc" data-mask="" data-inputmask-regex="^[0-9]{5}[0-9]?[0-9]?[0-9]?(-)?[0-9]?$"  class="form-control tableusuario-input "/>
                                                             <span class="glyphicon form-control-feedback" id="ruc1"></span> 
                                                         </div>
                                                     </div>
@@ -90,14 +90,14 @@
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                         <label class="col-lg-4 control-label">Telefono(*)</label>
                                                         <div class="col-lg-4">
-                                                            <input  id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input "/> 
+                                                            <input  id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '999 999 [999 999]'" class="form-control tableusuario-input "/> 
                                                             <span class="glyphicon form-control-feedback" id="telefono1"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                         <label class="col-lg-4 control-label">Fax</label>
                                                         <div class="col-lg-4">
-                                                            <input  id="fax" name="fax" type="text" placeholder="Fax" data-mask="" data-inputmask="'mask': '(999)999-999'"  class="form-control tableusuario-input "/> 
+                                                            <input  id="fax" name="fax" type="text" placeholder="Fax" data-mask="" data-inputmask="'mask': '999 999 [999 999]'"  class="form-control tableusuario-input "/> 
                                                             <span class="glyphicon form-control-feedback" id="fax1"></span>
                                                         </div>
                                                     </div>
@@ -194,7 +194,7 @@
                                                 <input id="idContacto" name="id" type="hidden"  class="form-control tableusuario-input" />
                                                 <div class="col-xs-12 col-sm-12">
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">CI(*)</label>
+                                                        <label class="col-lg-4 control-label">Identificación(*)</label>
                                                         <div class="col-lg-6">
                                                             <input  id="documentoContacto" name="documento" type="text" data-mask="" data-inputmask-regex="^[0-9]{5}([0-9])?([0-9])?([0-9])?$" placeholder="CI" class="form-control tableusuario-input"/> 
                                                             <span class="glyphicon form-control-feedback" id="documentoContacto1"></span>
@@ -219,7 +219,7 @@
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                         <label class="col-lg-4 control-label">Telefono</label>
                                                         <div class="col-lg-4">
-                                                            <input id="telefonoContacto" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input "/> 
+                                                            <input id="telefonoContacto" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '999 999 [999 999]'" class="form-control tableusuario-input "/> 
                                                             <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
                                                         </div>
                                                     </div>
@@ -227,14 +227,14 @@
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                         <label class="col-lg-4 control-label">Telefono Movil(*)</label>
                                                         <div class="col-lg-4">
-                                                            <input  id="movilContacto" name="movil" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control tableusuario-input"/> 
+                                                            <input  id="movilContacto" name="movil" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '9999 999 [999 999]'" class="form-control tableusuario-input"/> 
                                                             <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
                                                         <label class="col-lg-2 control-label">Email</label>
                                                         <div class="col-lg-6">
-                                                            <input  id="contactoEmail" name="contactoEmail" type="text" placeholder="Email"  class="form-control tableusuario-input"/> 
+                                                            <input  id="emailContacto" name="email" type="text" placeholder="Email"  class="form-control tableusuario-input"/> 
                                                             <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
                                                         </div>
                                                     </div>

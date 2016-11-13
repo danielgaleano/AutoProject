@@ -54,15 +54,15 @@ $(document).ready(function(data) {
                 $('#nombreContacto').val(proveedor['contacto.nombre']);
                 $('#cargoContacto').val(proveedor['contacto.cargo']);
                 $('#telefonoContacto').val(proveedor['contacto.telefono']);
-                $('#contactoEmail').val(proveedor['contacto.email']);
+                $('#emailContacto').val(proveedor['contacto.email']);
                 $('#comentarioContacto').val(proveedor['contacto.comentario']);
 
-                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
-                        + '<button type="button" class="close" data-dismiss="alert"'
-                        + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
-                        + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
-                        + response.mensaje
-                        + '</div>');
+//                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
+//                        + '<button type="button" class="close" data-dismiss="alert"'
+//                        + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+//                        + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
+//                        + response.mensaje
+//                        + '</div>');
 
             }
 

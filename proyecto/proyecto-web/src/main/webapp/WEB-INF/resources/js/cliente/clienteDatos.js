@@ -44,11 +44,12 @@ $(document).ready(function(data) {
                 $('#idContacto').val(cliente['contacto.id']);
                 $('#documento').val(cliente.documento);
                 $('#nombre').val(cliente.nombre);
-                $('#id-date-picker').val(cliente.fechaNacimiento);
+                $('#id-date-picker-cliente').val(cliente.fechaNacimiento);
                 $('#sexo').val(cliente.sexo);
                 $('#pais').val(cliente.pais);
                 $('#email').val(cliente.email);
                 $('#telefono').val(cliente.telefono);
+                $('#telefonoMovil').val(cliente.telefonoMovil);
                 $('#direccion').val(cliente.direccion);
                 $('#comentario').val(cliente.comentario);
                 $('#nombreEmpresa').val(cliente['empleo.nombreEmpresa']);
@@ -64,15 +65,15 @@ $(document).ready(function(data) {
                 $('#nombreContacto').val(cliente['contacto.nombre']);
                 $('#cargoContacto').val(cliente['contacto.cargo']);
                 $('#telefonoContacto').val(cliente['contacto.telefono']);
-                $('#contactoEmail').val(cliente['contacto.email']);
+                $('#emailContacto').val(cliente['contacto.email']);
                 $('#comentarioContacto').val(cliente['contacto.comentario']);
 
-                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
-                        + '<button type="button" class="close" data-dismiss="alert"'
-                        + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
-                        + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
-                        + response.mensaje
-                        + '</div>');
+//                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
+//                        + '<button type="button" class="close" data-dismiss="alert"'
+//                        + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+//                        + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
+//                        + response.mensaje
+//                        + '</div>');
 
             }
 
@@ -87,4 +88,25 @@ $(document).ready(function(data) {
                         + '</div>');
         });
     }
+
+
+    //Inicializar Fechas
+    /*var hasta = new Date();
+    var dia = hasta.getDate();
+    var mes = hasta.getMonth() + 1;
+    var anho = hasta.getFullYear();
+
+    var fechaDesde = dia + "/" + mes + "/" + anho + " " + "00:00";*/
+    $('#id-date-picker-cliente').datepicker({
+        //format: 'DD/MM/YYYY HH:mm',
+        format: "dd/mm/yyyy",
+        language: "es-ES",
+        startView: 2,
+        minViewMode: 2
+        
+
+        //startDate: fechaDesde,
+        //useCurrent: false,
+        //minDate: new Date()
+    });
 });

@@ -90,7 +90,7 @@
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                         <label class="col-lg-4 control-label">RUC/CI(*)</label>
                                                         <div class="col-lg-8">
-                                                            <input  id="documento" name="documento" type="text" placeholder="Documento" data-mask="" data-inputmask-regex="^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$"  class="form-control tableusuario-input "/>
+                                                            <input  id="documento" name="documento" type="text" placeholder="Documento" data-mask="" data-inputmask-regex="^[0-9]{5}([0-9])?([0-9])?([0-9])?(-)?([0-9])?$"  class="form-control tableusuario-input "/>
                                                             <span class="glyphicon form-control-feedback" id="documento1"></span> 
                                                         </div>
                                                     </div>
@@ -102,14 +102,14 @@
                                                             <span class="glyphicon form-control-feedback" id="nombre1"></span>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                    <!-- <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                                         <label class="col-lg-7 control-label">Fecha Nacimiento</label>
                                                         <div class="col-lg-5">
-                                                            <input class="form-control date-picker tableusuario-input" id="id-date-picker" name="fecha" type="text" data-date-format="dd-mm-yyyy" />
+                                                            <input class="form-control date-picker tableusuario-input" id="id-date-picker-cliente" name="fecha" type="text" data-date-format="dd-mm-yyyy" />
                                                             <span class="add-on" ><i class="icon-calendar"></i></span>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                    </div> -->
+                                                    <!-- <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                                         <label class="col-lg-4 control-label">Sexo</label>
                                                         <div class="col-lg-8">
                                                             <select  class="form-control tableusuario-input " id="sexo"  name="sexo" data-placeholder="Seleccione opcion">
@@ -118,14 +118,14 @@
                                                                 <option value="FEMENINO">FEMENINO</option>
                                                             </select>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                    </div> -->
+                                                    <!-- <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                                         <label class="col-lg-2 control-label">Pais</label>
                                                         <div class="col-lg-10">
                                                             <input id="pais" name="pais" type="text" placeholder="Pais" class="form-control tableusuario-input "/> 
                                                             <span class="glyphicon form-control-feedback" id="pais"></span>
                                                         </div>
-                                                    </div>
+                                                    </div> -->
 
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                         <label class="col-lg-4 control-label">Email(*)</label>
@@ -137,13 +137,19 @@
 
 
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-2 control-label">Telefono(*)</label>
+                                                        <label class="col-lg-4 control-label">Telefono(*)</label>
                                                         <div class="col-lg-8">
                                                             <input  id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input "/> 
                                                             <span class="glyphicon form-control-feedback" id="telefono1"></span>
                                                         </div>
                                                     </div>
-
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-4 control-label">Telefono Movil</label>
+                                                        <div class="col-lg-8">
+                                                            <input  id="telefonoMovil" name="telefonoMovil" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control tableusuario-input"/> 
+                                                            <span class="glyphicon form-control-feedback" id="telefonoMovil1"></span>
+                                                        </div>
+                                                    </div>
 
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
                                                         <label class="col-lg-2 control-label">Direccion</label>
@@ -154,9 +160,9 @@
                                                     </div>
 
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                        <label class="col-lg-2 control-label">Comentario</label>
+                                                        <label class="col-lg-2 control-label">Observaciones</label>
                                                         <div class="col-lg-6">
-                                                            <textarea rows="3"    id="comentario" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " /> 
+                                                            <textarea rows="3"    id="comentario" name="comentario" type="text" placeholder="Observaciones"  class="form-control limited tableusuario-input " /> 
                                                             <span class="glyphicon form-control-feedback" id="comentario1"></span>
                                                         </div>
                                                     </div>                                                                                                  
@@ -212,7 +218,7 @@
                                                         <label class="col-lg-4 control-label">Empresa(*)</label>
                                                         <div class="col-lg-8">
                                                             <input id="nombreEmpresa" name="nombreEmpresa" type="text" placeholder="Empresa"  class="form-control tableusuario-input "/>
-                                                            <span class="glyphicon form-control-feedback" id="documento1"></span> 
+                                                            <span class="glyphicon form-control-feedback" id="nombreEmpresa1"></span> 
                                                         </div>
                                                     </div>
 
@@ -220,7 +226,7 @@
                                                         <label class="col-lg-4 control-label">Actividad(*)</label>
                                                         <div class="col-lg-8">
                                                             <input id="actividad" name="actividad" type="text" placeholder="Actividad"  class="form-control tableusuario-input "/>
-                                                            <span class="glyphicon form-control-feedback" id="documento1"></span> 
+                                                            <span class="glyphicon form-control-feedback" id="actividad1"></span> 
                                                         </div>
                                                     </div>
 
@@ -228,7 +234,7 @@
                                                         <label class="col-lg-4 control-label">Cargo(*)</label>
                                                         <div class="col-lg-8">
                                                             <input id="cargo" name="cargo" type="text" placeholder="Cargo" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="nombre1"></span>
+                                                            <span class="glyphicon form-control-feedback" id="cargo1"></span>
                                                         </div>
                                                     </div>
 
@@ -236,7 +242,7 @@
                                                         <label class="col-lg-4 control-label">Antiguedad(*)</label>
                                                         <div class="col-lg-8">
                                                             <input id="antiguedad" name="antiguedad" type="text" placeholder="Antiguedad" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="nombre1"></span>
+                                                            <span class="glyphicon form-control-feedback" id="antiguedad1"></span>
                                                         </div>
                                                     </div>
 
@@ -244,16 +250,16 @@
                                                         <label class="col-lg-4 control-label">Salario(*)</label>
                                                         <div class="col-lg-6">
                                                             <input id="salario" name="salario" type="text" placeholder="Salario" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="nombre1"></span>
+                                                            <span class="glyphicon form-control-feedback" id="salario1"></span>
                                                         </div>
                                                     </div>
 
 
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-2 control-label">Telefono(*)</label>
+                                                        <label class="col-lg-4 control-label">Telefono(*)</label>
                                                         <div class="col-lg-6">
                                                             <input id="telefonoEmpleo" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="telefono1"></span>
+                                                            <span class="glyphicon form-control-feedback" id="telefonoEmpleo1"></span>
                                                         </div>
                                                     </div>
 
@@ -262,15 +268,15 @@
                                                         <label class="col-lg-2 control-label">Direccion</label>
                                                         <div class="col-lg-6">
                                                             <input  id="direccionEmpleo" type="text" name="direccion" placeholder="Direccion" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="direccion1"></span>
+                                                            <span class="glyphicon form-control-feedback" id="direccionEmpleo1"></span>
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                        <label class="col-lg-2 control-label">Comentario</label>
+                                                        <label class="col-lg-2 control-label">Observaciones</label>
                                                         <div class="col-lg-6">
-                                                            <textarea rows="3"   id="comentarioEmpleo" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="comentario1"></span>
+                                                            <textarea rows="3"   id="comentarioEmpleo" name="comentario" type="text" placeholder="Observaciones"  class="form-control limited tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="comentarioEmpleo1"></span>
                                                         </div>
                                                     </div>
 
@@ -336,7 +342,7 @@
                                                         <label class="col-lg-4 control-label">Nombre(*)</label>
                                                         <div class="col-lg-8">
                                                             <input id="nombreContacto" name="nombre" type="text" placeholder="Nombre"  class="form-control tableusuario-input "/>
-                                                            <span class="glyphicon form-control-feedback" id="documento1"></span> 
+                                                            <span class="glyphicon form-control-feedback" id="nombreContacto1"></span> 
                                                         </div>
                                                     </div>
 
@@ -344,7 +350,7 @@
                                                         <label class="col-lg-4 control-label">Cargo(*)</label>
                                                         <div class="col-lg-8">
                                                             <input id="cargoContacto" name="cargo" type="text" placeholder="Cargo"  class="form-control tableusuario-input "/>
-                                                            <span class="glyphicon form-control-feedback" id="documento1"></span> 
+                                                            <span class="glyphicon form-control-feedback" id="cargoContacto1"></span> 
                                                         </div>
                                                     </div>
 
@@ -360,21 +366,21 @@
                                                         <label class="col-lg-4 control-label">Telefono Movil(*)</label>
                                                         <div class="col-lg-8">
                                                             <input  id="movilContacto" name="movil" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control tableusuario-input"/> 
-                                                            <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
+                                                            <span class="glyphicon form-control-feedback" id="movilContacto1"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
                                                         <label class="col-lg-2 control-label">Email</label>
                                                         <div class="col-lg-6">
-                                                            <input  id="contactoEmail" name="contactoEmail" type="text" placeholder="Email"  class="form-control tableusuario-input"/> 
-                                                            <span class="glyphicon form-control-feedback" id="telefonoContacto1"></span>
+                                                            <input  id="emailContacto" name="email" type="text" placeholder="Email"  class="form-control tableusuario-input"/> 
+                                                            <span class="glyphicon form-control-feedback" id="emailContacto1"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                        <label class="col-lg-2 control-label">Comentario</label>
+                                                        <label class="col-lg-2 control-label">Observaciones</label>
                                                         <div class="col-lg-6">
-                                                            <textarea rows="3"  id="comentarioContacto" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="comentario1"></span>
+                                                            <textarea rows="3"  id="comentarioContacto" name="comentario" type="text" placeholder="Observaciones"  class="form-control limited tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="comentarioContacto1"></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -407,13 +413,17 @@
         </section><!-- /.content -->
     </div>
     <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{~/proyecto/resources/js/lib/moment.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/lib/bootstrap-editable.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/dist/js/jquery.inputmask.bundle.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/bootstrap/js/bootstrap-datepicker.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/plugins/datepicker/locales/bootstrap-datetimepicker.es.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/base.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/cliente/clienteDatos.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/cliente/clienteForm.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/cliente/empleoForm.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/cliente/clienteContactoForm.js}" charset="UTF-8"></script>
-    <script th:src="@{~/proyecto/resources/js/base.js}" charset="UTF-8"></script>
+    
 
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>
     <!--    <script th:src="@{~/proyecto/resources/js/lib/dropzone.js}"></script>

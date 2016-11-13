@@ -2,13 +2,13 @@
 $(document).ready(function (data) {
     $(":input").inputmask();
     $("#documento").inputmask("Regex", {
-        regex: "^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$"
+        regex: "^[0-9]{5}([0-9])?([0-9])?([0-9])?(-)?([0-9])?$"
     });
 
 
     $.validator.addMethod("regx", function (value, element, regexpr) {
         return regexpr.test(value);
-    }, "Debe ingresar un número de documento válido!");
+    }, "Debe ingresar un número de RUC o CI válido!");
 
     $('#validation-form').validate({
         errorElement: 'span',
@@ -18,7 +18,7 @@ $(document).ready(function (data) {
             documento: {
                 required: true,
                 //expresion regular para validar el documento
-                regx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$/,
+                regx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?(-)?([0-9])?$/,
                 minlength: 5,
                 maxlength: 10
             },           
@@ -35,7 +35,7 @@ $(document).ready(function (data) {
         },
         messages: {
             documento: {
-                required: "Debe ingresar un número de documento!",
+                required: "Debe ingresar un número de RUC o CI!",
                 minlength: "Longitud mínima de 5 números!",
                 maxlength: "Longitud máxima de 10 números!",   
             },

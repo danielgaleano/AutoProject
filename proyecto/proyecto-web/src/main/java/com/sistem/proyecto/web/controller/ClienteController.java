@@ -216,6 +216,7 @@ public class ClienteController extends BaseController {
             ejCliente.setDocumento(clienteRecibido.getDocumento());
             ejCliente.setEmail(clienteRecibido.getEmail());
             ejCliente.setNombre(clienteRecibido.getNombre());
+            ejCliente.setFechaNacimiento(clienteRecibido.getFechaNacimiento());
             ejCliente.setSexo(clienteRecibido.getSexo());
             ejCliente.setPais(clienteRecibido.getPais());
             ejCliente.setComentario(clienteRecibido.getComentario());
@@ -301,6 +302,7 @@ public class ClienteController extends BaseController {
             ejClienteUp.setDireccion(clienteRecibido.getDireccion());
             ejClienteUp.setEmail(clienteRecibido.getEmail());
             ejClienteUp.setNombre(clienteRecibido.getNombre());
+            ejClienteUp.setFechaNacimiento(clienteRecibido.getFechaNacimiento());
             ejClienteUp.setPais(clienteRecibido.getPais());
             ejClienteUp.setSexo(clienteRecibido.getSexo());
             ejClienteUp.setTelefono(clienteRecibido.getTelefono());

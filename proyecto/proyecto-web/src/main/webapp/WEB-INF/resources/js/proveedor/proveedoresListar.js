@@ -4,8 +4,8 @@ $(document).ready(function(data) {
     var isEditarInline = false;
     var isStatus = true;
 
-    var permisoActivar = parseBolean($(this).find('.tablactivate-permiso').text());
-    var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
+//    var permisoActivar = parseBolean($(this).find('.tablactivate-permiso').text());
+//    var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
     var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
     var permisoVisualizar = parseBolean($(this).find('.tablvisualizar-permiso').text());
     var permisoAsignar = parseBolean($(this).find('.tablasignar-permiso').text());
@@ -28,7 +28,7 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'NOMBRE', 'RUC', 'DIRECCION', 'TELEFONO', 'EMAIL', 'STATUS', ''],
+        colNames: ['ID', 'NOMBRE', 'RUC', 'DIRECCION', 'TELEFONO', 'EMAIL', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'nombre', index: 'nombre', width: 90, editable: false},
@@ -36,7 +36,7 @@ $(document).ready(function(data) {
             {name: 'direccion', index: 'direccion', width: 150, editable: false},
             {name: 'telefono', index: 'telefono', width: 90, sortable: false},
             {name: 'email', index: 'email', width: 90, sortable: false},
-            {name: 'activo', index: 'activo', width: 90, editable: false},
+//            {name: 'activo', index: 'activo', width: 90, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false
                         //formatter:'actions', 
                         //formatoptions:{ 
@@ -102,7 +102,7 @@ $(document).ready(function(data) {
                 if (isStatus) {
                     var estado = dato.activo;
                     if (estado === 'S') {
-                        var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
+//                        var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
                         if (isEditarInline) {
 
                             edit = editInlineButton(cl, permisoEditar);
@@ -113,15 +113,21 @@ $(document).ready(function(data) {
                             asignar = "";
                             visuali = visualizarButton(cl, permisoVisualizar,null);
                             editForm = editFormButton(cl, permisoEditar);
-                            desact = desactivarButton(cl, permisoDesactivar);
-                            $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
+//                            desact = desactivarButton(cl, permisoDesactivar);
+                            //$(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
+                            $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
                         }
-                        $(grid_selector).setRowData(ids[i], {activo: labelActivo});
+//                        $(grid_selector).setRowData(ids[i], {activo: labelActivo});
                     } else {
-                        var labelInactivo = '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
-                        activar = activarButton(cl, permisoActivar);
-                        $(grid_selector).setRowData(ids[i], {act: ini + activar + fin});
-                        $(grid_selector).setRowData(ids[i], {activo: labelInactivo});
+                        asignar = "";
+                        visuali = visualizarButton(cl, permisoVisualizar,null);
+                        editForm = editFormButton(cl, permisoEditar);
+//                            
+                        $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
+//                        var labelInactivo = '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
+//                        activar = activarButton(cl, permisoActivar);
+//                        $(grid_selector).setRowData(ids[i], {act: ini + activar + fin});
+//                        $(grid_selector).setRowData(ids[i], {activo: labelInactivo});
                     }
                 } else {
                     if (isEditarInline) {

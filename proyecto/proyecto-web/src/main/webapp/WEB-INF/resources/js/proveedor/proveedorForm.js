@@ -2,7 +2,7 @@
 $(document).ready(function (data) {
     $(":input").inputmask();
     $("#ruc").inputmask("Regex", {
-        regex: "^[0-9]{5}[0-9]?[0-9]?[0-9]?-[0-9]$"
+        regex: "^[0-9]{5}[0-9]?[0-9]?[0-9]?(-)?[0-9]?$"
     });
 
 
@@ -18,7 +18,7 @@ $(document).ready(function (data) {
             ruc: {
                 required: true,
                 //expresion regular para validar el ruc
-                regx: /^[0-9]{5}[0-9]?[0-9]?[0-9]?-[0-9]$/,
+                regx: /^[0-9]{5}[0-9]?[0-9]?[0-9]?(-)?[0-9]?$/,
                 minlength: 7,
                 maxlength: 10
             },           

@@ -370,7 +370,7 @@ public class CompraController extends BaseController {
             
             compraManager.update(ejCompra);
 
-            mensaje.setError(true);
+            mensaje.setError(false);
             mensaje.setMensaje("El descuento se agrego exitosamente.");
 
         } catch (Exception ex) {

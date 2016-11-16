@@ -71,7 +71,7 @@ public class OrdenController extends BaseController {
         model.addAttribute("action", "CREAR");
         model.addAttribute("editar", false);
         model.addAttribute("id", id);
-        return new ModelAndView("ordenForm");
+        return new ModelAndView("compraForm");
     }
 
     @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
@@ -80,6 +80,31 @@ public class OrdenController extends BaseController {
         retorno.setViewName("compraForm");
         model.addAttribute("action", "VISUALIZAR");
         model.addAttribute("id", id);
+        return retorno;
+    }
+    
+    @RequestMapping(value = "/{id}/aprobar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno compraAprobar(@PathVariable("id") Long id) {
+        DTORetorno<Map<String, Object>> retorno = new DTORetorno<>();
+        List<Map<String, Object>> listMapGrupos = null;
+        try {
+            inicializarCompraManager();
+
+            Compra ejCompra = compraManager.get(id);
+            
+            ejCompra.setEstadoCompra(Compra.COMPRA_PENDIENTE);
+            compraManager.update(ejCompra);
+            
+            retorno.setError(false);
+            retorno.setMensaje("La compra fue aprobada exitosamente.");
+
+        } catch (Exception ex) {
+            logger.error("Error al aprobar la compra", ex);
+            retorno.setError(true);
+            retorno.setMensaje("Error al aprobar la compra");
+        }
+
         return retorno;
     }
     

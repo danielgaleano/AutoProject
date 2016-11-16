@@ -1,8 +1,8 @@
 $(document).ready(function(data) {
 
     /*$("#factura").inputmask("Regex", {
-        regex: "^[0-9]{3}-[0-9]{3}-[0-9]{6}$"
-    });*/
+     regex: "^[0-9]{3}-[0-9]{3}-[0-9]{6}$"
+     });*/
 
     $('#validation-form').validate({
         errorElement: 'span',
@@ -13,11 +13,11 @@ $(document).ready(function(data) {
                 required: true,
                 //expresion regular para validar el factura
                 //regx: /^[0-9]{3}-[0-9]{3}-[0-9]{6}$/
-            },           
+            },
             formaPago: {
                 required: true
             },
-            optionsDescuento: {
+            tipoDescuento: {
                 required: true
             }
         },
@@ -26,22 +26,22 @@ $(document).ready(function(data) {
                 required: "Debe ingresar un número de factura!"
             },
             formaPago: "Debe seleccionar un tipo de pago!",
-            optionsDescuento: "Debe seleccionar un tipo de descuento!"
+            tipoDescuento: "Debe seleccionar un tipo de descuento!"
         },
-        invalidHandler: function (event, validator) { //display error alert on form submit   
+        invalidHandler: function(event, validator) { //display error alert on form submit   
             $('.alert-error', $('.login-form')).show();
         },
-        highlight: function (element) {
+        highlight: function(element) {
             var id_attr = "#" + $(element).attr("id") + "1";
             $(element).closest('.form-group').removeClass('has-success').addClass('has-error');
             $(id_attr).removeClass('glyphicon-ok').addClass('glyphicon-remove');
             //$(e).closest('.form-group').removeClass('has-info').addClass('has-error');
         },
-        success: function (e) {
+        success: function(e) {
             $(e).closest('.form-group').removeClass('has-error').addClass('has-info');
             $(e).remove();
         },
-        errorPlacement: function (error, element) {
+        errorPlacement: function(error, element) {
             if (element.is(':checkbox') || element.is(':radio')) {
                 var controls = element.closest('.controls');
                 if (controls.find(':checkbox,:radio').length > 1)
@@ -53,19 +53,19 @@ $(document).ready(function(data) {
             } else
                 error.insertAfter(element);
         },
-        unhighlight: function (element) {
+        unhighlight: function(element) {
             var id_attr = "#" + $(element).attr("id") + "1";
             $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
             $(id_attr).removeClass('glyphicon-remove').addClass('glyphicon-ok');
         },
-        submitHandler: function (form) {      
+        submitHandler: function(form) {
             var $form = $('#validation-form');
             var serialize = $form.find('.tableusuario-input').serialize();
             var idCompra = $('#idCompra').val();
             var idPedido = $('#idPedido').val();
-            
+
             if (idCompra === null || idCompra === '') {
-                var jqXHR = $.post(CONTEXT_ROOT + '/compras/'+idPedido+'/guardar', serialize, function (data, textStatus, jqXHR) {
+                var jqXHR = $.post(CONTEXT_ROOT + '/compras/' + idPedido + '/guardar', serialize, function(data, textStatus, jqXHR) {
                     if (data.error) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                 + '<button class="close" data-dismiss="alert" type="button"'
@@ -76,7 +76,7 @@ $(document).ready(function(data) {
                     } else {
                         cargarDatos(data.id);
                         $('#idCompra').val(data.id);
-                        
+
                         $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
                                 + '<button type="button" class="close" data-dismiss="alert"'
                                 + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
@@ -89,16 +89,16 @@ $(document).ready(function(data) {
 
                 });
 
-                jqXHR.fail(function (jqXHR, textStatus, errorThrown) {
+                jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
                     $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
-                        + '<button class="close" data-dismiss="alert" type="button"'
-                        + '><i class="fa  fa-remove"></i></button>'
-                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
-                        + 'Error! Favor comunicarse con el Administrador'
-                        + '</div>');
+                            + '<button class="close" data-dismiss="alert" type="button"'
+                            + '><i class="fa  fa-remove"></i></button>'
+                            + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                            + 'Error! Favor comunicarse con el Administrador'
+                            + '</div>');
                 });
-            } else{
-                var jqXHR = $.post(CONTEXT_ROOT + '/compras/'+1+'/editar', serialize, function (data, textStatus, jqXHR) {
+            } else {
+                var jqXHR = $.post(CONTEXT_ROOT + '/compras/' + 1 + '/editar', serialize, function(data, textStatus, jqXHR) {
                     if (data.error) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                 + '<button class="close" data-dismiss="alert" type="button"'
@@ -119,45 +119,40 @@ $(document).ready(function(data) {
 
                 });
 
-                jqXHR.fail(function (jqXHR, textStatus, errorThrown) {
+                jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
                     $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
-                        + '<button class="close" data-dismiss="alert" type="button"'
-                        + '><i class="fa  fa-remove"></i></button>'
-                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
-                        + 'Error! Favor comunicarse con el Administrador'
-                        + '</div>');
+                            + '<button class="close" data-dismiss="alert" type="button"'
+                            + '><i class="fa  fa-remove"></i></button>'
+                            + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                            + 'Error! Favor comunicarse con el Administrador'
+                            + '</div>');
                 });
             }
 
         }
     });
 
+    $("#botonAprobar").click(function() {
+        var jqXHR = $.get(CONTEXT_ROOT + "/orden/compras/" +id+"/aprobar", function(response, textStatus, jqXHR) {
+            if (response.error === true) {
+                $('#mensaje').append('<div class="alert alert-error">'
+                        + '<button class="close" data-dismiss="alert" type="button"'
+                        + '><i class="fa  fa-remove"></i></button>'
+                        + '<strong>Error! </strong>'
+                        + response.mensaje
+                        + '</div>');
 
+            } else {
+                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
+                                + '<button type="button" class="close" data-dismiss="alert"'
+                                + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
+                                + response.mensaje
+                                + '</div>');
 
-    
-//    var jqXHR = $.get(CONTEXT_ROOT + "/compras/" + id, function(response, textStatus, jqXHR) {
-//        if (response.error === true) {
-//            $('#mensaje').append('<div class="alert alert-error">'
-//                    + '<button class="close" data-dismiss="alert" type="button"'
-//                    + '><i class="fa  fa-remove"></i></button>'
-//                    + '<strong>Error! </strong>'
-//                    + response.mensaje
-//                    + '</div>');
-//
-//        } else {
-//            var compra = response.data;
-//
-//            $('#idCompra').val(compra.id);
-//            $('#ruc').val(compra['proveedor.ruc']);
-//            $('#nombre').val(compra['proveedor.nombre']);
-//            $('#direccion').val(compra['proveedor.direccion']);
-//            $('#telefono').val(compra['proveedor.telefono']);
-//            $('#montoTotal').val(compra.total);
-//            $('#id-date-picker').val(compra.fechaEntrega);
-//
-//        }
-//    });
-
+            }
+        });
+    });
     $("#credito").click(function() {
         if (this.checked) { //chequear status del select
             $("#general").attr("disabled", true);

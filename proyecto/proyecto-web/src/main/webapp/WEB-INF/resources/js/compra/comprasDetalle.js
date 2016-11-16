@@ -272,7 +272,7 @@ $(document).ready(function(data) {
                 var button = '';
                 var ini = '<div style="float: none;" class="btn-group btn-group-sm">';
                 var fin = '</div>';
-            
+
 
                 if (isStatus) {
                     var estado = dato.estadoCompra;
@@ -347,7 +347,7 @@ $(document).ready(function(data) {
                 colModel: [
                     {name: "id", key: true, hidden: true, index: "id", width: 100, align: "right", sortable: false},
                     {name: "moneda.nombre", index: "moneda.nombre", width: 100, align: "right", sortable: false},
-                    {name: "precio", index: "precio", width: 100, align: "right", formatter: 'number', sortable: false, editable: true,disabled:true, editoptions:{disabled:true}},
+                    {name: "precio", index: "precio", width: 100, align: "right", formatter: 'number', sortable: false, editable: true, disabled: true, editoptions: {disabled: true}},
                     {name: "porcentajeDescuento", index: "porcentajeDescuento", editable: true, width: 100, align: "right", sortable: false,
                         editoptions: {
                             dataEvents: [
@@ -359,7 +359,7 @@ $(document).ready(function(data) {
                                         var total;
                                         setTimeout(function() {
                                             if ($.isNumeric(e.key) || e.key === 'Backspace') {
-                                                total = $('input[name="precio"]').val() * $('input[name="porcentajeDescuento"]').val()/100;
+                                                total = $('input[name="precio"]').val() * $('input[name="porcentajeDescuento"]').val() / 100;
                                                 $('input[name="montoDescuento"]').val(total);
                                                 var neto = $('input[name="precio"]').val() - total;
                                                 $('input[name="neto"]').val(neto);
@@ -373,8 +373,8 @@ $(document).ready(function(data) {
                                     }}
 
                             ]}},
-                    {name: "montoDescuento", index: "montoDescuento", width: 100, align: "right", editable: true, sortable: false, disabled:true, editoptions:{disabled:true}},
-                    {name: "neto", index: "neto", width: 100, align: "right", editable: true, sortable: false,disabled:true, editoptions:{disabled:true}},
+                    {name: "montoDescuento", index: "montoDescuento", width: 100, align: "right", editable: true, sortable: false, disabled: true, editoptions: {disabled: true}},
+                    {name: "neto", index: "neto", width: 100, align: "right", editable: true, sortable: false, disabled: true, editoptions: {disabled: true}},
                     {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                         //               formatter: 'actions',
                         formatoptions: {
@@ -416,7 +416,12 @@ $(document).ready(function(data) {
                 height: '100%',
                 rowNum: 10,
                 sortname: 'num',
+                altRows: true,
                 sortorder: "asc",
+                serializeRowData: function(postData) {                   
+                    postData['nroFactura'] = $('#factura').val();
+                    return postData;
+                },
                 jsonReader: {
                     root: 'retorno',
                     page: 'page',
@@ -466,7 +471,7 @@ $(document).ready(function(data) {
 
                     }
                 },
-                editurl: "/compra/detalles/descuento"
+                editurl: CONTEXT_ROOT + "/compras/detalles/descuento"
             });
         }
 

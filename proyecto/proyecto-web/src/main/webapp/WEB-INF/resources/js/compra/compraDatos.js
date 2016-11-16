@@ -1,4 +1,11 @@
 $(document).ready(function(data) {
+    
+    if (action === 'VISUALIZAR') {
+        $('#botonAprobar').hide();
+        $('#aceptar').hide();      
+        $('#validation-form').find('.tableusuario-input').attr("disabled", true);       
+    }
+    
     cargarDatos(id);    
 });
 
@@ -15,6 +22,9 @@ function cargarDatos(id) {
             var compra = response.data;
 
             $('#nroFactura').val(compra.nroFactura);
+            if(compra.nroFactura !== null && compra.nroFactura !== " "){
+                $('#botonAprobar').show();
+            }
             $('#nombred').val(compra.tipoCompra);
             $('#descuento').val(compra.descuento);
             $('#interes').val(compra.porcentajeInteresCredito);

@@ -111,16 +111,17 @@ and open the template in the editor.
                     <a sec:authorize="hasRole('Compra.Listar')" href="#"><i class="fa fa-fw fa-cart-plus"></i> <span>Compras</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                       <li><a th:href="@{/orden/compras}">Orden Compra</a></li>
-                      <li><a th:href="@{/ventas}">Compras Realizadas</a></li>
+                      <li><a th:href="@{/compras/pendientes}">Compras Pendientes</a></li>
+                      <li><a th:href="@{/compras/realizadas}">Compras Realizadas</a></li>
                     </ul>
                   </li>
                   <li><a sec:authorize="hasRole('Venta.Listar')" th:href="@{/ventas}"><i class="fa fa-truck"></i> <span>Ventas</span></a></li>
                   <li class="treeview">
                     <a sec:authorize="hasRole('Caja.Listar')" href="#"><i class="fa fa-car"></i> <span>Caja</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
-                      <li><a href="#">Stock</a></li>
-                      <li><a th:href="@{/compras}">Compras</a></li>
-                      <li><a th:href="@{/ventas}">Ventas</a></li>
+                      <li><a th:href="@{/pagos}">Pago Pendientes</a></li>
+                      <li><a th:href="@{/ventas}">Cobro Pendientes</a></li>
+                      <li><a th:href="@{/ventas}">Movimientos</a></li>
                     </ul>
                   </li>
                   <li class="treeview">

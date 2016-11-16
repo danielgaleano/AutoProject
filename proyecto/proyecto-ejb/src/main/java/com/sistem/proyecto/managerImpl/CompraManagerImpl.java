@@ -8,11 +8,13 @@ package com.sistem.proyecto.managerImpl;
 import com.sistem.proyecto.entity.Compra;
 import com.sistem.proyecto.entity.DetalleCompra;
 import com.sistem.proyecto.entity.DetallePedido;
+import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Pedido;
 import com.sistem.proyecto.entity.Proveedor;
 import com.sistem.proyecto.manager.CompraManager;
 import com.sistem.proyecto.manager.DetalleCompraManager;
+import com.sistem.proyecto.manager.DocumentoPagarManager;
 import com.sistem.proyecto.manager.PedidoManager;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
 import java.sql.Timestamp;
@@ -29,6 +31,9 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
     @EJB(mappedName = "java:app/proyecto-ejb/PedidoManagerImpl")
     private PedidoManager pedidoManager;
+    
+    @EJB(mappedName = "java:app/proyecto-ejb/DocumentoPagarManagerImpl")
+    private DocumentoPagarManager documentoPagarManager;
 
     @EJB(mappedName = "java:app/proyecto-ejb/DetalleCompraManagerImpl")
     private DetalleCompraManager detalleCompraManager;
@@ -99,9 +104,10 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     ejCompra.setEntrega(entrega + "");
                     ejCompra.setMontoInteres(montoInteres + "");
                     ejCompra.setSaldo(saldo + "");
-                    ejCompra.setNeto(saldo + "");
+                    ejCompra.setNeto(saldo);
                     ejCompra.setMontoCuotas(montoCuota + "");
-
+                    
+                    this.save(ejCompra);
                 }
 
             } else {
@@ -117,11 +123,13 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     ejCompra.setSaldo(saldo + "");
                     ejCompra.setDescuento(interes + "");
                     ejCompra.setMontoDescuento(montoInteres + "");
-                    ejCompra.setNeto(saldo + "");
+                    ejCompra.setNeto(saldo);
+                    
+                    this.save(ejCompra);
                 }
 
             }
-            this.save(ejCompra);
+            
 
             
 
@@ -209,9 +217,50 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     ejCompraUp.setEntrega(entrega + "");
                     ejCompraUp.setMontoInteres(montoInteres + "");
                     ejCompraUp.setSaldo(saldo + "");
-                    ejCompraUp.setNeto(saldo + "");
-                    ejCompraUp.setMontoCuotas(montoCuota + "");
+                    ejCompraUp.setNeto(saldo);
+                    ejCompraUp.setMontoCuotas(montoCuota + "");                                      
+                    
+                    this.update(ejCompraUp);
+                    
+                    for(int i = 1 ; i <= compra.getCantidadCuotas() ; i ++ ){
+                        
+                        DocumentoPagar ejAPagar = new DocumentoPagar();
+                        ejAPagar.setCompra(ejCompraUp);
+                        ejAPagar.setActivo("S");
+                        ejAPagar.setNroCuota(i+"");
+                        ejAPagar.setMonto(montoCuota);
+                        ejAPagar.setEstado(DocumentoPagar.PENDIENTE);
+                        
+                        documentoPagarManager.save(ejAPagar);
+                    }
+                    
 
+                }else{
+
+                    Double montoInteres = ((ejCompraUp.getPedido().getTotal()) * interes) / 100;
+
+                    Double saldo = (ejCompraUp.getPedido().getTotal()) + montoInteres;
+
+                    Double montoCuota = saldo / compra.getCantidadCuotas();
+
+                    ejCompraUp.setMontoInteres(montoInteres + "");
+                    ejCompraUp.setSaldo(saldo + "");
+                    ejCompraUp.setNeto(saldo);
+                    ejCompraUp.setMontoCuotas(montoCuota + "");                                      
+                    
+                    this.update(ejCompraUp);
+                    
+                    for(int i = 1 ; i <= compra.getCantidadCuotas() ; i ++ ){
+                        
+                        DocumentoPagar ejAPagar = new DocumentoPagar();
+                        ejAPagar.setCompra(ejCompraUp);
+                        ejAPagar.setActivo("S");
+                        ejAPagar.setNroCuota(i+"");
+                        ejAPagar.setMonto(montoCuota);
+                        ejAPagar.setEstado(DocumentoPagar.PENDIENTE);
+                        
+                        documentoPagarManager.save(ejAPagar);
+                    }
                 }
 
             } else {
@@ -227,11 +276,13 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     ejCompraUp.setSaldo(saldo + "");
                     ejCompraUp.setDescuento(interes + "");
                     ejCompraUp.setMontoDescuento(montoInteres + "");
-                    ejCompraUp.setNeto(saldo + "");
+                    ejCompraUp.setNeto(saldo);
+                    
+                    this.update(ejCompraUp);
                 }
 
             }
-            this.update(ejCompraUp);
+            
 
             mensaje.setError(false);
             mensaje.setId(ejCompra.getId());

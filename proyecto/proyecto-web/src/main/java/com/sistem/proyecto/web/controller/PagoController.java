@@ -9,7 +9,6 @@ import com.google.gson.Gson;
 import com.sistem.proyecto.entity.Cliente;
 import com.sistem.proyecto.entity.Compra;
 import com.sistem.proyecto.entity.DetalleCompra;
-import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Pedido;
 import com.sistem.proyecto.entity.Permiso;
@@ -39,12 +38,13 @@ import java.sql.Timestamp;
  * @author Miguel
  */
 @Controller
-@RequestMapping(value = "/compras")
-public class CompraController extends BaseController {
+@RequestMapping(value = "/pagos")
+public class PagoController extends BaseController {
 
     String atributos = "id,numeroPedido,codigo,fechaEntrega,observacion,confirmado,total,proveedor.id,"
             + "proveedor.nombre,activo,usuario.nombre,cantidadAprobados,cantidadTotal";
-    String atributosApagar = "id,nroCuota,monto,saldo,montoInteres,fecha,estado";
+    String atributosDetalle = "id,numeroPedido,codigo,fechaEntrega,observacion,confirmado,descuento,total,neto,proveedor.id,"
+            + "proveedor.nombre";
 
     String atributosCompras = "id,nroFactura,fechaCompra,tipoCompra,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
             + "tipoMoraInteres,moraInteres,cantidadCuotas,montoCuotas,proveedor.nombre,activo,pedido.usuario.nombre,"
@@ -54,7 +54,7 @@ public class CompraController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listarPermisos(Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("comprasListar");
+        retorno.setViewName("pagosForm");
         return retorno;
     }
 
@@ -172,90 +172,6 @@ public class CompraController extends BaseController {
             }
 
             listMapGrupos = compraManager.listAtributos(ejemplo, atributosCompras.split(","), todos, inicio, cantidad,
-                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
-                    null, null, null, null, null, null, null, null, true);
-
-            if (todos) {
-                total = listMapGrupos.size();
-            }
-            Integer totalPaginas = total / cantidad;
-
-            retorno.setTotal(totalPaginas + 1);
-            retorno.setRetorno(listMapGrupos);
-            retorno.setPage(pagina);
-
-        } catch (Exception e) {
-            retorno.setError(true);
-            retorno.setMensaje("Error al optener pedidos");
-            logger.error("Error al listar", e);
-        }
-
-        return retorno;
-    }
-    
-    @RequestMapping(value = "/docApagar/listar", method = RequestMethod.GET)
-    public @ResponseBody
-    DTORetorno listarApagar(@ModelAttribute("_search") boolean filtrar,
-            @ModelAttribute("filters") String filtros,
-            @ModelAttribute("page") Integer pagina,
-            @ModelAttribute("rows") Integer cantidad,
-            @ModelAttribute("sidx") String ordenarPor,
-            @ModelAttribute("idCompra") String idCompra,
-            @ModelAttribute("sord") String sentidoOrdenamiento,
-            @ModelAttribute("todos") boolean todos) {
-
-        DTORetorno retorno = new DTORetorno();
-        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-        DocumentoPagar ejemplo = new DocumentoPagar();
-        ejemplo.setCompra(new Compra(Long.parseLong(idCompra)));
-
-        List<Map<String, Object>> listMapGrupos = null;
-
-        try {
-
-            inicializarDocumentoPagarManager();
-
-            Gson gson = new Gson();
-            String camposFiltros = null;
-            String valorFiltro = null;
-
-            if (filtrar) {
-                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
-                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
-                    for (ReglaDTO regla : filtro.getRules()) {
-                        if (camposFiltros == null) {
-                            camposFiltros = regla.getField();
-                            valorFiltro = regla.getData();
-                        } else {
-                            camposFiltros += "," + regla.getField();
-                        }
-                    }
-                } else {
-                    //ejemplo = generarEjemplo(filtro, ejemplo);
-                }
-
-            }
-            // ejemplo.setActivo("S");
-            if (ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0) {
-                ordenarPor = "numeroPedido";
-            }
-
-            pagina = pagina != null ? pagina : 1;
-            Integer total = 0;
-
-            if (!todos) {
-                total = documentoPagarManager.list(ejemplo, true).size();
-            }
-
-            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
-
-            if (total < inicio) {
-                inicio = total - total % cantidad;
-                pagina = total / cantidad;
-            }
-
-            listMapGrupos = documentoPagarManager.listAtributos(ejemplo, atributosApagar.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
 

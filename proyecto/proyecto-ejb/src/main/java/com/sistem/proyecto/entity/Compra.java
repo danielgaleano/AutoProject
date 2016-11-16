@@ -25,8 +25,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 public class Compra extends Base{
     
     public static final String ORDEN_COMPRA = "ORDEN_COMPRA";
-    public static final String COMPRA = "COMPRA";
-    public static final String REALIZADA = "REALIZADA";
+    public static final String COMPRA_PENDIENTE = "COMPRA_PENDIENTE";
+    public static final String COMPRA_REALIZADA = "COMPRA_REALIZADA";
     
     @Column(name = "nro_factura", nullable = true)
     private String nroFactura;
@@ -86,7 +86,7 @@ public class Compra extends Base{
     private String montoDescuento;
     
     @Column(name = "neto")
-    private String neto;
+    private Double neto;
     
     @ManyToOne
     @JoinColumn(name = "proveedor")
@@ -367,14 +367,14 @@ public class Compra extends Base{
     /**
      * @return the neto
      */
-    public String getNeto() {
+    public Double getNeto() {
         return neto;
     }
 
     /**
      * @param neto the neto to set
      */
-    public void setNeto(String neto) {
+    public void setNeto(Double neto) {
         this.neto = neto;
     }
 

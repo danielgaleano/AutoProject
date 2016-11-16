@@ -37,8 +37,8 @@
                     </h3>
 
                     <div class="widget-toolbar no-border">
-                        <a sec:authorize="hasRole('Compra.Editar')" id="botonEditar" th:if="!${editar} and ${pedido} != null" th:href="@{'/pedidos/editar/'+${proveedor.id}}" class="btn btn-primary bigger" role="button">Editar</a>
-                        <a th:href="@{/pedidos}" class="btn btn-primary btn-light bigger" role="button">
+                        <a sec:authorize="hasRole('Compra.Realizar')" id="botonAprobar" class="btn btn-primary bigger" role="button" hidden="hidden">Aprobar</a>
+                        <a th:href="@{/orden/compras}" class="btn btn-primary btn-light bigger" role="button">
                             <i class="ace-icon fa fa-arrow-left"></i>
                             Volver
                         </a> 
@@ -145,7 +145,7 @@
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-2 col-md-2">
                                                 <label class="col-lg-5 control-label">Cuotas</label>
                                                 <div class="col-lg-7">
-                                                    <input  id="cuotas" name="cuotas" type="number"  class="form-control tableusuario-input"/> 
+                                                    <input  id="cuotas" name="cantidadCuotas" type="number"  class="form-control tableusuario-input"/> 
                                                     <span class="glyphicon form-control-feedback" id="cuotas1"></span>
                                                 </div>
                                             </div>

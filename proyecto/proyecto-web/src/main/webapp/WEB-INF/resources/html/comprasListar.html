@@ -5,7 +5,9 @@
     <head>
     <div th:include="include/head :: head" th:remove="tag"></div>
     <title>Compras</title>
-
+    <script th:inline="javascript">
+        var action = /*[[${action}]]*/'';
+    </script>
     <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
     <link th:href="@{/resources/css/icon.css}" rel="stylesheet" />
 
@@ -24,14 +26,14 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Orden de Compras
+                Compras
                 <small>Lista de compras de la empresa.</small>
             </h1>
-            <ol class="breadcrumb">
+<!--            <ol class="breadcrumb">
                 <a sec:authorize="hasRole('Compra.Realizar')" th:href="@{/compras/directa/crear}" class="btn btn-primary" role="button">
                     Compra Directa
                 </a>
-            </ol>
+            </ol>-->
         </section>
         <hr/>
         <!-- Main content -->
@@ -63,7 +65,7 @@
     <script th:src="@{/resources/js/base.js}"></script>
     <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
-    <script th:src="@{/resources/js/compra/ordenesListar.js}"></script>
+    <script th:src="@{/resources/js/compra/comprasListar.js}"></script>
 
 
 

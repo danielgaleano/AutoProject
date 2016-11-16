@@ -5,11 +5,13 @@
  */
 package com.sistem.proyecto.web.controller;
 
+import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.manager.ClienteManager;
 import com.sistem.proyecto.manager.CompraManager;
 import com.sistem.proyecto.manager.ContactoManager;
 import com.sistem.proyecto.manager.DetalleCompraManager;
 import com.sistem.proyecto.manager.DetallePedidoManager;
+import com.sistem.proyecto.manager.DocumentoPagarManager;
 import com.sistem.proyecto.manager.EmpleoManager;
 import com.sistem.proyecto.manager.ProveedorManager;
 import com.sistem.proyecto.manager.EmpresaManager;
@@ -81,6 +83,8 @@ public class BaseController {
     protected CompraManager compraManager;
     
     protected DetalleCompraManager detalleCompraManager;
+    
+    protected DocumentoPagarManager documentoPagarManager;
 
     public static final Logger logger = LoggerFactory
             .getLogger("proyecto");
@@ -114,6 +118,24 @@ public class BaseController {
             try {
 
                 compraManager = (CompraManager) context.lookup("java:app/proyecto-ejb/CompraManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
+    }
+    
+    protected void inicializarDocumentoPagarManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
+        if (documentoPagarManager == null) {
+            try {
+
+                documentoPagarManager = (DocumentoPagarManager) context.lookup("java:app/proyecto-ejb/DocumentoPagarManagerImpl");
             } catch (NamingException ne) {
                 throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
             }

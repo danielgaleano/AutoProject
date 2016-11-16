@@ -19,6 +19,10 @@ import javax.persistence.ManyToOne;
 @Entity
 public class DocumentoPagar extends Base {
     
+    public static final String PARCIAL = "PARCIAL";
+    public static final String PENDIENTE = "PENDIENTE";
+    public static final String CANCELADO = "CANCELADO";
+    
     @Column(name = "nro_cuota", nullable = true)
     private String nroCuota;
     
@@ -27,7 +31,13 @@ public class DocumentoPagar extends Base {
     private Compra compra;
     
     @Column(name = "monto")
-    private String monto;
+    private Double monto;
+    
+    @Column(name = "saldo")
+    private Double saldo;
+    
+    @Column(name = "montoInteres")
+    private Double montoInteres;
     
     @Column(name = "fecha")
     private Timestamp fecha;
@@ -67,14 +77,14 @@ public class DocumentoPagar extends Base {
     /**
      * @return the monto
      */
-    public String getMonto() {
+    public Double getMonto() {
         return monto;
     }
 
     /**
      * @param monto the monto to set
      */
-    public void setMonto(String monto) {
+    public void setMonto(Double monto) {
         this.monto = monto;
     }
     
@@ -104,6 +114,22 @@ public class DocumentoPagar extends Base {
      */
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public Double getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(Double saldo) {
+        this.saldo = saldo;
+    }
+
+    public Double getMontoInteres() {
+        return montoInteres;
+    }
+
+    public void setMontoInteres(Double montoInteres) {
+        this.montoInteres = montoInteres;
     }
     
 }

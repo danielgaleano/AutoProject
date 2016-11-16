@@ -55,6 +55,9 @@ public class DetalleCompra extends Base {
     @JoinColumn(name = "compra")
     private Compra compra;
     
+    @Transient
+    private String nroFactura;
+    
     public DetalleCompra() {
 
     }
@@ -192,6 +195,14 @@ public class DetalleCompra extends Base {
      */
     public void setCompra(Compra compra) {
         this.compra = compra;
+    }
+
+    public String getNroFactura() {
+        return nroFactura;
+    }
+
+    public void setNroFactura(String nroFactura) {
+        this.nroFactura = nroFactura;
     }
 
     

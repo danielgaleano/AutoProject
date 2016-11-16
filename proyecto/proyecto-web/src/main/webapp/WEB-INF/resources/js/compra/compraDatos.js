@@ -35,6 +35,8 @@ function cargarDatos(id) {
                  $("#formCredito").hide();
             }else if(compra.formaPago === 'CREDITO'){
                   $('#credito').prop("checked",true);
+                  $("#general").attr("disabled", true);
+                  $("#detallado").attr("disabled", true);
                   $("#formCredito").show();
             }
             

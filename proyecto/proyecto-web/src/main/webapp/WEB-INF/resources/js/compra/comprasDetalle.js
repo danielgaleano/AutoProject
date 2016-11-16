@@ -406,6 +406,7 @@ $(document).ready(function(data) {
                                             + data.responseJSON.mensaje
                                             + '</div>');
                                     $(grid_selector).trigger('reloadGrid');
+                                    cargarDatos(id);
 
                                 }
                             }

@@ -45,7 +45,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/compra/detalles")
 public class DetalleCompraController extends BaseController {
 
-    String atributos = "id,neto,vehiculo.caracteristica,vehiculo.transmision,vehiculo.color,vehiculo.anho,vehiculo.codigo,precio,vehiculo.tipo.id,vehiculo.tipo.nombre,vehiculo.modelo.id,vehiculo.modelo.nombre,vehiculo.marca.id,vehiculo.marca.nombre,activo,moneda.id,moneda.nombre,moneda.valor";
+    String atributos = "id,neto,vehiculo.caracteristica,vehiculo.transmision,vehiculo.color,vehiculo.anho,vehiculo.codigo,precio,vehiculo.tipo.id,vehiculo.tipo.nombre,vehiculo.modelo.id,vehiculo.modelo.nombre,vehiculo.marca.id,vehiculo.marca.nombre,activo,moneda.id,moneda.nombre,moneda.valor,porcentajeDescuento,montoDescuento";
 
     @RequestMapping(value = "/agregar/{id}", method = RequestMethod.GET)
     public ModelAndView detalleAgregar(@PathVariable("id") Long id, Model model) {

@@ -341,7 +341,9 @@ public class CompraController extends BaseController {
             Double neto = ejDetalleCompra.getPrecio() - descuento;
 
             ejDetalleCompra.setNeto(neto);
-
+            ejDetalleCompra.setPorcentajeDescuento(compraRecibido.getPorcentajeDescuento());
+            ejDetalleCompra.setMontoDescuento(descuento);
+            
             detalleCompraManager.update(ejDetalleCompra);
 
             ejCompra = compraManager.get(ejDetalleCompra.getCompra());
@@ -364,7 +366,7 @@ public class CompraController extends BaseController {
             ejCompra.setNeto(netoPagar);
             ejCompra.setFormaPago("CONTADO");
             ejCompra.setTipoDescuento("DETALLADO");
-            ejCompra.setNroFactura(compraRecibido.getNroFactura());
+           // ejCompra.setNroFactura(compraRecibido.getNroFactura());
             
             compraManager.update(ejCompra);
 

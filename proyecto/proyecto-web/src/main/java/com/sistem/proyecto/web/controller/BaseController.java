@@ -6,7 +6,9 @@
 package com.sistem.proyecto.web.controller;
 
 import com.sistem.proyecto.manager.ClienteManager;
+import com.sistem.proyecto.manager.CompraManager;
 import com.sistem.proyecto.manager.ContactoManager;
+import com.sistem.proyecto.manager.DetalleCompraManager;
 import com.sistem.proyecto.manager.DetallePedidoManager;
 import com.sistem.proyecto.manager.EmpleoManager;
 import com.sistem.proyecto.manager.ProveedorManager;
@@ -75,6 +77,10 @@ public class BaseController {
     protected MonedaManager monedaManager;
     
     protected EmpleoManager empleoManager;
+    
+    protected CompraManager compraManager;
+    
+    protected DetalleCompraManager detalleCompraManager;
 
     public static final Logger logger = LoggerFactory
             .getLogger("proyecto");
@@ -91,6 +97,41 @@ public class BaseController {
             try {
 
                 imagenManager = (ImagenManager) context.lookup("java:app/proyecto-ejb/ImagenManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
+    }
+    protected void inicializarCompraManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
+        if (compraManager == null) {
+            try {
+
+                compraManager = (CompraManager) context.lookup("java:app/proyecto-ejb/CompraManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
+    }
+    
+    protected void inicializarDetalleCompraManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
+        if (detalleCompraManager == null) {
+            try {
+
+                detalleCompraManager = (DetalleCompraManager) context.lookup("java:app/proyecto-ejb/DetalleCompraManagerImpl");
             } catch (NamingException ne) {
                 throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
             }

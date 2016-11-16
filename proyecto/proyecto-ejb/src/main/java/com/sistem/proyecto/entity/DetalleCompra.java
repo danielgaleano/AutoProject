@@ -48,10 +48,6 @@ public class DetalleCompra extends Base {
     private Empresa empresa;   
     
     @ManyToOne
-    @JoinColumn(name = "pedido")
-    private Pedido pedido;
-    
-    @ManyToOne
     @JoinColumn(name = "vehiculo")
     private Vehiculo vehiculo;
     
@@ -169,19 +165,6 @@ public class DetalleCompra extends Base {
         this.empresa = empresa;
     }
 
-    /**
-     * @return the pedido
-     */
-    public Pedido getPedido() {
-        return pedido;
-    }
-
-    /**
-     * @param pedido the pedido to set
-     */
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
-    }
 
     /**
      * @return the vehiculo

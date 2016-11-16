@@ -9,12 +9,12 @@ $(document).ready(function(data) {
         errorClass: 'help-inline',
         focusInvalid: false,
         rules: {
-            factura: {
+            nroFactura: {
                 required: true,
                 //expresion regular para validar el factura
                 //regx: /^[0-9]{3}-[0-9]{3}-[0-9]{6}$/
             },           
-            optionsPago: {
+            formaPago: {
                 required: true
             },
             optionsDescuento: {
@@ -22,10 +22,10 @@ $(document).ready(function(data) {
             }
         },
         messages: {
-            factura: {
+            nroFactura: {
                 required: "Debe ingresar un número de factura!"
             },
-            optionsPago: "Debe seleccionar un tipo de pago!",
+            formaPago: "Debe seleccionar un tipo de pago!",
             optionsDescuento: "Debe seleccionar un tipo de descuento!"
         },
         invalidHandler: function (event, validator) { //display error alert on form submit   
@@ -58,18 +58,14 @@ $(document).ready(function(data) {
             $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
             $(id_attr).removeClass('glyphicon-remove').addClass('glyphicon-ok');
         },
-        submitHandler: function (form) {
-            if($("#id-disable-check").is(':checked')){
-               $("#tieneContacto").val(true);
-            }else{
-               $("#tieneContacto").val(false); 
-            }
+        submitHandler: function (form) {      
             var $form = $('#validation-form');
             var serialize = $form.find('.tableusuario-input').serialize();
-            var idCliente = $('#idCliente').val();
+            var idCompra = $('#idCompra').val();
+            var idPedido = $('#idPedido').val();
             
-            if (idCliente === null || idCliente === '') {
-                var jqXHR = $.post(CONTEXT_ROOT + '/compras/guardar', serialize, function (data, textStatus, jqXHR) {
+            if (idCompra === null || idCompra === '') {
+                var jqXHR = $.post(CONTEXT_ROOT + '/compras/'+idPedido+'/guardar', serialize, function (data, textStatus, jqXHR) {
                     if (data.error) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                 + '<button class="close" data-dismiss="alert" type="button"'
@@ -78,7 +74,9 @@ $(document).ready(function(data) {
                                 + data.mensaje
                                 + '</div>');
                     } else {
-                        $('#idCliente').val(data.id);
+                        cargarDatos(data.id);
+                        $('#idCompra').val(data.id);
+                        
                         $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
                                 + '<button type="button" class="close" data-dismiss="alert"'
                                 + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
@@ -100,7 +98,7 @@ $(document).ready(function(data) {
                         + '</div>');
                 });
             } else{
-                var jqXHR = $.post(CONTEXT_ROOT + '/compras/editar', serialize, function (data, textStatus, jqXHR) {
+                var jqXHR = $.post(CONTEXT_ROOT + '/compras/'+1+'/editar', serialize, function (data, textStatus, jqXHR) {
                     if (data.error) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                 + '<button class="close" data-dismiss="alert" type="button"'
@@ -109,6 +107,7 @@ $(document).ready(function(data) {
                                 + data.mensaje
                                 + '</div>');
                     } else {
+                        cargarDatos(idCompra);
                         $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
                                 + '<button type="button" class="close" data-dismiss="alert"'
                                 + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
@@ -136,36 +135,40 @@ $(document).ready(function(data) {
 
 
     
-    var jqXHR = $.get(CONTEXT_ROOT + "/pedidos/" + id, function(response, textStatus, jqXHR) {
-        if (response.error === true) {
-            $('#mensaje').append('<div class="alert alert-error">'
-                    + '<button class="close" data-dismiss="alert" type="button"'
-                    + '><i class="fa  fa-remove"></i></button>'
-                    + '<strong>Error! </strong>'
-                    + response.mensaje
-                    + '</div>');
-
-        } else {
-            var pedido = response.data;
-
-            $('#idPedido').val(pedido.id);
-            $('#ruc').val(pedido['proveedor.ruc']);
-            $('#nombre').val(pedido['proveedor.nombre']);
-            $('#direccion').val(pedido['proveedor.direccion']);
-            $('#telefono').val(pedido['proveedor.telefono']);
-            $('#montoTotal').val(pedido.total);
-            $('#id-date-picker').val(pedido.fechaEntrega);
-
-        }
-    });
+//    var jqXHR = $.get(CONTEXT_ROOT + "/compras/" + id, function(response, textStatus, jqXHR) {
+//        if (response.error === true) {
+//            $('#mensaje').append('<div class="alert alert-error">'
+//                    + '<button class="close" data-dismiss="alert" type="button"'
+//                    + '><i class="fa  fa-remove"></i></button>'
+//                    + '<strong>Error! </strong>'
+//                    + response.mensaje
+//                    + '</div>');
+//
+//        } else {
+//            var compra = response.data;
+//
+//            $('#idCompra').val(compra.id);
+//            $('#ruc').val(compra['proveedor.ruc']);
+//            $('#nombre').val(compra['proveedor.nombre']);
+//            $('#direccion').val(compra['proveedor.direccion']);
+//            $('#telefono').val(compra['proveedor.telefono']);
+//            $('#montoTotal').val(compra.total);
+//            $('#id-date-picker').val(compra.fechaEntrega);
+//
+//        }
+//    });
 
     $("#credito").click(function() {
         if (this.checked) { //chequear status del select
+            $("#general").attr("disabled", true);
+            $("#detallado").attr("disabled", true);
             $("#formCredito").show();
         }
     });
     $("#contado").click(function() {
         if (this.checked) { //chequear status del select
+            $("#general").attr("disabled", false);
+            $("#detallado").attr("disabled", false);
             $("#formCredito").hide();
         }
     });
@@ -177,6 +180,7 @@ $(document).ready(function(data) {
     });
     $("#detallado").click(function() {
         if (this.checked) { //chequear status del select
+            $('#validation-form').valid();
             $('#grid').trigger('reloadGrid');
             $("#formDescuento").hide();
         }

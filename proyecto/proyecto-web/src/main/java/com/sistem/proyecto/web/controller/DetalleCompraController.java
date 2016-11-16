@@ -6,6 +6,8 @@
 package com.sistem.proyecto.web.controller;
 
 import com.google.gson.Gson;
+import com.sistem.proyecto.entity.Compra;
+import com.sistem.proyecto.entity.DetalleCompra;
 import com.sistem.proyecto.entity.DetallePedido;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Marca;
@@ -40,10 +42,10 @@ import org.springframework.web.servlet.ModelAndView;
  * @author Miguel
  */
 @Controller
-@RequestMapping(value = "/pedido/detalles")
-public class DetallePedidoController extends BaseController {
+@RequestMapping(value = "/compra/detalles")
+public class DetalleCompraController extends BaseController {
 
-    String atributos = "id,neto,vehiculo.caracteristica,vehiculo.transmision,vehiculo.color,vehiculo.anho,vehiculo.codigo,precio,total,vehiculo.tipo.id,vehiculo.tipo.nombre,vehiculo.modelo.id,vehiculo.modelo.nombre,vehiculo.marca.id,vehiculo.marca.nombre,activo,estadoPedido,moneda.id,moneda.nombre,moneda.valor";
+    String atributos = "id,neto,vehiculo.caracteristica,vehiculo.transmision,vehiculo.color,vehiculo.anho,vehiculo.codigo,precio,vehiculo.tipo.id,vehiculo.tipo.nombre,vehiculo.modelo.id,vehiculo.modelo.nombre,vehiculo.marca.id,vehiculo.marca.nombre,activo,moneda.id,moneda.nombre,moneda.valor";
 
     @RequestMapping(value = "/agregar/{id}", method = RequestMethod.GET)
     public ModelAndView detalleAgregar(@PathVariable("id") Long id, Model model) {
@@ -62,25 +64,26 @@ public class DetallePedidoController extends BaseController {
             @ModelAttribute("rows") Integer cantidad,
             @ModelAttribute("sidx") String ordenarPor,
             @ModelAttribute("sord") String sentidoOrdenamiento,
-            @ModelAttribute("idPedido") String idPedido,
+            @ModelAttribute("idCompra") String idCompra,
+            @ModelAttribute("idDetalle") String idDetalle,
             @ModelAttribute("estado") String estado,
             @ModelAttribute("todos") boolean todos) {
 
         DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        DetallePedido ejemplo = new DetallePedido();
+        DetalleCompra ejemplo = new DetalleCompra();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-        if (idPedido != null && idPedido.compareToIgnoreCase("") != 0) {
-            ejemplo.setPedido(new Pedido(Long.parseLong(idPedido)));
-        }
+       
+        if (idCompra != null && idCompra.compareToIgnoreCase("") != 0) {
+            ejemplo.setCompra(new Compra(Long.parseLong(idCompra)));
+        }else  if (idDetalle != null && idDetalle.compareToIgnoreCase("") != 0) {
+            ejemplo.setId(Long.parseLong(idDetalle));
+        }      
         List<Map<String, Object>> listMapGrupos = null;
+        
         try {
-            
-            if(estado != null && estado.compareToIgnoreCase("") != 0){
-                ejemplo.setEstadoPedido(DetallePedido.APROBADO);
-            }
-
-            inicializarDetallePedidoManager();
+    
+            inicializarDetalleCompraManager();
 
             Gson gson = new Gson();
             String camposFiltros = null;
@@ -109,9 +112,10 @@ public class DetallePedidoController extends BaseController {
             
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
-            if (idPedido != null && idPedido.compareToIgnoreCase("") != 0) {
+            if (idCompra != null && idCompra.compareToIgnoreCase("") != 0
+                    || idDetalle != null && idDetalle.compareToIgnoreCase("") != 0) {
                 if (!todos) {
-                    total = detallePedidoManager.list(ejemplo, true).size();
+                    total = detalleCompraManager.list(ejemplo, true).size();
                 }
 
                 Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
@@ -121,7 +125,7 @@ public class DetallePedidoController extends BaseController {
                     pagina = total / cantidad;
                 }
 
-                listMapGrupos = detallePedidoManager.listAtributos(ejemplo, atributos.split(","), todos, inicio, cantidad,
+                listMapGrupos = detalleCompraManager.listAtributos(ejemplo, atributos.split(","), todos, inicio, cantidad,
                         ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                         null, null, null, null, null, null, null, null, true);
 
@@ -170,11 +174,11 @@ public class DetallePedidoController extends BaseController {
 
     @RequestMapping(value = "/guardar", method = RequestMethod.POST)
     public @ResponseBody
-    MensajeDTO guardar(@ModelAttribute("DetallePedido") DetallePedido detalleRecibido) {
+    MensajeDTO guardar(@ModelAttribute("DetalleCompra") DetalleCompra detalleRecibido) {
 
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO mensaje = new MensajeDTO();
-        DetallePedido ejDetalle = new DetallePedido();
+        DetalleCompra ejDetalle = new DetalleCompra();
         Pedido ejPedido = new Pedido();
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         try {
@@ -182,60 +186,60 @@ public class DetallePedidoController extends BaseController {
             inicializarPedidoManager();
             inicializarMonedaManager();
             inicializarVehiculoManager();
-
-            if (detalleRecibido.getPedido().getId() == null || detalleRecibido.getPedido().getId() != null
-                    && detalleRecibido.getPedido().getId().toString().compareToIgnoreCase("") == 0) {
-
-                if (detalleRecibido.getPedido().getCodigo() == null || detalleRecibido.getPedido().getCodigo() != null
-                        && detalleRecibido.getPedido().getCodigo().toString().compareToIgnoreCase("") == 0) {
-                    mensaje.setError(true);
-                    mensaje.setMensaje("El codigo del pedido no puede estar vacio.");
-                    return mensaje;
-                }
-                if (detalleRecibido.getPedido().getFecha() == null || detalleRecibido.getPedido().getFecha() != null
-                        && detalleRecibido.getPedido().getFecha().compareToIgnoreCase("") == 0) {
-                    mensaje.setError(true);
-                    mensaje.setMensaje("La fecha de entrega del pedido no puede estar vacio.");
-                    return mensaje;
-                }
-                if (detalleRecibido.getPedido().getProveedor() == null || detalleRecibido.getPedido().getProveedor().getId() != null
-                        && detalleRecibido.getPedido().getProveedor().getId().toString().compareToIgnoreCase("") == 0) {
-                    mensaje.setError(true);
-                    mensaje.setMensaje("Se debe ingresar un proveedor para el pedido.");
-                    return mensaje;
-                }
-                Date resultFecha = dateFormat.parse(detalleRecibido.getPedido().getFecha());
-                
-                Pedido pedidoEj = new Pedido();
-                pedidoEj.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-                
-                Integer total = pedidoManager.list(pedidoEj, false).size();
-
-                ejPedido.setNumeroPedido(total + 1 + "");
-                ejPedido.setCodigo(detalleRecibido.getPedido().getCodigo());
-                ejPedido.setFechaEntrega(resultFecha);
-                ejPedido.setObservacion(detalleRecibido.getPedido().getObservacion());
-                ejPedido.setProveedor(detalleRecibido.getPedido().getProveedor());
-                ejPedido.setActivo("S");
-                ejPedido.setRealizado(Boolean.FALSE);
-                ejPedido.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejPedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                ejPedido.setIdUsuarioCreacion(userDetail.getId());
-                ejPedido.setUsuario(new Usuario(userDetail.getId()));
-                ejPedido.setTotal(Double.parseDouble("0"));
-                ejPedido.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-                
-                pedidoManager.save(ejPedido);
-                mensaje.setId(ejPedido.getId());
-
-            } else {
-                ejPedido.setId(detalleRecibido.getPedido().getId());
-                mensaje.setId(detalleRecibido.getPedido().getId());
-            }
-
-
-            mensaje = detallePedidoManager.guardarDetalle(detalleRecibido.getVehiculo(), detalleRecibido.getMoneda(),
-                    detalleRecibido, true, ejPedido, userDetail.getIdEmpresa(), userDetail.getId());
+//
+//            if (detalleRecibido.getPedido().getId() == null || detalleRecibido.getPedido().getId() != null
+//                    && detalleRecibido.getPedido().getId().toString().compareToIgnoreCase("") == 0) {
+//
+//                if (detalleRecibido.getPedido().getCodigo() == null || detalleRecibido.getPedido().getCodigo() != null
+//                        && detalleRecibido.getPedido().getCodigo().toString().compareToIgnoreCase("") == 0) {
+//                    mensaje.setError(true);
+//                    mensaje.setMensaje("El codigo del pedido no puede estar vacio.");
+//                    return mensaje;
+//                }
+//                if (detalleRecibido.getPedido().getFecha() == null || detalleRecibido.getPedido().getFecha() != null
+//                        && detalleRecibido.getPedido().getFecha().compareToIgnoreCase("") == 0) {
+//                    mensaje.setError(true);
+//                    mensaje.setMensaje("La fecha de entrega del pedido no puede estar vacio.");
+//                    return mensaje;
+//                }
+//                if (detalleRecibido.getPedido().getProveedor() == null || detalleRecibido.getPedido().getProveedor().getId() != null
+//                        && detalleRecibido.getPedido().getProveedor().getId().toString().compareToIgnoreCase("") == 0) {
+//                    mensaje.setError(true);
+//                    mensaje.setMensaje("Se debe ingresar un proveedor para el pedido.");
+//                    return mensaje;
+//                }
+//                Date resultFecha = dateFormat.parse(detalleRecibido.getPedido().getFecha());
+//                
+//                Pedido pedidoEj = new Pedido();
+//                pedidoEj.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+//                
+//                Integer total = pedidoManager.list(pedidoEj, false).size();
+//
+//                ejPedido.setNumeroPedido(total + 1 + "");
+//                ejPedido.setCodigo(detalleRecibido.getPedido().getCodigo());
+//                ejPedido.setFechaEntrega(resultFecha);
+//                ejPedido.setObservacion(detalleRecibido.getPedido().getObservacion());
+//                ejPedido.setProveedor(detalleRecibido.getPedido().getProveedor());
+//                ejPedido.setActivo("S");
+//                ejPedido.setRealizado(Boolean.FALSE);
+//                ejPedido.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+//                ejPedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+//                ejPedido.setIdUsuarioCreacion(userDetail.getId());
+//                ejPedido.setUsuario(new Usuario(userDetail.getId()));
+//                ejPedido.setTotal(Double.parseDouble("0"));
+//                ejPedido.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+//                
+//                pedidoManager.save(ejPedido);
+//                mensaje.setId(ejPedido.getId());
+//
+//            } else {
+//                ejPedido.setId(detalleRecibido.getPedido().getId());
+//                mensaje.setId(detalleRecibido.getPedido().getId());
+//            }
+//
+//
+//            mensaje = detallePedidoManager.guardarDetalle(detalleRecibido.getVehiculo(), detalleRecibido.getMoneda(),
+//                    detalleRecibido, true, ejPedido, userDetail.getIdEmpresa(), userDetail.getId());
  
         } catch (Exception ex) {
             mensaje.setError(true);

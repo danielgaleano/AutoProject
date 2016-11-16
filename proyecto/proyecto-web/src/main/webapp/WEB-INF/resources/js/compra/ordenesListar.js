@@ -21,7 +21,7 @@ $(document).ready(function(data) {
         }, 0);
     });
     $(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/compras/listar',
+        url: CONTEXT_ROOT + '/orden/compras/listar',
         datatype: 'json',
         mtype: 'GET',
         height: 310,
@@ -31,12 +31,12 @@ $(document).ready(function(data) {
         colNames: ['ID', 'NRO. PEDIDO', 'CODIGO', 'FECHA ENTREGA', 'APROBADOS', 'MONTO', 'USUARIO', 'PROVEEDOR', 'STATUS', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'numeroPedido', index: 'numeroPedido', width: 90, editable: false},
-            {name: 'codigo', index: 'codigo', width: 90, editable: false},
-            {name: 'fechaEntrega', index: 'fechaEntrega', width: 150, editable: true},
-            {name: 'cantidadAprobados', index: 'cantidadAprobados', width: 90, sortable: false},
-            {name: 'total', index: 'total', width: 90, sortable: false, formatter:'number'},
-            {name: 'usuario.nombre', index: 'usuario.nombre', width: 90, sortable: false},
+            {name: 'pedido.numeroPedido', index: 'pedido.numeroPedido', width: 90, editable: false},
+            {name: 'pedido.codigo', index: 'pedido.codigo', width: 90, editable: false},
+            {name: 'pedido.fechaEntrega', index: 'pedido.fechaEntrega', width: 150, editable: true},
+            {name: 'pedido.cantidadAprobados', index: 'pedido.cantidadAprobados', width: 90, sortable: false},
+            {name: 'pedido.total', index: 'pedido.total', width: 90, sortable: false, formatter:'number'},
+            {name: 'pedido.usuario.nombre', index: 'pedido.usuario.nombre', width: 90, sortable: false},
             {name: 'proveedor.nombre', index: 'proveedor.nombre', width: 90, sortable: false},
             {name: 'activo', index: 'activo', width: 90, editable: false},
             {name: 'act', index: 'act', width: 160, fixed: true, sortable: false, resize: false,
@@ -143,7 +143,7 @@ $(document).ready(function(data) {
                             asignar = "";
                             visuali = visualizarButton(cl, permisoVisualizar,null);
                             //edit = editInlineButton(cl, permisoEditar);
-                            editForm = detalleButton(cl, permisoDetalle,'Realizar Compra','compras/realizar');
+                            editForm = detalleButton(cl, permisoDetalle,'Realizar Compra','orden/compras/realizar');
                             desact = desactivarButton(cl, permisoDesactivar);
                             $(grid_selector).setRowData(ids[i], {act: ini + visuali + editForm + desact + fin});
                         }
@@ -189,10 +189,10 @@ $(document).ready(function(data) {
            subgrid_table_id = subgrid_id+"_t";
            $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table>");
            $("#"+subgrid_table_id).jqGrid({
-                url:CONTEXT_ROOT + '/pedido/detalles/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idPedido='+row_id,
+                url:CONTEXT_ROOT + '/compra/detalles/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idCompra='+row_id,
                 datatype: 'json',
                 mtype: 'GET',
-                colNames: ['CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO','TRASMISION','MONEDA', 'PRECIO', 'NETO', 'CONFIRMADO'],
+                colNames: ['CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO','TRASMISION','MONEDA', 'PRECIO', 'NETO'],
                 colModel: [
                     {name:"vehiculo.codigo",index:"vehiculo.codigo",width:80,key:true},
                     {name:"vehiculo.tipo.nombre",index:"vehiculo.tipo.nombre",width:130},
@@ -202,8 +202,7 @@ $(document).ready(function(data) {
                     {name:"vehiculo.transmision",index:"vehiculo.transmision",width:100,align:"right",sortable:false},
                     {name:"moneda.nombre",index:"moneda.nombre",width:100,align:"right",sortable:false},
                     {name:"precio",index:"precio",width:100,align:"right", formatter:'number',sortable:false},
-                    {name:"neto",index:"neto",width:100,align:"right", formatter:'number',sortable:false},
-                    {name:"estadoPedido",index:"estadoPedido",width:100,align:"right",sortable:false}
+                    {name:"neto",index:"neto",width:100,align:"right", formatter:'number',sortable:false}
                   ],
                 height: '100%',
                 rowNum:10,

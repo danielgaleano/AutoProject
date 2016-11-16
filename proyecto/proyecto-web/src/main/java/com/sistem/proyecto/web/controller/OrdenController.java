@@ -38,8 +38,8 @@ import java.sql.Timestamp;
  * @author Miguel
  */
 @Controller
-@RequestMapping(value = "/compras")
-public class CompraController extends BaseController {
+@RequestMapping(value = "/orden/compras")
+public class OrdenController extends BaseController {
 
     String atributos = "id,numeroPedido,codigo,fechaEntrega,observacion,confirmado,total,proveedor.id,"
             + "proveedor.nombre,activo,usuario.nombre,cantidadAprobados,cantidadTotal";
@@ -49,13 +49,29 @@ public class CompraController extends BaseController {
     String atributosCompras = "id,nroFactura,fechaCompra,tipoCompra,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
             + "tipoMoraInteres,moraInteres,cantidadCuotas,montoCuotas,proveedor.nombre,activo,pedido.usuario.nombre,"
             + "entrega,saldo,tipoDescuento,descuento,monto,montoDescuento,neto,pedido.numeroPedido,pedido.codigo,pedido.fechaEntrega,"
-            + "pedido.cantidadAprobados,pedido.cantidadTotal,pedido.total,proveedor.id,proveedor.ruc,proveedor.nombre,proveedor.direccion,proveedor.telefono";
+            + "pedido.cantidadAprobados,pedido.cantidadTotal,pedido.total";
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listarPermisos(Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("comprasListar");
+        retorno.setViewName("ordenesListar");
         return retorno;
+    }
+    
+    @RequestMapping(value = "/{id}/realizada", method = RequestMethod.GET)
+    public ModelAndView compraHecha(@PathVariable("id") Long id,Model model) {
+        model.addAttribute("action", "CREAR");
+        model.addAttribute("editar", false);
+        model.addAttribute("id", id);
+        return new ModelAndView("compraForm");
+    }
+
+    @RequestMapping(value = "/realizar/{id}", method = RequestMethod.GET)
+    public ModelAndView crear(@PathVariable("id") Long id,Model model) {
+        model.addAttribute("action", "CREAR");
+        model.addAttribute("editar", false);
+        model.addAttribute("id", id);
+        return new ModelAndView("ordenForm");
     }
 
     @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
@@ -107,7 +123,7 @@ public class CompraController extends BaseController {
         
         Compra ejemplo = new Compra();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-        ejemplo.setEstadoCompra(Compra.COMPRA);
+        ejemplo.setEstadoCompra(Compra.ORDEN_COMPRA);
         
         List<Map<String, Object>> listMapGrupos = null;
 
@@ -177,7 +193,7 @@ public class CompraController extends BaseController {
     }    
 
     
-    @RequestMapping(value = "/{id}/guardar", method = RequestMethod.POST)
+        @RequestMapping(value = "/{id}/guardar", method = RequestMethod.POST)
     public @ResponseBody
     MensajeDTO guardar(@PathVariable("id") Long id, @ModelAttribute("Compra") Compra compraRecibido) {
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
@@ -216,41 +232,6 @@ public class CompraController extends BaseController {
 
         return mensaje;
     }
-    
-    @RequestMapping(value = "/{id}/editar", method = RequestMethod.POST)
-    public @ResponseBody
-    MensajeDTO editarCompra(@PathVariable("id") Long id,@ModelAttribute("Compra") Compra compraRecibido) {
-        
-        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        MensajeDTO mensaje = new MensajeDTO();
-        Compra ejCompra = new Compra();
-        DetalleCompra ejDetalleCompra = new DetalleCompra();
-        try {
-            inicializarCompraManager();
-            
-            if (compraRecibido.getNroFactura()== null || compraRecibido.getNroFactura() != null
-                    && compraRecibido.getNroFactura().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El Nro. Factura no puede estar vacio.");
-                return mensaje;
-            }
-            
-            mensaje = compraManager.editarCompra(compraRecibido.getId(), compraRecibido, compraRecibido.getFormaPago(),
-                    compraRecibido.getTipoDescuento(), userDetail.getIdEmpresa(), userDetail.getId());
-            
-            mensaje.setError(false);
-            mensaje.setMensaje("La compra se registro exitosamente.");
-            
-        } catch (Exception ex) {
-            mensaje.setError(true);
-            mensaje.setMensaje("Error a guardar la compra");
-            logger.debug("Error al guardar la compra ", ex);
-        }
-
-        return mensaje;
-    }
-    
-    
 
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody

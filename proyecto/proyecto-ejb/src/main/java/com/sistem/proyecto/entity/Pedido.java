@@ -46,7 +46,9 @@ public class Pedido extends Base {
 
     @Column(name = "confirmado")
     private Boolean confirmado;
-
+    
+    @Column(name = "realizado")
+    private Boolean realizado;
 
 //    @Column(name = "descuento")
 //    private Double descuento;
@@ -303,6 +305,14 @@ public class Pedido extends Base {
      */
     public void setDetallePedidoCollection(Collection<DetallePedido> detallePedidoCollection) {
         this.detallePedidoCollection = detallePedidoCollection;
+    }
+
+    public Boolean isRealizado() {
+        return realizado;
+    }
+
+    public void setRealizado(Boolean realizado) {
+        this.realizado = realizado;
     }
     
     

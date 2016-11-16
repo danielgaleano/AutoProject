@@ -9,7 +9,7 @@
     <link th:href="@{/resources/dist/css/jquery.modal.css}" rel="stylesheet" />
     <link th:href="@{/resources/bootstrap/css/bootstrap-datetimepicker.min.css}" rel="stylesheet" />
 
-    <title>Compra</title>
+    <title>Orden de Compra</title>
     <script th:inline="javascript">
         var id = /*[[${id}]]*/'';
         var action = /*[[${action}]]*/'';
@@ -31,10 +31,8 @@
 
                 <div class="widget-header widget-header-flat widget-header-large">
                     <h3 class="widget-title">
-                        <span th:if="${proveedor} == null" class="middle">Compra</span>
-                        <span th:if="${editar}" class="middle">Editar Compra</span>
-                        <span th:if="!${editar} and ${proveedor} != null" class="middle">Visualizar Compra</span>
-                    </h3>
+                        <span class="middle">Orden de Compra</span>
+                        </h3>
 
                     <div class="widget-toolbar no-border">
                         <a sec:authorize="hasRole('Compra.Editar')" id="botonEditar" th:if="!${editar} and ${pedido} != null" th:href="@{'/pedidos/editar/'+${proveedor.id}}" class="btn btn-primary bigger" role="button">Editar</a>
@@ -54,11 +52,13 @@
 
                             <div class="col-xs-12 col-sm-12">
                                 <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
-                                    <input  id="idCompra" name="id" type="hidden" th:value="${id}" class="form-control tableusuario-input" />
+
+                                    <input  id="idPedido" name="id" type="hidden" th:value="${id}" class="form-control table-empresa-input" />
+                                    <input  id="idCompra" name="id" type="hidden"  class="form-control table-empresa-input" />
                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                         <label class="col-lg-5 control-label">Nro. Factura(*)</label>
                                         <div class="col-lg-7">
-                                            <input id="nroFactura" name="nroFactura" type="text" placeholder="Nro. de factura" class="form-control tableusuario-input "/> 
+                                            <input id="factura" name="nroFactura" type="text" placeholder="Nro. de factura" class="form-control tableusuario-input "/> 
                                             <span class="glyphicon form-control-feedback" id="factura1"></span>
                                         </div>
                                     </div>
@@ -145,7 +145,7 @@
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-2 col-md-2">
                                                 <label class="col-lg-5 control-label">Cuotas</label>
                                                 <div class="col-lg-7">
-                                                    <input  id="cuotas" name="cuotas" type="number"  class="form-control tableusuario-input"/> 
+                                                    <input  id="cuotas" name="cantidadCuotas" type="number"  class="form-control tableusuario-input"/> 
                                                     <span class="glyphicon form-control-feedback" id="cuotas1"></span>
                                                 </div>
                                             </div>
@@ -166,7 +166,7 @@
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                 <label class="col-lg-6 control-label">%Interes por Mora</label>
                                                 <div class="col-lg-2">
-                                                    <input   id="interesMora" name="interesMora" type="text"  class="form-control tableusuario-input"/> 
+                                                    <input   id="moraInteres" name="moraInteres" type="text"  class="form-control tableusuario-input"/> 
                                                     <span class="glyphicon form-control-feedback" id="interesMora1"></span>
                                                 </div>
                                             </div>
@@ -234,7 +234,7 @@
                     <div class="col-xs-12">
 
                         <div id="mensaje"></div>
-                        <table id="grid" style="width: 100%;"></table>
+                        <table id="grid"  style="width: 100%;"></table>
                         <div id="grid-pager"></div>
 
                     </div>
@@ -314,8 +314,7 @@
     <script th:src="@{/resources/js/base.js}"></script>
     <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
-    <script th:src="@{/resources/js/compra/comprasForm.js}"></script>
-    <script th:src="@{/resources/js/compra/compraDatos.js}"></script>
+    <script th:src="@{/resources/js/compra/ordenForm.js}"></script>
     <script th:src="@{/resources/js/compra/descuentoForm.js}"></script>
     <script th:src="@{/resources/js/compra/comprasDetalle.js}"></script>
 

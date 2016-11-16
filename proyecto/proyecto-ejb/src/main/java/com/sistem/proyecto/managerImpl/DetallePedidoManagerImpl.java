@@ -5,11 +5,15 @@
  */
 package com.sistem.proyecto.managerImpl;
 
+import com.sistem.proyecto.entity.Compra;
+import com.sistem.proyecto.entity.DetalleCompra;
 import com.sistem.proyecto.entity.DetallePedido;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Moneda;
 import com.sistem.proyecto.entity.Pedido;
 import com.sistem.proyecto.entity.Vehiculo;
+import com.sistem.proyecto.manager.CompraManager;
+import com.sistem.proyecto.manager.DetalleCompraManager;
 import com.sistem.proyecto.manager.DetallePedidoManager;
 import com.sistem.proyecto.manager.MonedaManager;
 import com.sistem.proyecto.manager.PedidoManager;
@@ -37,6 +41,12 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
 
     @EJB(mappedName = "java:app/proyecto-ejb/PedidoManagerImpl")
     private PedidoManager pedidoManager;
+
+    @EJB(mappedName = "java:app/proyecto-ejb/CompraManagerImpl")
+    private CompraManager compraManager;
+
+    @EJB(mappedName = "java:app/proyecto-ejb/DetalleCompraManagerImpl")
+    private DetalleCompraManager detalleCompraManager;
 
     @Override
     protected Class<DetallePedido> getEntityBeanType() {
@@ -206,38 +216,99 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
                 mensaje.setMensaje("Debe Ingresar el pedido a aprobar.");
                 return mensaje;
             }
+
             DetallePedido detallePedido = new DetallePedido();
-            
+
             detallePedido = this.get(idDetalle);
-            
+
+            DetalleCompra ejDetCompra = new DetalleCompra();
+            ejDetCompra.setActivo("S");
+            ejDetCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+            ejDetCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejDetCompra.setEmpresa(new Empresa(idEmpresa));
+            ejDetCompra.setVehiculo(detallePedido.getVehiculo());
+            ejDetCompra.setMoneda(detallePedido.getMoneda());
+            ejDetCompra.setCambioDia(detallePedido.getCambioDia());
+            ejDetCompra.setPrecio(detallePedido.getNeto());
+
             String nombre = detallePedido.getVehiculo().getCodigo();
-            
+
             detallePedido.setEstadoPedido(DetallePedido.APROBADO);
             detallePedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
             detallePedido.setIdUsuarioModificacion(idUsuario);
 
             this.update(detallePedido);
- 
+
             detallePedido = new DetallePedido();
             detallePedido.setPedido(new Pedido(idPedido));
             detallePedido.setEstadoPedido(DetallePedido.APROBADO);
-            
+
             List<DetallePedido> listDetalle = this.list(detallePedido, true);
-            Double totalPedido = 0.0 ;
-            
-            for(DetallePedido rpm : listDetalle){
+            Double totalPedido = 0.0;
+
+            for (DetallePedido rpm : listDetalle) {
                 totalPedido = totalPedido + rpm.getNeto();
             }
-            
+
             Pedido pedido = pedidoManager.get(idPedido);
-            pedido.setCantidadAprobados(Long.parseLong(pedido.getDetallePedidoCollection().size()+""));
+
+            pedido.setCantidadAprobados(Long.parseLong(pedido.getDetallePedidoCollection().size() + ""));
             pedido.setTotal(totalPedido);
             pedido.setConfirmado(true);
             pedidoManager.update(pedido);
-            
+            Compra ejCompra = new Compra();
+            ejCompra.setPedido(new Pedido(idPedido));
+
+            ejCompra = compraManager.get(ejCompra);
+
+            DetallePedido pedidoPendiente = new DetallePedido();
+            pedidoPendiente.setPedido(new Pedido(idPedido));
+            pedidoPendiente.setEstadoPedido(DetallePedido.PENDIENTE);
+
+            int pendiente = this.list(pedidoPendiente, true).size();
+
+            if (ejCompra != null) {
+                if (pendiente <= 0) {
+                    ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
+                }
+                ejCompra.setMonto(totalPedido + "");
+                ejCompra.setTipoCompra("INDIRECTA");
+
+                compraManager.update(ejCompra);
+
+                ejDetCompra.setCompra(ejCompra);
+
+                detalleCompraManager.save(ejDetCompra);
+
+            } else {
+
+                pedido = pedidoManager.get(idPedido);
+
+                ejCompra = new Compra();
+
+                if (pendiente <= 0) {
+                    ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
+                }
+
+                ejCompra.setActivo("S");
+                ejCompra.setTipoCompra("INDIRECTA");
+                ejCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                ejCompra.setEmpresa(new Empresa(idEmpresa));
+                ejCompra.setProveedor(pedido.getProveedor());
+                ejCompra.setPedido(pedido);
+                ejCompra.setMonto(totalPedido + "");
+
+                compraManager.save(ejCompra);
+
+                ejDetCompra.setCompra(ejCompra);
+
+                detalleCompraManager.save(ejDetCompra);
+
+            }
+
             mensaje.setError(false);
             mensaje.setMensaje("El pedido del vehiculo " + nombre + " se aprobo exitosamente.");
-  
 
         } catch (Exception e) {
             mensaje.setError(true);
@@ -263,42 +334,58 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
                 return mensaje;
             }
             DetallePedido detallePedido = new DetallePedido();
-            
+
             detallePedido = this.get(idDetalle);
-            
+
             String nombre = detallePedido.getVehiculo().getCodigo();
-            
+
             detallePedido.setEstadoPedido(DetallePedido.RECHAZADO);
             detallePedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
             detallePedido.setIdUsuarioModificacion(idUsuario);
 
             this.update(detallePedido);
- 
+
             DetallePedido detallePedidoApro = new DetallePedido();
-            detallePedidoApro.setPedido(new Pedido(idPedido));           
+            detallePedidoApro.setPedido(new Pedido(idPedido));
             detallePedidoApro.setEstadoPedido(DetallePedido.APROBADO);
-            
+
             List<DetallePedido> listDetalle = this.list(detallePedidoApro, true);
-            Double totalPedido = 0.0 ;
-            
-            for(DetallePedido rpm : listDetalle){
+            Double totalPedido = 0.0;
+
+            for (DetallePedido rpm : listDetalle) {
                 totalPedido = totalPedido + rpm.getNeto();
             }
-            
+
             Pedido pedido = pedidoManager.get(idPedido);
-            pedido.setTotal(pedido.getTotal() - detallePedido.getNeto() );
-            
-            pedido.setCantidadAprobados(Long.parseLong(listDetalle.size()+""));
+            pedido.setTotal(pedido.getTotal() - detallePedido.getNeto());
+
+            pedido.setCantidadAprobados(Long.parseLong(listDetalle.size() + ""));
             pedido.setTotal(totalPedido);
-            
-            if(listDetalle.size() > 0){
+            //Se verifica si existen estados pendientes
+            DetallePedido pedidoPendiente = new DetallePedido();
+            pedidoPendiente.setPedido(new Pedido(idPedido));
+            pedidoPendiente.setEstadoPedido(DetallePedido.PENDIENTE);
+
+            int pendiente = this.list(pedidoPendiente, true).size();
+
+            if (listDetalle.size() > 0) {
                 pedido.setConfirmado(true);
-            }else{
+                if (pendiente <= 0) {
+                    
+                    Compra ejCompra = new Compra();
+                    ejCompra.setPedido(new Pedido(idPedido));
+
+                    ejCompra = compraManager.get(ejCompra);
+                    ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
+                    compraManager.update(ejCompra);
+                    
+                }
+            } else {
                 pedido.setConfirmado(false);
             }
-            
+
             pedidoManager.update(pedido);
-            
+
             mensaje.setError(false);
             mensaje.setMensaje("El pedido del vehiculo " + nombre + " se rechazo exitosamente.");
 

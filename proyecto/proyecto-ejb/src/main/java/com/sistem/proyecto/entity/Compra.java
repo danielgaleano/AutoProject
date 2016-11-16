@@ -24,6 +24,10 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Entity
 public class Compra extends Base{
     
+    public static final String ORDEN_COMPRA = "ORDEN_COMPRA";
+    public static final String COMPRA = "COMPRA";
+    public static final String REALIZADA = "REALIZADA";
+    
     @Column(name = "nro_factura", nullable = true)
     private String nroFactura;
     
@@ -39,8 +43,8 @@ public class Compra extends Base{
     @Column(name = "descripcion")
     private String descripcion;
     
-    @Column(name = "porcentaje_interes")
-    private String porcentajeInteres;
+    @Column(name = "porcentaje_interes_credito")
+    private String porcentajeInteresCredito;
     
     @Column(name = "monto_interes")
     private String montoInteres;
@@ -89,6 +93,10 @@ public class Compra extends Base{
     private Proveedor proveedor;
     
     @ManyToOne
+    @JoinColumn(name = "pedido")
+    private Pedido pedido;
+    
+    @ManyToOne
     @JoinColumn(name = "empresa")
     private Empresa empresa;
     
@@ -99,6 +107,15 @@ public class Compra extends Base{
     @LazyCollection(LazyCollectionOption.FALSE)
     private Collection<DetalleCompra> detalleCompraCollection;
 
+    
+    public Compra() {
+    }
+
+    public Compra(Long id) {
+        setId(id);
+    }
+
+    
     /**
      * @return the nroFactura
      */
@@ -169,19 +186,15 @@ public class Compra extends Base{
         this.descripcion = descripcion;
     }
 
-    /**
-     * @return the porcentajeInteres
-     */
-    public String getPorcentajeInteres() {
-        return porcentajeInteres;
+    public String getPorcentajeInteresCredito() {
+        return porcentajeInteresCredito;
     }
 
-    /**
-     * @param porcentajeInteres the porcentajeInteres to set
-     */
-    public void setPorcentajeInteres(String porcentajeInteres) {
-        this.porcentajeInteres = porcentajeInteres;
+    public void setPorcentajeInteresCredito(String porcentajeInteresCredito) {
+        this.porcentajeInteresCredito = porcentajeInteresCredito;
     }
+
+    
 
     /**
      * @return the montoInteres
@@ -427,6 +440,14 @@ public class Compra extends Base{
 
     public void setEstadoCompra(String estadoCompra) {
         this.estadoCompra = estadoCompra;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
     
     

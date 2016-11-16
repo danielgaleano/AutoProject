@@ -31,14 +31,14 @@ $(document).ready(function(data) {
     //compraForm($("#idCompra").val(), action);
 
     $(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/pedido/detalles/listar',
+        url: CONTEXT_ROOT + '/compra/detalles/listar',
         datatype: 'json',
         mtype: 'GET',
         height: 150,
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'COTIZACION', 'PRECIO', 'TOTAL', '', ''],
+        colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'COTIZACION', 'PRECIO', 'NETO', '', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'vehiculo.codigo', index: 'vehiculo.codigo', key: true, width: 100, editable: false},
@@ -62,7 +62,7 @@ $(document).ready(function(data) {
                 }},
             {name: 'vehiculo.marca.nombre', index: 'vehiculo.marca.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
-                    dataUrl: CONTEXT_ROOT +'/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
+                    dataUrl: CONTEXT_ROOT + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
 
                         var sel = '<select>';
@@ -80,7 +80,7 @@ $(document).ready(function(data) {
                 }},
             {name: 'vehiculo.modelo.nombre', index: 'vehiculo.modelo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
-                    dataUrl: CONTEXT_ROOT +'/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
+                    dataUrl: CONTEXT_ROOT + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
 
                         var sel = '<select>';
@@ -229,8 +229,8 @@ $(document).ready(function(data) {
             filters: null,
             estado: 'APROBADO',
             todos: false,
-            idPedido: function() {
-                return $("#idPedido").val();
+            idCompra: function() {
+                return $("#idCompra").val();
             }
         },
         jsonReader: {
@@ -272,14 +272,7 @@ $(document).ready(function(data) {
                 var button = '';
                 var ini = '<div style="float: none;" class="btn-group btn-group-sm">';
                 var fin = '</div>';
-                
-                if ($('#detallado').is(':checked')) {
-                    button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
-                            + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" onclick="descuentoModal(' + cl + ')"'
-                            + '  class=" btn btn-xs btn-grey" style="float:left;cursor:pointer;" title="Agregar Descuento">'
-                            + ' <span class="ace-icon fa fa-fw fa-money"></span></a>';
-                }
-
+            
 
                 if (isStatus) {
                     var estado = dato.estadoCompra;
@@ -291,7 +284,7 @@ $(document).ready(function(data) {
                             desact = rechazarButton(cl, permisoRechazar);
                             visuali = visualizarButton(cl, true);
                             edit = editInlineButton(cl, permisoEditar);
-                            $(grid_selector).setRowData(ids[i], {act: ini + edit + button + activar + desact + fin});
+                            $(grid_selector).setRowData(ids[i], {act: ini + edit + activar + desact + fin});
 
                         }
 //                        else {
@@ -329,8 +322,153 @@ $(document).ready(function(data) {
 
             }
         },
-        editurl: "/editar", //nothing is saved
-        caption: "Detalle del compra"
+        editurl: "/compras/detalles/guardar", //nothing is saved
+        caption: "Detalle del compra",
+        subGrid: true,
+        subGridOptions: {
+            plusicon: 'fa fa-fw fa-sort-amount-asc',
+            minusicon: 'fa fa-fw fa-arrow-up'
+        },
+        subGridRowExpanded: function(subgrid_id, row_id) {
+            // we pass two parameters
+            // subgrid_id is a id of the div tag created within a table
+            // the row_id is the id of the row
+            // If we want to pass additional parameters to the url we can use
+            // the method getRowData(row_id) - which returns associative array in type name-value
+            // here we can easy construct the following
+            var subgrid_table_id;
+            subgrid_table_id = subgrid_id + "_t";
+            $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table>");
+            $("#" + subgrid_table_id).jqGrid({
+                url: CONTEXT_ROOT + '/compra/detalles/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idDetalle=' + row_id,
+                datatype: 'json',
+                mtype: 'GET',
+                colNames: ['ID', 'MONEDA', 'PRECIO', 'DESCUENTO', 'MONTO DESCUENTO', 'NETO', ''],
+                colModel: [
+                    {name: "id", key: true, hidden: true, index: "id", width: 100, align: "right", sortable: false},
+                    {name: "moneda.nombre", index: "moneda.nombre", width: 100, align: "right", sortable: false},
+                    {name: "precio", index: "precio", width: 100, align: "right", formatter: 'number', sortable: false, editable: true,disabled:true, editoptions:{disabled:true}},
+                    {name: "porcentajeDescuento", index: "porcentajeDescuento", editable: true, width: 100, align: "right", sortable: false,
+                        editoptions: {
+                            dataEvents: [
+                                {type: 'click', fn: function(e) {
+                                        var total = this.value * 1;
+                                        $('input[name="total"]').val(total);
+                                    }},
+                                {type: 'keypress', fn: function(e) {
+                                        var total;
+                                        setTimeout(function() {
+                                            if ($.isNumeric(e.key) || e.key === 'Backspace') {
+                                                total = $('input[name="precio"]').val() * $('input[name="porcentajeDescuento"]').val()/100;
+                                                $('input[name="montoDescuento"]').val(total);
+                                                var neto = $('input[name="precio"]').val() - total;
+                                                $('input[name="neto"]').val(neto);
+                                            } else {
+                                                $('input[name="precio"]').val('');
+                                                $.messager.alert('Error!!', 'Debe ingresar un valor numerico!!!');
+                                            }
+                                        }, 0);
+
+
+                                    }}
+
+                            ]}},
+                    {name: "montoDescuento", index: "montoDescuento", width: 100, align: "right", editable: true, sortable: false, disabled:true, editoptions:{disabled:true}},
+                    {name: "neto", index: "neto", width: 100, align: "right", editable: true, sortable: false,disabled:true, editoptions:{disabled:true}},
+                    {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
+                        //               formatter: 'actions',
+                        formatoptions: {
+                            onError: function(jqXHR, textStatus, errorThrwn) {
+                                if (textStatus.status !== 200) {
+                                    $('#mensaje').append('<div class="alert alert-error">'
+                                            + '<button class="close" data-dismiss="alert" type="button"'
+                                            + '><i class="fa  fa-remove"></i></button>'
+                                            + '<strong>Error ' + textStatus.status + ' ! </strong>'
+                                            + 'Error al editar el registro'
+                                            + '</div>');
+                                }
+
+                            },
+                            onSuccess: function(data) {
+                                if (data.responseJSON.error === true) {
+                                    $('#mensaje').append('<div class="alert alert-error">'
+                                            + '<button class="close" data-dismiss="alert" type="button"'
+                                            + '><i class="fa  fa-remove"></i></button>'
+                                            + '<strong>Error! </strong>'
+                                            + data.responseJSON.mensaje
+                                            + '</div>');
+
+                                } else {
+                                    $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                            + '<button type="button" class="close" data-dismiss="alert"'
+                                            + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                            + '<strong>Exito! </strong>'
+                                            + data.responseJSON.mensaje
+                                            + '</div>');
+                                    $(grid_selector).trigger('reloadGrid');
+
+                                }
+                            }
+
+                        }
+                    }
+                ],
+                height: '100%',
+                rowNum: 10,
+                sortname: 'num',
+                sortorder: "asc",
+                jsonReader: {
+                    root: 'retorno',
+                    page: 'page',
+                    total: 'total',
+                    records: function(obj) {
+                        if (obj.retorno !== null) {
+                            return obj.retorno.length;
+                        } else {
+                            return 0;
+                        }
+
+                    }
+                },
+                //toppager: true,
+                loadComplete: function() {
+                    var table = this;
+                    setTimeout(function() {
+                        //styleCheckbox(table);
+
+                        //updateActionIcons(table);
+                        updatePagerIcons(table);
+                        //enableTooltips(table);
+                    }, 0);
+                },
+                gridComplete: function() {
+                    var ids = $("#" + subgrid_table_id).getDataIDs();
+                    var datos = $("#" + subgrid_table_id).getGridParam();
+                    console.log(ids);
+                    for (var i = 0; i < ids.length; i++) {
+                        var cl = ids[i];
+                        var dato = $("#" + subgrid_table_id).jqGrid('getRowData', cl);
+                        var asignar = '';
+                        var editForm = '';
+                        var ce = '';
+                        var visuali = '';
+                        var desact = '';
+                        var activar = '';
+                        var button = '';
+                        var ini = '<div style="float: none;" class="btn-group btn-group-sm">';
+                        var fin = '</div>';
+
+                        if ($('#detallado').is(':checked')) {
+
+                            edit = editInlineButton(cl, true);
+                            $("#" + subgrid_table_id).setRowData(ids[i], {act: ini + edit + fin});
+                        }
+
+                    }
+                },
+                editurl: "/compra/detalles/descuento"
+            });
+        }
 
     });
     $(window).triggerHandler('resize.jqGrid');
@@ -460,6 +598,7 @@ function parseBolean(val) {
 }
 
 function descuentoModal(val) {
+    //$('#validation-form').submit();
     $('#idDetPedido').val(val);
     var jqXHR = $.get(CONTEXT_ROOT + "/pedido/detalles/" + val, function(response, textStatus, jqXHR) {
 

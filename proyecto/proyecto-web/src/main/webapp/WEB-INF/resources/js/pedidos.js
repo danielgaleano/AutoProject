@@ -307,7 +307,7 @@ $(document).ready(function(data) {
                     } else if (estado === 'APROBADO') {
 
                         //var labelInactivo = '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
-                        desact = rechazarButton(cl, permisoRechazar);
+                        desact = rechazarButton(cl, false);
 
                         $(grid_selector).setRowData(ids[i], {act: ini + desact + fin});
                         //$(grid_selector).setRowData(ids[i], {activo: labelInactivo});

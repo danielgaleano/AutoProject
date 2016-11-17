@@ -58,7 +58,7 @@
                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                         <label class="col-lg-5 control-label">Nro. Factura(*)</label>
                                         <div class="col-lg-7">
-                                            <input id="nroFactura" name="nroFactura" type="text" placeholder="Nro. de factura" class="form-control tableusuario-input "/> 
+                                            <input id="nroFactura" name="nroFactura" type="text" data-mask="" data-inputmask="'mask': '999-999[-999999]'" placeholder="Nro. de factura" class="form-control tableusuario-input "/> 
                                             <span class="glyphicon form-control-feedback" id="factura1"></span>
                                         </div>
                                     </div>
@@ -120,22 +120,22 @@
                                     <div id="formCredito" style="display:none;">
                                         <div class="row">
 
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                <label class="col-lg-2 control-label">Entrega:</label>
-                                                <div class="col-lg-4">
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
+                                                <label class="col-lg-4 control-label">Entrega:</label>
+                                                <div class="col-lg-8">
                                                     <input id="entrega" name="entrega" type="text" placeholder="Entrega" class="form-control tableusuario-input "/> 
                                                     <span class="glyphicon form-control-feedback" id="factura1"></span>
                                                 </div>
                                             </div>
 
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-2 col-md-2">
-                                                <label class="col-lg-6 control-label">%Interes</label>
-                                                <div class="col-lg-6">
+                                                <label class="col-lg-5 control-label">%Interes</label>
+                                                <div class="col-lg-7">
                                                     <input   id="interes" name="porcentajeInteresCredito" type="text"  class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="interes1"></span>
+                                                    <span class="glyphicon form-control-feedback" id="interes1" style="right: 15px"></span>
                                                 </div>
                                             </div>
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
                                                 <label class="col-lg-5 control-label">Monto Interes</label>
                                                 <div class="col-lg-7">
                                                     <input   id="montoInteres" disabled="disabled" name="montoInteres" type="text" placeholder="Monto Interes" class="form-control tableusuario-input"/> 
@@ -146,10 +146,10 @@
                                                 <label class="col-lg-5 control-label">Cuotas</label>
                                                 <div class="col-lg-7">
                                                     <input  id="cuotas" name="cantidadCuotas" type="number"  class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="cuotas1"></span>
+                                                    <span class="glyphicon form-control-feedback" id="cuotas1" style="right: 15px"></span>
                                                 </div>
                                             </div>
-                                            <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
                                                 <label class="col-lg-5 control-label">Monto Cuotas</label>
                                                 <div class="col-lg-7">
                                                     <input   id="montoCuota" disabled="disabled" name="montoCuota" type="text" placeholder="Monto Cuotas" class="form-control tableusuario-input"/> 
@@ -167,7 +167,7 @@
                                                 <label class="col-lg-6 control-label">%Interes por Mora</label>
                                                 <div class="col-lg-2">
                                                     <input   id="interesMora" name="interesMora" type="text"  class="form-control tableusuario-input"/> 
-                                                    <span class="glyphicon form-control-feedback" id="interesMora1"></span>
+                                                    <span class="glyphicon form-control-feedback" id="interesMora1" style="right: 15px"></span>
                                                 </div>
                                             </div>
                                         </div>    
@@ -322,7 +322,7 @@
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/lib/jquery.number.min.js}" charset="UTF-8"></script>
     <script type="text/javascript">
-        $('#entrega, #montoTotal, #montoDescuento, #montoCuota, #montoInteres, #saldo, #neto').number(true, 0, ',', '.');
+        $('#entrega, #montoTotal, #montoDescuento, #montoCuota, #montoInteres, #saldo, #neto, #interes, #interesMora').number(true, 0, ',', '.');
         //console.log($.number( 5020.2364, 2 )); // Outputs: 5,020.24)
     </script>
     <!--    <script th:src="@{~/proyecto/resources/js/lib/dropzone.js}"></script>

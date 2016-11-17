@@ -1,5 +1,5 @@
 $(document).ready(function(data) {
-
+    $(":input").inputmask();
     /*$("#factura").inputmask("Regex", {
      regex: "^[0-9]{3}-[0-9]{3}-[0-9]{6}$"
      });*/

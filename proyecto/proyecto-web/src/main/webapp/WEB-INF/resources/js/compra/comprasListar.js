@@ -34,7 +34,7 @@ $(document).ready(function(data) {
             {name: 'nroFactura', index: 'nroFactura', width: 90, editable: false},
             {name: 'formaPago', index: 'formaPago', width: 90, editable: false},
             {name: 'tipoDescuento', index: 'tipoDescuento', width: 150, editable: true},
-            {name: 'neto', index: 'neto', width: 90, sortable: false},
+            {name: 'neto', index: 'neto', width: 90, formatter:'number', sortable: false},
             {name: 'proveedor.nombre', index: 'proveedor.nombre', width: 90, sortable: false},
             {name: 'proveedor.telefono', index: 'proveedor.telefono', width: 90, sortable: false},
             {name: 'activo', index: 'activo', width: 90, editable: false},

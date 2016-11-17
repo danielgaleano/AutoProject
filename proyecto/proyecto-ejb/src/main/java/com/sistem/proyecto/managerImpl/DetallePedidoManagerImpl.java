@@ -252,9 +252,19 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
 
             Pedido pedido = pedidoManager.get(idPedido);
 
-            pedido.setCantidadAprobados(Long.parseLong(pedido.getDetallePedidoCollection().size() + ""));
+            pedido.setCantidadAprobados(Long.parseLong(listDetalle.size() + ""));
             pedido.setTotal(totalPedido);
-            pedido.setConfirmado(true);
+            
+            detallePedido = new DetallePedido();
+            detallePedido.setPedido(new Pedido(idPedido));
+            detallePedido.setEstadoPedido(DetallePedido.PENDIENTE);
+            
+            detallePedido = this.get(detallePedido);
+            
+            if(detallePedido != null){
+                pedido.setConfirmado(true);
+            }
+            
             pedidoManager.update(pedido);
             Compra ejCompra = new Compra();
             ejCompra.setPedido(new Pedido(idPedido));
@@ -320,6 +330,7 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
     @Override
     public MensajeDTO rechazar(Long idDetalle, Long idPedido, Long idEmpresa, Long idUsuario) throws Exception {
         MensajeDTO mensaje = new MensajeDTO();
+        Boolean aprobado = false;
         try {
             if (idDetalle == null || idDetalle != null
                     && idDetalle.toString().compareToIgnoreCase("") == 0) {
@@ -354,6 +365,7 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
 
             for (DetallePedido rpm : listDetalle) {
                 totalPedido = totalPedido + rpm.getNeto();
+                aprobado = true;
             }
 
             Pedido pedido = pedidoManager.get(idPedido);
@@ -368,9 +380,10 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
 
             int pendiente = this.list(pedidoPendiente, true).size();
 
-            if (listDetalle.size() > 0) {
-                pedido.setConfirmado(true);
+            if (aprobado) {                
                 if (pendiente <= 0) {
+                    
+                    pedido.setConfirmado(true);
                     
                     Compra ejCompra = new Compra();
                     ejCompra.setPedido(new Pedido(idPedido));

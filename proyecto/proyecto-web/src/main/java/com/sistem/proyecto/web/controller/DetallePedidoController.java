@@ -223,6 +223,7 @@ public class DetallePedidoController extends BaseController {
                 ejPedido.setIdUsuarioCreacion(userDetail.getId());
                 ejPedido.setUsuario(new Usuario(userDetail.getId()));
                 ejPedido.setTotal(Double.parseDouble("0"));
+                ejPedido.setConfirmado(false);
                 ejPedido.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
                 
                 pedidoManager.save(ejPedido);

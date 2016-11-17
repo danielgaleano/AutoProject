@@ -125,7 +125,7 @@ public class CompraController extends BaseController {
         Compra ejemplo = new Compra();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
         ejemplo.setEstadoCompra(Compra.COMPRA_PENDIENTE);
-        ejemplo.setActivo("S");
+
         
         List<Map<String, Object>> listMapGrupos = null;
 

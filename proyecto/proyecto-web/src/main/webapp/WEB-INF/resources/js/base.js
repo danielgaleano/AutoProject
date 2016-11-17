@@ -1,47 +1,51 @@
 
-$("#globalSearchText").keypress(function (e) {
+$("#globalSearchText").keypress(function(e) {
     var key = e.charCode || e.keyCode || 0;
     //if (key === $.ui.keyCode.ENTER) { // 13
-        $("#globalSearch").click();
+    $("#globalSearch").click();
     //}
 });
 $("#globalSearch").button({
-    icons: { primary: "ui-icon-search" },
+    icons: {primary: "ui-icon-search"},
     text: false
-}).click(function () {
+}).click(function() {
     var rules = [],
-    i,
-    cm,
-    postData = $("#grid").jqGrid("getGridParam", "postData"),
-    colModel = $("#grid").jqGrid("getGridParam", "colModel"),
-    searchText = $("#globalSearchText").val(),
-    l = colModel.length;
+            i,
+            cm,
+            postData = $("#grid").jqGrid("getGridParam", "postData"),
+            colModel = $("#grid").jqGrid("getGridParam", "colModel"),
+            searchText = $("#globalSearchText").val(),
+            l = colModel.length;
     for (i = 0; i < l; i++) {
         cm = colModel[i];
-        if (cm.search !== false && (cm.stype === undefined || cm.stype === "text") && cm.name !== "id" && cm.name !== "act") {
-            if(cm.formatter === 'number' || cm.formatter === 'integer'){
-                if($.isNumeric(searchText)){
+        if (cm.search !== false && (cm.stype === undefined || cm.stype === "text") 
+                && cm.name !== "id" && cm.name !== "act" && cm.name !== "confirmado") {
+            if (cm.formatter === 'number' || cm.formatter === 'integer') {
+                if ($.isNumeric(searchText)) {
                     rules.push({
                         field: cm.name,
                         op: "cn",
                         data: searchText
                     });
                 }
-            }else{
-                rules.push({
-                    field: cm.name,
-                    op: "cn",
-                    data: searchText
-                });
+            } else {
+                if (cm.formatter !== 'date') {
+                    rules.push({
+                        field: cm.name,
+                        op: "cn",
+                        data: searchText
+                    });
+                }
+
             }
-            
+
         }
     }
     postData.filters = JSON.stringify({
         groupOp: "OR",
         rules: rules
     });
-    $("#grid").jqGrid("setGridParam", { search: true });
+    $("#grid").jqGrid("setGridParam", {search: true});
     $("#grid").trigger("reloadGrid", [{page: 1, current: true}]);
     return false;
 });
@@ -104,18 +108,18 @@ function visualizarButton(id, permisoVisualizar, title, url) {
     var button = '';
     if (permisoVisualizar) {
         console.log(title);
-        if(title !== null && url !== null && title !== "" && url !== ""){
+        if (title !== null && url !== null && title !== "" && url !== "") {
             button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
-                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + CONTEXT_ROOT + '/'+url+'/' + id + '"'
-                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="'+title+'">'
-                + ' <span class="ace-icon fa fa-external-link"></span></a>';
-        }else{
+                    + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + CONTEXT_ROOT + '/' + url + '/' + id + '"'
+                    + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="' + title + '">'
+                    + ' <span class="ace-icon fa fa-external-link"></span></a>';
+        } else {
             button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
-                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + content + '/visualizar/' + id + '"'
-                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Visualizar">'
-                + ' <span class="ace-icon fa fa-external-link"></span></a>';
+                    + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + content + '/visualizar/' + id + '"'
+                    + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Visualizar">'
+                    + ' <span class="ace-icon fa fa-external-link"></span></a>';
         }
-        
+
     }
 
     return button;
@@ -197,18 +201,18 @@ function aprobarButton(id, permisoActivar) {
 function detalleButton(id, permisoDetalle, title, url) {
     var button = '';
     if (permisoDetalle) {
-        if(title !== null && url !== null){
+        if (title !== null && url !== null) {
             button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
-                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + CONTEXT_ROOT + '/'+url+'/' + id + '"'
-                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="'+title+'">'
-                + ' <span class="ace-icon fa fa-fw fa-plus-square"></span></a>';
-        }else{
+                    + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + CONTEXT_ROOT + '/' + url + '/' + id + '"'
+                    + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="' + title + '">'
+                    + ' <span class="ace-icon fa fa-fw fa-plus-square"></span></a>';
+        } else {
             button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
-                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + CONTEXT_ROOT + '/pedido/detalles/agregar/' + id + '"'
-                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Detalle">'
-                + ' <span class="ace-icon fa fa-fw fa-plus-square"></span></a>';
+                    + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + CONTEXT_ROOT + '/pedido/detalles/agregar/' + id + '"'
+                    + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Detalle">'
+                    + ' <span class="ace-icon fa fa-fw fa-plus-square"></span></a>';
         }
-         
+
     }
 
     return button;

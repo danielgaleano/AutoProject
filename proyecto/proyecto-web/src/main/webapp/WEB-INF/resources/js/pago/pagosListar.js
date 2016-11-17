@@ -194,11 +194,11 @@ $(document).ready(function(data) {
                 mtype: 'GET',
                 colNames: ['NRO. CUOTA', 'MONTO', 'SALDO', 'FECHA VENCIMIENTO', 'ESTADO'],
                 colModel: [
-                    {name:"nroCuota",index:"nroCuota",width:80,key:true},
+                    {name:"nroCuota",index:"nroCuota",width:120,key:true},
                     {name:"monto",index:"monto", formatter: 'number',width:130},
                     {name:"saldo",index:"saldo", formatter: 'number',width:80,align:"right"},
-                    {name:"fecha",index:"fecha",width:80,align:"right"},           
-                    {name:"estado",index:"estado",width:100,align:"right",sortable:false}
+                    {name:"fecha",index:"fecha",width:120,align:"right"},           
+                    {name:"estado",index:"estado",width:130,align:"right",sortable:false}
                     ],
                 height: '100%',
                 rowNum:10,

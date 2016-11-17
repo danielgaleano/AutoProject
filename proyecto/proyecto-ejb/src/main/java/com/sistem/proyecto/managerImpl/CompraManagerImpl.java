@@ -17,7 +17,13 @@ import com.sistem.proyecto.manager.DetalleCompraManager;
 import com.sistem.proyecto.manager.DocumentoPagarManager;
 import com.sistem.proyecto.manager.PedidoManager;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
+
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -37,6 +43,10 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
     @EJB(mappedName = "java:app/proyecto-ejb/DetalleCompraManagerImpl")
     private DetalleCompraManager detalleCompraManager;
+    
+    protected SimpleDateFormat sdf = new SimpleDateFormat(
+			"yyyy-MM-dd HH:mm:ss.SSSSSS");
+    protected SimpleDateFormat sdfSimple = new SimpleDateFormat("dd-MM-yyyy");
 
     @Override
     protected Class<Compra> getEntityBeanType() {
@@ -222,14 +232,45 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     
                     this.update(ejCompraUp);
                     
+                    DocumentoPagar ejAPagar = new DocumentoPagar();
+                    ejAPagar.setMonto(montoCuota);
+                    
+                    List<DocumentoPagar> aPagar = documentoPagarManager.list(ejAPagar);
+                    
+                    for(DocumentoPagar rpm : aPagar){
+                        documentoPagarManager.delete(rpm.getId());
+                    }
+                    
                     for(int i = 1 ; i <= compra.getCantidadCuotas() ; i ++ ){
                         
-                        DocumentoPagar ejAPagar = new DocumentoPagar();
+                        ejAPagar = new DocumentoPagar();
                         ejAPagar.setCompra(ejCompraUp);
                         ejAPagar.setActivo("S");
                         ejAPagar.setNroCuota(i+"");
                         ejAPagar.setMonto(montoCuota);
                         ejAPagar.setEstado(DocumentoPagar.PENDIENTE);
+                        
+                        Date fecha = sdfSimple.parse(compra.getCuotaFecha());
+                        
+                        if(compra.getCuotaFecha() != null
+                                && compra.getCuotaFecha().compareToIgnoreCase("") != 0){
+                            
+                            
+                            Calendar date = Calendar.getInstance();
+                            date.set(Calendar.MONTH, fecha.getMonth()+ i);
+                            date.set(Calendar.DATE, fecha.getDate());
+                            
+                            ejAPagar.setFecha(date.getTime());
+                            
+                        }else{
+                            
+                            Calendar date = Calendar.getInstance();
+                            date.set(Calendar.DATE, 5);
+                            date.set(Calendar.MONTH, fecha.getMonth() + i);
+                        
+                            ejAPagar.setFecha(date.getTime());
+                        }
+                        
                         
                         documentoPagarManager.save(ejAPagar);
                     }
@@ -258,6 +299,13 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                         ejAPagar.setNroCuota(i+"");
                         ejAPagar.setMonto(montoCuota);
                         ejAPagar.setEstado(DocumentoPagar.PENDIENTE);
+                        
+                        Calendar date = Calendar.getInstance();
+			date.set(Calendar.MONTH, i);
+                        
+                        String fecha = sdf.format(date.getTime());
+                        
+                        ejAPagar.setFecha(Timestamp.valueOf(fecha));
                         
                         documentoPagarManager.save(ejAPagar);
                     }
@@ -295,7 +343,6 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
         }
         return mensaje;
     }
-    
-    
+        
 
 }

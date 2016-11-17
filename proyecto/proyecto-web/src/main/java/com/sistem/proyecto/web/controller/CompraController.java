@@ -46,7 +46,7 @@ public class CompraController extends BaseController {
             + "proveedor.nombre,activo,usuario.nombre,cantidadAprobados,cantidadTotal";
     String atributosApagar = "id,nroCuota,monto,saldo,montoInteres,fecha,estado";
 
-    String atributosCompras = "id,nroFactura,fechaCompra,tipoCompra,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
+    String atributosCompras = "id,estadoCompra,nroFactura,fechaCompra,tipoCompra,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
             + "tipoMoraInteres,moraInteres,cantidadCuotas,montoCuotas,proveedor.nombre,activo,pedido.usuario.nombre,"
             + "entrega,saldo,tipoDescuento,descuento,monto,montoDescuento,neto,pedido.numeroPedido,pedido.codigo,pedido.fechaEntrega,"
             + "pedido.cantidadAprobados,pedido.cantidadTotal,pedido.total,proveedor.id,proveedor.ruc,proveedor.nombre,proveedor.direccion,proveedor.telefono";
@@ -125,7 +125,8 @@ public class CompraController extends BaseController {
         Compra ejemplo = new Compra();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
         ejemplo.setEstadoCompra(Compra.COMPRA_PENDIENTE);
-
+        ejemplo.setActivo("S");
+        
         List<Map<String, Object>> listMapGrupos = null;
 
         try {

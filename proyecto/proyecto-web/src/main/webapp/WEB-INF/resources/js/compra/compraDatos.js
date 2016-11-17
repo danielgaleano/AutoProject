@@ -20,10 +20,20 @@ function cargarDatos(id) {
                     + '</div>');
         } else {
             var compra = response.data;
-
+            
+            if(compra.estadoCompra === 'COMPRA_PENDIENTE'){
+                $('#botonAprobar').hide();
+            }else if(compra.estadoCompra === 'COMPRA_REALIZADA'){
+                $('#botonAprobar').hide();
+                $('#validation-form').find('.tableusuario-input').attr("disabled", true);
+                $("#aceptar").hide();
+            }
             $('#nroFactura').val(compra.nroFactura);
+            
             if(compra.nroFactura !== null && compra.nroFactura !== " "){
                 $('#botonAprobar').show();
+            }else{
+                $('#botonAprobar').hide();
             }
             $('#nombred').val(compra.tipoCompra);
             $('#descuento').val(compra.descuento);

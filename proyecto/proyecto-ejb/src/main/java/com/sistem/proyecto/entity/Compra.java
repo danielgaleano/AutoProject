@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -102,6 +103,9 @@ public class Compra extends Base{
     
     @Column(name = "estado")
     private String estadoCompra;
+    
+    @Transient
+    private String cuotaFecha;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "compra")
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -448,6 +452,20 @@ public class Compra extends Base{
 
     public void setPedido(Pedido pedido) {
         this.pedido = pedido;
+    }
+
+    /**
+     * @return the cuotaFecha
+     */
+    public String getCuotaFecha() {
+        return cuotaFecha;
+    }
+
+    /**
+     * @param cuotaFecha the cuotaFecha to set
+     */
+    public void setCuotaFecha(String cuotaFecha) {
+        this.cuotaFecha = cuotaFecha;
     }
     
     

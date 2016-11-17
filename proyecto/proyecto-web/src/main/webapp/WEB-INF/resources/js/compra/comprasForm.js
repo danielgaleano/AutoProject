@@ -19,6 +19,9 @@ $(document).ready(function(data) {
             },
             tipoDescuento: {
                 required: true
+            },
+            cuotaFecha: {
+                required: true
             }
         },
         messages: {
@@ -26,7 +29,8 @@ $(document).ready(function(data) {
                 required: "Debe ingresar un número de factura!"
             },
             formaPago: "Debe seleccionar un tipo de pago!",
-            tipoDescuento: "Debe seleccionar un tipo de descuento!"
+            tipoDescuento: "Debe seleccionar un tipo de descuento!",
+            cuotaFecha: "Debe ingresar fecha de la primera cuota!"
         },
         invalidHandler: function(event, validator) { //display error alert on form submit   
             $('.alert-error', $('.login-form')).show();
@@ -143,6 +147,10 @@ $(document).ready(function(data) {
                         + '</div>');
 
             } else {
+                
+                $('#validation-form').find('.tableusuario-input').attr("disabled", true);
+                $("#aceptar").hide();
+                
                 $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
                                 + '<button type="button" class="close" data-dismiss="alert"'
                                 + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'

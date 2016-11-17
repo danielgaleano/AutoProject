@@ -7,10 +7,12 @@
 package com.sistem.proyecto.entity;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -40,7 +42,8 @@ public class DocumentoPagar extends Base {
     private Double montoInteres;
     
     @Column(name = "fecha")
-    private Timestamp fecha;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date fecha;
     
     @Column(name = "estado")
     private String estado;
@@ -91,14 +94,14 @@ public class DocumentoPagar extends Base {
     /**
      * @return the fecha
      */
-    public Timestamp getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
     /**
      * @param fecha the fecha to set
      */
-    public void setFecha(Timestamp fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }    
   

@@ -6,6 +6,7 @@
 package com.sistem.proyecto.web.controller;
 
 import com.google.gson.Gson;
+import com.sistem.proyecto.entity.Compra;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Pedido;
 import com.sistem.proyecto.entity.Permiso;
@@ -151,14 +152,14 @@ public class PedidoController extends BaseController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno pedidoForm(@PathVariable("id") Long id) {
-        DTORetorno<Map<String,Object>> retorno = new DTORetorno<>();
+        DTORetorno<Map<String, Object>> retorno = new DTORetorno<>();
         List<Map<String, Object>> listMapGrupos = null;
         try {
             inicializarPedidoManager();
-            Pedido pedido =  new Pedido();
+            Pedido pedido = new Pedido();
             pedido.setId(id);
-            
-            Map<String,Object> ejPedido = pedidoManager.getAtributos(pedido,
+
+            Map<String, Object> ejPedido = pedidoManager.getAtributos(pedido,
                     "id,codigo,fechaEntrega,observacion,proveedor.id,proveedor.nombre,proveedor.ruc,proveedor.direccion,proveedor.telefono,cantidadAprobados,cantidadTotal,total".split(","));
 
             retorno.setData(ejPedido);
@@ -188,6 +189,7 @@ public class PedidoController extends BaseController {
         try {
 
             inicializarPedidoManager();
+            inicializarCompraManager();
 
             ejPedido = pedidoManager.get(ejPedido);
 
@@ -205,6 +207,25 @@ public class PedidoController extends BaseController {
             ejPedido.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
 
             pedidoManager.update(ejPedido);
+
+            Compra ejCompra = new Compra();
+            ejCompra.setPedido(ejPedido);
+
+            ejCompra = compraManager.get(ejCompra);
+
+            if (ejCompra != null && ejCompra.getEstadoCompra()
+                    .compareToIgnoreCase("COMPRA_REALIZADA") == 0) {
+                
+                retorno.setError(true);
+                retorno.setMensaje("El pedido " + nombre + " ya se encuentra realizado.");
+           
+            } else if (ejCompra != null) {
+                
+                ejCompra.setActivo("N");
+                compraManager.update(ejCompra);
+            }
+
+            
 
             retorno.setError(false);
             retorno.setMensaje("El pedido " + nombre + " se desactivo exitosamente.");

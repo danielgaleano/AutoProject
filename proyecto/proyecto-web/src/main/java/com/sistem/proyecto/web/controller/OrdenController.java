@@ -149,6 +149,7 @@ public class OrdenController extends BaseController {
         Compra ejemplo = new Compra();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
         ejemplo.setEstadoCompra(Compra.ORDEN_COMPRA);
+        ejemplo.setActivo("S");
         
         List<Map<String, Object>> listMapGrupos = null;
 

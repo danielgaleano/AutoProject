@@ -1,5 +1,8 @@
 $(document).ready(function(data) {
 
+    $(".date-picker").datepicker('setDate', new Date());
+    $('.date-picker').datepicker('option', 'dateFormat', 'yyyy-mm-dd');
+
     /*$("#factura").inputmask("Regex", {
         regex: "^[0-9]{3}-[0-9]{3}-[0-9]{6}$"
     });*/

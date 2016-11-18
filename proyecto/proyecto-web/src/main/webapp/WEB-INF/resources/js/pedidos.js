@@ -231,7 +231,7 @@ $(document).ready(function(data) {
                 postData['pedido.codigo'] = $('#codigo').val();
                 postData['pedido.observacion'] = $('#observacion').val();
                 postData['pedido.fecha'] = $('#id-date-picker').val();
-                postData['pedido.proveedor.id'] = $('#proveedor').val();
+                postData['pedido.proveedor.id'] = $('#idProveedor').val();
             }
             postData['vehiculo.tipo.id'] = postData['vehiculo.tipo.nombre'];
             postData['vehiculo.marca.id'] = postData['vehiculo.marca.nombre'];

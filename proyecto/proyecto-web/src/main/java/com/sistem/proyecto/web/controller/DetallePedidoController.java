@@ -176,7 +176,7 @@ public class DetallePedidoController extends BaseController {
         MensajeDTO mensaje = new MensajeDTO();
         DetallePedido ejDetalle = new DetallePedido();
         Pedido ejPedido = new Pedido();
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             inicializarDetallePedidoManager();
             inicializarPedidoManager();

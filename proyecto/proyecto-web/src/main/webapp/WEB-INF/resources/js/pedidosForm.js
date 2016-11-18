@@ -47,7 +47,12 @@ function pedidoForm(id, action) {
                         });
                         return solData;
                     },
-                    maxHeight: '220px'
+                    maxHeight: '220px',
+                    events: {
+                        onChange: function(a) {
+                             $('#idProveedor').val(a.getSelection()[0].value);
+                        }
+                    }
                 });
 
 
@@ -63,7 +68,7 @@ function pedidoForm(id, action) {
             }
         });
     } else {
-        
+
         $('#proveedor').searchableOptionList({
             data: CONTEXT_ROOT + "/proveedores/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc",
             converter: function(sol, rawDataFromUrl) {
@@ -75,13 +80,18 @@ function pedidoForm(id, action) {
                         "label": this['nombre'],
                         "value": this['id'],
                         // optional attributes
-                        "selected": false
+                        //"selected": false
                     };
                     solData.push(aSingleOptionItem);
                 });
                 return solData;
             },
-            maxHeight: '220px'
+            maxHeight: '220px',
+            events: {
+                onChange: function(a) {
+                    $('#idProveedor').val(a.getSelection()[0].value);
+                }
+            }
         });
         var codigo = randomString(7, "COD");
         $('#codigo').val(codigo);

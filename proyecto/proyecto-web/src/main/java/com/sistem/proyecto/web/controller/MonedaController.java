@@ -159,13 +159,30 @@ public class MonedaController extends BaseController {
             }
 
             if (monedaRecibido.getValor() == null || monedaRecibido.getValor() != null
-                    && monedaRecibido.getValor().compareToIgnoreCase("") == 0) {
+                    && monedaRecibido.getValor().toString().compareToIgnoreCase("") == 0) {
                 retorno.setError(true);
                 retorno.setMensaje("El campo cotizacion no puede estar vacio.");
                 return retorno;
             }
 
             Moneda moneda = new Moneda();
+            moneda.setNombre(Moneda.MONEDA_NACIONAL);
+            moneda = monedaManager.get(moneda);
+
+            if (moneda == null) {
+                moneda = new Moneda();
+                moneda.setNombre(Moneda.MONEDA_NACIONAL);
+                moneda.setSimbolo("M-NACIONAL");
+                moneda.setValor(Double.parseDouble("1"));
+                moneda.setPorDefecto(true);
+                moneda.setActivo("S");
+                moneda.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+                moneda.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                moneda.setIdUsuarioCreacion(userDetail.getId());
+                moneda.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                monedaManager.save(moneda);
+            }
+            moneda = new Moneda();
             moneda.setNombre(monedaRecibido.getNombre());
             moneda.setSimbolo(monedaRecibido.getSimbolo());
             moneda.setValor(monedaRecibido.getValor());
@@ -185,7 +202,7 @@ public class MonedaController extends BaseController {
         } catch (Exception ex) {
             System.out.println("Error " + ex);
             retorno.setError(true);
-            retorno.setMensaje("Error al modificar/crear el rol.");
+            retorno.setMensaje("Error al crear la moneda.");
 
         }
         return retorno;
@@ -214,7 +231,7 @@ public class MonedaController extends BaseController {
             }
 
             if (monedaRecibido.getValor() == null || monedaRecibido.getValor() != null
-                    && monedaRecibido.getValor().compareToIgnoreCase("") == 0) {
+                    && monedaRecibido.getValor().toString().compareToIgnoreCase("") == 0) {
                 retorno.setError(true);
                 retorno.setMensaje("El campo cotizacion no puede estar vacio.");
                 return retorno;
@@ -226,7 +243,7 @@ public class MonedaController extends BaseController {
             moneda.setNombre(monedaRecibido.getNombre());
             moneda.setValor(monedaRecibido.getValor());
             moneda.setSimbolo(monedaRecibido.getSimbolo());
-            
+
             monedaManager.update(moneda);
 
             retorno.setError(false);
@@ -312,7 +329,7 @@ public class MonedaController extends BaseController {
                 retorno.setMensaje("El moneda " + nombre + " ya se encuentra desactivada.");
                 return retorno;
             }
-            
+
             if (moneda != null && moneda.getPorDefecto()) {
                 retorno.setError(true);
                 retorno.setMensaje("No puede desactivarse una moneda definida como principal");
@@ -337,7 +354,7 @@ public class MonedaController extends BaseController {
         return retorno;
 
     }
-    
+
     @RequestMapping(value = "/moneda/definir/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO definirMoneda(@PathVariable("id") Long id, Model model) {
@@ -353,10 +370,10 @@ public class MonedaController extends BaseController {
             Moneda ejMoneda = new Moneda();
             ejMoneda.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
             ejMoneda.setActivo("S");
-            
-            List<Map<String, Object>> monedasMap = monedaManager.listAtributos(ejMoneda,"id".split(","));
 
-            for(Map<String, Object> rmp : monedasMap){
+            List<Map<String, Object>> monedasMap = monedaManager.listAtributos(ejMoneda, "id".split(","));
+
+            for (Map<String, Object> rmp : monedasMap) {
                 ejMoneda = monedaManager.get(Long.parseLong(rmp.get("id").toString()));
                 ejMoneda.setPorDefecto(Boolean.FALSE);
                 monedaManager.update(ejMoneda);
@@ -378,7 +395,7 @@ public class MonedaController extends BaseController {
         return retorno;
 
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno obtenerMoneda(@PathVariable("id") Long id, Model model) {
@@ -405,5 +422,4 @@ public class MonedaController extends BaseController {
 
     }
 
-    
 }

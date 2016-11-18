@@ -8,12 +8,14 @@ package com.sistem.proyecto.entity;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -66,7 +68,8 @@ public class Compra extends Base{
     private String montoTotalCuotas;
     
     @Column(name = "fechaCuota")
-    private Timestamp fechaCuota;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date fechaCuota;
     
     @Column(name = "entrega")
     private String entrega;
@@ -287,14 +290,14 @@ public class Compra extends Base{
     /**
      * @return the fechaCuota
      */
-    public Timestamp getFechaCuota() {
+    public Date getFechaCuota() {
         return fechaCuota;
     }
 
     /**
      * @param fechaCuota the fechaCuota to set
      */
-    public void setFechaCuota(Timestamp fechaCuota) {
+    public void setFechaCuota(Date fechaCuota) {
         this.fechaCuota = fechaCuota;
     }
 

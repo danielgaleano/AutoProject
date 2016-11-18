@@ -312,6 +312,12 @@ public class DetallePedidoController extends BaseController {
                 retorno.setMensaje("El pedido del vehiculo " + nombre + " ya se encuentra rechazada.");
                 return retorno;
             }
+            if (detallePedido != null && detallePedido.getVehiculo().getCaracteristica().toString()
+                    .compareToIgnoreCase("") == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("Debe agregar un comentario al rechazar el pedido.");
+                return retorno;
+            }
 
             retorno = detallePedidoManager.rechazar(id, detallePedido.getPedido().getId(),
                     userDetail.getIdEmpresa(), userDetail.getId());

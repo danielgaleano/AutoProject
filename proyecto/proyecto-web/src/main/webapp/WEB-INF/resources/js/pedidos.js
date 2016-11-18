@@ -33,10 +33,12 @@ $(document).ready(function(data) {
         datatype: 'json',
         mtype: 'GET',
         height: 150,
+        autowidth:true,
+        forceFit:false,
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'COTIZACION', 'PRECIO', 'TOTAL', 'NETO', 'CONFIRMADO', ''],
+        colNames: ['ID', 'CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'COMENTARIO', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'COTIZACION', 'PRECIO', 'TOTAL', 'NETO', 'CONFIRMADO', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'vehiculo.codigo', index: 'vehiculo.codigo', key: true, width: 150, editable: false},
@@ -98,8 +100,8 @@ $(document).ready(function(data) {
             },
             {name: 'vehiculo.caracteristica', index: 'caracteristica', width: 200, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
             {name: 'vehiculo.anho', index: 'anho', width: 80, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'vehiculo.color', index: 'color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'vehiculo.transmision', index: 'trasmision', width: 180, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
+            {name: 'vehiculo.color', index: 'color', width: 90, sortable: false, resize: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'vehiculo.transmision', index: 'trasmision', width: 180, editable: true, edittype: "select", sortable: false, resize: false, editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
             {name: 'moneda.nombre', index: 'moneda.nombre', width: 120, editable: true, edittype: "select",
                 editoptions: {
                     dataEvents: [
@@ -127,8 +129,8 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter:'number', editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter:'number', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
+            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter:'number', resize: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter:'number', resize: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
                         {type: 'click', fn: function(e) {
@@ -139,7 +141,7 @@ $(document).ready(function(data) {
                                 var total;
                                 setTimeout(function() {
                                     if ($.isNumeric(e.key) || e.key === 'Backspace') {
-                                        total = $('input[name="precio"]').val() * 1;
+                                        total = $('input[name="precio"]').val() * $('input[name="moneda.valor"]').val();
                                         $('input[name="total"]').val(total);
                                     } else {
                                         $('input[name="precio"]').val('');
@@ -161,8 +163,8 @@ $(document).ready(function(data) {
 //                                $('input[name="total"]').val(total);
 //                            }}
 //                    ]}},
-            {name: 'total', index: 'total', width: 160, sortable: false, formatter:'number', editable: true},
-            {name: 'neto', index: 'neto', width: 150, sortable: false, formatter:'number', editable: false},
+            {name: 'total', index: 'total', width: 160, sortable: false, formatter:'number', editable: true, resize: false},
+            {name: 'neto', index: 'neto', width: 150, sortable: false, formatter:'number', editable: false, resize: false},
             {name: 'estadoPedido', index: 'estadoPedido', width: 150, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',

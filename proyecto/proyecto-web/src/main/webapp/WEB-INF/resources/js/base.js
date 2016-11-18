@@ -548,9 +548,7 @@ var anho = hasta.getFullYear();
 
 var fechaDesde = dia + "/" + mes + "/" + anho + " " + "00:00";
 $('#id-date-picker').datepicker({
-    //format: 'DD/MM/YYYY HH:mm',
-    language: 'es',
-    startDate: fechaDesde,
-    useCurrent: false,
+    setDate: fechaDesde,
     minDate: new Date()
 });
+

@@ -35,7 +35,7 @@ function cargarDatos(id) {
             }else{
                 $('#botonAprobar').hide();
             }
-            $('#nombred').val(compra.tipoCompra);
+            $('#date-timeDesde').val(compra.fechaCuota);
             $('#descuento').val(compra.descuento);
             $('#interes').val(compra.porcentajeInteresCredito);
             $('#montoInteres').val(compra.montoInteres);

@@ -152,23 +152,14 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
 
                 Moneda ejMoneda = monedaManager.get(detallePedido.getMoneda());
 
-                Double cambio = Double.parseDouble(ejMoneda.getValor());
+                Double cambio = ejMoneda.getValor();
                 ejDetalle.setCambioDia(cambio);
-                Moneda defMoneda = new Moneda();
-                defMoneda.setPorDefecto(true);
 
-                defMoneda = monedaManager.get(defMoneda);
+                Long total = Math.round(detallePedido.getPrecio() * cambio);
 
-                Double total = detallePedido.getPrecio() * 1;
+                ejDetalle.setNeto(Double.parseDouble(total.toString()));
 
-                if (ejMoneda.getId() != defMoneda.getId()) {
-                    Double cotizacion = total * Double.parseDouble(defMoneda.getValor());
-                    ejDetalle.setNeto(cotizacion);
-                } else {
-                    ejDetalle.setNeto(total);
-                }
-
-                ejDetalle.setTotal(total);
+                ejDetalle.setTotal(Double.parseDouble(total.toString()));
                 ejDetalle.setEstadoPedido(DetallePedido.PENDIENTE);
 
                 this.save(ejDetalle);
@@ -254,17 +245,17 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
 
             pedido.setCantidadAprobados(Long.parseLong(listDetalle.size() + ""));
             pedido.setTotal(totalPedido);
-            
+
             detallePedido = new DetallePedido();
             detallePedido.setPedido(new Pedido(idPedido));
             detallePedido.setEstadoPedido(DetallePedido.PENDIENTE);
-            
+
             detallePedido = this.get(detallePedido);
-            
-            if(detallePedido != null){
+
+            if (detallePedido != null) {
                 pedido.setConfirmado(true);
             }
-            
+
             pedidoManager.update(pedido);
             Compra ejCompra = new Compra();
             ejCompra.setPedido(new Pedido(idPedido));
@@ -380,18 +371,18 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
 
             int pendiente = this.list(pedidoPendiente, true).size();
 
-            if (aprobado) {                
+            if (aprobado) {
                 if (pendiente <= 0) {
-                    
+
                     pedido.setConfirmado(true);
-                    
+
                     Compra ejCompra = new Compra();
                     ejCompra.setPedido(new Pedido(idPedido));
 
                     ejCompra = compraManager.get(ejCompra);
                     ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
                     compraManager.update(ejCompra);
-                    
+
                 }
             } else {
                 pedido.setConfirmado(false);

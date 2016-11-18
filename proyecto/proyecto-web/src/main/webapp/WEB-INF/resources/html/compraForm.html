@@ -51,7 +51,7 @@
                     <div class="box-body">
 
                         <div class="col-xs-12">
-
+                            <div id="mensaje"></div>
                             <div class="col-xs-12 col-sm-12">
                                 <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
                                     <input  id="idCompra" name="id" type="hidden" th:value="${id}" class="form-control tableusuario-input" />
@@ -71,12 +71,12 @@
                                     </div>
 
                                     <div class="col-lg-1 pull-right">
-                                            <button id="aceptar" class="btn btn-primary" type="submit">
-                                                <i class="fa fa-check bigger-110"></i>
-                                                Guardar
-                                            </button>
+                                        <button id="aceptar" class="btn btn-primary" type="submit">
+                                            <i class="fa fa-check bigger-110"></i>
+                                            Guardar
+                                        </button>
                                     </div>
-                                    
+
                                     <span class="col-lg-12 middle">Datos del Proveedor</span>
                                     <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
                                         <div class="col-lg-12">
@@ -159,7 +159,7 @@
                                             <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                 <label class="col-lg-4 control-label">Fecha 1ra cuota</label>
                                                 <div class="col-lg-5">
-                                                    <input class="form-control tableusuario-input date-picker" id="id-date-picker" name="cuotaFecha" type="text" data-date-format="dd-mm-yyyy" />
+                                                    <input class="form-control tableusuario-input date-picker" id="date-timeDesde" name="cuotaFecha" type="text" data-date-format="dd-mm-yyyy" />
                                                     <span class="glyphicon form-control-feedback" id="fechaCuota1"></span>
                                                 </div>
                                             </div>
@@ -231,74 +231,12 @@
 
                 </form>
                 <div class="row">
-                    <div class="col-xs-12">
-
-                        <div id="mensaje"></div>
+                    <div class="col-xs-12">                       
                         <table id="grid" style="width: 100%;"></table>
                         <div id="grid-pager"></div>
 
                     </div>
-                </div>
-                <div id="ex1" style="display:none;">
-                    <form id="validation-formDescuento" class="form-horizontal dropzone" enctype="multipart/form-data">
-                        <div class="box-body">
-                            <div id="mensaje"/>   
-                            <div class="col-xs-12">
-
-                                <div id="user-profile-1" class="user-profile row" style="padding-top: 2em; padding-left: 1em; padding-right: 1em;">
-                               
-                                    <input id="idDetPedido" name="id" type="hidden"  class="form-control tableusuario-input" />
-                                    <div class="col-xs-12 col-sm-12">
-                                        <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                            <label class="col-lg-4 control-label">Precio</label>
-                                            <div class="col-lg-8">
-                                                <input  id="precioCompra"  disabled="disabled" name="precio" type="text"  placeholder="Precio" class="form-control tableusuario-input"/> 
-                                                <span class="glyphicon form-control-feedback" id="documentoContacto1"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                            <label class="col-lg-5 control-label">Descuento %(*)</label>
-                                            <div class="col-lg-7">
-                                                <input  id="porcentajeDescuento" name="porcentajeDescuento" type="text"  placeholder="Interes" class="form-control tableusuario-input"/> 
-                                                <span class="glyphicon form-control-feedback" id="documentoContacto1"></span>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                            <label class="col-lg-6 control-label">Monto Interes</label>
-                                            <div class="col-lg-6">
-                                                <input id="montoDescuentoCompra" disabled="disabled" name="montoDescuento" type="text" placeholder="Monto"  class="form-control tableusuario-input "/>
-                                                <span class="glyphicon form-control-feedback" id="documento1"></span> 
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                            <label class="col-lg-6 control-label">Neto</label>
-                                            <div class="col-lg-6">
-                                                <input id="netoCompra" name="neto" disabled="disabled" type="text" placeholder="Neto"  class="form-control tableusuario-input "/>
-                                                <span class="glyphicon form-control-feedback" id="documento1"></span> 
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div  class="clearfix box-footer" >
-                            <div class="col-md-offset-3 col-md-9">
-                                <button id="aceptar" class="btn btn-primary" type="submit">
-                                    <i class="fa fa-check bigger-110"></i>
-                                    Guardar
-                                </button>
-                                &nbsp; &nbsp; &nbsp;
-                                <a href="#" rel="modal:close" class="btn btn-default" type="button">
-                                    <i class="fa fa-undo bigger-110"></i>
-                                    Cancelar
-                                </a>
-
-                            </div>
-                        </div>
-
-                    </form>
-                </div>
+                </div>                
             </div>
             <!-- Your Page Content Here -->
 

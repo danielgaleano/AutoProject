@@ -19,6 +19,9 @@ public class Moneda extends Base {
     /**
      *
      */
+    
+    public static final String MONEDA_NACIONAL = "MONEDA NACIONAL";
+    
     private static final long serialVersionUID = 15465L;
 
     @Column(name = "nombre", nullable = false, length = 64)
@@ -28,7 +31,7 @@ public class Moneda extends Base {
     private String simbolo;
 
     @Column(name = "valor", nullable = true)
-    private String valor;
+    private Double valor;
 
     @Column(name = "por_defecto")
     private Boolean porDefecto;
@@ -83,14 +86,14 @@ public class Moneda extends Base {
     /**
      * @return the valor
      */
-    public String getValor() {
+    public Double getValor() {
         return valor;
     }
 
     /**
      * @param valor the valor to set
      */
-    public void setValor(String valor) {
+    public void setValor(Double valor) {
         this.valor = valor;
     }
 

@@ -6,6 +6,7 @@
         <div th:include="include/head :: head" th:remove="tag"></div>
 
         <link rel="stylesheet" th:href="@{/resources/dist/css/dataTables.bootstrap.css}" type="text/css"/>
+        <link th:href="@{/resources/bootstrap/css/bootstrap-datetimepicker.min.css}" rel="stylesheet" />
         <script th:inline="javascript">  
             var idRol = /*[[${id}]]*/'';
         </script>
@@ -58,7 +59,9 @@
     </div>    
     <!-- /.content -->
     <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
-    <script src="/proyecto/resources/js/permisos.js"></script>  
+    <script src="/proyecto/resources/js/permisos.js"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/bootstrap-datepicker.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/bootstrap/js/bootstrap-datetimepicker.min.js}" charset="UTF-8"></script>
     <script src="/proyecto/resources/dist/js/jquery.dataTables.js"></script>
     <script src="/proyecto/resources/dist/js/dataTables.bootstrap.min.js"></script>
     

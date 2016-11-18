@@ -33,7 +33,7 @@ $(document).ready(function(data) {
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'pedido.numeroPedido', index: 'pedido.numeroPedido', width: 90, editable: false},
             {name: 'pedido.codigo', index: 'pedido.codigo', width: 90, editable: false},
-            {name: 'pedido.fechaEntrega', index: 'pedido.fechaEntrega', width: 150, editable: true},
+            {name: 'pedido.fechaEntrega', index: 'pedido.fechaEntrega', formatter: 'date', width: 150, editable: true},
             {name: 'pedido.cantidadAprobados', index: 'pedido.cantidadAprobados', width: 90, sortable: false},
             {name: 'pedido.total', index: 'pedido.total', width: 90, sortable: false, formatter:'number'},
             {name: 'pedido.usuario.nombre', index: 'pedido.usuario.nombre', width: 90, sortable: false},

@@ -129,7 +129,7 @@ $(document).ready(function(data) {
             for (var i = 0; i < ids.length; i++) {
                 var cl = ids[i];
                 var dato = $(grid_selector).jqGrid('getRowData', cl);
-                var moneda = '';
+                var edit = '';
                 var editForm = '';
                 var ce = '';
                 var visuali = '';
@@ -142,24 +142,15 @@ $(document).ready(function(data) {
                     if (estado === 'S') {
                         var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
                         if (isEditarInline) {
-                            console.log(dato.porDefecto);
-                            if(dato.porDefecto === 'false'){
-                                console.log(dato.porDefecto);
-                                 moneda = monedaButton(cl, permisoEditar);
+
+                            if(dato.nombre !== 'MONEDA NACIONAL'){
+                                 desact = desactivarButton(cl, permisoDesactivar);
+                                 edit = editInlineButton(cl, permisoEditar);
                             }
-                            edit = editInlineButton(cl, permisoEditar);
-                            desact = desactivarButton(cl, permisoDesactivar);
-                           
-                            $(grid_selector).setRowData(ids[i], {act: ini + edit  + desact + moneda + fin});
 
-                        } else {
+                            $(grid_selector).setRowData(ids[i], {act: ini + edit  + desact  + fin});
 
-                            //asignar = asigButton(cl, true);
-                            //visuali = visualizarButton(cl, permisoVisualizar);
-                            editForm = editFormButton(cl, permisoEditar);
-                            desact = desactivarButton(cl, permisoDesactivar);
-                            $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
-                        }
+                        } 
                         $(grid_selector).setRowData(ids[i], {activo: labelActivo});
                     } else if (estado === 'N') {
                         var labelInactivo = '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';

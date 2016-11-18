@@ -5,10 +5,11 @@
     <head>
     <div th:include="include/head :: head" th:remove="tag"></div>
     <title>Compras</title>
-
+    
     <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
     <link th:href="@{/resources/css/icon.css}" rel="stylesheet" />
-
+    <link th:href="@{/resources/bootstrap/css/bootstrap-datetimepicker.min.css}" rel="stylesheet" />
+    <link th:href="@{/resources/bootstrap/css/bootstrap-timepicker.min.css}" rel="stylesheet" />
 
 </head>
 <body>
@@ -60,6 +61,8 @@
     </div>    
     <!-- /.content -->
     <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{~/proyecto/resources/bootstrap/js/bootstrap-datetimepicker.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/bootstrap-datepicker.min.js}" charset="UTF-8"></script>
     <script th:src="@{/resources/js/base.js}"></script>
     <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>

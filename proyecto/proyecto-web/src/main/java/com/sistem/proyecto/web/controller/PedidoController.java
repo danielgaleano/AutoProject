@@ -30,6 +30,9 @@ import com.sistem.proyecto.utils.DTORetorno;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
 import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -43,7 +46,8 @@ public class PedidoController extends BaseController {
             + "proveedor.nombre,activo,usuario.nombre,cantidadAprobados,cantidadTotal";
     String atributosDetalle = "id,numeroPedido,codigo,fechaEntrega,observacion,confirmado,descuento,total,neto,proveedor.id,"
             + "proveedor.nombre";
-
+    DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
+    
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listarPermisos(Model model) {
         ModelAndView retorno = new ModelAndView();
@@ -198,9 +202,10 @@ public class PedidoController extends BaseController {
                 return mensaje;
             }
 
-
-            ejPedido = pedidoManager.get(pedidoRecibido.getId());
+            //Date resultFecha = dateFormat.parse();
             
+            ejPedido = pedidoManager.get(pedidoRecibido.getId());
+            ejPedido.setFechaEntrega(pedidoRecibido.getFechaEntrega());
             ejPedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
             
 

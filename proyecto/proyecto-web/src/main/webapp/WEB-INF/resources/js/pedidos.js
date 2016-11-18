@@ -135,7 +135,7 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter: 'number', resize: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter: 'number', resize: false, editable: true, disabled: true, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter: 'number', resize: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
@@ -169,7 +169,7 @@ $(document).ready(function(data) {
 //                                $('input[name="total"]').val(total);
 //                            }}
 //                    ]}},
-            {name: 'total', index: 'total', width: 160, sortable: false, formatter: 'number', editable: true, resize: false},
+            {name: 'total', index: 'total', width: 160, sortable: false, formatter: 'number', editable: true, disabled: true, editoptions: {disabled: true}, resize: false},
             {name: 'neto', index: 'neto', width: 150, sortable: false, formatter: 'number', editable: false, resize: false},
             {name: 'estadoPedido', index: 'estadoPedido', width: 150, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,

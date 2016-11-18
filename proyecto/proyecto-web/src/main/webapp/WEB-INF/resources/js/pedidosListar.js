@@ -33,7 +33,12 @@ $(document).ready(function(data) {
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'numeroPedido', index: 'numeroPedido', width: 90, editable: false},
             {name: 'codigo', index: 'codigo', width: 90, editable: false},
-            {name: 'fechaEntrega', index: 'fechaEntrega', width: 100, formatter: 'date', editable: true,unformat: pickDate},
+            {name: 'fechaEntrega', index: 'fechaEntrega', width: 100, formatter: 'date', editable: true,unformat: pickDate
+//            formatoptions: {
+//                srcformat:'yyyy-mm-dd',
+//                newformat:'d/m/y'
+//            }
+            },
             {name: 'cantidadAprobados', index: 'cantidadAprobados', formatter: 'integer', width: 90, sortable: false},
             {name: 'cantidadTotal', index: 'cantidadTotal', formatter: 'integer', width: 90, sortable: false},
             {name: 'usuario.nombre', index: 'usuario.nombre', width: 90, sortable: false},
@@ -254,7 +259,7 @@ $(document).ready(function(data) {
 function pickDate(cellvalue, options, cell) {
     setTimeout(function() {
         $(cell).find('input[type=text]')
-                .datepicker({format: 'dd-mm-yyyy', autoclose: true});
+                .datepicker({format: 'dd/mm/yyyy', autoclose: true});
     }, 0);
 }
 

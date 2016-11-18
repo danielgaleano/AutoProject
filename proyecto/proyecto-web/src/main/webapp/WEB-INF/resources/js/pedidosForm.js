@@ -1,5 +1,8 @@
 function pedidoForm(id, action) {
     
+    $(".date-picker").datepicker('setDate', new Date());
+    $('.date-picker').datepicker('option', 'dateFormat', 'yyyy-mm-dd');
+    
     if (action !== "CREAR") {
         $('#proveedor').attr("disabled", true);
         $('#id-date-picker').attr("disabled", true);

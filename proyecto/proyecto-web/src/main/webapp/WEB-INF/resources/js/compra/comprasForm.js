@@ -1,4 +1,8 @@
 $(document).ready(function(data) {
+
+    $(".date-picker").datepicker('setDate', new Date());
+    $('.date-picker').datepicker('option', 'dateFormat', 'yyyy-mm-dd');
+
     $(":input").inputmask();
     /*$("#factura").inputmask("Regex", {
      regex: "^[0-9]{3}-[0-9]{3}-[0-9]{6}$"
@@ -21,8 +25,26 @@ $(document).ready(function(data) {
                 required: true
             },
             cuotaFecha: {
-                required: true
+                required: function (element) {
+                    if ($('#credito').is(':checked')) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            },
+            cantidadCuotas: {
+                required: function (element) {
+                    if ($('#credito').is(':checked')) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
             }
+
         },
         messages: {
             nroFactura: {
@@ -30,7 +52,8 @@ $(document).ready(function(data) {
             },
             formaPago: "Debe seleccionar un tipo de pago!",
             tipoDescuento: "Debe seleccionar un tipo de descuento!",
-            cuotaFecha: "Debe ingresar fecha de la primera cuota!"
+            cuotaFecha: "Debe ingresar fecha de la primera cuota!",
+            cantidadCuotas: "Cuotas!"
         },
         invalidHandler: function(event, validator) { //display error alert on form submit   
             $('.alert-error', $('.login-form')).show();

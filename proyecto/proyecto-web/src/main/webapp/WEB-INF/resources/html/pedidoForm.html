@@ -7,7 +7,7 @@
     <link th:href="@{/resources/css/datepicker.min.css}" rel="stylesheet" />
     <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
     <link th:href="@{/resources/bootstrap/css/bootstrap-datetimepicker.min.css}" rel="stylesheet" />
-
+    <link th:href="@{/resources/css/sol.css}" rel="stylesheet" />
     <title>Pedido</title>
     <script th:inline="javascript">
         var id = /*[[${id}]]*/'';
@@ -64,8 +64,8 @@
                                 <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                     <label class="col-lg-4 control-label">Proveedor(*)</label>
                                     <div class="col-lg-8">
-                                        <select  class="form-control tableusuario-input " id="proveedor"  name="proveedor.id" data-placeholder="Seleccione Proveedor">
-
+                                        <select  class="tableusuario-input " id="proveedor"  name="proveedor.id" data-placeholder="Seleccione Proveedor">
+                                            <option value="">Seleccione opcion</option>
                                         </select>
                                     </div>
                                 </div>
@@ -145,6 +145,7 @@
     <script th:src="@{/resources/js/base.js}"></script>
     <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
+    <script th:src="@{/resources/js/lib/sol.js}"></script>
     <script th:src="@{/resources/js/pedidosForm.js}"></script>
     <script th:src="@{/resources/js/pedidos.js}"></script>
 

@@ -1,5 +1,11 @@
 
 $(document).ready(function(data) {
+    
+    SearchableOptionList.defaults.texts.noItemsAvailable = "No se encontraron datos";
+    SearchableOptionList.defaults.texts.selectAll = 'Select all';
+    SearchableOptionList.defaults.texts.selectNone = 'Select none';
+    SearchableOptionList.defaults.texts.quickDelete ='&times;';
+    SearchableOptionList.defaults.texts.searchplaceholder = 'Seleccione Opcion';
 
     var isEditarInline = true;
     var isStatus = true;
@@ -33,8 +39,8 @@ $(document).ready(function(data) {
         datatype: 'json',
         mtype: 'GET',
         height: 150,
-        autowidth:true,
-        forceFit:false,
+        autowidth: true,
+        forceFit: false,
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
@@ -106,7 +112,7 @@ $(document).ready(function(data) {
                 editoptions: {
                     dataEvents: [
                         {type: 'change', fn: function(e) {
-                                var jqXHR = $.get(CONTEXT_ROOT + "/monedas/"+ this.value, function(response, textStatus, jqXHR) {
+                                var jqXHR = $.get(CONTEXT_ROOT + "/monedas/" + this.value, function(response, textStatus, jqXHR) {
                                     $('input[name="moneda.valor"]').val(response.data.valor);
                                 });
 
@@ -129,8 +135,8 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter:'number', resize: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter:'number', resize: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
+            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter: 'number', resize: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter: 'number', resize: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
                         {type: 'click', fn: function(e) {
@@ -163,8 +169,8 @@ $(document).ready(function(data) {
 //                                $('input[name="total"]').val(total);
 //                            }}
 //                    ]}},
-            {name: 'total', index: 'total', width: 160, sortable: false, formatter:'number', editable: true, resize: false},
-            {name: 'neto', index: 'neto', width: 150, sortable: false, formatter:'number', editable: false, resize: false},
+            {name: 'total', index: 'total', width: 160, sortable: false, formatter: 'number', editable: true, resize: false},
+            {name: 'neto', index: 'neto', width: 150, sortable: false, formatter: 'number', editable: false, resize: false},
             {name: 'estadoPedido', index: 'estadoPedido', width: 150, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
@@ -388,8 +394,8 @@ $(document).ready(function(data) {
                                         + '<strong>Exito! </strong>'
                                         + data.responseJSON.mensaje
                                         + '</div>');
-                                
-                                $(grid_selector).setGridParam({postData:{todos: false,
+
+                                $(grid_selector).setGridParam({postData: {todos: false,
                                         idPedido: data.responseJSON.id}});
 //                                setTimeout(function() {
 //                                    postData = $(grid_selector).jqGrid("getGridParam", "postData");
@@ -399,7 +405,7 @@ $(document).ready(function(data) {
 //                                        idPedido: data.responseJSON.id
 //                                    });
 //                                }, 0);
-                                
+
 
                                 $(grid_selector).trigger('reloadGrid');
 
@@ -439,8 +445,7 @@ $(document).ready(function(data) {
                     }
                 }
             });
-
-
+    
 });
 
 function updatePagerIcons(table) {

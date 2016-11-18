@@ -338,7 +338,7 @@ $(document).ready(function(data) {
 
             }
         },
-        editurl: "/editar", //nothing is saved
+        editurl: CONTEXT_ROOT + '/pedido/detalles/editar', //nothing is saved
         caption: "Detalle del Pedido"
 
     });

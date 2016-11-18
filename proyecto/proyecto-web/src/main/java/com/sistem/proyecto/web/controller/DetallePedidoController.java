@@ -53,7 +53,7 @@ public class DetallePedidoController extends BaseController {
         model.addAttribute("id", id);
         return retorno;
     }
-    
+
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno listarDetalle(@ModelAttribute("_search") boolean filtrar,
@@ -75,8 +75,8 @@ public class DetallePedidoController extends BaseController {
         }
         List<Map<String, Object>> listMapGrupos = null;
         try {
-            
-            if(estado != null && estado.compareToIgnoreCase("") != 0){
+
+            if (estado != null && estado.compareToIgnoreCase("") != 0) {
                 ejemplo.setEstadoPedido(DetallePedido.APROBADO);
             }
 
@@ -103,10 +103,10 @@ public class DetallePedidoController extends BaseController {
 
             }
             // ejemplo.setActivo("S");
-            if(ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0){
+            if (ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0) {
                 ordenarPor = "tipo.nombre";
             }
-            
+
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
             if (idPedido != null && idPedido.compareToIgnoreCase("") != 0) {
@@ -142,7 +142,7 @@ public class DetallePedidoController extends BaseController {
 
         return retorno;
     }
-    
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno pedidoForm(@PathVariable("id") Long id) {
@@ -205,10 +205,10 @@ public class DetallePedidoController extends BaseController {
                     return mensaje;
                 }
                 Date resultFecha = dateFormat.parse(detalleRecibido.getPedido().getFecha());
-                
+
                 Pedido pedidoEj = new Pedido();
                 pedidoEj.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-                
+
                 Integer total = pedidoManager.list(pedidoEj, false).size();
 
                 ejPedido.setNumeroPedido(total + 1 + "");
@@ -225,7 +225,7 @@ public class DetallePedidoController extends BaseController {
                 ejPedido.setTotal(Double.parseDouble("0"));
                 ejPedido.setConfirmado(false);
                 ejPedido.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-                
+
                 pedidoManager.save(ejPedido);
                 mensaje.setId(ejPedido.getId());
 
@@ -234,10 +234,9 @@ public class DetallePedidoController extends BaseController {
                 mensaje.setId(detalleRecibido.getPedido().getId());
             }
 
-
             mensaje = detallePedidoManager.guardarDetalle(detalleRecibido.getVehiculo(), detalleRecibido.getMoneda(),
                     detalleRecibido, true, ejPedido, userDetail.getIdEmpresa(), userDetail.getId());
- 
+
         } catch (Exception ex) {
             mensaje.setError(true);
             mensaje.setMensaje("Error al guardar el detalle del pedido");
@@ -246,8 +245,7 @@ public class DetallePedidoController extends BaseController {
 
         return mensaje;
     }
-    
-    
+
     @RequestMapping(value = "/activar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO aprobar(@PathVariable("id") Long id) {
@@ -260,7 +258,7 @@ public class DetallePedidoController extends BaseController {
 
             inicializarDetallePedidoManager();
             inicializarPedidoManager();
-            
+
             DetallePedido detallePedido = detallePedidoManager.get(id);
 
             if (detallePedido != null) {
@@ -273,7 +271,7 @@ public class DetallePedidoController extends BaseController {
                 retorno.setMensaje("El pedido del vehiculo " + nombre + " ya se encuentra aprobada.");
                 return retorno;
             }
-            
+
             retorno = detallePedidoManager.aprobar(id, detallePedido.getPedido().getId(),
                     userDetail.getIdEmpresa(), userDetail.getId());
 
@@ -285,6 +283,123 @@ public class DetallePedidoController extends BaseController {
 
         return retorno;
 
+    }
+
+    @RequestMapping(value = "/editar", method = RequestMethod.POST)
+    public @ResponseBody
+    MensajeDTO editar(@ModelAttribute("DetallePedido") DetallePedido pedidoRecibido) {
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        MensajeDTO mensaje = new MensajeDTO();
+        DetallePedido ejPedido = new DetallePedido();
+
+        try {
+            inicializarDetallePedidoManager();
+            inicializarVehiculoManager();
+            inicializarMonedaManager();
+
+            if (pedidoRecibido.getId() == null) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Error al editar el pedido.");
+                return mensaje;
+            }
+
+            if (pedidoRecibido.getVehiculo().getTipo() == null || pedidoRecibido.getVehiculo().getTipo().getId() != null
+                    && pedidoRecibido.getVehiculo().getTipo().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El tipo de vehiculo no puede estar vacio.");
+                return mensaje;
+            }
+
+            if (pedidoRecibido.getVehiculo().getMarca() == null || pedidoRecibido.getVehiculo().getMarca().getId() != null
+                    && pedidoRecibido.getVehiculo().getMarca().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("La marca de vehiculo no puede estar vacio.");
+                return mensaje;
+            }
+
+            if (pedidoRecibido.getVehiculo().getModelo() == null || pedidoRecibido.getVehiculo().getModelo().getId() != null
+                    && pedidoRecibido.getVehiculo().getModelo().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El modelo del vehiculo no puede estar vacio.");
+                return mensaje;
+            }
+
+            if (pedidoRecibido.getVehiculo().getAnho() == null || pedidoRecibido.getVehiculo().getAnho() != null
+                    && pedidoRecibido.getVehiculo().getAnho().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El año del vehiculo no puede estar vacio.");
+                return mensaje;
+            }
+
+            if (pedidoRecibido.getVehiculo().getColor() == null || pedidoRecibido.getVehiculo().getColor() != null
+                    && pedidoRecibido.getVehiculo().getColor().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El color del vehiculo no puede estar vacio.");
+                return mensaje;
+            }
+
+            if (pedidoRecibido.getVehiculo().getTransmision() == null || pedidoRecibido.getVehiculo().getTransmision() != null
+                    && pedidoRecibido.getVehiculo().getTransmision().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("La transmision del vehiculo no puede estar vacia.");
+                return mensaje;
+            }
+
+            if (pedidoRecibido.getMoneda() == null || pedidoRecibido.getMoneda().getId() != null
+                    && pedidoRecibido.getMoneda().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El campo moneda no puede estar vacia.");
+                return mensaje;
+            }
+
+            if (pedidoRecibido.getMoneda() == null || pedidoRecibido.getPrecio() != null
+                    && pedidoRecibido.getPrecio().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El campo precio no puede estar vacio.");
+                return mensaje;
+            }
+
+            //Date resultFecha = dateFormat.parse();
+            ejPedido = detallePedidoManager.get(pedidoRecibido.getId());
+
+            Vehiculo ejVehiculo = vehiculoManager.get(ejPedido.getVehiculo());
+
+            ejVehiculo.setAnho(pedidoRecibido.getVehiculo().getAnho());
+            ejVehiculo.setCaracteristica(pedidoRecibido.getVehiculo().getCaracteristica());
+            ejVehiculo.setColor(pedidoRecibido.getVehiculo().getColor());
+            ejVehiculo.setMarca(pedidoRecibido.getVehiculo().getMarca());
+            ejVehiculo.setModelo(pedidoRecibido.getVehiculo().getModelo());
+            ejVehiculo.setTipo(pedidoRecibido.getVehiculo().getTipo());
+            ejVehiculo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+
+            vehiculoManager.update(ejVehiculo);
+
+            Moneda ejMoneda = monedaManager.get(pedidoRecibido.getMoneda());
+
+            Double cambio = ejMoneda.getValor();
+            ejPedido.setCambioDia(cambio);
+
+            Long total = Math.round(pedidoRecibido.getPrecio() * cambio);
+
+            ejPedido.setNeto(Double.parseDouble(total.toString()));
+
+            ejPedido.setTotal(Double.parseDouble(total.toString()));
+            ejPedido.setEstadoPedido(DetallePedido.PENDIENTE);
+            ejPedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+
+            detallePedidoManager.update(ejPedido);
+
+            mensaje.setError(false);
+            mensaje.setMensaje("El pedido detalle  se modifico exitosamente.");
+            return mensaje;
+
+        } catch (Exception ex) {
+            mensaje.setError(true);
+            mensaje.setMensaje("Error a guardar el pedido detalle");
+            logger.debug("Error al ediatar el pedido detalle ", ex);
+        }
+
+        return mensaje;
     }
 
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
@@ -312,7 +427,8 @@ public class DetallePedidoController extends BaseController {
                 retorno.setMensaje("El pedido del vehiculo " + nombre + " ya se encuentra rechazada.");
                 return retorno;
             }
-            if (detallePedido != null && detallePedido.getVehiculo().getCaracteristica().toString()
+            if (detallePedido.getVehiculo().getCaracteristica() == null || detallePedido.getVehiculo().getCaracteristica() != null
+                    && detallePedido.getVehiculo().getCaracteristica().toString()
                     .compareToIgnoreCase("") == 0) {
                 retorno.setError(true);
                 retorno.setMensaje("Debe agregar un comentario al rechazar el pedido.");

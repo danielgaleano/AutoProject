@@ -174,6 +174,50 @@ public class PedidoController extends BaseController {
 
         return retorno;
     }
+    
+    @RequestMapping(value = "/editar", method = RequestMethod.POST)
+    public @ResponseBody
+    MensajeDTO editar(@ModelAttribute("Pedido") Pedido pedidoRecibido) {
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        MensajeDTO mensaje = new MensajeDTO();
+        Pedido ejPedido = new Pedido();
+
+        try {
+            inicializarPedidoManager();
+
+            if (pedidoRecibido.getId() == null) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Error al editar el pedido.");
+                return mensaje;
+            }
+
+            if (pedidoRecibido.getFechaEntrega() == null || pedidoRecibido.getFechaEntrega() != null
+                    && pedidoRecibido.getFechaEntrega().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("La fecha de entrega no puede estar vacia.");
+                return mensaje;
+            }
+
+
+            ejPedido = pedidoManager.get(pedidoRecibido.getId());
+            
+            ejPedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            
+
+            pedidoManager.update(ejPedido);
+
+            mensaje.setError(false);
+            mensaje.setMensaje("El pedido  se modifico exitosamente.");
+            return mensaje;
+
+        } catch (Exception ex) {
+            mensaje.setError(true);
+            mensaje.setMensaje("Error a guardar el pedido");
+            logger.debug("Error al ediatar el pedido ", ex);
+        }
+
+        return mensaje;
+    }
 
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody

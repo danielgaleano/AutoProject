@@ -1,4 +1,4 @@
- 
+
 $(document).ready(function(data) {
 
     var isEditarInline = false;
@@ -33,7 +33,7 @@ $(document).ready(function(data) {
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'numeroPedido', index: 'numeroPedido', width: 90, editable: false},
             {name: 'codigo', index: 'codigo', width: 90, editable: false},
-            {name: 'fechaEntrega', index: 'fechaEntrega', width: 100, formatter: 'date', editable: true},
+            {name: 'fechaEntrega', index: 'fechaEntrega', width: 100, formatter: 'date', editable: true,unformat: pickDate},
             {name: 'cantidadAprobados', index: 'cantidadAprobados', formatter: 'integer', width: 90, sortable: false},
             {name: 'cantidadTotal', index: 'cantidadTotal', formatter: 'integer', width: 90, sortable: false},
             {name: 'usuario.nombre', index: 'usuario.nombre', width: 90, sortable: false},
@@ -163,7 +163,7 @@ $(document).ready(function(data) {
                         if (estado === 'S') {
                             var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
 
-                            $(grid_selector).setRowData(ids[i], {act: ini  + visuali  + fin});
+                            $(grid_selector).setRowData(ids[i], {act: ini + visuali + fin});
 
                             $(grid_selector).setRowData(ids[i], {activo: labelActivo});
                         } else {
@@ -190,7 +190,7 @@ $(document).ready(function(data) {
 
             }
         },
-        editurl: "/editar", //nothing is saved
+        editurl: CONTEXT_ROOT + '/pedidos/editar', //nothing is saved
         caption: "Pedidos",
         subGrid: true,
         subGridOptions: {
@@ -249,6 +249,14 @@ $(document).ready(function(data) {
     $(grid_selector).jqGrid('setGridWidth', $(".content").width());
     $(grid_selector).jqGrid('navGrid', pager_selector, {edit: false, add: false, del: false, search: false});
 });
+
+//enable datepicker
+function pickDate(cellvalue, options, cell) {
+    setTimeout(function() {
+        $(cell).find('input[type=text]')
+                .datepicker({format: 'dd-mm-yyyy', autoclose: true});
+    }, 0);
+}
 
 function updatePagerIcons(table) {
     var replacement =

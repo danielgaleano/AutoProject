@@ -60,8 +60,24 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'vehiculo.marca.nombre', index: 'vehiculo.marca.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+                {name: 'vehiculo.marca.nombre', index: 'vehiculo.marca.nombre', width: 150, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
+                    dataEvents: [
+                        {type: 'change', fn: function(e) {
+                                var jqXHR = $.get(CONTEXT_ROOT + "/modelos/listar?_search=false&todos=true&idMarca=" + this.value + "&rows=10&page=1&sidx=&sord=asc", function(response, textStatus, jqXHR) {
+                                    var sel = '<option value="">Seleccione opcion</option>';
+                                    $.each(response.retorno, function() {
+
+                                        sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
+
+                                    });
+                                    console.log($('select[name="vehiculo.modelo.nombre"]'));
+                                    $('select[name="vehiculo.modelo.nombre"]').empty().append(sel);
+                                });
+
+                            }}
+
+                    ],
                     dataUrl: CONTEXT_ROOT + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
 
@@ -78,24 +94,10 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'vehiculo.modelo.nombre', index: 'vehiculo.modelo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
-                editoptions: {
-                    dataUrl: CONTEXT_ROOT + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
-                    buildSelect: function(resp) {
-
-                        var sel = '<select>';
-                        sel += '<option value="">Seleccione la opcion</option>';
-                        var obj = $.parseJSON(resp);
-//                        var sel_id = $(grid_selector).jqGrid('getGridParam', 'selrow');
-//                        var value = $(grid_selector).jqGrid('getCell',sel_id ,'tipo.id');
-
-                        $.each(obj.retorno, function() {
-                            sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
-                        });
-                        sel += '</select>';
-                        return sel;
-                    }
-                }},
+            {name: 'vehiculo.modelo.nombre', index: 'vehiculo.modelo.nombre', width: 130, editable: true, edittype: 'select',
+                editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+                editoptions: {value: {'': 'Seleccione Opcion'}}
+            },
             {name: 'vehiculo.caracteristica', index: 'vehiculo.caracteristica', width: 130, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
             {name: 'vehiculo.anho', index: 'vehiculo.anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.color', index: 'vehiculo.color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
@@ -484,7 +486,7 @@ $(document).ready(function(data) {
     $(grid_selector).jqGrid('inlineNav', pager_selector,
             {
                 edit: false,
-                add: permisoAgegar,
+                add: false,
                 addtext: 'Agregar',
                 addicon: "ui-icon ace-icon fa fa-plus-circle purple",
                 save: true,

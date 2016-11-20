@@ -259,7 +259,7 @@ $(document).ready(function(data) {
 function pickDate(cellvalue, options, cell) {
     setTimeout(function() {
         $(cell).find('input[type=text]')
-                .datepicker({format: 'dd/mm/yyyy', autoclose: true});
+                .datepicker({format: 'mm/dd/yyyy', autoclose: true});
     }, 0);
 }
 

@@ -46,7 +46,7 @@ public class CompraController extends BaseController {
             + "proveedor.nombre,activo,usuario.nombre,cantidadAprobados,cantidadTotal";
     String atributosApagar = "id,nroCuota,monto,saldo,montoInteres,fecha,estado";
 
-    String atributosCompras = "id,estadoCompra,nroFactura,fechaCompra,tipoCompra,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
+    String atributosCompras = "id,estadoCompra,nroFactura,fechaCuota,fechaCompra,tipoCompra,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
             + "tipoMoraInteres,moraInteres,cantidadCuotas,montoCuotas,proveedor.nombre,activo,pedido.usuario.nombre,"
             + "entrega,saldo,tipoDescuento,descuento,monto,montoDescuento,neto,pedido.numeroPedido,pedido.codigo,pedido.fechaEntrega,"
             + "pedido.cantidadAprobados,pedido.cantidadTotal,pedido.total,proveedor.id,proveedor.ruc,proveedor.nombre,proveedor.direccion,proveedor.telefono";
@@ -77,7 +77,7 @@ public class CompraController extends BaseController {
     @RequestMapping(value = "/directa/crear", method = RequestMethod.GET)
     public ModelAndView formCreate( Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("compraForm");
+        retorno.setViewName("compraDirectaForm");
         model.addAttribute("action", "CREAR");
         //model.addAttribute("id", id);
         return retorno;

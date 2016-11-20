@@ -45,6 +45,7 @@ function cargarDatos(id) {
             $('#descuento').val(compra.descuento);
             $('#interes').val(compra.porcentajeInteresCredito);
             $('#montoInteres').val(compra.montoInteres);
+            $('#id-date-picker').val(compra.fechaCuota);
             
             if(compra.formaPago === 'CONTADO'){
                  $('#contado').prop("checked",true);

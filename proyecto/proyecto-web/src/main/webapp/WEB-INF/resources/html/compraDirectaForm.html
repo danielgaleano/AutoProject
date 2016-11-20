@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>  
+    <div th:include="include/head :: head" th:remove="tag"></div>
+    <link th:href="@{/resources/css/datepicker.min.css}" rel="stylesheet" />
+    <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
+    <link th:href="@{/resources/dist/css/jquery.modal.css}" rel="stylesheet" />
+    <link th:href="@{/resources/bootstrap/css/bootstrap-datetimepicker.min.css}" rel="stylesheet" />
+
+    <title>Compra</title>
+    <script th:inline="javascript">
+        var id = /*[[${id}]]*/'';
+        var action = /*[[${action}]]*/'';
+    </script>
+</head>
+<body >
+    <nav th:replace="include/navbar :: navbar"></nav>
+
+    <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetalleCompra.Crear'')')}"/>
+    <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetalleCompra.Editar'')')}"/>
+    <div class="tablaprobar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetalleCompra.Aprobar'')')}"/>
+    <div class="tablrechazar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''DetalleCompra.Rechazar'')')}"/>
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) --> 
+        <!-- Main content -->
+        <section class="content">
+            <div class="box box-info">
+
+                <div class="widget-header widget-header-flat widget-header-large">
+                    <h3 class="widget-title">
+                        <span th:if="${proveedor} == null" class="middle">Compra</span>
+                        <span th:if="${editar}" class="middle">Editar Compra</span>
+                        <span th:if="!${editar} and ${proveedor} != null" class="middle">Visualizar Compra</span>
+                    </h3>
+
+                    <div class="widget-toolbar no-border">
+                        <a sec:authorize="hasRole('Compra.Realizar')" id="botonAprobar" class="btn btn-primary bigger" role="button" hidden="hidden">Aprobar</a>
+                        <a th:href="@{/orden/compras}" class="btn btn-primary btn-light bigger" role="button">
+                            <i class="ace-icon fa fa-arrow-left"></i>
+                            Volver
+                        </a> 
+                    </div>   
+                </div>
+                <!-- <form:input path="fichero" type="file" class="hidden" />
+                <form:input path="nuevoFichero" type="boolean" class="hidden" /> -->
+
+                <form id="validation-form" class="form-horizontal dropzone" enctype="multipart/form-data">
+                    <div class="box-body">
+
+                        <div class="col-xs-12">
+                            <div id="mensaje"></div>
+                            <div class="col-xs-12 col-sm-12">
+                                <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
+                                    <input  id="idCompra" name="id" type="hidden" th:value="${id}" class="form-control tableusuario-input" />
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                        <label class="col-lg-5 control-label">Nro. Factura(*)</label>
+                                        <div class="col-lg-7">
+                                            <input id="nroFactura" name="nroFactura" type="text" data-mask="" data-inputmask="'mask': '999-999[-999999]'" placeholder="Nro. de factura" class="form-control tableusuario-input "/> 
+                                            <span class="glyphicon form-control-feedback" id="factura1"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                        <label class="col-lg-6 control-label">Monto Total:</label>
+                                        <div class="col-lg-6">
+                                            <input id="montoTotal" name="montoTotal" type="text" disabled="disabled" placeholder="Monto Total" class="form-control tableusuario-input "/> 
+                                            <span class="glyphicon form-control-feedback" id="factura1"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-1 pull-right">
+                                        <button id="aceptar" class="btn btn-primary" type="submit">
+                                            <i class="fa fa-check bigger-110"></i>
+                                            Guardar
+                                        </button>
+                                    </div>
+
+                                    <span class="col-lg-12 middle">Datos del Proveedor</span>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
+                                        <div class="col-lg-12">
+                                            <input id="ruc" name="ruc" type="text" disabled="disabled" placeholder="Nro. de ruc" class="form-control tableusuario-input "/> 
+                                            <span class="glyphicon form-control-feedback" id="ruc1"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">                                    
+                                        <div class="col-lg-12">
+                                            <input id="nombre" name="nombre" type="text" disabled="disabled" placeholder="Nombre" class="form-control tableusuario-input "/> 
+                                            <span class="glyphicon form-control-feedback" id="nombre1"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
+                                        <div class="col-lg-12">
+                                            <input id="direccion" name="direccion" disabled="disabled" type="text" placeholder="Direccion" class="form-control tableusuario-input "/> 
+                                            <span class="glyphicon form-control-feedback" id="direccion1"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
+                                        <div class="col-lg-12">
+                                            <input id="telefono" name="telefono" disabled="disabled" type="text" placeholder="Nro. de telefono" class="form-control tableusuario-input "/> 
+                                            <span class="glyphicon form-control-feedback" id="telefono1"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                        <label class="col-lg-2 control-label">Forma de pago</label>
+                                        <div class="radio col-lg-2">
+                                            <label>
+                                                <input type="radio" name="formaPago" id="contado" value="CONTADO" class="tableusuario-input "/>
+                                                Contado
+                                            </label>
+                                        </div>
+                                        <div class="radio col-lg-2">
+                                            <label>
+                                                <input type="radio" name="formaPago" id="credito" value="CREDITO" class="tableusuario-input "/>
+                                                Credito
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div id="formCredito" style="display:none;">
+                                        <div class="row">
+
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
+                                                <label class="col-lg-4 control-label">Entrega:</label>
+                                                <div class="col-lg-8">
+                                                    <input id="entrega" name="entrega" type="text" placeholder="Entrega" class="form-control tableusuario-input "/> 
+                                                    <span class="glyphicon form-control-feedback" id="factura1"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-2 col-md-2">
+                                                <label class="col-lg-5 control-label">%Interes</label>
+                                                <div class="col-lg-7">
+                                                    <input   id="interes" name="porcentajeInteresCredito" type="text"  class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="interes1" style="right: 15px"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
+                                                <label class="col-lg-5 control-label">Monto Interes</label>
+                                                <div class="col-lg-7">
+                                                    <input   id="montoInteres" disabled="disabled" name="montoInteres" type="text" placeholder="Monto Interes" class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="montoInteres1"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-2 col-md-2">
+                                                <label class="col-lg-5 control-label">Cuotas</label>
+                                                <div class="col-lg-7">
+                                                    <input  id="cuotas" name="cantidadCuotas" type="number"  class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="cuotas1" style="right: 15px"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
+                                                <label class="col-lg-5 control-label">Monto Cuotas</label>
+                                                <div class="col-lg-7">
+                                                    <input   id="montoCuota" disabled="disabled" name="montoCuota" type="text" placeholder="Monto Cuotas" class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="montoCuota1"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                <label class="col-lg-4 control-label">Fecha 1ra cuota</label>
+                                                <div class="col-lg-5">
+
+                                                    <input class="form-control tableusuario-input date-picker" id="id-date-picker" name="cuotaFecha" type="text" data-date-format="yyyy-mm-dd" />
+
+                                                    <span class="glyphicon form-control-feedback" id="fechaCuota1"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                <label class="col-lg-6 control-label">%Interes por Mora</label>
+                                                <div class="col-lg-2">
+                                                    <input   id="interesMora" name="interesMora" type="text"  class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="interesMora1" style="right: 15px"></span>
+                                                </div>
+                                            </div>
+                                        </div>    
+                                    </div> 
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                        <label class="col-lg-2 control-label">Tipo de descuento</label>
+                                        <div class="radio col-lg-2">
+                                            <label>
+                                                <input type="radio" name="tipoDescuento" id="general" value="GENERAL" class="tableusuario-input "/>
+                                                General
+                                            </label>
+                                        </div>
+                                        <div class="radio col-lg-2">
+                                            <label>
+                                                <input type="radio" name="tipoDescuento" id="detallado" value="DETALLADO" class="tableusuario-input "/>
+                                                Detallado
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div id="formDescuento" style="display:none;">
+                                        <div class="row">
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                <label class="col-lg-6 control-label">Descuento %</label>
+                                                <div class="col-lg-3">
+                                                    <input   id="descuento" name="descuento" type="text" class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="descuento1"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                <label class="col-lg-6 control-label">Monto Descuento</label>
+                                                <div class="col-lg-6">
+                                                    <input   id="montoDescuento" disabled="disabled" name="montoDescuento" type="text" placeholder="Monto Descuento" class="form-control tableusuario-input"/> 
+                                                    <span class="glyphicon form-control-feedback" id="montoDescuento1"></span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                        <label class="col-lg-4 control-label">Saldo</label>
+                                        <div class="col-lg-8">
+                                            <input  id="saldo" type="text" name="saldo" disabled="disabled" placeholder="Saldo" class="form-control tableusuario-input " /> 
+                                            <span class="glyphicon form-control-feedback" id="saldo1"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                        <label class="col-lg-4 control-label">Neto a pagar</label>
+                                        <div class="col-lg-6">
+                                            <input  id="neto" type="text" name="neto" disabled="disabled" placeholder="Neto a pagar" class="form-control tableusuario-input " /> 
+                                            <span class="glyphicon form-control-feedback" id="neto1"></span>
+                                        </div>
+                                    </div>
+
+                                </div>                           
+                            </div>
+
+                        </div>
+                    </div>
+
+                </form>
+                <div class="row">
+                    <div class="col-xs-12">                       
+                        <table id="grid" style="width: 100%;"></table>
+                        <div id="grid-pager"></div>
+
+                    </div>
+                </div>                
+            </div>
+            <!-- Your Page Content Here -->
+
+        </section><!-- /.content -->
+    </div>
+    <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.modal.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/moment.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/bootstrap-editable.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/dist/js/jquery.inputmask.bundle.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/bootstrap-datepicker.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/bootstrap/js/bootstrap-datetimepicker.min.js}" charset="UTF-8"></script>
+    <script th:src="@{/resources/js/base.js}"></script>
+    <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
+    <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
+    <script th:src="@{/resources/js/compra/comprasForm.js}"></script>
+    <script th:src="@{/resources/js/compra/compraDatos.js}"></script>
+    <script th:src="@{/resources/js/compra/descuentoForm.js}"></script>
+    <script th:src="@{/resources/js/compra/comprasDirectaDetalle.js}"></script>
+
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.number.min.js}" charset="UTF-8"></script>
+    <script type="text/javascript">
+        $('#entrega, #montoTotal, #montoDescuento, #montoCuota, #montoInteres, #saldo, #neto, #interes, #interesMora').number(true, 0, ',', '.');
+        //console.log($.number( 5020.2364, 2 )); // Outputs: 5,020.24)
+    </script>
+    <!--    <script th:src="@{~/proyecto/resources/js/lib/dropzone.js}"></script>
+        <script th:src="@{~/proyecto/resources/js/upload_image.js}"></script> -->
+
+</body>
+</html>

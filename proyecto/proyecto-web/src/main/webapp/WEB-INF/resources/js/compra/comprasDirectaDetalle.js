@@ -419,7 +419,7 @@ $(document).ready(function(data) {
                 sortname: 'num',
                 altRows: true,
                 sortorder: "asc",
-                serializeRowData: function(postData) {                   
+                serializeRowData: function(postData) {
                     postData['nroFactura'] = $('#factura').val();
                     return postData;
                 },
@@ -493,9 +493,10 @@ $(document).ready(function(data) {
                 cancel: true,
                 cancelicon: "ui-icon-cancel",
                 canceltext: 'Cancelar',
-                refresh: true,
-                cloneToTop: true,
-                "view": false,
+                refresh: false,
+                cloneToTop: false,
+                view: true,
+                viewicon: 'ui-icon ace-icon fa fa-plus-circle purple',
                 addParams: {
                     //position: 'last',
                     useDefValues: true,
@@ -563,7 +564,15 @@ $(document).ready(function(data) {
                         alert('holaaa');
                     }
                 }
-            });
+            },
+    {
+        //view record form
+        recreateForm: true,
+        beforeShowForm: function(e) {
+            var form = $(e[0]);
+            form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+        }
+    });
 
 
 });

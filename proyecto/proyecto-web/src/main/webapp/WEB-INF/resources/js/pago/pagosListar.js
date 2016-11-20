@@ -24,11 +24,11 @@ $(document).ready(function(data) {
         url: CONTEXT_ROOT + '/compras/listar',
         datatype: 'json',
         mtype: 'GET',
-        height: 310,
+        height: 150,
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'NRO. FACTURA', 'FORMA PAGO', 'TIPO DESCUENTO', 'NETO', 'PROVEEDOR','TELF. PROVEEDOR', 'STATUS', ''],
+        colNames: ['ID', 'NRO. FACTURA', 'FORMA PAGO', 'TIPO DESCUENTO', 'NETO', 'PROVEEDOR', 'TELF. PROVEEDOR', 'STATUS', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'nroFactura', index: 'nroFactura', width: 90, editable: false},
@@ -87,7 +87,7 @@ $(document).ready(function(data) {
         postData: {
             atributos: "id,nombre",
             filters: null,
-            estado:action,
+            estado: action,
             todos: false
         },
         jsonReader: {
@@ -95,12 +95,12 @@ $(document).ready(function(data) {
             page: 'page',
             total: 'total',
             records: function(obj) {
-                if(obj.retorno !== null){
+                if (obj.retorno !== null) {
                     return obj.retorno.length;
-                }else{
-                    return 0 ;
+                } else {
+                    return 0;
                 }
-                
+
             }
         },
         //toppager: true,
@@ -116,6 +116,7 @@ $(document).ready(function(data) {
         },
         gridComplete: function() {
             var ids = $(grid_selector).getDataIDs();
+            console.log(ids);
             var datos = $(grid_selector).getGridParam();
             //console.log($(grid_selector));
             for (var i = 0; i < ids.length; i++) {
@@ -141,9 +142,9 @@ $(document).ready(function(data) {
                         } else {
 
                             asignar = "";
-                            visuali = visualizarButton(cl, permisoVisualizar,null);
+                            visuali = visualizarButton(cl, permisoVisualizar, null);
                             //edit = editInlineButton(cl, permisoEditar);
-                            editForm = detalleButton(cl, permisoDetalle,'Realizar Compra','orden/compras/realizar');
+                            editForm = detalleButton(cl, permisoDetalle, 'Realizar Compra', 'orden/compras/realizar');
                             desact = desactivarButton(cl, permisoDesactivar);
                             $(grid_selector).setRowData(ids[i], {act: ini + visuali + editForm + desact + fin});
                         }
@@ -162,7 +163,7 @@ $(document).ready(function(data) {
                     } else {
 
                         //asignar = asigButton(cl, true);
-                        visuali = visualizarButton(cl, permisoVisualizar,null);
+                        visuali = visualizarButton(cl, permisoVisualizar, null);
                         editForm = editFormButton(cl, permisoEditar);
                         $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
                     }
@@ -174,34 +175,34 @@ $(document).ready(function(data) {
         editurl: "/editar", //nothing is saved
         caption: "Compras Pendientes",
         subGrid: true,
-        subGridOptions:{
-            plusicon : 'fa fa-fw fa-sort-amount-asc',
-            minusicon : 'fa fa-fw fa-arrow-up'
+        subGridOptions: {
+            plusicon: 'fa fa-fw fa-sort-amount-asc',
+            minusicon: 'fa fa-fw fa-arrow-up'
         },
         subGridRowExpanded: function(subgrid_id, row_id) {
-        // we pass two parameters
-        // subgrid_id is a id of the div tag created within a table
-        // the row_id is the id of the row
-        // If we want to pass additional parameters to the url we can use
-        // the method getRowData(row_id) - which returns associative array in type name-value
-        // here we can easy construct the following
-           var subgrid_table_id;
-           subgrid_table_id = subgrid_id+"_t";
-           $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table>");
-           $("#"+subgrid_table_id).jqGrid({
-                url:CONTEXT_ROOT + '/compras/docApagar/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idCompra='+row_id,
+            // we pass two parameters
+            // subgrid_id is a id of the div tag created within a table
+            // the row_id is the id of the row
+            // If we want to pass additional parameters to the url we can use
+            // the method getRowData(row_id) - which returns associative array in type name-value
+            // here we can easy construct the following
+            var subgrid_table_id;
+            subgrid_table_id = subgrid_id + "_t";
+            $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table>");
+            $("#" + subgrid_table_id).jqGrid({
+                url: CONTEXT_ROOT + '/compras/docApagar/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idCompra=' + row_id,
                 datatype: 'json',
                 mtype: 'GET',
                 colNames: ['NRO. CUOTA', 'MONTO', 'SALDO', 'FECHA VENCIMIENTO', 'ESTADO'],
                 colModel: [
-                    {name:"nroCuota",index:"nroCuota",width:120,key:true},
-                    {name:"monto",index:"monto", formatter: 'number',width:130},
-                    {name:"saldo",index:"saldo", formatter: 'number',width:80,align:"right"},
-                    {name:"fecha",index:"fecha",width:120,align:"right"},           
-                    {name:"estado",index:"estado",width:130,align:"right",sortable:false}
-                    ],
+                    {name: "nroCuota", index: "nroCuota", width: 120, key: true},
+                    {name: "monto", index: "monto", formatter: 'number', width: 130},
+                    {name: "saldo", index: "saldo", formatter: 'number', width: 80, align: "right"},
+                    {name: "fecha", index: "fecha", width: 120, align: "right"},
+                    {name: "estado", index: "estado", width: 130, align: "right", sortable: false}
+                ],
                 height: '100%',
-                rowNum:10,
+                rowNum: 10,
                 sortname: 'num',
                 sortorder: "asc",
                 jsonReader: {
@@ -209,21 +210,150 @@ $(document).ready(function(data) {
                     page: 'page',
                     total: 'total',
                     records: function(obj) {
-                        if(obj.retorno !== null){
+                        if (obj.retorno !== null) {
                             return obj.retorno.length;
-                        }else{
-                            return 0 ;
+                        } else {
+                            return 0;
                         }
-                        
+
                     }
-              }
-           });
-       }
+                }
+            });
+        }
 
     });
     $(window).triggerHandler('resize.jqGrid');
     $(grid_selector).jqGrid('setGridWidth', $(".content").width());
-    $(grid_selector).jqGrid('navGrid', pager_selector, {edit: false, add: false, del: false, search: false});
+    //navButtons
+    jQuery(grid_selector).jqGrid('navGrid', pager_selector,
+            {//navbar options
+                edit: false,
+                editicon: 'ace-icon fa fa-pencil blue',
+                add: false,
+                addicon: 'ace-icon fa fa-plus-circle purple',
+                del: false,
+                delicon: 'ace-icon fa fa-trash-o red',
+                search: false,
+                searchicon: 'ace-icon fa fa-search orange',
+                refresh: true,
+                refreshicon: 'ace-icon fa fa-refresh green',
+                view: true,
+                viewicon: 'ace-icon fa fa-search-plus grey',
+            },
+            {
+                //edit record form
+                //closeAfterEdit: true,
+                //width: 700,
+                recreateForm: true,
+                beforeShowForm: function(e) {
+                    var form = $(e[0]);
+                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+                    style_edit_form(form);
+                }
+            },
+    {
+        //new record form
+        //width: 700,
+        closeAfterAdd: true,
+        recreateForm: true,
+        viewPagerButtons: false,
+        beforeShowForm: function(e) {
+            console.log(e);
+            var form = $(e[0]);
+            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
+                    .wrapInner('<div class="widget-header" />')
+            style_edit_form(form);
+        }
+    },
+    {
+        //delete record form
+        recreateForm: true,
+        beforeShowForm: function(e) {
+            var form = $(e[0]);
+            if (form.data('styled'))
+                return false;
+
+            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+            style_delete_form(form);
+
+            form.data('styled', true);
+        },
+        onClick: function(e) {
+            //alert(1);
+        }
+    },
+    {
+        //search form
+        recreateForm: true,
+        afterShowSearch: function(e) {
+            var form = $(e[0]);
+            form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+            style_search_form(form);
+        },
+        afterRedraw: function() {
+            style_search_filters($(this));
+        }
+        ,
+        multipleSearch: true,
+        /**
+         multipleGroup:true,
+         showQuery: true
+         */
+    },
+            {
+                //view record form
+                recreateForm: true,
+                beforeShowForm: function(e,p) {
+                    var id = e[0].elements[0].value;
+                    console.log(e[0].elements[0].value);
+                    var jqXHR = $.get(CONTEXT_ROOT + "/realizar/" + id, function(response, textStatus, jqXHR) {
+
+                        if (response.error) {
+                            $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    + '><i class="fa  fa-remove"></i></button>'
+                                    + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                                    + response.mensaje
+                                    + '</div>');
+                        } else {
+                            var proveedor = response.data;
+
+                            $('#idProveedor').val(proveedor.id);
+                            $('#ruc').val(proveedor.ruc);
+                            $('#nombre').val(proveedor.nombre);
+                            $('#email').val(proveedor.email);
+                            $('#telefono').val(proveedor.telefono);
+                            $('#direccion').val(proveedor.direccion);
+                            $('#comentario').val(proveedor.comentario);
+                            $('#fax').val(proveedor.fax);
+                            $('#pais').val(proveedor.pais);
+                            $('#ciudad').val(proveedor.ciudad);
+                            $('#codigoPostal').val(proveedor.codigoPostal);
+                            $('#comentario').val(proveedor.comentario);
+                            $('#idContacto').val(proveedor['contacto.id']);
+                            $('#movilContacto').val(proveedor['contacto.movil']);
+                            $('#documentoContacto').val(proveedor['contacto.documento']);
+                            $('#nombreContacto').val(proveedor['contacto.nombre']);
+                            $('#cargoContacto').val(proveedor['contacto.cargo']);
+                            $('#telefonoContacto').val(proveedor['contacto.telefono']);
+                            $('#emailContacto').val(proveedor['contacto.email']);
+                            $('#comentarioContacto').val(proveedor['contacto.comentario']);
+
+//                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
+//                        + '<button type="button" class="close" data-dismiss="alert"'
+//                        + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+//                        + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
+//                        + response.mensaje
+//                        + '</div>');
+
+                        }
+
+                    });
+                    var form = $(e[0]);
+                    form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+                }
+            }
+    )
 });
 
 function updatePagerIcons(table) {

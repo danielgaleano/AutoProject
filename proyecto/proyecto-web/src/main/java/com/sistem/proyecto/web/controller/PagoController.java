@@ -102,7 +102,7 @@ public class PagoController extends BaseController {
         } catch (Exception ex) {
             logger.error("Error al obtener la compra", ex);
             retorno.setError(true);
-            retorno.setMensaje("Error al obtener el cliente");
+            retorno.setMensaje("Error al obtener la compra");
         }
 
         return retorno;

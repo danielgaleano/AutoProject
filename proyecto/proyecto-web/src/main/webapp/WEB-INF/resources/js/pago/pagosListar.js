@@ -306,7 +306,7 @@ $(document).ready(function(data) {
                 beforeShowForm: function(e,p) {
                     var id = e[0].elements[0].value;
                     console.log(e[0].elements[0].value);
-                    var jqXHR = $.get(CONTEXT_ROOT + "/realizar/" + id, function(response, textStatus, jqXHR) {
+                    var jqXHR = $.get(CONTEXT_ROOT + "pagos/" + id, function(response, textStatus, jqXHR) {
 
                         if (response.error) {
                             $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'

@@ -346,6 +346,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                             } else {
                                 date.set(Calendar.MONTH, fecha.getMonth() + contador);
+                                contador++;
                             }
 
                             date.set(Calendar.DATE, fecha.getDate());
@@ -359,11 +360,12 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                             date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
                             ejAPagar.setFecha(date.getTime());
+                            contador++;
                         }
 
                         documentoPagarManager.save(ejAPagar);
                         
-                        contador++;
+                        
                     }
                 }
 

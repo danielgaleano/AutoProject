@@ -189,6 +189,7 @@ $(document).ready(function(data) {
             $("#general").attr("disabled", true);
             $("#detallado").attr("disabled", true);
             $("#formCredito").show();
+            $("#tipo-descuento").hide();
         }
     });
     $("#contado").click(function() {
@@ -196,6 +197,7 @@ $(document).ready(function(data) {
             $("#general").attr("disabled", false);
             $("#detallado").attr("disabled", false);
             $("#formCredito").hide();
+            $("#tipo-descuento").show();
         }
     });
     $("#general").click(function() {

@@ -134,6 +134,15 @@ and open the template in the editor.
                     </ul>
                   </li>
                   <li class="treeview">
+                    <a  href="#"><i class="fa fa-car"></i> <span>Reportes</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    <ul class="treeview-menu">
+                      <li><a href="#">Reporte de Compras</a></li>
+                      <li><a href="#">Reporte de Ventas</a></li>
+                      <li><a href="#">Reporte de Movimientos</a></li>
+                      
+                    </ul>
+                  </li>
+                  <li class="treeview">
                     <a sec:authorize="hasRole('Configurar.Sistema')" href="#"><i class="fa fa-cog"></i> <span>Datos del Sistema</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                         <li><a sec:authorize="hasRole('SuperUsuario')" th:href="@{/roles}"><i class="fa fa-users"></i> <span>Roles</span></a></li>

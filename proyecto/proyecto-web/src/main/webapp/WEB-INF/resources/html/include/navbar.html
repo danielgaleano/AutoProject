@@ -111,6 +111,7 @@ and open the template in the editor.
                     <a sec:authorize="hasRole('Compra.Listar')" href="#"><i class="fa fa-fw fa-cart-plus"></i> <span>Compras</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                       <li><a th:href="@{/orden/compras}">Orden Compra</a></li>
+                      <li><a th:href="@{/compras/directa/crear}">Compra Directa</a></li>
                       <li><a th:href="@{/compras/pendientes}">Compras Pendientes</a></li>
                       <li><a th:href="@{/compras/realizadas}">Compras Realizadas</a></li>
                     </ul>

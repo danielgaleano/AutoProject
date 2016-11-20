@@ -9,7 +9,12 @@ $(document).ready(function(data) {
     var permisoAprobar = parseBolean($(this).find('.tablaprobar-permiso').text());
     var permisoRechazar = parseBolean($(this).find('.tablrechazar-permiso').text());
     var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
-    var permisoAgegar = parseBolean($(this).find('.tabladd-permiso').text());
+    
+    if(action === 'CREAR'){
+        var permisoAgegar = true;
+    }else{
+        var permisoAgegar = false;
+    }
     /*
      }else{
      var permisoAprobar = false;

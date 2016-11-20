@@ -4,9 +4,15 @@ $(document).ready(function(data) {
         $('#botonAprobar').hide();
         $('#aceptar').hide();      
         $('#validation-form').find('.tableusuario-input').attr("disabled", true);       
+    }else if(action === 'CREAR'){
+        $('#botonAprobar').hide();
+        $('#validation-form').find('.tableusuario-input').attr("disabled", false);
     }
     
-    cargarDatos(id);    
+    if(id !== null){
+        cargarDatos(id);
+    }
+        
 });
 
 function cargarDatos(id) {

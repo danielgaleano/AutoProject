@@ -73,6 +73,15 @@ public class CompraController extends BaseController {
         model.addAttribute("action", "REALIZADA");
         return retorno;
     }
+    
+    @RequestMapping(value = "/directa/crear", method = RequestMethod.GET)
+    public ModelAndView formCreate( Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("compraForm");
+        model.addAttribute("action", "CREAR");
+        //model.addAttribute("id", id);
+        return retorno;
+    }
 
     @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
     public ModelAndView formView(@PathVariable("id") Long id, Model model) {

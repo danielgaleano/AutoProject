@@ -116,9 +116,9 @@ and open the template in the editor.
                       <li><a th:href="@{/compras/realizadas}">Compras Realizadas</a></li>
                     </ul>
                   </li>
-                  <li><a sec:authorize="hasRole('Venta.Listar')" th:href="@{/ventas}"><i class="fa fa-truck"></i> <span>Ventas</span></a></li>
+                  <li><a sec:authorize="hasRole('Venta.Listar')" th:href="@{/ventas}"><i class="fa fa-shopping-bag"></i> <span>Ventas</span></a></li>
                   <li class="treeview">
-                    <a sec:authorize="hasRole('Caja.Listar')" href="#"><i class="fa fa-car"></i> <span>Caja</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    <a sec:authorize="hasRole('Caja.Listar')" href="#"><i class="fa fa-money"></i> <span>Caja</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                       <li><a th:href="@{/pagos}">Pago Pendientes</a></li>
                       <li><a th:href="@{/ventas}">Cobro Pendientes</a></li>
@@ -134,7 +134,7 @@ and open the template in the editor.
                     </ul>
                   </li>
                   <li class="treeview">
-                    <a  href="#"><i class="fa fa-car"></i> <span>Reportes</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    <a  href="#"><i class="fa fa-newspaper-o"></i> <span>Reportes</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                       <li><a href="#">Reporte de Compras</a></li>
                       <li><a href="#">Reporte de Ventas</a></li>

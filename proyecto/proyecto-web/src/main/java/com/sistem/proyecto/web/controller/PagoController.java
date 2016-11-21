@@ -193,45 +193,6 @@ public class PagoController extends BaseController {
         return retorno;
     }
 
-    @RequestMapping(value = "/{id}/guardar", method = RequestMethod.POST)
-    public @ResponseBody
-    MensajeDTO guardar(@PathVariable("id") Long id, @ModelAttribute("Compra") Compra compraRecibido) {
-        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        MensajeDTO mensaje = new MensajeDTO();
-        Compra ejCompra = new Compra();
-        DetalleCompra ejDetalleCompra = new DetalleCompra();
-        try {
-            inicializarCompraManager();
-            inicializarPedidoManager();
-            inicializarImagenManager();
-            inicializarContactoManager();
-
-            if (id == null || id != null
-                    && id.toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("La compra no posee ningun pedido.");
-                return mensaje;
-            }
-
-            if (compraRecibido.getNroFactura() == null || compraRecibido.getNroFactura() != null
-                    && compraRecibido.getNroFactura().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El Nro. Factura no puede estar vacio.");
-                return mensaje;
-            }
-
-            mensaje = compraManager.guardarCompra(id, compraRecibido, compraRecibido.getFormaPago(),
-                    compraRecibido.getTipoDescuento(), userDetail.getIdEmpresa(), userDetail.getId());
-
-        } catch (Exception ex) {
-            mensaje.setError(true);
-            mensaje.setMensaje("Error a guardar el cliente");
-            logger.debug("Error al guardar cliente ", ex);
-        }
-
-        return mensaje;
-    }
-
     @RequestMapping(value = "/detalles/descuento", method = RequestMethod.POST)
     public @ResponseBody
     MensajeDTO guardarDescuento(@ModelAttribute("Compra") DetalleCompra compraRecibido) {

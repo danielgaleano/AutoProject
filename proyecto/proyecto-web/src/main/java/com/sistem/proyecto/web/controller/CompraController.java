@@ -286,10 +286,49 @@ public class CompraController extends BaseController {
 
         return retorno;
     }
-
-    @RequestMapping(value = "/{id}/guardar", method = RequestMethod.POST)
+//
+//    @RequestMapping(value = "/{id}/guardar", method = RequestMethod.POST)
+//    public @ResponseBody
+//    MensajeDTO guardar(@PathVariable("id") Long id, @ModelAttribute("Compra") Compra compraRecibido) {
+//        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+//        MensajeDTO mensaje = new MensajeDTO();
+//        Compra ejCompra = new Compra();
+//        DetalleCompra ejDetalleCompra = new DetalleCompra();
+//        try {
+//            inicializarCompraManager();
+//            inicializarPedidoManager();
+//            inicializarImagenManager();
+//            inicializarContactoManager();
+//
+//            if (id == null || id != null
+//                    && id.toString().compareToIgnoreCase("") == 0) {
+//                mensaje.setError(true);
+//                mensaje.setMensaje("La compra no posee ningun pedido.");
+//                return mensaje;
+//            }
+//
+//            if (compraRecibido.getNroFactura() == null || compraRecibido.getNroFactura() != null
+//                    && compraRecibido.getNroFactura().compareToIgnoreCase("") == 0) {
+//                mensaje.setError(true);
+//                mensaje.setMensaje("El Nro. Factura no puede estar vacio.");
+//                return mensaje;
+//            }
+//
+//            mensaje = compraManager.guardarCompra(id, compraRecibido, compraRecibido.getFormaPago(),
+//                    compraRecibido.getTipoDescuento(), userDetail.getIdEmpresa(), userDetail.getId());
+//
+//        } catch (Exception ex) {
+//            mensaje.setError(true);
+//            mensaje.setMensaje("Error a guardar el cliente");
+//            logger.debug("Error al guardar cliente ", ex);
+//        }
+//
+//        return mensaje;
+//    }
+    
+    @RequestMapping(value = "/directa/guardar", method = RequestMethod.POST)
     public @ResponseBody
-    MensajeDTO guardar(@PathVariable("id") Long id, @ModelAttribute("Compra") Compra compraRecibido) {
+    MensajeDTO compraDirectaGuardar( @ModelAttribute("DetalleCompra") DetalleCompra compraRecibido) {
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO mensaje = new MensajeDTO();
         Compra ejCompra = new Compra();
@@ -300,22 +339,16 @@ public class CompraController extends BaseController {
             inicializarImagenManager();
             inicializarContactoManager();
 
-            if (id == null || id != null
-                    && id.toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("La compra no posee ningun pedido.");
-                return mensaje;
-            }
 
-            if (compraRecibido.getNroFactura() == null || compraRecibido.getNroFactura() != null
-                    && compraRecibido.getNroFactura().compareToIgnoreCase("") == 0) {
+            if (compraRecibido.getCompra().getNroFactura() == null || compraRecibido.getCompra().getNroFactura() != null
+                    && compraRecibido.getCompra().getNroFactura().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
                 mensaje.setMensaje("El Nro. Factura no puede estar vacio.");
                 return mensaje;
             }
 
-            mensaje = compraManager.guardarCompra(id, compraRecibido, compraRecibido.getFormaPago(),
-                    compraRecibido.getTipoDescuento(), userDetail.getIdEmpresa(), userDetail.getId());
+            mensaje = compraManager.guardarCompra(compraRecibido.getCompra().getId(), compraRecibido,compraRecibido.getCompra().getNroFactura(), compraRecibido.getCompra().getFormaPago(),
+                    compraRecibido.getCompra().getTipoDescuento(), userDetail.getIdEmpresa(), userDetail.getId());
 
         } catch (Exception ex) {
             mensaje.setError(true);

@@ -7,6 +7,7 @@
 package com.sistem.proyecto.manager;
 
 import com.sistem.proyecto.entity.Compra;
+import com.sistem.proyecto.entity.DetalleCompra;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
 import javax.ejb.Local;
 
@@ -18,7 +19,7 @@ import javax.ejb.Local;
 @Local
 public interface CompraManager extends GenericDao<Compra, Long> {
     
-    public MensajeDTO guardarCompra(Long idPedido, Compra compra, String formaPgo, String tipoPago, Long idEmpresa, Long idUsuario) throws Exception;
+    public MensajeDTO guardarCompra(Long idCompra, DetalleCompra compra, String nroFactura, String formaPgo, String tipoPago, Long idEmpresa, Long idUsuario) throws Exception;
     
     public MensajeDTO editarCompra(Long idCompra, Compra compra, String formaPgo, String tipoPago, Long idEmpresa, Long idUsuario) throws Exception;
     

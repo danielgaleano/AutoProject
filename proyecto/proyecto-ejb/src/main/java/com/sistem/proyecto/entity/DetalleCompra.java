@@ -27,6 +27,9 @@ public class DetalleCompra extends Base {
     @Column(name = "precio")
     private Double precio;
     
+    @Column(name = "total")
+    private Double total;
+    
     @Column(name = "porcentaje_descuento")
     private String porcentajeDescuento;
     
@@ -203,6 +206,14 @@ public class DetalleCompra extends Base {
 
     public void setNroFactura(String nroFactura) {
         this.nroFactura = nroFactura;
+    }
+
+    public Double getTotal() {
+        return total;
+    }
+
+    public void setTotal(Double total) {
+        this.total = total;
     }
 
     

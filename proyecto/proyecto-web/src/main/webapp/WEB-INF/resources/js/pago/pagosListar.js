@@ -316,28 +316,28 @@ $(document).ready(function(data) {
                                     + response.mensaje
                                     + '</div>');
                         } else {
-                            var proveedor = response.data;
+                            var pago = response.data;
 
-                            $('#idProveedor').val(proveedor.id);
-                            $('#ruc').val(proveedor.ruc);
-                            $('#nombre').val(proveedor.nombre);
-                            $('#email').val(proveedor.email);
-                            $('#telefono').val(proveedor.telefono);
-                            $('#direccion').val(proveedor.direccion);
-                            $('#comentario').val(proveedor.comentario);
-                            $('#fax').val(proveedor.fax);
-                            $('#pais').val(proveedor.pais);
-                            $('#ciudad').val(proveedor.ciudad);
-                            $('#codigoPostal').val(proveedor.codigoPostal);
-                            $('#comentario').val(proveedor.comentario);
-                            $('#idContacto').val(proveedor['contacto.id']);
-                            $('#movilContacto').val(proveedor['contacto.movil']);
-                            $('#documentoContacto').val(proveedor['contacto.documento']);
-                            $('#nombreContacto').val(proveedor['contacto.nombre']);
-                            $('#cargoContacto').val(proveedor['contacto.cargo']);
-                            $('#telefonoContacto').val(proveedor['contacto.telefono']);
-                            $('#emailContacto').val(proveedor['contacto.email']);
-                            $('#comentarioContacto').val(proveedor['contacto.comentario']);
+                            $('#idPago').val(pago.id);
+                            $('#nroFactura').val(pago.nroFactura);
+                            $('#montoTotal').val(pago.neto);
+                  
+                            $('#ruc').val(pago["proveedor.ruc"]);
+                            $('#nombre').val(pago["proveedor.nombre"]);
+                            
+                            $('#telefono').val(pago["proveedor.telefono"]);
+                            $('#direccion').val(pago["proveedor.direccion"]);
+                            
+                            if(pago.formaPago == "CONTADO"){
+                                $('#importePagar').val(pago.neto);
+                                $('#id-date-picker').val(pago.fechaCompra);
+                            }
+                            else if(pago.formaPago == "CREDITO" ){
+                                $('#importePagar').val(pago.montoCuotas);
+                                $('#id-date-picker').val(pago.fechaCuota);
+                                $('#nroCuota').val(pago.nroCuota);
+                            }
+                            
 
 //                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
 //                        + '<button type="button" class="close" data-dismiss="alert"'

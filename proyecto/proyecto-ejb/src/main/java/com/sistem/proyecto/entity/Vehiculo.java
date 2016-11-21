@@ -65,6 +65,31 @@ public class Vehiculo extends Base {
     @ManyToOne
     @JoinColumn(name = "empresa")
     private Empresa empresa;
+    
+    @Column(name = "chapa")
+    private String chapa;
+    
+    @Column(name = "chasis")
+    private String chasis;
+    
+    @Column(name = "motor")
+    private String motor;
+    
+    @Column(name = "kilometraje")
+    private String kilometraje;
+    
+    @Column(name = "precio_venta")
+    private String precioVenta;
+    
+    @Column(name = "fecha_matenimiento")
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date fechaMantenimiento;
+    
+    @Column(name = "cedula_verde")
+    private Boolean cedulaVerde;
+    
+    @Column(name = "titulo")
+    private Boolean titulo;
 
     public Vehiculo() {
     }
@@ -170,7 +195,69 @@ public class Vehiculo extends Base {
     public void setTipo(Tipo tipo) {
         this.tipo = tipo;
     }
-
     
+    public String getChapa() {
+        return chapa;
+    }
+
+    public void setChapa(String chapa) {
+        this.chapa = chapa;
+    }
+
+    public String getChasis() {
+        return chasis;
+    }
+
+    public void setChasis(String chasis) {
+        this.chasis = chasis;
+    }
+    
+    public String getMotor() {
+        return motor;
+    }
+
+    public void setMotor(String motor) {
+        this.motor = motor;
+    }
+    
+    public String getKilometraje() {
+        return kilometraje;
+    }
+
+    public void setKilometraje(String kilometraje) {
+        this.kilometraje = kilometraje;
+    }
+    
+    public String getPrecioVenta() {
+        return precioVenta;
+    }
+
+    public void setPrecioVenta(String precioVenta) {
+        this.precioVenta = precioVenta;
+    }
+    
+    public Date getFechaMantenimiento() {
+        return fechaMantenimiento;
+    }
+
+    public void setFechaMantenimiento(Date fechaMantenimiento) {
+        this.fechaMantenimiento = fechaMantenimiento;
+    }
+    
+    public Boolean getCedulaVerde() {
+        return cedulaVerde;
+    }
+
+    public void setCedulaVerde(Boolean cedulaVerde) {
+        this.cedulaVerde = cedulaVerde;
+    }
+    
+    public Boolean getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(Boolean titulo) {
+        this.titulo = titulo;
+    }
 
 }

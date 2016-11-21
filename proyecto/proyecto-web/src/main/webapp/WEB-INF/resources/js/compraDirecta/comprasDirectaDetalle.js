@@ -60,8 +60,24 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'vehiculo.marca.nombre', index: 'vehiculo.marca.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+            {name: 'vehiculo.marca.nombre', index: 'vehiculo.marca.nombre', width: 150, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
+                    dataEvents: [
+                        {type: 'change', fn: function(e) {
+                                var jqXHR = $.get(CONTEXT_ROOT + "/modelos/listar?_search=false&todos=true&idMarca=" + this.value + "&rows=10&page=1&sidx=&sord=asc", function(response, textStatus, jqXHR) {
+                                    var sel = '<option value="">Seleccione opcion</option>';
+                                    $.each(response.retorno, function() {
+
+                                        sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
+
+                                    });
+                                    console.log($('select[name="vehiculo.modelo.nombre"]'));
+                                    $('select[name="vehiculo.modelo.nombre"]').empty().append(sel);
+                                });
+
+                            }}
+
+                    ],
                     dataUrl: CONTEXT_ROOT + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
 
@@ -78,31 +94,26 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'vehiculo.modelo.nombre', index: 'vehiculo.modelo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
-                editoptions: {
-                    dataUrl: CONTEXT_ROOT + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
-                    buildSelect: function(resp) {
-
-                        var sel = '<select>';
-                        sel += '<option value="">Seleccione la opcion</option>';
-                        var obj = $.parseJSON(resp);
-//                        var sel_id = $(grid_selector).jqGrid('getGridParam', 'selrow');
-//                        var value = $(grid_selector).jqGrid('getCell',sel_id ,'tipo.id');
-
-                        $.each(obj.retorno, function() {
-                            sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
-                        });
-                        sel += '</select>';
-                        return sel;
-                    }
-                }},
+            {name: 'vehiculo.modelo.nombre', index: 'vehiculo.modelo.nombre', width: 130, editable: true, edittype: 'select',
+                editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+                editoptions: {value: {'': 'Seleccione Opcion'}}
+            },
             {name: 'vehiculo.caracteristica', index: 'vehiculo.caracteristica', width: 130, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
             {name: 'vehiculo.anho', index: 'vehiculo.anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.color', index: 'vehiculo.color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'vehiculo.trasmision', index: 'trasmision', width: 110, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
-            {name: 'moneda.nombre', index: 'moneda.nombre', width: 90, editable: true, edittype: "select",
+            {name: 'vehiculo.transmision', index: 'vehiculo.transmision', width: 110, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
+            {name: 'moneda.nombre', index: 'moneda.nombre', width: 120, editable: true, edittype: "select",
                 editoptions: {
-                    dataUrl: +'/monedas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
+                    dataEvents: [
+                        {type: 'change', fn: function(e) {
+                                var jqXHR = $.get(CONTEXT_ROOT + "/monedas/" + this.value, function(response, textStatus, jqXHR) {
+                                    $('input[name="moneda.valor"]').val(response.data.valor);
+                                });
+
+                            }}
+
+                    ],
+                    dataUrl: CONTEXT_ROOT + '/monedas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
 
                         var sel = '<select>';
@@ -118,7 +129,7 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter: 'number', editable: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter: 'number', resize: false, editable: true, disabled: true, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'precio', index: 'precio', width: 90, sortable: false, editable: true, formatter: 'number', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
@@ -200,8 +211,8 @@ $(document).ready(function(data) {
         loadtext: "Cargando...",
         emptyrecords: "No se encontaron datos.",
         pgtext: "Pagina {0} de {1}",
-        afterInserRow: function(rowid, data) {
-            console.log('dsdsdsdsdsdsdsds');
+        beforeSelectRow: function(rowid, data) {
+            $('#validation-form').valid();
         },
         serializeRowData: function(postData) {
             if ($.isNumeric(postData.id) !== true) {
@@ -210,11 +221,7 @@ $(document).ready(function(data) {
             if ($("#idCompra").val() !== null && $("#idCompra").val() !== "") {
                 postData['compra.id'] = $("#idCompra").val();
             } else {
-                postData['compra.factura'] = $('#factura').val();
-                postData['compra.ruc'] = $('#ruc').val();
-                postData['compra.fechaCompra'] = $('#id-date-picker-compra').val();
-                postData['compra.fechaCuota'] = $('#id-date-picker-cuota').val();
-                postData['compra.cliente.id'] = $('#cliente').val();
+                postData['compra.nroFactura'] = $('#nroFactura').val();
             }
             postData['tipo.id'] = postData['tipo.nombre'];
             postData['marca.id'] = postData['marca.nombre'];
@@ -306,23 +313,25 @@ $(document).ready(function(data) {
                     }
                 }
                 else {
-                    if (isEditarInline) {
+                    if ($.isNumeric(dato.id) === true){
+                        if (isEditarInline) {
+                            edit = editInlineButton(cl, true);
+                            $(grid_selector).setRowData(ids[i], {act: ini + edit + button + activar + desact + fin});
+                        } else {
 
-                        edit = editInlineButton(cl, true);
-                        $(grid_selector).setRowData(ids[i], {act: ini + edit + button + activar + desact + fin});
-                    } else {
-
-                        //asignar = asigButton(cl, true);
-                        visuali = visualizarButton(cl, permisoVisualizar);
-                        editForm = editFormButton(cl, permisoEditar);
-                        $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
+                            //asignar = asigButton(cl, true);
+                            visuali = visualizarButton(cl, permisoVisualizar);
+                            editForm = editFormButton(cl, permisoEditar);
+                            $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
+                        }
                     }
+
                 }
 
 
             }
         },
-        editurl: "/compras/detalles/guardar", //nothing is saved
+        editurl: CONTEXT_ROOT +'/compras/directa/guardar', //nothing is saved
         caption: "Detalle del compra",
         subGrid: true,
         subGridOptions: {
@@ -502,7 +511,7 @@ $(document).ready(function(data) {
                     useDefValues: true,
                     reloadAfterSubmit: true,
                     addRowParams: {
-                        url: +'/compra/detalles/guardar',
+                        url: +'/compras/directa/guardar',
                         mtype: "POST",
                         datatype: 'json',
                         keys: true,
@@ -519,6 +528,7 @@ $(document).ready(function(data) {
                                         + '</div>');
 
                             } else {
+                                cargarDatos(data.responseJSON.id);
                                 $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
                                         + '<button type="button" class="close" data-dismiss="alert"'
                                         + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
@@ -541,9 +551,6 @@ $(document).ready(function(data) {
                                         + 'Error al editar el registro'
                                         + '</div>');
                             }
-                        },
-                        aftersavefunc: function(response) {
-                            console.log('1231456465465');
                         }
                     },
                     afterSubmit: function(response, postdata) {
@@ -556,24 +563,9 @@ $(document).ready(function(data) {
                                     {datatype: 'json'}).trigger('reloadGrid'); //Reloads the grid after Add
                             return [false, response.responseText];
                         }
-                    },
-                    onclickSubmit: function(rowid) {
-                        console.log('cliccccc11');
-                    },
-                    beforeSubmitCell: function() {
-                        alert('holaaa');
                     }
                 }
-            },
-    {
-        //view record form
-        recreateForm: true,
-        beforeShowForm: function(e) {
-            var form = $(e[0]);
-            form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
-        }
-    });
-
+            });
 
 });
 

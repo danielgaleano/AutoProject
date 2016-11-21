@@ -1,18 +1,21 @@
 $(document).ready(function(data) {
-    
+
     if (action === 'VISUALIZAR') {
         $('#botonAprobar').hide();
-        $('#aceptar').hide();      
-        $('#validation-form').find('.tableusuario-input').attr("disabled", true);       
-    }else if(action === 'CREAR'){
+        $('#aceptar').hide();
+        $('#validation-form').find('.tableusuario-input').attr("disabled", true);
+    } else if (action === 'CREAR') {
+        $("#general").attr("disabled", true);
+        $("#detallado").attr("disabled", true);
+        $('#contado').attr("disabled", true);
+        $('#credito').attr("disabled", true);
         $('#botonAprobar').hide();
-        $('#validation-form').find('.tableusuario-input').attr("disabled", false);
     }
-    
-    if(id !== null){
+
+    if (id !== null) {
         cargarDatos(id);
     }
-        
+
 });
 
 function cargarDatos(id) {
@@ -26,19 +29,19 @@ function cargarDatos(id) {
                     + '</div>');
         } else {
             var compra = response.data;
-            
-            if(compra.estadoCompra === 'COMPRA_PENDIENTE'){
+
+            if (compra.estadoCompra === 'COMPRA_PENDIENTE') {
                 $('#botonAprobar').hide();
-            }else if(compra.estadoCompra === 'COMPRA_REALIZADA'){
+            } else if (compra.estadoCompra === 'COMPRA_REALIZADA') {
                 $('#botonAprobar').hide();
                 $('#validation-form').find('.tableusuario-input').attr("disabled", true);
                 $("#aceptar").hide();
             }
             $('#nroFactura').val(compra.nroFactura);
-            
-            if(compra.nroFactura !== null && compra.nroFactura !== " "){
+
+            if (compra.nroFactura !== null && compra.nroFactura !== " ") {
                 $('#botonAprobar').show();
-            }else{
+            } else {
                 $('#botonAprobar').hide();
             }
             $('#date-timeDesde').val(compra.fechaCuota);
@@ -46,25 +49,25 @@ function cargarDatos(id) {
             $('#interes').val(compra.porcentajeInteresCredito);
             $('#montoInteres').val(compra.montoInteres);
             $('#id-date-picker').val(compra.fechaCuota);
-            
-            if(compra.formaPago === 'CONTADO'){
-                 $('#contado').prop("checked",true);
-                 $("#formCredito").hide();
-            }else if(compra.formaPago === 'CREDITO'){
-                  $('#credito').prop("checked",true);
-                  $("#general").attr("disabled", true);
-                  $("#detallado").attr("disabled", true);
-                  $("#formCredito").show();
+
+            if (compra.formaPago === 'CONTADO') {
+                $('#contado').prop("checked", true);
+                $("#formCredito").hide();
+            } else if (compra.formaPago === 'CREDITO') {
+                $('#credito').prop("checked", true);
+                $("#general").attr("disabled", true);
+                $("#detallado").attr("disabled", true);
+                $("#formCredito").show();
             }
-            
-            if(compra.tipoDescuento === 'GENERAL'){
-                 $('#general').prop("checked",true);
-                 $("#formDescuento").show();
-            }else if(compra.tipoDescuento === 'DETALLADO'){
-                  $('#detallado').prop("checked",true);
-                  $("#formDescuento").hide();
+
+            if (compra.tipoDescuento === 'GENERAL') {
+                $('#general').prop("checked", true);
+                $("#formDescuento").show();
+            } else if (compra.tipoDescuento === 'DETALLADO') {
+                $('#detallado').prop("checked", true);
+                $("#formDescuento").hide();
             }
-            
+
             $('#ruc').val(compra['proveedor.ruc']);
             $('#telefono').val(compra['proveedor.telefono']);
             $('#direccion').val(compra['proveedor.direccion']);

@@ -10,13 +10,17 @@ import com.sistem.proyecto.entity.DetalleCompra;
 import com.sistem.proyecto.entity.DetallePedido;
 import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
+import com.sistem.proyecto.entity.Moneda;
 import com.sistem.proyecto.entity.Pedido;
 import com.sistem.proyecto.entity.Proveedor;
 import com.sistem.proyecto.manager.CompraManager;
 import com.sistem.proyecto.manager.DetalleCompraManager;
 import com.sistem.proyecto.manager.DocumentoPagarManager;
+import com.sistem.proyecto.manager.MonedaManager;
 import com.sistem.proyecto.manager.PedidoManager;
+import com.sistem.proyecto.manager.VehiculoManager;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
+import java.security.SecureRandom;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -38,15 +42,24 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
     @EJB(mappedName = "java:app/proyecto-ejb/PedidoManagerImpl")
     private PedidoManager pedidoManager;
 
+    @EJB(mappedName = "java:app/proyecto-ejb/VehiculoManagerImpl")
+    private VehiculoManager vehiculoManager;
+
     @EJB(mappedName = "java:app/proyecto-ejb/DocumentoPagarManagerImpl")
     private DocumentoPagarManager documentoPagarManager;
 
     @EJB(mappedName = "java:app/proyecto-ejb/DetalleCompraManagerImpl")
     private DetalleCompraManager detalleCompraManager;
 
+    @EJB(mappedName = "java:app/proyecto-ejb/MonedaManagerImpl")
+    private MonedaManager monedaManager;
+
     protected SimpleDateFormat sdf = new SimpleDateFormat(
             "yyyy-MM-dd HH:mm:ss.SSSSSS");
     protected SimpleDateFormat sdfSimple = new SimpleDateFormat("yyyy-MM-dd");
+
+    static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    static SecureRandom rnd = new SecureRandom();
 
     @Override
     protected Class<Compra> getEntityBeanType() {
@@ -54,109 +67,176 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
     }
 
     @Override
-    public MensajeDTO guardarCompra(Long idPedido, Compra compra, String formaPgo, String tipoDescuento, Long idEmpresa, Long idUsuario) throws Exception {
+    public MensajeDTO guardarCompra(Long idCompra, DetalleCompra detalleCompra, String nroFactura, String formaPgo, String tipoDescuento, Long idEmpresa, Long idUsuario) throws Exception {
         MensajeDTO mensaje = new MensajeDTO();
         Compra ejCompra = new Compra();
         try {
 
-            if (idPedido == null || idPedido != null
-                    && idPedido.toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("Debe Ingresar un pedido para relizar la compra.");
-                return mensaje;
-            }
-
-            if (compra.getNroFactura() == null || compra.getNroFactura() != null
-                    && compra.getNroFactura().compareToIgnoreCase("") == 0) {
+            if (nroFactura == null || nroFactura != null
+                    && nroFactura.compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
                 mensaje.setMensaje("El Nro. Factura no puede estar vacio.");
                 return mensaje;
             }
-
-            if (formaPgo == null || formaPgo != null
-                    && formaPgo.compareToIgnoreCase("") == 0) {
+            if (detalleCompra.getVehiculo().getTipo() == null || detalleCompra.getVehiculo().getTipo().getId() != null
+                    && detalleCompra.getVehiculo().getTipo().getId().toString().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
-                mensaje.setMensaje("Debe Ingresar una forma de pago para relizar la compra.");
+                mensaje.setMensaje("El tipo de vehiculo no puede estar vacio.");
                 return mensaje;
             }
 
-            Pedido pedido = pedidoManager.get(idPedido);
+            if (detalleCompra.getVehiculo().getMarca() == null || detalleCompra.getVehiculo().getMarca().getId() != null
+                    && detalleCompra.getVehiculo().getMarca().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("La marca de vehiculo no puede estar vacio.");
+                return mensaje;
+            }
 
-            ejCompra.setActivo("S");
-            ejCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-            ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-            ejCompra.setEmpresa(new Empresa(idEmpresa));
-            ejCompra.setMonto(pedido.getTotal() + "");
-            ejCompra.setNroFactura(compra.getNroFactura());
-            ejCompra.setProveedor(new Proveedor(pedido.getProveedor().getId()));
-            ejCompra.setFormaPago(compra.getFormaPago());
+            if (detalleCompra.getVehiculo().getModelo() == null || detalleCompra.getVehiculo().getModelo().getId() != null
+                    && detalleCompra.getVehiculo().getModelo().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El modelo del vehiculo no puede estar vacio.");
+                return mensaje;
+            }
 
-            if (compra.getFormaPago() != null
-                    && compra.getFormaPago().compareToIgnoreCase("CREDITO") == 0) {
+            if (detalleCompra.getVehiculo().getAnho() == null || detalleCompra.getVehiculo().getAnho() != null
+                    && detalleCompra.getVehiculo().getAnho().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El año del vehiculo no puede estar vacio.");
+                return mensaje;
+            }
 
-                ejCompra.setCantidadCuotas(compra.getCantidadCuotas());
-                ejCompra.setPorcentajeInteresCredito(compra.getPorcentajeInteresCredito());
-                ejCompra.setMoraInteres(compra.getMoraInteres());
+            if (detalleCompra.getVehiculo().getColor() == null || detalleCompra.getVehiculo().getColor() != null
+                    && detalleCompra.getVehiculo().getColor().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El color del vehiculo no puede estar vacio.");
+                return mensaje;
+            }
 
-                Double interes = Double.parseDouble(compra.getPorcentajeInteresCredito());
+            if (detalleCompra.getVehiculo().getColor() == null || detalleCompra.getVehiculo().getColor() != null
+                    && detalleCompra.getVehiculo().getColor().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El color del vehiculo no puede estar vacio.");
+                return mensaje;
+            }
 
-                if (compra.getEntrega() != null
-                        && compra.getEntrega().compareToIgnoreCase("") != 0) {
+            if (detalleCompra.getVehiculo().getTransmision() == null || detalleCompra.getVehiculo().getTransmision() != null
+                    && detalleCompra.getVehiculo().getTransmision().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("La transmision del vehiculo no puede estar vacia.");
+                return mensaje;
+            }
 
-                    Double entrega = Double.parseDouble(compra.getEntrega());
+            if (detalleCompra.getMoneda() == null || detalleCompra.getMoneda().getId() != null
+                    && detalleCompra.getMoneda().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El campo moneda no puede estar vacia.");
+                return mensaje;
+            }
 
-                    Double montoInteres = ((pedido.getTotal() - entrega) * interes) / 100;
+            if (detalleCompra.getPrecio() == null || detalleCompra.getPrecio() != null
+                    && detalleCompra.getPrecio().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El campo precio no puede estar vacio.");
+                return mensaje;
+            }
 
-                    Double saldo = (pedido.getTotal() - entrega) + montoInteres;
+            if (idCompra == null || idCompra != null
+                    && idCompra.toString().compareToIgnoreCase("") == 0) {
 
-                    Double montoCuota = saldo / compra.getCantidadCuotas();
+                ejCompra.setActivo("S");
+                ejCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                ejCompra.setEmpresa(new Empresa(idEmpresa));
+                ejCompra.setNroFactura(nroFactura);
 
-                    ejCompra.setEntrega(entrega + "");
-                    ejCompra.setMontoInteres(montoInteres + "");
-                    ejCompra.setSaldo(saldo + "");
-                    ejCompra.setNeto(saldo);
-                    ejCompra.setMontoCuotas(montoCuota + "");
+                this.save(ejCompra);
 
-                    this.save(ejCompra);
+                String codDetalle = randomString(5, "DET");
+
+                detalleCompra.getVehiculo().setCodigo(ejCompra.getId() + "-" + codDetalle);
+                detalleCompra.getVehiculo().setActivo("S");
+                detalleCompra.getVehiculo().setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                detalleCompra.getVehiculo().setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+
+                vehiculoManager.save(detalleCompra.getVehiculo());
+
+                Moneda ejMoneda = monedaManager.get(detalleCompra.getMoneda());
+
+                Double cambio = ejMoneda.getValor();
+
+                Long total = Math.round(detalleCompra.getPrecio() * cambio);
+                
+
+                DetalleCompra ejDetCompra = new DetalleCompra();
+                ejDetCompra.setCambioDia(cambio);
+                ejDetCompra.setActivo("S");
+                ejDetCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                ejDetCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                ejDetCompra.setEmpresa(new Empresa(idEmpresa));
+                ejDetCompra.setVehiculo(detalleCompra.getVehiculo());
+                ejDetCompra.setMoneda(detalleCompra.getMoneda());
+                ejDetCompra.setCambioDia(detalleCompra.getCambioDia());
+                ejDetCompra.setTotal(Double.parseDouble(total.toString()));
+                ejDetCompra.setPrecio(detalleCompra.getPrecio());
+                ejDetCompra.setCompra(ejCompra);
+
+                detalleCompraManager.save(ejDetCompra);
+
+                Long totalPedido = Long.parseLong("0");
+
+                for (DetalleCompra rpm : ejCompra.getDetalleCompraCollection()) {
+                    totalPedido = totalPedido + Math.round(rpm.getTotal());
                 }
+
+                ejCompra.setMonto(totalPedido.toString());
+
+                this.update(ejCompra);
 
             } else {
-                if (compra.getTipoDescuento() != null
-                        && compra.getTipoDescuento().compareToIgnoreCase("GENERAL") == 0) {
 
-                    Double interes = Double.parseDouble(compra.getDescuento());
+                ejCompra = this.get(idCompra);
 
-                    Double montoInteres = (pedido.getTotal() * interes) / 100;
+                Moneda ejMoneda = monedaManager.get(detalleCompra.getMoneda());
 
-                    Double saldo = pedido.getTotal() - montoInteres;
+                Double cambio = ejMoneda.getValor();
 
-                    ejCompra.setSaldo(saldo + "");
-                    ejCompra.setDescuento(interes + "");
-                    ejCompra.setMontoDescuento(montoInteres + "");
-                    ejCompra.setNeto(saldo);
+                Long total = Math.round(detalleCompra.getPrecio() * cambio);
+                
+                String codDetalle = randomString(5, "DET");
 
-                    this.save(ejCompra);
+                detalleCompra.getVehiculo().setCodigo(ejCompra.getId() + "-" + codDetalle);
+                detalleCompra.getVehiculo().setActivo("S");
+                detalleCompra.getVehiculo().setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                detalleCompra.getVehiculo().setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+
+                vehiculoManager.save(detalleCompra.getVehiculo());
+
+                DetalleCompra ejDetCompra = new DetalleCompra();
+                ejDetCompra.setCambioDia(cambio);
+                ejDetCompra.setActivo("S");
+                ejDetCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                ejDetCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                ejDetCompra.setEmpresa(new Empresa(idEmpresa));
+                ejDetCompra.setVehiculo(detalleCompra.getVehiculo());
+                ejDetCompra.setMoneda(detalleCompra.getMoneda());
+                ejDetCompra.setCambioDia(detalleCompra.getCambioDia());
+                ejDetCompra.setTotal(Double.parseDouble(total.toString()));
+                ejDetCompra.setPrecio(detalleCompra.getPrecio());
+                ejDetCompra.setCompra(ejCompra);
+
+                detalleCompraManager.save(ejDetCompra);
+                Long totalPedido = Long.parseLong("0");
+
+                for (DetalleCompra rpm : ejCompra.getDetalleCompraCollection()) {
+                    totalPedido = totalPedido + Math.round(rpm.getTotal());
                 }
 
+                ejCompra.setMonto(totalPedido.toString());
+
+                this.update(ejCompra);
             }
 
-            for (DetallePedido rpm : pedido.getDetallePedidoCollection()) {
-                if (rpm.getEstadoPedido().compareToIgnoreCase(DetallePedido.APROBADO) == 0) {
-                    DetalleCompra ejDetCompra = new DetalleCompra();
-                    ejDetCompra.setActivo("S");
-                    ejDetCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                    ejDetCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                    ejDetCompra.setEmpresa(new Empresa(idEmpresa));
-                    ejDetCompra.setVehiculo(rpm.getVehiculo());
-                    ejDetCompra.setMoneda(rpm.getMoneda());
-                    ejDetCompra.setCambioDia(rpm.getCambioDia());
-                    ejDetCompra.setPrecio(rpm.getNeto());
-                    ejDetCompra.setCompra(ejCompra);
-
-                    detalleCompraManager.save(ejDetCompra);
-
-                }
-            }
             mensaje.setError(false);
             mensaje.setId(ejCompra.getId());
             mensaje.setMensaje("La compra se registro exitosamente.");
@@ -239,15 +319,15 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                     DocumentoPagar ejAPagar = new DocumentoPagar();
                     ejAPagar.setCompra(new Compra(idCompra));
-                    
+
                     List<DocumentoPagar> aPagar = documentoPagarManager.list(ejAPagar);
 
                     for (DocumentoPagar rpm : aPagar) {
                         documentoPagarManager.delete(rpm.getId());
                     }
-                    
+
                     ejAPagar = new DocumentoPagar();
-                    
+
                     int contador = 1;
                     boolean tieneFecha = true;
                     for (int i = 1; i <= compra.getCantidadCuotas(); i++) {
@@ -287,8 +367,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                         }
 
                         documentoPagarManager.save(ejAPagar);
-                        
-                        
+
                     }
 
                 } else {
@@ -303,7 +382,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     ejCompraUp.setSaldo(saldo + "");
                     ejCompraUp.setNeto(saldo);
                     ejCompraUp.setMontoCuotas(montoCuota + "");
-                    
+
                     Date fecha = new Date();
 
                     if (compra.getCuotaFecha() != null) {
@@ -311,26 +390,25 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     }
 
                     ejCompraUp.setFechaCuota(fecha);
-                    
+
                     this.update(ejCompraUp);
-                    
+
                     DocumentoPagar ejAPagar = new DocumentoPagar();
                     ejAPagar.setCompra(new Compra(idCompra));
-                    
+
                     List<DocumentoPagar> aPagar = documentoPagarManager.list(ejAPagar);
 
                     for (DocumentoPagar rpm : aPagar) {
                         documentoPagarManager.delete(rpm.getId());
                     }
-                    
+
                     ejAPagar = new DocumentoPagar();
-                    
+
                     int contador = 1;
                     boolean tieneFecha = true;
-                    
+
                     for (int i = 1; i <= compra.getCantidadCuotas(); i++) {
 
-                        
                         ejAPagar = new DocumentoPagar();
                         ejAPagar.setCompra(ejCompraUp);
                         ejAPagar.setActivo("S");
@@ -366,8 +444,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                         }
 
                         documentoPagarManager.save(ejAPagar);
-                        
-                        
+
                     }
                 }
 
@@ -403,4 +480,12 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
         return mensaje;
     }
 
+    String randomString(int len, String variable) {
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            String rand = AB + variable;
+            sb.append(rand.charAt(rnd.nextInt(AB.length())));
+        }
+        return sb.toString();
+    }
 }

@@ -220,7 +220,8 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
             ejDetCompra.setVehiculo(detallePedido.getVehiculo());
             ejDetCompra.setMoneda(detallePedido.getMoneda());
             ejDetCompra.setCambioDia(detallePedido.getCambioDia());
-            ejDetCompra.setPrecio(detallePedido.getNeto());
+            ejDetCompra.setPrecio(detallePedido.getPrecio());
+            ejDetCompra.setTotal(detallePedido.getTotal());
 
             String nombre = detallePedido.getVehiculo().getCodigo();
 
@@ -385,7 +386,9 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
 
                 }
             } else {
-                pedido.setConfirmado(false);
+                if (pendiente <= 0) {
+                    pedido.setConfirmado(false);
+                }               
             }
 
             pedidoManager.update(pedido);

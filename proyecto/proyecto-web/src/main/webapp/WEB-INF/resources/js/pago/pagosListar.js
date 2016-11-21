@@ -24,11 +24,11 @@ $(document).ready(function(data) {
         url: CONTEXT_ROOT + '/compras/listar',
         datatype: 'json',
         mtype: 'GET',
-        height: 150,
+        height: 100,
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'NRO. FACTURA', 'FORMA PAGO', 'TIPO DESCUENTO', 'NETO', 'PROVEEDOR', 'TELF. PROVEEDOR', 'STATUS', ''],
+        colNames: ['ID', 'NRO. FACTURA', 'FORMA PAGO', 'TIPO DESCUENTO', 'NETO', 'PROVEEDOR', 'TELF. PROVEEDOR', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'nroFactura', index: 'nroFactura', width: 90, editable: false},
@@ -37,7 +37,6 @@ $(document).ready(function(data) {
             {name: 'neto', index: 'neto', width: 90, formatter: 'number', sortable: false},
             {name: 'proveedor.nombre', index: 'proveedor.nombre', width: 90, sortable: false},
             {name: 'proveedor.telefono', index: 'proveedor.telefono', width: 90, sortable: false},
-            {name: 'activo', index: 'activo', width: 90, editable: false},
             {name: 'act', index: 'act', width: 160, fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {

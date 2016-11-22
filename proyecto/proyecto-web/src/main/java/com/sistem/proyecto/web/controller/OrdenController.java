@@ -10,9 +10,11 @@ import com.sistem.proyecto.entity.Cliente;
 import com.sistem.proyecto.entity.Compra;
 import com.sistem.proyecto.entity.DetalleCompra;
 import com.sistem.proyecto.entity.Empresa;
+import com.sistem.proyecto.entity.Moneda;
 import com.sistem.proyecto.entity.Pedido;
 import com.sistem.proyecto.entity.Permiso;
 import com.sistem.proyecto.entity.Proveedor;
+import com.sistem.proyecto.entity.Vehiculo;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
@@ -216,7 +218,119 @@ public class OrdenController extends BaseController {
         }
 
         return retorno;
-    }    
+    } 
+    
+    @RequestMapping(value = "/detalle/editar", method = RequestMethod.POST)
+    public @ResponseBody
+    MensajeDTO editar(@ModelAttribute("DetalleCompra") DetalleCompra detalleCompra) {
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        MensajeDTO mensaje = new MensajeDTO();
+        Compra ejCompra = new Compra();
+        DetalleCompra ejDetalleCompra = new DetalleCompra();
+        try {
+            inicializarCompraManager();
+            inicializarMonedaManager();
+            inicializarVehiculoManager();
+            inicializarDetalleCompraManager();
+
+            if (detalleCompra.getId() == null || detalleCompra.getId() != null
+                    && detalleCompra.getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Error al editar la compra.");
+                return mensaje;
+            }
+
+
+            if (detalleCompra.getVehiculo().getTipo() == null || detalleCompra.getVehiculo().getTipo().getId() != null
+                    && detalleCompra.getVehiculo().getTipo().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El tipo de vehiculo no puede estar vacio.");
+                return mensaje;
+            }
+
+            if (detalleCompra.getVehiculo().getMarca() == null || detalleCompra.getVehiculo().getMarca().getId() != null
+                    && detalleCompra.getVehiculo().getMarca().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("La marca de vehiculo no puede estar vacio.");
+                return mensaje;
+            }
+
+            if (detalleCompra.getVehiculo().getModelo() == null || detalleCompra.getVehiculo().getModelo().getId() != null
+                    && detalleCompra.getVehiculo().getModelo().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El modelo del vehiculo no puede estar vacio.");
+                return mensaje;
+            }
+
+            if (detalleCompra.getVehiculo().getAnho() == null || detalleCompra.getVehiculo().getAnho() != null
+                    && detalleCompra.getVehiculo().getAnho().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El año del vehiculo no puede estar vacio.");
+                return mensaje;
+            }
+
+            if (detalleCompra.getVehiculo().getColor() == null || detalleCompra.getVehiculo().getColor() != null
+                    && detalleCompra.getVehiculo().getColor().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El color del vehiculo no puede estar vacio.");
+                return mensaje;
+            }
+
+            if (detalleCompra.getVehiculo().getColor() == null || detalleCompra.getVehiculo().getColor() != null
+                    && detalleCompra.getVehiculo().getColor().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El color del vehiculo no puede estar vacio.");
+                return mensaje;
+            }
+
+            if (detalleCompra.getVehiculo().getTransmision() == null || detalleCompra.getVehiculo().getTransmision() != null
+                    && detalleCompra.getVehiculo().getTransmision().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("La transmision del vehiculo no puede estar vacia.");
+                return mensaje;
+            }
+
+//            if (detalleCompra.getMoneda() == null || detalleCompra.getMoneda().getId() != null
+//                    && detalleCompra.getMoneda().getId().toString().compareToIgnoreCase("") == 0) {
+//                mensaje.setError(true);
+//                mensaje.setMensaje("El campo moneda no puede estar vacia.");
+//                return mensaje;
+//            }
+//
+//            if (detalleCompra.getPrecio() == null || detalleCompra.getPrecio() != null
+//                    && detalleCompra.getPrecio().toString().compareToIgnoreCase("") == 0) {
+//                mensaje.setError(true);
+//                mensaje.setMensaje("El campo precio no puede estar vacio.");
+//                return mensaje;
+//            }
+
+            ejDetalleCompra = detalleCompraManager.get(detalleCompra.getId());
+
+            Vehiculo ejVehiculo = vehiculoManager.get(ejDetalleCompra.getVehiculo().getId());
+
+            ejVehiculo.setAnho(detalleCompra.getVehiculo().getAnho());
+            ejVehiculo.setCaracteristica(detalleCompra.getVehiculo().getCaracteristica());
+            ejVehiculo.setMarca(detalleCompra.getVehiculo().getMarca());
+            ejVehiculo.setTipo(detalleCompra.getVehiculo().getTipo());
+            ejVehiculo.setModelo(detalleCompra.getVehiculo().getModelo());
+            ejVehiculo.setColor(detalleCompra.getVehiculo().getColor());
+            ejVehiculo.setTransmision(detalleCompra.getVehiculo().getTransmision());
+            ejVehiculo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+
+            vehiculoManager.update(ejVehiculo);
+
+            mensaje.setError(false);
+            mensaje.setId(ejDetalleCompra.getCompra().getId());
+            mensaje.setMensaje("El detalle de la compra se modifico exitosamente");
+
+        } catch (Exception ex) {
+            mensaje.setError(true);
+            mensaje.setMensaje("Error a guardar el cliente");
+            logger.debug("Error al guardar cliente ", ex);
+        }
+
+        return mensaje;
+    }
 
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody

@@ -346,7 +346,7 @@ $(document).ready(function(data) {
 
             }
         },
-        editurl: CONTEXT_ROOT + '/compras/directa/guardar', //nothing is saved
+        editurl: CONTEXT_ROOT + '/orden/compras/detalle/editar', //nothing is saved
         caption: "Detalle del compra",
         subGrid: true,
         subGridOptions: {

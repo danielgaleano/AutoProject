@@ -114,8 +114,9 @@ $(document).ready(function(data) {
             {name: 'vehiculo.anho', index: 'vehiculo.anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.color', index: 'vehiculo.color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.transmision', index: 'vehiculo.transmision', width: 110, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
-            {name: 'moneda.nombre', index: 'moneda.nombre', width: 120, editable: true, disabled: true, editoptions: {disabled: true}, edittype: "select",
+            {name: 'moneda.nombre', index: 'moneda.nombre', width: 120, editable: true, disabled: true, edittype: "select",
                 editoptions: {
+                    disabled: true,
                     dataEvents: [
                         {type: 'change', fn: function(e) {
                                 var jqXHR = $.get(CONTEXT_ROOT + "/monedas/" + this.value, function(response, textStatus, jqXHR) {
@@ -142,8 +143,9 @@ $(document).ready(function(data) {
                     }
                 }},
             {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter: 'number', resize: false, editable: true, disabled: true, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter: 'number', resize: false, disabled: true, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
+            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter: 'number', resize: false, disabled: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
+                    disabled: true,
                     dataEvents: [
                         {type: 'click', fn: function(e) {
                                 var total = this.value * 1;

@@ -283,6 +283,7 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
                         ejDetCompra.setCambioDia(rpm.getCambioDia());
                         ejDetCompra.setPrecio(rpm.getPrecio());
                         ejDetCompra.setTotal(rpm.getTotal());
+                        ejDetCompra.setNeto(rpm.getTotal());
 
                         detalleCompraManager.save(ejDetCompra);
                     }
@@ -326,6 +327,7 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
                         ejDetCompra.setCambioDia(rpm.getCambioDia());
                         ejDetCompra.setPrecio(rpm.getPrecio());
                         ejDetCompra.setTotal(rpm.getTotal());
+                        ejDetCompra.setNeto(rpm.getTotal());
 
                         detalleCompraManager.save(ejDetCompra);
                     }
@@ -439,7 +441,8 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
                             ejDetCompra.setCambioDia(rpm.getCambioDia());
                             ejDetCompra.setPrecio(rpm.getPrecio());
                             ejDetCompra.setTotal(rpm.getTotal());
-
+                            ejDetCompra.setNeto(rpm.getTotal());
+                            
                             detalleCompraManager.save(ejDetCompra);
                         }
                     } else {
@@ -482,7 +485,8 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
                             ejDetCompra.setCambioDia(rpm.getCambioDia());
                             ejDetCompra.setPrecio(rpm.getPrecio());
                             ejDetCompra.setTotal(rpm.getTotal());
-
+                            ejDetCompra.setNeto(rpm.getTotal());
+                            
                             detalleCompraManager.save(ejDetCompra);
                         }
                     }

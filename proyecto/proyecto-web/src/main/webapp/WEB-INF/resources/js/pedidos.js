@@ -1,10 +1,10 @@
 
 $(document).ready(function(data) {
-    
+
     SearchableOptionList.defaults.texts.noItemsAvailable = "No se encontraron datos";
     SearchableOptionList.defaults.texts.selectAll = 'Select all';
     SearchableOptionList.defaults.texts.selectNone = 'Select none';
-    SearchableOptionList.defaults.texts.quickDelete ='&times;';
+    SearchableOptionList.defaults.texts.quickDelete = '&times;';
     SearchableOptionList.defaults.texts.searchplaceholder = 'Seleccione Opcion';
 
     var isEditarInline = true;
@@ -69,6 +69,19 @@ $(document).ready(function(data) {
             {name: 'vehiculo.marca.nombre', index: 'vehiculo.marca.nombre', width: 150, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     dataEvents: [
+                        {type: 'click', fn: function(e) {
+                                console.log($('input[name="vehiculo.marca.nombre"]').val());
+                                var jqXHR = $.get(CONTEXT_ROOT + "/modelos/listar?_search=false&todos=true&idMarca=" + this.value + "&rows=10&page=1&sidx=&sord=asc", function(response, textStatus, jqXHR) {
+                                    var sel = '<option value="">Seleccione opcion</option>';
+                                    $.each(response.retorno, function() {
+
+                                        sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
+
+                                    });
+                                    console.log($('select[name="vehiculo.modelo.nombre"]'));
+                                    $('select[name="vehiculo.modelo.nombre"]').empty().append(sel);
+                                });
+                            }},
                         {type: 'change', fn: function(e) {
                                 var jqXHR = $.get(CONTEXT_ROOT + "/modelos/listar?_search=false&todos=true&idMarca=" + this.value + "&rows=10&page=1&sidx=&sord=asc", function(response, textStatus, jqXHR) {
                                     var sel = '<option value="">Seleccione opcion</option>';
@@ -81,7 +94,9 @@ $(document).ready(function(data) {
                                     $('select[name="vehiculo.modelo.nombre"]').empty().append(sel);
                                 });
 
-                            }}
+                            }
+                        }
+
 
                     ],
                     dataUrl: CONTEXT_ROOT + '/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
@@ -103,9 +118,9 @@ $(document).ready(function(data) {
             {name: 'vehiculo.modelo.nombre', index: 'vehiculo.modelo.nombre', width: 130, editable: true, edittype: 'select',
                 editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
+                    
                     dataUrl: CONTEXT_ROOT + "/modelos/listar?_search=false&todos=true&idMarca=&rows=10&page=1&sidx=&sord=asc",
-                    buildSelect: function(resp) {
-
+                    buildSelect: function(resp) {                       
                         var sel = '<select>';
                         sel += '<option value="">Seleccione la opcion</option>';
                         var obj = $.parseJSON(resp);
@@ -120,7 +135,6 @@ $(document).ready(function(data) {
                     }
                 }
             },
-            
             {name: 'vehiculo.anho', index: 'anho', width: 80, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.color', index: 'color', width: 90, sortable: false, resize: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.transmision', index: 'trasmision', width: 180, editable: true, edittype: "select", sortable: false, resize: false, editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
@@ -155,10 +169,10 @@ $(document).ready(function(data) {
             {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter: 'number', resize: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
-                        {type: 'click', fn: function(e) {
-                                var total = this.value * 1;
-                                $('input[name="total"]').val(total);
-                            }},
+//                        {type: 'click', fn: function(e) {
+//                                var total = this.value * 1;
+//                                $('input[name="total"]').val(total);
+//                            }},
                         {type: 'keypress', fn: function(e) {
                                 var total;
                                 setTimeout(function() {
@@ -462,7 +476,7 @@ $(document).ready(function(data) {
                     }
                 }
             });
-    
+
 });
 
 function updatePagerIcons(table) {

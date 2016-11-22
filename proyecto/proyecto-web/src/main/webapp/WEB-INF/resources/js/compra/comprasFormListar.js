@@ -104,7 +104,23 @@ $(document).ready(function(data) {
                 }},
             {name: 'vehiculo.modelo.nombre', index: 'vehiculo.modelo.nombre', width: 130, editable: true, edittype: 'select',
                 editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
-                editoptions: {value: {'': 'Seleccione Opcion'}}
+                editoptions: {
+                    
+                    dataUrl: CONTEXT_ROOT + "/modelos/listar?_search=false&todos=true&idMarca=&rows=10&page=1&sidx=&sord=asc",
+                    buildSelect: function(resp) {                       
+                        var sel = '<select>';
+                        sel += '<option value="">Seleccione la opcion</option>';
+                        var obj = $.parseJSON(resp);
+//                        var sel_id = $(grid_selector).jqGrid('getGridParam', 'selrow');
+//                        var value = $(grid_selector).jqGrid('getCell',sel_id ,'tipo.id');
+
+                        $.each(obj.retorno, function() {
+                            sel += '<option value="' + this['id'] + '">' + this['nombre'] + '</option>'; // label and value are returned from Java layer
+                        });
+                        sel += '</select>';
+                        return sel;
+                    }
+                }
             },
             {name: 'vehiculo.caracteristica', index: 'vehiculo.caracteristica', width: 130, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
             {name: 'vehiculo.anho', index: 'vehiculo.anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},

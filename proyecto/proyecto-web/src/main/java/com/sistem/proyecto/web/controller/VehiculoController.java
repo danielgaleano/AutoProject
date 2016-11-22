@@ -39,8 +39,8 @@ import com.sistem.proyecto.utils.DTORetorno;
 @RequestMapping(value="/vehiculos")
 public class VehiculoController extends BaseController{
     
-    String atributos = "id,codigo,activo,marca.id,marca.nombre,modelo.id,modelo.nombre,empresa.id,empresa.nombre"
-            + "transmision,color,anho,caracteristica,proveedor.id,proveedor.nombre";
+    String atributos = "id,codigo,activo,marca.id,marca.nombre,modelo.id,modelo.nombre,empresa.id,empresa.nombre,"
+            + "tipo.id,tipo.nombre,transmision,color,anho,caracteristica,proveedor.id,proveedor.nombre";
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listaVehiculos(Model model) {
@@ -48,6 +48,24 @@ public class VehiculoController extends BaseController{
         retorno.setViewName("vehiculosListar");       
         return retorno;
 
+    }
+    
+    @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
+    public ModelAndView formView(@PathVariable("id") Long id, Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("vehiculoForm");
+        model.addAttribute("action", "VISUALIZAR");
+        model.addAttribute("id", id);
+        return retorno;
+    }
+    
+    @RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
+    public ModelAndView formEdit(@PathVariable("id") Long id, Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("vehiculoForm");
+        model.addAttribute("action", "EDITAR");
+        model.addAttribute("id", id);
+        return retorno;
     }
     
     @RequestMapping(value = "/listar", method = RequestMethod.GET)

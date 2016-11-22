@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+    <div th:include="include/head :: head" th:remove="tag"></div>
+    <title>Stock de vehiculos</title>
+    <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
+    <link th:href="@{/resources/css/icon.css}" rel="stylesheet" />
+
+</head>
+<body>
+    <nav th:replace="include/navbar :: navbar"></nav>
+    <div class="content-wrapper">
+        <!--<div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Cliente.Crear'')')}"/>-->
+        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Vehiculo.Editar'')')}"/>
+        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Vehiculo.Activar'')')}"/>
+        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Vehiculo.Desactivar'')')}"/>
+        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Vehiculo.Visualizar'')')}"/>
+        <div class="tablasignar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''SuperUsuario'')')}"/>
+
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Vehiculos
+                <small>Stock de vehiculos del sistema.</small>
+            </h1>
+            <ol class="breadcrumb">
+                <!--<a sec:authorize="hasRole('Cliente.Crear')"  href="clientes/crear" class="btn btn-primary" role="button">Crear</a>-->
+            </ol>
+        </section>
+        <hr/>
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <div id="mensaje"></div>
+                    <form class="form-search">
+                        <span class="input-icon">
+                            <input id="globalSearchText" placeholder="Buscar ..." class="nav-search-input"  autocomplete="off" type="text"/>
+                            <i class="ace-icon fa fa-search nav-search-icon"></i>
+                        </span>
+                        <button id="globalSearch" type="button" class="btn btn-info btn-sm">
+                            <i class="ace-icon fa fa-search nav-search-icon"></i>
+                        </button>
+                    </form>
+                    <table id="grid" style="width: 100%;"></table>
+                    <div id="grid-pager"></div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>    
+    <!-- /.content -->
+    <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{/resources/js/base.js}"></script>
+    <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
+    <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
+    <script th:src="@{/resources/js/vehiculo/vehiculosListar.js}"></script>
+
+
+</body>
+</html>

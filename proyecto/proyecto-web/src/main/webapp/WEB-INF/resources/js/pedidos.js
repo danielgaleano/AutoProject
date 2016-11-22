@@ -44,10 +44,10 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'COMENTARIO', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'COTIZACION', 'PRECIO', 'TOTAL', 'NETO', 'CONFIRMADO', ''],
+        colNames: ['ID', 'CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'COTIZACION', 'PRECIO', 'TOTAL', 'NETO', 'CONFIRMADO', 'COMENTARIO', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'vehiculo.codigo', index: 'vehiculo.codigo', key: true, width: 150, editable: false},
+            {name: 'vehiculo.codigo', index: 'vehiculo.codigo', key: true, hidden: true, width: 150, editable: false},
             {name: 'vehiculo.tipo.nombre', index: 'vehiculo.tipo.nombre', width: 190, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     dataUrl: CONTEXT_ROOT + '/tipos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
@@ -104,7 +104,7 @@ $(document).ready(function(data) {
                 editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {value: {'': 'Seleccione Opcion'}}
             },
-            {name: 'vehiculo.caracteristica', index: 'caracteristica', width: 200, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
+            
             {name: 'vehiculo.anho', index: 'anho', width: 80, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.color', index: 'color', width: 90, sortable: false, resize: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.transmision', index: 'trasmision', width: 180, editable: true, edittype: "select", sortable: false, resize: false, editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
@@ -172,6 +172,7 @@ $(document).ready(function(data) {
             {name: 'total', index: 'total', width: 160, sortable: false, formatter: 'number', editable: true, disabled: true, editoptions: {disabled: true}, resize: false},
             {name: 'neto', index: 'neto', width: 150, sortable: false, formatter: 'number', editable: false, resize: false},
             {name: 'estadoPedido', index: 'estadoPedido', width: 150, editable: false},
+            {name: 'vehiculo.caracteristica', index: 'caracteristica', width: 200, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {

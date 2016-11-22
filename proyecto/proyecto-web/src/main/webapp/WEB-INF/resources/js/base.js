@@ -3,6 +3,7 @@ $("#globalSearchText").keypress(function(e) {
     var key = e.charCode || e.keyCode || 0;
     //if (key === $.ui.keyCode.ENTER) { // 13
     $("#globalSearch").click();
+    
     //}
 });
 $("#globalSearch").button({
@@ -20,22 +21,13 @@ $("#globalSearch").button({
         cm = colModel[i];
         if (cm.search !== false && (cm.stype === undefined || cm.stype === "text")
                 && cm.name !== "id" && cm.name !== "act" && cm.name !== "confirmado") {
-            if (cm.formatter === 'number' || cm.formatter === 'integer') {
-                if ($.isNumeric(searchText)) {
-                    rules.push({
-                        field: cm.name,
-                        op: "cn",
-                        data: searchText
-                    });
-                }
-            } else {
-                if (cm.formatter !== 'date') {
-                    rules.push({
-                        field: cm.name,
-                        op: "cn",
-                        data: searchText
-                    });
-                }
+            if (cm.formatter !== 'number' && cm.formatter !== 'integer' && cm.formatter !== 'date') {
+
+                rules.push({
+                    field: cm.name,
+                    op: "cn",
+                    data: searchText
+                });
 
             }
 

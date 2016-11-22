@@ -35,7 +35,7 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'COTIZACION', 'PRECIO', 'TOTAL', '', ''],
+        colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'COTIZACION', 'PRECIO', 'TOTAL', 'COMENTARIO', '', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'vehiculo.codigo', index: 'vehiculo.codigo', key: true, width: 100, editable: false},
@@ -94,12 +94,11 @@ $(document).ready(function(data) {
             {name: 'vehiculo.modelo.nombre', index: 'vehiculo.modelo.nombre', width: 130, editable: true, edittype: 'select',
                 editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {value: {'': 'Seleccione Opcion'}}
-            },
-            {name: 'vehiculo.caracteristica', index: 'vehiculo.caracteristica', width: 130, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
+            },           
             {name: 'vehiculo.anho', index: 'vehiculo.anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.color', index: 'vehiculo.color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.transmision', index: 'vehiculo.transmision', width: 110, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
-            {name: 'moneda.nombre', index: 'moneda.nombre', width: 120, editable: true, edittype: "select",
+            {name: 'moneda.nombre', index: 'moneda.nombre', width: 120, editable: true, disabled: true, editoptions: {disabled: true}, edittype: "select",
                 editoptions: {
                     dataEvents: [
                         {type: 'change', fn: function(e) {
@@ -127,7 +126,7 @@ $(document).ready(function(data) {
                     }
                 }},
             {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter: 'number', resize: false, editable: true, disabled: true, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: false, formatter: 'number', resize: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
+            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter: 'number', resize: false, disabled: true, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
                         {type: 'click', fn: function(e) {
@@ -161,6 +160,7 @@ $(document).ready(function(data) {
             //                 }}
             //         ]}},
             {name: 'total', index: 'total', width: 160, sortable: false, formatter: 'number', editable: true, disabled: true, editoptions: {disabled: true}, resize: false},
+            {name: 'vehiculo.caracteristica', index: 'vehiculo.caracteristica', width: 130, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
             {name: 'estadoCompra', index: 'estadoCompra', hidden: true, width: 110, editable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
@@ -349,18 +349,19 @@ $(document).ready(function(data) {
                 url: CONTEXT_ROOT + '/compra/detalles/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idDetalle=' + row_id,
                 datatype: 'json',
                 mtype: 'GET',
-                colNames: ['ID', 'MONEDA', 'TOTAL', 'DESCUENTO', 'MONTO DESCUENTO', 'NETO', ''],
+                colNames: ['ID', 'MONEDA', 'PRECIO', 'TOTAL', 'DESCUENTO', 'MONTO DESCUENTO', 'NETO', ''],
                 colModel: [
                     {name: "id", key: true, hidden: true, index: "id", width: 100, align: "right", sortable: false},
                     {name: "moneda.nombre", index: "moneda.nombre", width: 100, align: "right", sortable: false},
-                    {name: "total", index: "total", width: 100, align: "right", formatter: 'number', sortable: false, editable: true, disabled: true, editoptions: {disabled: true}},
+                    {name: "precio", index: "precio", width: 100, align: "right", formatter: 'number', sortable: false, editable: false, disabled: true, editoptions: {disabled: true}},
+                    {name: "total", index: "total", width: 100, align: "right", formatter: 'number', sortable: false, editable: true, disabled: true, editoptions: {disabled: true}},                   
                     {name: "porcentajeDescuento", index: "porcentajeDescuento", editable: true, width: 100, align: "right", sortable: false,
                         editoptions: {
                             dataEvents: [
-                                {type: 'click', fn: function(e) {
-                                        var total = this.value * 1;
-                                        $('input[name="total"]').val(total);
-                                    }},
+//                                {type: 'click', fn: function(e) {
+//                                        var total = this.value * 1;
+//                                        $('input[name="total"]').val(total);
+//                                    }},
                                 {type: 'keypress', fn: function(e) {
                                         var total;
                                         setTimeout(function() {
@@ -379,8 +380,8 @@ $(document).ready(function(data) {
                                     }}
 
                             ]}},
-                    {name: "montoDescuento", index: "montoDescuento", width: 100, align: "right", editable: true, sortable: false, disabled: true, editoptions: {disabled: true}},
-                    {name: "neto", index: "neto", width: 100, align: "right", editable: true, sortable: false, disabled: true, editoptions: {disabled: true}},
+                    {name: "montoDescuento", index: "montoDescuento", width: 100, align: "right", formatter: 'number', editable: true, sortable: false, disabled: true, editoptions: {disabled: true}},
+                    {name: "neto", index: "neto", width: 100, align: "right", editable: true, formatter: 'number', sortable: false, disabled: true, editoptions: {disabled: true}},
                     {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                         //               formatter: 'actions',
                         formatoptions: {
@@ -472,7 +473,7 @@ $(document).ready(function(data) {
 
                         if ($('#detallado').is(':checked')) {
 
-                            edit = editInlineButton(cl, true);
+                            edit = editInlineButton(cl, permisoEditar);
                             $("#" + subgrid_table_id).setRowData(ids[i], {act: ini + edit + fin});
                         }
 

@@ -402,8 +402,8 @@ $(document).ready(function(data) {
                                     }}
 
                             ]}},
-                    {name: "montoDescuento", index: "montoDescuento", width: 100, align: "right", editable: true, sortable: false, disabled: true, editoptions: {disabled: true}},
-                    {name: "neto", index: "neto", width: 100, align: "right", editable: true, sortable: false, disabled: true, editoptions: {disabled: true}},
+                    {name: "montoDescuento", index: "montoDescuento", width: 100, align: "right", formatter: 'number', editable: true, sortable: false, disabled: true, editoptions: {disabled: true}},
+                    {name: "neto", index: "neto", width: 100, align: "right", formatter: 'number', editable: true, sortable: false, disabled: true, editoptions: {disabled: true}},
                     {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                         //               formatter: 'actions',
                         formatoptions: {
@@ -495,7 +495,7 @@ $(document).ready(function(data) {
 
                         if ($('#detallado').is(':checked')) {
 
-                            edit = editInlineButton(cl, true);
+                            edit = editInlineButton(cl, permisoEditar);
                             $("#" + subgrid_table_id).setRowData(ids[i], {act: ini + edit + fin});
                         }
 

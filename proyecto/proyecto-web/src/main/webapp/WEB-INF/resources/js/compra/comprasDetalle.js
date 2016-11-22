@@ -473,7 +473,7 @@ $(document).ready(function(data) {
 
                         if ($('#detallado').is(':checked')) {
 
-                            edit = editInlineButton(cl, true);
+                            edit = editInlineButton(cl, permisoEditar);
                             $("#" + subgrid_table_id).setRowData(ids[i], {act: ini + edit + fin});
                         }
 

@@ -193,6 +193,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejDetCompra.setMoneda(detalleCompra.getMoneda());
                 ejDetCompra.setCambioDia(detalleCompra.getCambioDia());
                 ejDetCompra.setTotal(Double.parseDouble(total.toString()));
+                ejDetCompra.setNeto(Double.parseDouble(total.toString()));
                 ejDetCompra.setPrecio(detalleCompra.getPrecio());
                 ejDetCompra.setCompra(ejCompra);
 

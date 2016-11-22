@@ -380,10 +380,10 @@ $(document).ready(function(data) {
                     {name: "porcentajeDescuento", index: "porcentajeDescuento", editable: true, width: 100, align: "right", sortable: false,
                         editoptions: {
                             dataEvents: [
-                                {type: 'click', fn: function(e) {
-                                        var total = this.value * 1;
-                                        $('input[name="total"]').val(total);
-                                    }},
+//                                {type: 'click', fn: function(e) {
+//                                        var total = this.value * 1;
+//                                        $('input[name="total"]').val(total);
+//                                    }},
                                 {type: 'keypress', fn: function(e) {
                                         var total;
                                         setTimeout(function() {

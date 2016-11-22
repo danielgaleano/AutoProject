@@ -503,8 +503,8 @@ public class CompraController extends BaseController {
 
             ejDetalleCompra = detalleCompraManager.get(compraRecibido.getId());
 
-            Double descuento = (ejDetalleCompra.getPrecio() * Double.valueOf(compraRecibido.getPorcentajeDescuento())) / 100;
-            Double neto = ejDetalleCompra.getPrecio() - descuento;
+            Double descuento = (ejDetalleCompra.getTotal() * Double.valueOf(compraRecibido.getPorcentajeDescuento())) / 100;
+            Double neto = ejDetalleCompra.getTotal() - descuento;
 
             ejDetalleCompra.setNeto(neto);
             ejDetalleCompra.setPorcentajeDescuento(compraRecibido.getPorcentajeDescuento());
@@ -525,7 +525,7 @@ public class CompraController extends BaseController {
                 if (rpm.getNeto() != null) {
                     netoPagar = netoPagar + Double.valueOf(rpm.getNeto());
                 } else {
-                    netoPagar = netoPagar + Double.valueOf(rpm.getPrecio());
+                    netoPagar = netoPagar + Double.valueOf(rpm.getTotal());
 
                 }
             }

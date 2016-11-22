@@ -192,18 +192,23 @@ public class DetallePedidoController extends BaseController {
                     mensaje.setMensaje("El codigo del pedido no puede estar vacio.");
                     return mensaje;
                 }
+                
+                
                 if (detalleRecibido.getPedido().getFecha() == null || detalleRecibido.getPedido().getFecha() != null
                         && detalleRecibido.getPedido().getFecha().compareToIgnoreCase("") == 0) {
                     mensaje.setError(true);
                     mensaje.setMensaje("La fecha de entrega del pedido no puede estar vacio.");
                     return mensaje;
                 }
-                if (detalleRecibido.getPedido().getProveedor() == null || detalleRecibido.getPedido().getProveedor().getId() != null
+                if (detalleRecibido.getPedido().getProveedor() == null ||
+                        detalleRecibido.getPedido().getProveedor().getId() == null
+                        || detalleRecibido.getPedido().getProveedor().getId() != null
                         && detalleRecibido.getPedido().getProveedor().getId().toString().compareToIgnoreCase("") == 0) {
                     mensaje.setError(true);
                     mensaje.setMensaje("Se debe ingresar un proveedor para el pedido.");
                     return mensaje;
                 }
+                
                 Date resultFecha = dateFormat.parse(detalleRecibido.getPedido().getFecha());
 
                 Pedido pedidoEj = new Pedido();

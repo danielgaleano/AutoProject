@@ -104,8 +104,11 @@ public class ModeloController extends BaseController{
         ordenarPor = "nombre";
         Modelo ejModelo = new Modelo();
         ejModelo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-        ejModelo.setMarca(new Marca(Long.parseLong(idMarca)));
         
+        if(idMarca != null && idMarca.compareToIgnoreCase("") != 0){
+            ejModelo.setMarca(new Marca(Long.parseLong(idMarca)));
+        }
+  
         List<Map<String, Object>> listMapGrupos = null;
         try {
 

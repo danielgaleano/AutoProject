@@ -44,7 +44,7 @@ $(document).ready(function(data) {
             {name: 'usuario.nombre', index: 'usuario.nombre', width: 90, sortable: false},
             {name: 'proveedor.nombre', index: 'proveedor.nombre', width: 90, sortable: false},
             {name: 'confirmado', index: 'confirmado', width: 90, editable: false, hidden: true},
-            {name: 'activo', index: 'activo', width: 90, editable: false},
+            {name: 'activo', index: 'activo', hidden: true, width: 90, editable: false},
             {name: 'act', index: 'act', width: 160, fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {

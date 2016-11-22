@@ -389,6 +389,7 @@ public class DetallePedidoController extends BaseController {
             ejPedido.setNeto(Double.parseDouble(total.toString()));
 
             ejPedido.setTotal(Double.parseDouble(total.toString()));
+            ejPedido.setPrecio(pedidoRecibido.getPrecio());
             ejPedido.setEstadoPedido(DetallePedido.PENDIENTE);
             ejPedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
 

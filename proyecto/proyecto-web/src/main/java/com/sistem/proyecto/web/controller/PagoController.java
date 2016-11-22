@@ -85,7 +85,7 @@ public class PagoController extends BaseController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public @ResponseBody
-    DTORetorno compraForm(@PathVariable("id") Long id) {
+    DTORetorno calcularDeduda(@PathVariable("id") Long id) {
         DTORetorno<Map<String, Object>> retorno = new DTORetorno<>();
         List<Map<String, Object>> listMapGrupos = null;
         try {

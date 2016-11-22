@@ -38,7 +38,7 @@ $(document).ready(function(data) {
             {name: 'pedido.total', index: 'pedido.total', width: 90, sortable: false, formatter:'number'},
             {name: 'pedido.usuario.nombre', index: 'pedido.usuario.nombre', width: 90, sortable: false},
             {name: 'proveedor.nombre', index: 'proveedor.nombre', width: 90, sortable: false},
-            {name: 'activo', index: 'activo', width: 90, editable: false, hidden: true},
+            {name: 'activo', index: 'activo', hidden: true, width: 90, editable: false},
             {name: 'act', index: 'act', width: 160, fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {
@@ -144,13 +144,13 @@ $(document).ready(function(data) {
                             visuali = visualizarButton(cl, permisoVisualizar,null);
                             //edit = editInlineButton(cl, permisoEditar);
                             editForm = detalleButton(cl, permisoDetalle,'Realizar Compra','orden/compras/realizar');
-                            desact = desactivarButton(cl, permisoDesactivar);
+                            //desact = desactivarButton(cl, permisoDesactivar);
                             $(grid_selector).setRowData(ids[i], {act: ini + visuali + editForm + desact + fin});
                         }
                         $(grid_selector).setRowData(ids[i], {activo: labelActivo});
                     } else {
                         var labelInactivo = '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
-                        activar = activarButton(cl, permisoActivar);
+                       // activar = activarButton(cl, permisoActivar);
                         $(grid_selector).setRowData(ids[i], {act: ini + activar + fin});
                         $(grid_selector).setRowData(ids[i], {activo: labelInactivo});
                     }

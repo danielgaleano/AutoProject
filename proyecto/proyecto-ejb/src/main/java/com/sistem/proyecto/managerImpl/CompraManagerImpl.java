@@ -339,6 +339,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     ejCompraUp.setSaldo(saldo + "");
                     ejCompraUp.setNeto(saldo);
                     ejCompraUp.setMontoCuotas(montoCuota + "");
+                    ejCompraUp.setMoraInteres(compra.getMoraInteres());
 
                     Date fecha = new Date();
 
@@ -415,7 +416,8 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     ejCompraUp.setSaldo(saldo + "");
                     ejCompraUp.setNeto(saldo);
                     ejCompraUp.setMontoCuotas(montoCuota + "");
-
+                    ejCompraUp.setMoraInteres(compra.getMoraInteres());
+                    
                     Date fecha = new Date();
 
                     if (compra.getCuotaFecha() != null) {

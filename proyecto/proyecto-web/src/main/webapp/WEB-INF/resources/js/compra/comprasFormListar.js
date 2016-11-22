@@ -9,12 +9,12 @@ $(document).ready(function(data) {
     if (action === "VISUALIZAR") {
         var permisoVisualizar = false;
         var permisoEditar = false;
-        var permisoCrear = false;
+        var permisoAgegar = false;
     } else {
         var permisoAprobar = parseBolean($(this).find('.tablaprobar-permiso').text());
         var permisoRechazar = parseBolean($(this).find('.tablrechazar-permiso').text());
         var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
-        var permisoCrear = parseBolean($(this).find('.tabladd-permiso').text());
+        var permisoAgegar = parseBolean($(this).find('.tabladd-permiso').text());
     }
 
 
@@ -138,7 +138,7 @@ $(document).ready(function(data) {
                     }
                 }},
             {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter: 'number', resize: false, editable: true, disabled: true, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: false, formatter: 'number', resize: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
+            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter: 'number', resize: false, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
                         {type: 'click', fn: function(e) {
@@ -227,9 +227,9 @@ $(document).ready(function(data) {
         loadtext: "Cargando...",
         emptyrecords: "No se encontaron datos.",
         pgtext: "Pagina {0} de {1}",
-        beforeSelectRow: function(rowid, data) {
-            $('#validation-form').valid();
-        },
+//        beforeSelectRow: function(rowid, data) {
+//            $('#validation-form').valid();
+//        },
         serializeRowData: function(postData) {
             if ($.isNumeric(postData.id) !== true) {
                 postData.id = "";
@@ -350,7 +350,7 @@ $(document).ready(function(data) {
 
             }
         },
-        editurl: CONTEXT_ROOT + '/compras/directa/guardar', //nothing is saved
+        editurl: CONTEXT_ROOT + '/compras/directa/editar', //nothing is saved
         caption: "Detalle del compra",
         subGrid: true,
         subGridOptions: {
@@ -509,11 +509,10 @@ $(document).ready(function(data) {
     $(window).triggerHandler('resize.jqGrid');
     $(grid_selector).jqGrid('setGridWidth', $(".content").width());
     $(grid_selector).jqGrid('navGrid', pager_selector, {edit: false, add: false, del: false, search: false});
-
     $(grid_selector).jqGrid('inlineNav', pager_selector,
             {
                 edit: false,
-                add: permisoCrear,
+                add: permisoAgegar,
                 addtext: 'Agregar',
                 addicon: "ui-icon ace-icon fa fa-plus-circle purple",
                 save: true,
@@ -522,22 +521,22 @@ $(document).ready(function(data) {
                 cancel: true,
                 cancelicon: "ui-icon-cancel",
                 canceltext: 'Cancelar',
-                refresh: false,
-                cloneToTop: false,
-                view: true,
-                viewicon: 'ui-icon ace-icon fa fa-plus-circle purple',
+                refresh: true,
+                cloneToTop: true,
+                "view": false,
                 addParams: {
                     //position: 'last',
                     useDefValues: true,
                     reloadAfterSubmit: true,
                     addRowParams: {
-                        url: +'/compras/directa/guardar',
+                        url: CONTEXT_ROOT + '/compras/directa/guardar',
                         mtype: "POST",
                         datatype: 'json',
                         keys: true,
                         successfunc: function(data) {
                             if (data.responseJSON.id !== null && data.responseJSON.id !== "") {
-                                compraForm(data.responseJSON.id, "recargar");
+                                $('#idPedido').val(data.responseJSON.id);
+                                pedidoForm(data.responseJSON.id, "recargar");
                             }
                             if (data.responseJSON.error === true) {
                                 $('#mensaje').append('<div class="alert alert-error">'
@@ -548,18 +547,24 @@ $(document).ready(function(data) {
                                         + '</div>');
 
                             } else {
-                                $("#general").attr("disabled", false);
-                                $("#detallado").attr("disabled", false);
-                                $('#contado').attr("disabled", false);
-                                $('#credito').attr("disabled", false);
-                                cargarDatos(data.responseJSON.id);
                                 $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
                                         + '<button type="button" class="close" data-dismiss="alert"'
                                         + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
                                         + '<strong>Exito! </strong>'
                                         + data.responseJSON.mensaje
                                         + '</div>');
-                                $(grid_selector).setGridParam({postData: {idCompra: data.responseJSON.id, todos: false, atributos: "id,nombre", filters: null}});
+
+                                $(grid_selector).setGridParam({postData: {todos: false,
+                                        idPedido: data.responseJSON.id}});
+//                                setTimeout(function() {
+//                                    postData = $(grid_selector).jqGrid("getGridParam", "postData");
+//                                
+//                                    postData.filters = JSON.stringify({
+//                                        todos: false,
+//                                        idPedido: data.responseJSON.id
+//                                    });
+//                                }, 0);
+
 
                                 $(grid_selector).trigger('reloadGrid');
 
@@ -575,6 +580,9 @@ $(document).ready(function(data) {
                                         + 'Error al editar el registro'
                                         + '</div>');
                             }
+                        },
+                        aftersavefunc: function(response) {
+                            console.log('1231456465465');
                         }
                     },
                     afterSubmit: function(response, postdata) {
@@ -587,6 +595,12 @@ $(document).ready(function(data) {
                                     {datatype: 'json'}).trigger('reloadGrid'); //Reloads the grid after Add
                             return [false, response.responseText];
                         }
+                    },
+                    onclickSubmit: function(rowid) {
+                        console.log('cliccccc11');
+                    },
+                    beforeSubmitCell: function() {
+                        alert('holaaa');
                     }
                 }
             });

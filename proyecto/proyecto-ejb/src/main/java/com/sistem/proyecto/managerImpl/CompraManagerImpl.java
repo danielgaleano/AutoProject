@@ -238,7 +238,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejVehiculo.setTipo(new Tipo(detalleCompra.getVehiculo().getTipo().getId()));
                 ejVehiculo.setTransmision(detalleCompra.getVehiculo().getTransmision());
                 
-                vehiculoManager.save(ejVehiculo);
+                vehiculoManager.update(ejVehiculo);
 
                 DetalleCompra ejDetCompra = new DetalleCompra();
                 ejDetCompra.setCambioDia(cambio);

@@ -18,7 +18,7 @@ $("#globalSearch").button({
             l = colModel.length;
     for (i = 0; i < l; i++) {
         cm = colModel[i];
-        if (cm.search !== false && (cm.stype === undefined || cm.stype === "text") 
+        if (cm.search !== false && (cm.stype === undefined || cm.stype === "text")
                 && cm.name !== "id" && cm.name !== "act" && cm.name !== "confirmado") {
             if (cm.formatter === 'number' || cm.formatter === 'integer') {
                 if ($.isNumeric(searchText)) {
@@ -309,30 +309,37 @@ function activar(content, id) {
 }
 
 function rechazar(content, id) {
-    $.messager.confirm('Confirm', 'Esta Seguro que desea rechazar el registro?', function(r) {
-        if (r) {
-            var jqXHR = $.get(CONTEXT_ROOT + "/pedido/detalles/desactivar/" + id, function(data, textStatus, jqXHR) {
-                if (data.error === true) {
-                    $('#mensaje').append('<div class="alert alert-error">'
-                            + '<button class="close" data-dismiss="alert" type="button"'
-                            + '><i class="fa  fa-remove"></i></button>'
-                            + '<strong>Error! </strong>'
-                            + data.mensaje
-                            + '</div>');
+    var dato = $('#grid').jqGrid('getRowData', id);
+    if (dato['vehiculo.caracteristica'] === null
+            || dato['vehiculo.caracteristica'] === '') {
+        $.messager.confirm('Error', 'Debe agregar un comentario para rechazar el pedido');
+    } else {
+        $.messager.confirm('Confirm', 'Esta Seguro que desea rechazar el registro?', function(r) {
+            if (r) {
+                var jqXHR = $.get(CONTEXT_ROOT + "/pedido/detalles/desactivar/" + id, function(data, textStatus, jqXHR) {
+                    if (data.error === true) {
+                        $('#mensaje').append('<div class="alert alert-error">'
+                                + '<button class="close" data-dismiss="alert" type="button"'
+                                + '><i class="fa  fa-remove"></i></button>'
+                                + '<strong>Error! </strong>'
+                                + data.mensaje
+                                + '</div>');
 
-                } else {
-                    $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
-                            + '<button type="button" class="close" data-dismiss="alert"'
-                            + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
-                            + '<strong>Exito! </strong>'
-                            + data.mensaje
-                            + '</div>');
-                    $('#grid').trigger('reloadGrid');
-                    pedidoForm($("#idPedido").val(), action);
-                }
-            });
-        }
-    });
+                    } else {
+                        $('#mensaje').append('<div class="alert alert-info alert-dismissible fade in">'
+                                + '<button type="button" class="close" data-dismiss="alert"'
+                                + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                + '<strong>Exito! </strong>'
+                                + data.mensaje
+                                + '</div>');
+                        $('#grid').trigger('reloadGrid');
+                        pedidoForm($("#idPedido").val(), action);
+                    }
+                });
+            }
+        });
+    }
+
 
 }
 function aprobar(content, id) {

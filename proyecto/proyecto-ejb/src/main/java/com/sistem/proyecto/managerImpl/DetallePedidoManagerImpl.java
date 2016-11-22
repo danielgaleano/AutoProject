@@ -212,17 +212,6 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
 
             detallePedido = this.get(idDetalle);
 
-            DetalleCompra ejDetCompra = new DetalleCompra();
-            ejDetCompra.setActivo("S");
-            ejDetCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-            ejDetCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-            ejDetCompra.setEmpresa(new Empresa(idEmpresa));
-            ejDetCompra.setVehiculo(detallePedido.getVehiculo());
-            ejDetCompra.setMoneda(detallePedido.getMoneda());
-            ejDetCompra.setCambioDia(detallePedido.getCambioDia());
-            ejDetCompra.setPrecio(detallePedido.getPrecio());
-            ejDetCompra.setTotal(detallePedido.getTotal());
-
             String nombre = detallePedido.getVehiculo().getCodigo();
 
             detallePedido.setEstadoPedido(DetallePedido.APROBADO);
@@ -247,66 +236,103 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
             pedido.setCantidadAprobados(Long.parseLong(listDetalle.size() + ""));
             pedido.setTotal(totalPedido);
 
-            detallePedido = new DetallePedido();
-            detallePedido.setPedido(new Pedido(idPedido));
-            detallePedido.setEstadoPedido(DetallePedido.PENDIENTE);
-
-            detallePedido = this.get(detallePedido);
-
-            if (detallePedido != null) {
-                pedido.setConfirmado(true);
-            }
-
-            pedidoManager.update(pedido);
-            Compra ejCompra = new Compra();
-            ejCompra.setPedido(new Pedido(idPedido));
-
-            ejCompra = compraManager.get(ejCompra);
-
             DetallePedido pedidoPendiente = new DetallePedido();
             pedidoPendiente.setPedido(new Pedido(idPedido));
             pedidoPendiente.setEstadoPedido(DetallePedido.PENDIENTE);
 
             int pendiente = this.list(pedidoPendiente, true).size();
 
-            if (ejCompra != null) {
-                if (pendiente <= 0) {
+            if (pendiente <= 0) {
+                pedido.setConfirmado(true);
+                pedidoManager.update(pedido);
+
+                Compra ejCompra = new Compra();
+                ejCompra.setPedido(new Pedido(idPedido));
+
+                ejCompra = compraManager.get(ejCompra);
+
+                if (ejCompra == null) {
+
+                    ejCompra = new Compra();
                     ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
+                    ejCompra.setActivo("S");
+                    ejCompra.setTipoCompra("INDIRECTA");
+                    ejCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                    ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    ejCompra.setEmpresa(new Empresa(idEmpresa));
+                    ejCompra.setProveedor(pedido.getProveedor());
+                    ejCompra.setPedido(pedido);
+                    ejCompra.setMonto(totalPedido + "");
+                    compraManager.save(ejCompra);
+
+                    DetallePedido ejDetalle = new DetallePedido();
+                    ejDetalle.setPedido(new Pedido(idPedido));
+                    ejDetalle.setEstadoPedido(DetallePedido.APROBADO);
+
+                    List<DetallePedido> listDetallePed = this.list(ejDetalle);
+
+                    for (DetallePedido rpm : listDetallePed) {
+                        DetalleCompra ejDetCompra = new DetalleCompra();
+                        ejDetCompra.setCompra(ejCompra);
+                        ejDetCompra.setActivo("S");
+                        ejDetCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                        ejDetCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                        ejDetCompra.setEmpresa(new Empresa(idEmpresa));
+                        ejDetCompra.setVehiculo(rpm.getVehiculo());
+                        ejDetCompra.setMoneda(rpm.getMoneda());
+                        ejDetCompra.setCambioDia(rpm.getCambioDia());
+                        ejDetCompra.setPrecio(rpm.getPrecio());
+                        ejDetCompra.setTotal(rpm.getTotal());
+
+                        detalleCompraManager.save(ejDetCompra);
+                    }
+                } else {
+
+                    ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
+                    ejCompra.setActivo("S");
+                    ejCompra.setTipoCompra("INDIRECTA");
+                    ejCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                    ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    ejCompra.setEmpresa(new Empresa(idEmpresa));
+                    ejCompra.setProveedor(pedido.getProveedor());
+                    ejCompra.setPedido(pedido);
+                    ejCompra.setMonto(totalPedido + "");
+                    compraManager.update(ejCompra);
+
+                    DetalleCompra ejDetCompra = new DetalleCompra();
+                    ejDetCompra.setCompra(ejCompra);
+
+                    List<DetalleCompra> listDetalleComp = detalleCompraManager.list(ejDetCompra);
+
+                    for (DetalleCompra rpm : listDetalleComp) {
+                        detalleCompraManager.delete(rpm.getId());
+                    }
+
+                    DetallePedido ejDetalle = new DetallePedido();
+                    ejDetalle.setPedido(new Pedido(idPedido));
+                    ejDetalle.setEstadoPedido(DetallePedido.APROBADO);
+
+                    List<DetallePedido> listDetallePed = this.list(ejDetalle);
+
+                    for (DetallePedido rpm : listDetallePed) {
+                        ejDetCompra = new DetalleCompra();
+                        ejDetCompra.setCompra(ejCompra);
+                        ejDetCompra.setActivo("S");
+                        ejDetCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                        ejDetCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                        ejDetCompra.setEmpresa(new Empresa(idEmpresa));
+                        ejDetCompra.setVehiculo(rpm.getVehiculo());
+                        ejDetCompra.setMoneda(rpm.getMoneda());
+                        ejDetCompra.setCambioDia(rpm.getCambioDia());
+                        ejDetCompra.setPrecio(rpm.getPrecio());
+                        ejDetCompra.setTotal(rpm.getTotal());
+
+                        detalleCompraManager.save(ejDetCompra);
+                    }
                 }
-                ejCompra.setMonto(totalPedido + "");
-                ejCompra.setTipoCompra("INDIRECTA");
-
-                compraManager.update(ejCompra);
-
-                ejDetCompra.setCompra(ejCompra);
-
-                detalleCompraManager.save(ejDetCompra);
-
             } else {
-
-                pedido = pedidoManager.get(idPedido);
-
-                ejCompra = new Compra();
-
-                if (pendiente <= 0) {
-                    ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
-                }
-
-                ejCompra.setActivo("S");
-                ejCompra.setTipoCompra("INDIRECTA");
-                ejCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                ejCompra.setEmpresa(new Empresa(idEmpresa));
-                ejCompra.setProveedor(pedido.getProveedor());
-                ejCompra.setPedido(pedido);
-                ejCompra.setMonto(totalPedido + "");
-
-                compraManager.save(ejCompra);
-
-                ejDetCompra.setCompra(ejCompra);
-
-                detalleCompraManager.save(ejDetCompra);
-
+                pedido.setConfirmado(false);
+                pedidoManager.update(pedido);
             }
 
             mensaje.setError(false);
@@ -372,27 +398,101 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
 
             int pendiente = this.list(pedidoPendiente, true).size();
 
-            if (aprobado) {
-                if (pendiente <= 0) {
-
-                    pedido.setConfirmado(true);
-
+            if (pendiente <= 0) {
+                pedido.setConfirmado(true);
+                pedidoManager.update(pedido);
+                if (aprobado) {
                     Compra ejCompra = new Compra();
                     ejCompra.setPedido(new Pedido(idPedido));
 
                     ejCompra = compraManager.get(ejCompra);
-                    ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
-                    compraManager.update(ejCompra);
 
+                    if (ejCompra == null) {
+
+                        ejCompra = new Compra();
+                        ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
+                        ejCompra.setActivo("S");
+                        ejCompra.setTipoCompra("INDIRECTA");
+                        ejCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                        ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                        ejCompra.setEmpresa(new Empresa(idEmpresa));
+                        ejCompra.setProveedor(pedido.getProveedor());
+                        ejCompra.setPedido(pedido);
+                        ejCompra.setMonto(totalPedido + "");
+                        compraManager.save(ejCompra);
+
+                        DetallePedido ejDetalle = new DetallePedido();
+                        ejDetalle.setPedido(new Pedido(idPedido));
+                        ejDetalle.setEstadoPedido(DetallePedido.APROBADO);
+
+                        List<DetallePedido> listDetallePed = this.list(ejDetalle);
+
+                        for (DetallePedido rpm : listDetallePed) {
+                            DetalleCompra ejDetCompra = new DetalleCompra();
+                            ejDetCompra.setCompra(ejCompra);
+                            ejDetCompra.setActivo("S");
+                            ejDetCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                            ejDetCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                            ejDetCompra.setEmpresa(new Empresa(idEmpresa));
+                            ejDetCompra.setVehiculo(rpm.getVehiculo());
+                            ejDetCompra.setMoneda(rpm.getMoneda());
+                            ejDetCompra.setCambioDia(rpm.getCambioDia());
+                            ejDetCompra.setPrecio(rpm.getPrecio());
+                            ejDetCompra.setTotal(rpm.getTotal());
+
+                            detalleCompraManager.save(ejDetCompra);
+                        }
+                    } else {
+
+                        ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
+                        ejCompra.setActivo("S");
+                        ejCompra.setTipoCompra("INDIRECTA");
+                        ejCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                        ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                        ejCompra.setEmpresa(new Empresa(idEmpresa));
+                        ejCompra.setProveedor(pedido.getProveedor());
+                        ejCompra.setPedido(pedido);
+                        ejCompra.setMonto(totalPedido + "");
+                        compraManager.update(ejCompra);
+
+                        DetalleCompra ejDetCompra = new DetalleCompra();
+                        ejDetCompra.setCompra(ejCompra);
+
+                        List<DetalleCompra> listDetalleComp = detalleCompraManager.list(ejDetCompra);
+
+                        for (DetalleCompra rpm : listDetalleComp) {
+                            detalleCompraManager.delete(rpm.getId());
+                        }
+
+                        DetallePedido ejDetalle = new DetallePedido();
+                        ejDetalle.setPedido(new Pedido(idPedido));
+                        ejDetalle.setEstadoPedido(DetallePedido.APROBADO);
+
+                        List<DetallePedido> listDetallePed = this.list(ejDetalle);
+
+                        for (DetallePedido rpm : listDetallePed) {
+                            ejDetCompra = new DetalleCompra();
+                            ejDetCompra.setCompra(ejCompra);
+                            ejDetCompra.setActivo("S");
+                            ejDetCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                            ejDetCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                            ejDetCompra.setEmpresa(new Empresa(idEmpresa));
+                            ejDetCompra.setVehiculo(rpm.getVehiculo());
+                            ejDetCompra.setMoneda(rpm.getMoneda());
+                            ejDetCompra.setCambioDia(rpm.getCambioDia());
+                            ejDetCompra.setPrecio(rpm.getPrecio());
+                            ejDetCompra.setTotal(rpm.getTotal());
+
+                            detalleCompraManager.save(ejDetCompra);
+                        }
+                    }
                 }
+
             } else {
-                if (pendiente <= 0) {
-                    pedido.setConfirmado(false);
-                }               
+                pedido.setConfirmado(false);
+                pedidoManager.update(pedido);
             }
-
-            pedidoManager.update(pedido);
-
+            
             mensaje.setError(false);
             mensaje.setMensaje("El pedido del vehiculo " + nombre + " se rechazo exitosamente.");
 

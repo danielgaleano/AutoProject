@@ -33,6 +33,8 @@ import com.sistem.proyecto.utils.DTORetorno;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
 import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;
+import java.util.AbstractList;
+import java.util.ArrayList;
 
 /**
  *
@@ -58,32 +60,33 @@ public class CompraController extends BaseController {
         return retorno;
     }
 
-    @RequestMapping(value = "/pendientes", method = RequestMethod.GET)
-    public ModelAndView listarPendientes(Model model) {
+    @RequestMapping(value = "/registros", method = RequestMethod.GET)
+    public ModelAndView listarRegistros(Model model) {
         ModelAndView retorno = new ModelAndView();
         retorno.setViewName("comprasListar");
         model.addAttribute("action", "PENDIENTE");
         return retorno;
     }
 
-    @RequestMapping(value = "/realizadas", method = RequestMethod.GET)
-    public ModelAndView listarRealizadas(Model model) {
+    @RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
+    public ModelAndView formEdit(@PathVariable("id") Long id,Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("comprasListar");
-        model.addAttribute("action", "REALIZADA");
+        retorno.setViewName("compraForm");
+        model.addAttribute("action", "EDITAR");
+        model.addAttribute("id", id);
         return retorno;
     }
-    
+
     @RequestMapping(value = "/directa/crear", method = RequestMethod.GET)
-    public ModelAndView formCreate( Model model) {
+    public ModelAndView formCreate(Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("compraDirectaForm");
+        retorno.setViewName("compraForm");
         model.addAttribute("action", "CREAR");
         //model.addAttribute("id", id);
         return retorno;
     }
 
-    @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/registros/visualizar/{id}", method = RequestMethod.GET)
     public ModelAndView formView(@PathVariable("id") Long id, Model model) {
         ModelAndView retorno = new ModelAndView();
         retorno.setViewName("compraForm");
@@ -133,11 +136,9 @@ public class CompraController extends BaseController {
 
         Compra ejemplo = new Compra();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-        ejemplo.setEstadoCompra(Compra.COMPRA_PENDIENTE);
 
-        
         List<Map<String, Object>> listMapGrupos = null;
-
+        List<Map<String, Object>> listOrdenesMap = null;
         try {
 
             inicializarCompraManager();
@@ -166,12 +167,24 @@ public class CompraController extends BaseController {
             if (ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0) {
                 ordenarPor = "numeroPedido";
             }
+            List<Long> ordenesCompras = new ArrayList<Long>();
+            Compra ejOrden = new Compra();
+            ejOrden.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            ejOrden.setEstadoCompra(Compra.ORDEN_COMPRA);
+
+            listOrdenesMap = compraManager.listAtributos(ejOrden, "id".split(","), true, null, null,
+                    "id".split(","), "ASD".split(","), true, true, "id", null,
+                    null, null, null, null, null, null, null, null, true);
+
+            for (Map<String, Object> rpm : listOrdenesMap) {
+                ordenesCompras.add(Long.parseLong(rpm.get("id").toString()));
+            }
 
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
 
             if (!todos) {
-                total = compraManager.list(ejemplo, true).size();
+                total = compraManager.list(ejemplo, true).size() - ordenesCompras.size();
             }
 
             Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
@@ -183,11 +196,12 @@ public class CompraController extends BaseController {
 
             listMapGrupos = compraManager.listAtributos(ejemplo, atributosCompras.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
-                    null, null, null, null, null, null, null, null, true);
+                    "id", ordenesCompras, "OP_NOT_IN", null, null, null, null, null, true);
 
             if (todos) {
                 total = listMapGrupos.size();
             }
+
             Integer totalPaginas = total / cantidad;
 
             retorno.setTotal(totalPaginas + 1);
@@ -202,7 +216,7 @@ public class CompraController extends BaseController {
 
         return retorno;
     }
-    
+
     @RequestMapping(value = "/docApagar/listar", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno listarApagar(@ModelAttribute("_search") boolean filtrar,
@@ -325,10 +339,10 @@ public class CompraController extends BaseController {
 //
 //        return mensaje;
 //    }
-    
+
     @RequestMapping(value = "/directa/guardar", method = RequestMethod.POST)
     public @ResponseBody
-    MensajeDTO compraDirectaGuardar( @ModelAttribute("DetalleCompra") DetalleCompra compraRecibido) {
+    MensajeDTO compraDirectaGuardar(@ModelAttribute("DetalleCompra") DetalleCompra compraRecibido) {
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO mensaje = new MensajeDTO();
         Compra ejCompra = new Compra();
@@ -339,7 +353,6 @@ public class CompraController extends BaseController {
             inicializarImagenManager();
             inicializarContactoManager();
 
-
             if (compraRecibido.getCompra().getNroFactura() == null || compraRecibido.getCompra().getNroFactura() != null
                     && compraRecibido.getCompra().getNroFactura().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
@@ -347,7 +360,7 @@ public class CompraController extends BaseController {
                 return mensaje;
             }
 
-            mensaje = compraManager.guardarCompra(compraRecibido.getCompra().getId(), compraRecibido,compraRecibido.getCompra().getNroFactura(), compraRecibido.getCompra().getFormaPago(),
+            mensaje = compraManager.guardarCompra(compraRecibido.getCompra().getId(), compraRecibido, compraRecibido.getCompra().getNroFactura(), compraRecibido.getCompra().getFormaPago(),
                     compraRecibido.getCompra().getTipoDescuento(), userDetail.getIdEmpresa(), userDetail.getId());
 
         } catch (Exception ex) {
@@ -386,7 +399,7 @@ public class CompraController extends BaseController {
             ejDetalleCompra.setNeto(neto);
             ejDetalleCompra.setPorcentajeDescuento(compraRecibido.getPorcentajeDescuento());
             ejDetalleCompra.setMontoDescuento(descuento);
-            
+
             detalleCompraManager.update(ejDetalleCompra);
 
             ejCompra = compraManager.get(ejDetalleCompra.getCompra());
@@ -395,12 +408,12 @@ public class CompraController extends BaseController {
             ejDetalleCompra.setCompra(ejCompra);
 
             List<DetalleCompra> ejDetalles = detalleCompraManager.list(ejDetalleCompra);
-            
+
             Double netoPagar = 0.0;
-            
+
             for (DetalleCompra rpm : ejDetalles) {
                 if (rpm.getNeto() != null) {
-                    netoPagar = netoPagar + Double.valueOf(rpm.getNeto()) ;
+                    netoPagar = netoPagar + Double.valueOf(rpm.getNeto());
                 } else {
                     netoPagar = netoPagar + Double.valueOf(rpm.getPrecio());
 
@@ -409,8 +422,8 @@ public class CompraController extends BaseController {
             ejCompra.setNeto(netoPagar);
             ejCompra.setFormaPago("CONTADO");
             ejCompra.setTipoDescuento("DETALLADO");
-           // ejCompra.setNroFactura(compraRecibido.getNroFactura());
-            
+            // ejCompra.setNroFactura(compraRecibido.getNroFactura());
+
             compraManager.update(ejCompra);
 
             mensaje.setError(false);

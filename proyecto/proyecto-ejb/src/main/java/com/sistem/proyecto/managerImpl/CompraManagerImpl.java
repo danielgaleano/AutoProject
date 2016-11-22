@@ -10,9 +10,13 @@ import com.sistem.proyecto.entity.DetalleCompra;
 import com.sistem.proyecto.entity.DetallePedido;
 import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
+import com.sistem.proyecto.entity.Marca;
+import com.sistem.proyecto.entity.Modelo;
 import com.sistem.proyecto.entity.Moneda;
 import com.sistem.proyecto.entity.Pedido;
 import com.sistem.proyecto.entity.Proveedor;
+import com.sistem.proyecto.entity.Tipo;
+import com.sistem.proyecto.entity.Vehiculo;
 import com.sistem.proyecto.manager.CompraManager;
 import com.sistem.proyecto.manager.DetalleCompraManager;
 import com.sistem.proyecto.manager.DocumentoPagarManager;
@@ -149,17 +153,28 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 ejCompra.setEmpresa(new Empresa(idEmpresa));
                 ejCompra.setNroFactura(nroFactura);
+                ejCompra.setTipoCompra("DIRECTA");
+                ejCompra.setEstadoCompra(Compra.COMPRA_PENDIENTE);
 
                 this.save(ejCompra);
 
                 String codDetalle = randomString(5, "DET");
 
-                detalleCompra.getVehiculo().setCodigo(ejCompra.getId() + "-" + codDetalle);
-                detalleCompra.getVehiculo().setActivo("S");
-                detalleCompra.getVehiculo().setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                detalleCompra.getVehiculo().setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-
-                vehiculoManager.save(detalleCompra.getVehiculo());
+                Vehiculo ejVehiculo = new Vehiculo();
+                
+                ejVehiculo.setCodigo(ejCompra.getId() + "-" + codDetalle);
+                ejVehiculo.setActivo("S");
+                ejVehiculo.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                ejVehiculo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                ejVehiculo.setAnho(detalleCompra.getVehiculo().getAnho());
+                ejVehiculo.setCaracteristica(detalleCompra.getVehiculo().getCaracteristica());
+                ejVehiculo.setColor(detalleCompra.getVehiculo().getColor());
+                ejVehiculo.setMarca(new Marca(detalleCompra.getVehiculo().getMarca().getId()));
+                ejVehiculo.setModelo(new Modelo(detalleCompra.getVehiculo().getModelo().getId()));
+                ejVehiculo.setTipo(new Tipo(detalleCompra.getVehiculo().getTipo().getId()));
+                ejVehiculo.setTransmision(detalleCompra.getVehiculo().getTransmision());
+                
+                vehiculoManager.save(ejVehiculo);
 
                 Moneda ejMoneda = monedaManager.get(detalleCompra.getMoneda());
 
@@ -174,7 +189,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejDetCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                 ejDetCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 ejDetCompra.setEmpresa(new Empresa(idEmpresa));
-                ejDetCompra.setVehiculo(detalleCompra.getVehiculo());
+                ejDetCompra.setVehiculo(ejVehiculo);
                 ejDetCompra.setMoneda(detalleCompra.getMoneda());
                 ejDetCompra.setCambioDia(detalleCompra.getCambioDia());
                 ejDetCompra.setTotal(Double.parseDouble(total.toString()));
@@ -184,8 +199,12 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 detalleCompraManager.save(ejDetCompra);
 
                 Long totalPedido = Long.parseLong("0");
-
-                for (DetalleCompra rpm : ejCompra.getDetalleCompraCollection()) {
+                DetalleCompra ejDetalle = new DetalleCompra();
+                ejDetalle.setCompra(ejCompra);
+                
+                List<DetalleCompra> ejDetalleCompra = detalleCompraManager.list(ejDetalle);
+                
+                for (DetalleCompra rpm : ejDetalleCompra) {
                     totalPedido = totalPedido + Math.round(rpm.getTotal());
                 }
 
@@ -197,7 +216,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                 ejCompra = this.get(idCompra);
 
-                Moneda ejMoneda = monedaManager.get(detalleCompra.getMoneda());
+                Moneda ejMoneda = monedaManager.get(new Moneda(detalleCompra.getMoneda().getId()));
 
                 Double cambio = ejMoneda.getValor();
 
@@ -205,12 +224,21 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 
                 String codDetalle = randomString(5, "DET");
 
-                detalleCompra.getVehiculo().setCodigo(ejCompra.getId() + "-" + codDetalle);
-                detalleCompra.getVehiculo().setActivo("S");
-                detalleCompra.getVehiculo().setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                detalleCompra.getVehiculo().setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-
-                vehiculoManager.save(detalleCompra.getVehiculo());
+                Vehiculo ejVehiculo = new Vehiculo();
+                
+                ejVehiculo.setCodigo(ejCompra.getId() + "-" + codDetalle);
+                ejVehiculo.setActivo("S");
+                ejVehiculo.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                ejVehiculo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                ejVehiculo.setAnho(detalleCompra.getVehiculo().getAnho());
+                ejVehiculo.setCaracteristica(detalleCompra.getVehiculo().getCaracteristica());
+                ejVehiculo.setColor(detalleCompra.getVehiculo().getColor());
+                ejVehiculo.setMarca(new Marca(detalleCompra.getVehiculo().getMarca().getId()));
+                ejVehiculo.setModelo(new Modelo(detalleCompra.getVehiculo().getModelo().getId()));
+                ejVehiculo.setTipo(new Tipo(detalleCompra.getVehiculo().getTipo().getId()));
+                ejVehiculo.setTransmision(detalleCompra.getVehiculo().getTransmision());
+                
+                vehiculoManager.save(ejVehiculo);
 
                 DetalleCompra ejDetCompra = new DetalleCompra();
                 ejDetCompra.setCambioDia(cambio);
@@ -218,17 +246,21 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejDetCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                 ejDetCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 ejDetCompra.setEmpresa(new Empresa(idEmpresa));
-                ejDetCompra.setVehiculo(detalleCompra.getVehiculo());
+                ejDetCompra.setVehiculo(ejVehiculo);
                 ejDetCompra.setMoneda(detalleCompra.getMoneda());
-                ejDetCompra.setCambioDia(detalleCompra.getCambioDia());
                 ejDetCompra.setTotal(Double.parseDouble(total.toString()));
                 ejDetCompra.setPrecio(detalleCompra.getPrecio());
                 ejDetCompra.setCompra(ejCompra);
 
                 detalleCompraManager.save(ejDetCompra);
                 Long totalPedido = Long.parseLong("0");
-
-                for (DetalleCompra rpm : ejCompra.getDetalleCompraCollection()) {
+                
+                DetalleCompra ejDetalle = new DetalleCompra();
+                ejDetalle.setCompra(ejCompra);
+                
+                List<DetalleCompra> ejDetalleCompra = detalleCompraManager.list(ejDetalle);
+                
+                for (DetalleCompra rpm : ejDetalleCompra) {
                     totalPedido = totalPedido + Math.round(rpm.getTotal());
                 }
 

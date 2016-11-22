@@ -25,7 +25,7 @@ $(document).ready(function(data) {
                 required: true
             },
             cuotaFecha: {
-                required: function (element) {
+                required: function(element) {
                     if ($('#credito').is(':checked')) {
                         return true;
                     }
@@ -35,7 +35,7 @@ $(document).ready(function(data) {
                 }
             },
             cantidadCuotas: {
-                required: function (element) {
+                required: function(element) {
                     if ($('#credito').is(':checked')) {
                         return true;
                     }
@@ -160,29 +160,36 @@ $(document).ready(function(data) {
     });
 
     $("#botonAprobar").click(function() {
-        var jqXHR = $.get(CONTEXT_ROOT + "/orden/compras/" +id+"/aprobar", function(response, textStatus, jqXHR) {
-            if (response.error === true) {
-                $('#mensaje').append('<div class="alert alert-error">'
-                        + '<button class="close" data-dismiss="alert" type="button"'
-                        + '><i class="fa  fa-remove"></i></button>'
-                        + '<strong>Error! </strong>'
-                        + response.mensaje
-                        + '</div>');
+        if ($("#idProveedor").val() === null || $("#idProveedor").val() === "") {
+            $.messager.confirm('Error', 'Debe cargar los Datos del Proveedor!');
+        } else {
+            $.messager.confirm('Confirm', 'Esta Seguro que desea aprobar la compra?', function(r) {
+                var jqXHR = $.get(CONTEXT_ROOT + "/orden/compras/" + id + "/aprobar", function(response, textStatus, jqXHR) {
+                    if (response.error === true) {
+                        $('#mensaje').append('<div class="alert alert-error">'
+                                + '<button class="close" data-dismiss="alert" type="button"'
+                                + '><i class="fa  fa-remove"></i></button>'
+                                + '<strong>Error! </strong>'
+                                + response.mensaje
+                                + '</div>');
 
-            } else {
-                
-                $('#validation-form').find('.tableusuario-input').attr("disabled", true);
-                $("#aceptar").hide();
-                
-                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
+                    } else {
+
+                        $('#validation-form').find('.tableusuario-input').attr("disabled", true);
+                        $("#aceptar").hide();
+
+                        $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
                                 + '<button type="button" class="close" data-dismiss="alert"'
                                 + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
                                 + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
                                 + response.mensaje
                                 + '</div>');
 
-            }
-        });
+                    }
+                });
+            });
+        }
+
     });
     $("#credito").click(function() {
         if (this.checked) { //chequear status del select
@@ -212,6 +219,126 @@ $(document).ready(function(data) {
             $('#grid').trigger('reloadGrid');
             $("#formDescuento").hide();
         }
+    });
+
+    $("#entrega").keypress(function(e) {
+        setTimeout(function() {
+            if ($.isNumeric(e.key) || e.key === 'Backspace') {
+                var interes = $("#interes").val();
+                if (interes !== null && interes !== "") {
+                    var entrega = $("#entrega").val();
+                    var precio = $("#montoTotal").val();
+                    var saldo = precio - entrega;
+                    var interes = saldo * $("#interes").val() / 100;
+                    $("#montoInteres").val(interes);
+                    var neto = saldo + interes;
+                    $("#neto").val(neto);
+                    $("#saldo").val(saldo);
+
+                } else {
+                    var entrega = $("#entrega").val();
+                    var precio = $("#montoTotal").val();
+                    var saldo = precio - entrega;
+
+                    $("#neto").val(saldo);
+                    $("#saldo").val(saldo);
+                }
+            } else {
+                $.messager.alert('Error!!', 'Debe ingresar un valor numerico!!!');
+            }
+        }, 0);
+
+    });
+
+    $("#interes").keypress(function(e) {
+        setTimeout(function() {
+            if ($.isNumeric(e.key) || e.key === 'Backspace') {
+                var entrega = $("#entrega").val();
+                if (entrega !== null && entrega !== "") {
+                    var precio = $("#montoTotal").val();
+                    var saldo = precio - entrega;
+                    var interes = saldo * $("#interes").val() / 100;
+                    $("#montoInteres").val(interes);
+                    var neto = saldo + interes;
+                    $("#neto").val(neto);
+                    $("#saldo").val(saldo);
+
+                } else {
+                    var precio = $("#montoTotal").val();
+                    var saldo = precio;
+                    var interes = saldo * $("#interes").val() / 100;
+                    $("#montoInteres").val(interes);
+                    var neto = saldo + interes;
+                    $("#neto").val(neto);
+                    $("#saldo").val(saldo);
+                }
+            } else {
+                $.messager.alert('Error!!', 'Debe ingresar un valor numerico!!!');
+            }
+        }, 0);
+
+    });
+    $("#cuotas").keypress(function(e) {
+        setTimeout(function() {
+            if ($.isNumeric(e.key) || e.key === 'Backspace') {
+                if ($("#interes").val() !== null & $("#interes").val() !== "") {
+                    var monto = $("#neto").val();
+                    var montoCuota = monto / $("#cuotas").val();
+                    $("#montoCuota").val(montoCuota);
+                } else {
+                    $.messager.alert('Error!!', 'Debe ingresar un interes a cobrar!!!');
+                }
+            } else {
+                $.messager.alert('Error!!', 'Debe ingresar un valor numerico!!!');
+            }
+        }, 0);
+
+    });
+
+    $("#cuotas").click(function(e) {
+        setTimeout(function() {
+
+            if ($("#interes").val() !== null & $("#interes").val() !== "") {
+                var monto = $("#neto").val();
+                var montoCuota = monto / $("#cuotas").val();
+                $("#montoCuota").val(montoCuota);
+            } else {
+                $.messager.alert('Error!!', 'Debe ingresar un interes a cobrar!!!');
+            }
+
+        }, 0);
+
+    });
+
+    $("#descuento").keypress(function(e) {
+        setTimeout(function() {
+            if ($.isNumeric(e.key) || e.key === 'Backspace') {
+                var precio = $("#montoTotal").val();
+                var interes = precio * $("#descuento").val() / 100;
+                $("#montoDescuento").val(interes);
+                var neto = precio - interes;
+                $("#neto").val(neto);
+                $("#saldo").val(neto);
+            } else {
+                $.messager.alert('Error!!', 'Debe ingresar un valor numerico!!!');
+            }
+        }, 0);
+
+    });
+
+    $("#porcentajeDescuento").keypress(function(e) {
+        setTimeout(function() {
+            if ($.isNumeric(e.key) || e.key === 'Backspace') {
+                var precio = $("#precioCompra").val();
+                var interes = precio * $("#porcentajeDescuento").val() / 100;
+                $("#montoDescuentoCompra").val(interes);
+                var neto = precio - interes;
+                $("#netoCompra").val(neto);
+            } else {
+                $.messager.alert('Error!!', 'Debe ingresar un valor numerico!!!');
+            }
+        }, 0);
+
     });
 
 });

@@ -63,21 +63,21 @@ public class OrdenController extends BaseController {
         model.addAttribute("action", "CREAR");
         model.addAttribute("editar", false);
         model.addAttribute("id", id);
-        return new ModelAndView("compraForm");
+        return new ModelAndView("ordenForm");
     }
 
     @RequestMapping(value = "/realizar/{id}", method = RequestMethod.GET)
     public ModelAndView crear(@PathVariable("id") Long id,Model model) {
-        model.addAttribute("action", "CREAR");
+        model.addAttribute("action", "CREAR_ORDEN");
         model.addAttribute("editar", false);
         model.addAttribute("id", id);
-        return new ModelAndView("compraForm");
+        return new ModelAndView("ordenForm");
     }
 
     @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
     public ModelAndView formView(@PathVariable("id") Long id, Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("compraForm");
+        retorno.setViewName("ordenForm");
         model.addAttribute("action", "VISUALIZAR");
         model.addAttribute("id", id);
         return retorno;
@@ -93,7 +93,7 @@ public class OrdenController extends BaseController {
 
             Compra ejCompra = compraManager.get(id);
             
-            ejCompra.setEstadoCompra(Compra.COMPRA_PENDIENTE);
+            ejCompra.setEstadoCompra(Compra.COMPRA_APROBADA);
             compraManager.update(ejCompra);
             
             retorno.setError(false);

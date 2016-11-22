@@ -21,7 +21,7 @@
         <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Editar'')')}"/>
         <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Activar'')')}"/>
         <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Desactivar'')')}"/>
-        <div class="tabldetalle-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Detalle'')')}"/>
+        <div class="tabldetalle-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Editar'')')}"/>
         <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Visualizar'')')}"/>
         <!-- Content Header (Page header) -->
         <section class="content-header">

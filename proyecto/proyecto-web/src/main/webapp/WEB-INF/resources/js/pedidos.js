@@ -108,7 +108,7 @@ $(document).ready(function(data) {
             {name: 'vehiculo.anho', index: 'anho', width: 80, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.color', index: 'color', width: 90, sortable: false, resize: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.transmision', index: 'trasmision', width: 180, editable: true, edittype: "select", sortable: false, resize: false, editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
-            {name: 'moneda.nombre', index: 'moneda.nombre', width: 120, editable: true, edittype: "select",
+            {name: 'moneda.nombre', index: 'moneda.nombre', width: 120, editable: true, edittype: "select", editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     dataEvents: [
                         {type: 'change', fn: function(e) {

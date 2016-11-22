@@ -4,19 +4,27 @@ $(document).ready(function(data) {
     var isEditarInline = true;
     var isStatus = false;
 
-    if (action === "CREAR") {
-        var permisoAgegar = true;
+    /*if(action === "CREAR" || action === "AGREGAR"){
+     */
+    if (action === "VISUALIZAR") {
+        var permisoVisualizar = false;
+        var permisoEditar = false;
+        var permisoCrear = false;
+    } else {
         var permisoAprobar = parseBolean($(this).find('.tablaprobar-permiso').text());
         var permisoRechazar = parseBolean($(this).find('.tablrechazar-permiso').text());
         var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
-
-
-    } else {
-        var permisoAprobar = false;
-        var permisoRechazar = false;
-        var permisoEditar = false;
-        var permisoAgegar = false;
+        var permisoCrear = parseBolean($(this).find('.tabladd-permiso').text());
     }
+
+
+    /*
+     }else{
+     var permisoAprobar = false;
+     var permisoRechazar = false;
+     var permisoEditar = false;
+     var permisoAgegar = false;
+     }*/
 
     var grid_selector = "#grid";
     var pager_selector = "#grid-pager";
@@ -130,7 +138,7 @@ $(document).ready(function(data) {
                     }
                 }},
             {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter: 'number', resize: false, editable: true, disabled: true, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter: 'number', resize: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
+            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: false, formatter: 'number', resize: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
                         {type: 'click', fn: function(e) {
@@ -326,7 +334,7 @@ $(document).ready(function(data) {
                 else {
                     if ($.isNumeric(dato.id) === true) {
                         if (isEditarInline) {
-                            edit = editInlineButton(cl, true);
+                            edit = editInlineButton(cl, permisoEditar);
                             $(grid_selector).setRowData(ids[i], {act: ini + edit + button + activar + desact + fin});
                         } else {
 
@@ -363,10 +371,11 @@ $(document).ready(function(data) {
                 url: CONTEXT_ROOT + '/compra/detalles/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idDetalle=' + row_id,
                 datatype: 'json',
                 mtype: 'GET',
-                colNames: ['ID', 'MONEDA', 'TOTAL', 'DESCUENTO', 'MONTO DESCUENTO', 'NETO', ''],
+                colNames: ['ID', 'MONEDA', 'PRECIO', 'TOTAL', 'DESCUENTO', 'MONTO DESCUENTO', 'NETO', ''],
                 colModel: [
                     {name: "id", key: true, hidden: true, index: "id", width: 100, align: "right", sortable: false},
                     {name: "moneda.nombre", index: "moneda.nombre", width: 100, align: "right", sortable: false},
+                    {name: "precio", index: "precio", width: 100, align: "right", formatter: 'number', sortable: false, editable: false, disabled: true, editoptions: {disabled: true}},
                     {name: "total", index: "total", width: 100, align: "right", formatter: 'number', sortable: false, editable: true, disabled: true, editoptions: {disabled: true}},
                     {name: "porcentajeDescuento", index: "porcentajeDescuento", editable: true, width: 100, align: "right", sortable: false,
                         editoptions: {
@@ -504,7 +513,7 @@ $(document).ready(function(data) {
     $(grid_selector).jqGrid('inlineNav', pager_selector,
             {
                 edit: false,
-                add: permisoAgegar,
+                add: permisoCrear,
                 addtext: 'Agregar',
                 addicon: "ui-icon ace-icon fa fa-plus-circle purple",
                 save: true,

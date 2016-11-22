@@ -119,14 +119,15 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/compras/detalles/agregar/**").hasAnyAuthority("Compra.Visualizar")
                 //------Compras----//
                 .antMatchers("/compras**").hasAnyAuthority("Compra.Listar")
-                .antMatchers("/compras/pendientes**").hasAnyAuthority("Compra.Listar")
+                .antMatchers("/compras/registros**").hasAnyAuthority("Compra.Listar")
                 .antMatchers("/compras/realizadas**").hasAnyAuthority("Compra.Listar")        
-                .antMatchers("/compras/crear**").hasAnyAuthority("Compra.Realizar")
+                .antMatchers("/compras/directa/crear**").hasAnyAuthority("Compra.Crear")
                 .antMatchers("/compras/guardar**").hasAnyAuthority("Compra.Crear")
+                .antMatchers("/compras/editar**").hasAnyAuthority("Compra.Editar")
                 .antMatchers("/compras/realizar/*").hasAnyAuthority("Compra.Realizar")
                 .antMatchers("/compras/desactivar/*").hasAnyAuthority("Compra.Desactivar")
                 .antMatchers("/compras/detalles/descuento").hasAnyAuthority("Compra.Realizar")
-                .antMatchers("/compras/visualizar/**").hasAnyAuthority("Compra.Visualizar")
+                .antMatchers("/compras/registros/visualizar/**").hasAnyAuthority("Compra.Visualizar")
                 .antMatchers("/compras/detalles/agregar/**").hasAnyAuthority("Compra.Visualizar")
                 //------Tipos----//
                 .antMatchers("/tipos**").hasAnyAuthority("Tipo.Listar")

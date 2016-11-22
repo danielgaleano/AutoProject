@@ -3,12 +3,15 @@ $(document).ready(function(data) {
 
     var isEditarInline = false;
     var isStatus = true;
+    if (action === "VISUALIZAR") {
+        var permisoVisualizar = false;
+        var permisoEditar = false;
+    } else {
+        var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
+        var permisoVisualizar = parseBolean($(this).find('.tablvisualizar-permiso').text());
+        var permisoDetalle = parseBolean($(this).find('.tabladd-permiso').text());
+    }
 
-    var permisoActivar = parseBolean($(this).find('.tablactivate-permiso').text());
-    var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
-    var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
-    var permisoVisualizar = parseBolean($(this).find('.tablvisualizar-permiso').text());
-    var permisoDetalle = parseBolean($(this).find('.tabladd-permiso').text());
 
     var grid_selector = "#grid";
     var pager_selector = "#grid-pager";
@@ -28,16 +31,17 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'NRO. FACTURA', 'FORMA PAGO', 'TIPO DESCUENTO', 'NETO', 'PROVEEDOR','TELF. PROVEEDOR', 'STATUS', ''],
+        colNames: ['ID', 'NRO. FACTURA', 'FORMA PAGO', 'TIPO DESCUENTO', 'TIPO COMPRA', 'NETO', 'PROVEEDOR', 'TELF. PROVEEDOR', 'ESTADO', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'nroFactura', index: 'nroFactura', width: 90, editable: false},
             {name: 'formaPago', index: 'formaPago', width: 90, editable: false},
             {name: 'tipoDescuento', index: 'tipoDescuento', width: 150, editable: true},
-            {name: 'neto', index: 'neto', width: 90, formatter:'number', sortable: false},
+            {name: 'tipoCompra', index: 'tipoCompra', width: 150, editable: true},
+            {name: 'neto', index: 'neto', width: 90, formatter: 'number', sortable: false},
             {name: 'proveedor.nombre', index: 'proveedor.nombre', width: 90, sortable: false},
             {name: 'proveedor.telefono', index: 'proveedor.telefono', width: 90, sortable: false},
-            {name: 'activo', index: 'activo', width: 90, editable: false},
+            {name: 'estadoCompra', index: 'estadoCompra', width: 90, editable: false},
             {name: 'act', index: 'act', width: 160, fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {
@@ -87,7 +91,7 @@ $(document).ready(function(data) {
         postData: {
             atributos: "id,nombre",
             filters: null,
-            estado:action,
+            estado: action,
             todos: false
         },
         jsonReader: {
@@ -95,12 +99,12 @@ $(document).ready(function(data) {
             page: 'page',
             total: 'total',
             records: function(obj) {
-                if(obj.retorno !== null){
+                if (obj.retorno !== null) {
                     return obj.retorno.length;
-                }else{
-                    return 0 ;
+                } else {
+                    return 0;
                 }
-                
+
             }
         },
         //toppager: true,
@@ -130,9 +134,9 @@ $(document).ready(function(data) {
                 var ini = '<div style="float: none;" class="btn-group btn-group-sm">';
                 var fin = '</div>';
                 if (isStatus) {
-                    var estado = dato.activo;
-                    if (estado === 'S') {
-                        var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
+                    var estado = dato.estadoCompra;
+                    if (estado === 'COMPRA_PENDIENTE') {
+                        var labelActivo = '<span class="table-estado label label-success" value="S">PENDIENTE</span>';
                         if (isEditarInline) {
 
                             edit = editInlineButton(cl, permisoEditar);
@@ -141,18 +145,23 @@ $(document).ready(function(data) {
                         } else {
 
                             asignar = "";
-                            visuali = visualizarButton(cl, permisoVisualizar,null);
+                            visuali = visualizarButton(cl, permisoVisualizar, null);
                             //edit = editInlineButton(cl, permisoEditar);
-                            editForm = detalleButton(cl, permisoDetalle,'Realizar Compra','orden/compras/realizar');
-                            desact = desactivarButton(cl, permisoDesactivar);
+                            editForm = detalleButton(cl, permisoDetalle, 'Realizar Compra', 'compras/editar');
+                            //desact = desactivarButton(cl, permisoDesactivar);
                             $(grid_selector).setRowData(ids[i], {act: ini + visuali + editForm + desact + fin});
                         }
-                        $(grid_selector).setRowData(ids[i], {activo: labelActivo});
-                    } else {
-                        var labelInactivo = '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
-                        activar = activarButton(cl, permisoActivar);
-                        $(grid_selector).setRowData(ids[i], {act: ini + activar + fin});
-                        $(grid_selector).setRowData(ids[i], {activo: labelInactivo});
+                        $(grid_selector).setRowData(ids[i], {estadoCompra: labelActivo});
+                    } else if (estado === 'COMPRA_APROBADA') {
+                        var labelInactivo = '<span class="table-estado label label-danger"  value="N" >APROBADA</span>';
+                        visuali = visualizarButton(cl, permisoVisualizar, null);
+                        $(grid_selector).setRowData(ids[i], {act: ini + visuali + fin});
+                        $(grid_selector).setRowData(ids[i], {estadoCompra: labelInactivo});
+                    } else if (estado === 'COMPRA_REALIZADA') {
+                        var labelInactivo = '<span class="table-estado label label-danger"  value="N" >REALIZADA</span>';
+                        visuali = visualizarButton(cl, permisoVisualizar, null);
+                        $(grid_selector).setRowData(ids[i], {act: ini + visuali + fin});
+                        $(grid_selector).setRowData(ids[i], {estadoCompra: labelInactivo});
                     }
                 } else {
                     if (isEditarInline) {
@@ -162,7 +171,7 @@ $(document).ready(function(data) {
                     } else {
 
                         //asignar = asigButton(cl, true);
-                        visuali = visualizarButton(cl, permisoVisualizar,null);
+                        visuali = visualizarButton(cl, permisoVisualizar, null);
                         editForm = editFormButton(cl, permisoEditar);
                         $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
                     }
@@ -172,40 +181,40 @@ $(document).ready(function(data) {
             }
         },
         editurl: "/editar", //nothing is saved
-        caption: "Compras Pendientes",
+        caption: "Compras",
         subGrid: true,
-        subGridOptions:{
-            plusicon : 'fa fa-fw fa-sort-amount-asc',
-            minusicon : 'fa fa-fw fa-arrow-up'
+        subGridOptions: {
+            plusicon: 'fa fa-fw fa-sort-amount-asc',
+            minusicon: 'fa fa-fw fa-arrow-up'
         },
         subGridRowExpanded: function(subgrid_id, row_id) {
-        // we pass two parameters
-        // subgrid_id is a id of the div tag created within a table
-        // the row_id is the id of the row
-        // If we want to pass additional parameters to the url we can use
-        // the method getRowData(row_id) - which returns associative array in type name-value
-        // here we can easy construct the following
-           var subgrid_table_id;
-           subgrid_table_id = subgrid_id+"_t";
-           $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table>");
-           $("#"+subgrid_table_id).jqGrid({
-                url:CONTEXT_ROOT + '/compra/detalles/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idCompra='+row_id,
+            // we pass two parameters
+            // subgrid_id is a id of the div tag created within a table
+            // the row_id is the id of the row
+            // If we want to pass additional parameters to the url we can use
+            // the method getRowData(row_id) - which returns associative array in type name-value
+            // here we can easy construct the following
+            var subgrid_table_id;
+            subgrid_table_id = subgrid_id + "_t";
+            $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table>");
+            $("#" + subgrid_table_id).jqGrid({
+                url: CONTEXT_ROOT + '/compra/detalles/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idCompra=' + row_id,
                 datatype: 'json',
                 mtype: 'GET',
-                colNames: ['CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO','TRASMISION','MONEDA', 'PRECIO', 'NETO'],
+                colNames: ['CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'TRASMISION', 'MONEDA', 'PRECIO', 'NETO'],
                 colModel: [
-                    {name:"vehiculo.codigo",index:"vehiculo.codigo",width:80,key:true},
-                    {name:"vehiculo.tipo.nombre",index:"vehiculo.tipo.nombre",width:130},
-                    {name:"vehiculo.marca.nombre",index:"vehiculo.marca.nombre",width:80,align:"right"},
-                    {name:"vehiculo.modelo.nombre",index:"vehiculo.modelo.nombre",width:80,align:"right"},           
-                    {name:"vehiculo.anho",index:"vehiculo.anho",width:100,align:"right",sortable:false},
-                    {name:"vehiculo.transmision",index:"vehiculo.transmision",width:100,align:"right",sortable:false},
-                    {name:"moneda.nombre",index:"moneda.nombre",width:100,align:"right",sortable:false},
-                    {name:"precio",index:"precio",width:100,align:"right", formatter:'number',sortable:false},
-                    {name:"neto",index:"neto",width:100,align:"right", formatter:'number',sortable:false}
-                  ],
+                    {name: "vehiculo.codigo", index: "vehiculo.codigo", width: 80, key: true},
+                    {name: "vehiculo.tipo.nombre", index: "vehiculo.tipo.nombre", width: 130},
+                    {name: "vehiculo.marca.nombre", index: "vehiculo.marca.nombre", width: 80, align: "right"},
+                    {name: "vehiculo.modelo.nombre", index: "vehiculo.modelo.nombre", width: 80, align: "right"},
+                    {name: "vehiculo.anho", index: "vehiculo.anho", width: 100, align: "right", sortable: false},
+                    {name: "vehiculo.transmision", index: "vehiculo.transmision", width: 100, align: "right", sortable: false},
+                    {name: "moneda.nombre", index: "moneda.nombre", width: 100, align: "right", sortable: false},
+                    {name: "precio", index: "precio", width: 100, align: "right", formatter: 'number', sortable: false},
+                    {name: "neto", index: "neto", width: 100, align: "right", formatter: 'number', sortable: false}
+                ],
                 height: '100%',
-                rowNum:10,
+                rowNum: 10,
                 sortname: 'num',
                 sortorder: "asc",
                 jsonReader: {
@@ -213,16 +222,16 @@ $(document).ready(function(data) {
                     page: 'page',
                     total: 'total',
                     records: function(obj) {
-                        if(obj.retorno !== null){
+                        if (obj.retorno !== null) {
                             return obj.retorno.length;
-                        }else{
-                            return 0 ;
+                        } else {
+                            return 0;
                         }
-                        
+
                     }
-              }
-           });
-       }
+                }
+            });
+        }
 
     });
     $(window).triggerHandler('resize.jqGrid');

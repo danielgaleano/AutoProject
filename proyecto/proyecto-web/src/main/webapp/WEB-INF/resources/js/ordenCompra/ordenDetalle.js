@@ -4,19 +4,16 @@ $(document).ready(function(data) {
     var isEditarInline = true;
     var isStatus = false;
 
-    if (action === "CREAR") {
-        var permisoAgegar = true;
-        var permisoAprobar = parseBolean($(this).find('.tablaprobar-permiso').text());
-        var permisoRechazar = parseBolean($(this).find('.tablrechazar-permiso').text());
-        var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
 
-
-    } else {
-        var permisoAprobar = false;
-        var permisoRechazar = false;
+    if (action === "VISUALIZAR") {
         var permisoEditar = false;
-        var permisoAgegar = false;
+    } else {
+        var permisoVisualizar = parseBolean($(this).find('.tablrechazar-permiso').text());
+        var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
     }
+
+
+
 
     var grid_selector = "#grid";
     var pager_selector = "#grid-pager";
@@ -130,7 +127,7 @@ $(document).ready(function(data) {
                     }
                 }},
             {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter: 'number', resize: false, editable: true, disabled: true, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter: 'number', resize: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
+            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: false, formatter: 'number', resize: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
                         {type: 'click', fn: function(e) {
@@ -298,22 +295,11 @@ $(document).ready(function(data) {
                         // var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
                         if (isEditarInline) {
 
-                            activar = aprobarButton(cl, permisoAprobar)
-                            desact = rechazarButton(cl, permisoRechazar);
-                            visuali = visualizarButton(cl, true);
+                            visuali = visualizarButton(cl, permisoVisualizar);
                             edit = editInlineButton(cl, permisoEditar);
                             $(grid_selector).setRowData(ids[i], {act: ini + edit + activar + desact + fin});
 
                         }
-//                        else {
-//
-//                            asignar = "";
-//                            visuali = visualizarButton(cl, permisoVisualizar);
-//                            editForm = editFormButton(cl, permisoEditar);
-//                            desact = desactivarButton(cl, permisoDesactivar);
-//                            $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
-//                        }
-                        // $(grid_selector).setRowData(ids[i], {activo: labelActivo});
                     } else if (estado === 'APROBADO') {
 
                         //var labelInactivo = '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
@@ -326,8 +312,8 @@ $(document).ready(function(data) {
                 else {
                     if ($.isNumeric(dato.id) === true) {
                         if (isEditarInline) {
-                            edit = editInlineButton(cl, true);
-                            $(grid_selector).setRowData(ids[i], {act: ini + edit + button + activar + desact + fin});
+                            edit = editInlineButton(cl, permisoEditar);
+                            $(grid_selector).setRowData(ids[i], {act: ini + edit + fin});
                         } else {
 
                             //asignar = asigButton(cl, true);
@@ -504,7 +490,7 @@ $(document).ready(function(data) {
     $(grid_selector).jqGrid('inlineNav', pager_selector,
             {
                 edit: false,
-                add: permisoAgegar,
+                add: false,
                 addtext: 'Agregar',
                 addicon: "ui-icon ace-icon fa fa-plus-circle purple",
                 save: true,

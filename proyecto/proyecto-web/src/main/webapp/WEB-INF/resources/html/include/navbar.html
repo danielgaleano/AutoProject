@@ -112,8 +112,7 @@ and open the template in the editor.
                     <ul class="treeview-menu">
                       <li><a th:href="@{/orden/compras}">Orden Compra</a></li>
                       <li><a th:href="@{/compras/directa/crear}">Compra Directa</a></li>
-                      <li><a th:href="@{/compras/pendientes}">Compras Pendientes</a></li>
-                      <li><a th:href="@{/compras/realizadas}">Compras Realizadas</a></li>
+                      <li><a th:href="@{/compras/registros}">Lista Compras</a></li>
                     </ul>
                   </li>
                   <li><a sec:authorize="hasRole('Venta.Listar')" th:href="@{/ventas}"><i class="fa fa-shopping-bag"></i> <span>Ventas</span></a></li>

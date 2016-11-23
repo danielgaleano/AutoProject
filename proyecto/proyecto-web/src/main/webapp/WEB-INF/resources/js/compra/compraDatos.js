@@ -9,8 +9,8 @@ $(document).ready(function(data) {
     } else if (action === 'CREAR') {
         $("#general").attr("disabled", true);
         $("#detallado").attr("disabled", true);
-        $('#contado').attr("disabled", true);
-        $('#credito').attr("disabled", true);
+        $('#contado').attr("disabled", false);
+        $('#credito').attr("disabled", false);
         $('#aceptar').hide();
         $('#botonAprobar').hide();
     } else if (action === 'CREAR_ORDEN') {

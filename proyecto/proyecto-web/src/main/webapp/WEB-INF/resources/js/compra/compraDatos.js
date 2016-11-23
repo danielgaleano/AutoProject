@@ -39,6 +39,7 @@ function cargarDatos(id) {
 
             if (compra.estadoCompra === 'COMPRA_PENDIENTE') {
                 $('#botonAprobar').hide();
+                $('#aceptar').show();
             } else if (compra.estadoCompra === 'COMPRA_REALIZADA') {
                 $('#botonAprobar').hide();
                 $('#validation-formCompra').find('.tableusuario-input').attr("disabled", true);

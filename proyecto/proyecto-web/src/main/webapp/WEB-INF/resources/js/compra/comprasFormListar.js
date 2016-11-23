@@ -437,6 +437,7 @@ $(document).ready(function(data) {
                             },
                             onSuccess: function(data) {
                                 cargarDatos(data.id);
+                                $("#idCompra").val(data.id);
                                 if (data.responseJSON.error === true) {
                                     $('#mensaje').append('<div class="alert alert-error">'
                                             + '<button class="close" data-dismiss="alert" type="button"'
@@ -554,6 +555,7 @@ $(document).ready(function(data) {
                         successfunc: function(data) {
                             if (data.responseJSON.id !== null && data.responseJSON.id !== "") {
                                cargarDatos(data.responseJSON.id);
+                               $("#idCompra").val(data.responseJSON.id);
                             }
                             if (data.responseJSON.error === true) {
                                 $('#mensaje').append('<div class="alert alert-error">'

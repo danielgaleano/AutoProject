@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -82,6 +83,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 mensaje.setMensaje("El Nro. Factura no puede estar vacio.");
                 return mensaje;
             }
+
             if (detalleCompra.getVehiculo().getTipo() == null || detalleCompra.getVehiculo().getTipo().getId() != null
                     && detalleCompra.getVehiculo().getTipo().getId().toString().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
@@ -144,7 +146,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 mensaje.setMensaje("El campo precio no puede estar vacio.");
                 return mensaje;
             }
-            
+
             if (detalleCompra.getCompra().getProveedor() == null || detalleCompra.getCompra().getProveedor().getId() == null
                     || detalleCompra.getCompra().getProveedor().getId() != null
                     && detalleCompra.getCompra().getProveedor().getId().toString().compareToIgnoreCase("") == 0) {
@@ -156,6 +158,18 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
             if (idCompra == null || idCompra != null
                     && idCompra.toString().compareToIgnoreCase("") == 0) {
 
+                Compra ejFactura = new Compra();
+                ejFactura.setNroFactura(nroFactura);
+
+                Map<String, Object> nroFacturaMap = this.getAtributos(ejFactura, "id".split(","), true, true);
+
+                if (nroFacturaMap != null && !nroFacturaMap.isEmpty()) {
+                    mensaje.setError(true);
+                    mensaje.setMensaje("El numero de factura ya se encuentra registrada.");
+                    return mensaje;
+
+                }
+
                 ejCompra.setActivo("S");
                 ejCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                 ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
@@ -164,7 +178,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejCompra.setTipoCompra("DIRECTA");
                 ejCompra.setEstadoCompra(Compra.COMPRA_PENDIENTE);
                 ejCompra.setProveedor(new Proveedor(detalleCompra.getCompra().getProveedor().getId()));
-                
+
                 this.save(ejCompra);
 
                 String codDetalle = randomString(5, "DET");
@@ -222,8 +236,20 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 this.update(ejCompra);
 
             } else {
-
+                
                 ejCompra = this.get(idCompra);
+                
+                Compra ejFactura = new Compra();
+                ejFactura.setNroFactura(nroFactura);
+                Map<String, Object> nroFacturaMap = this.getAtributos(ejFactura, "id".split(","), true, true);
+
+                if (nroFacturaMap != null && !nroFacturaMap.isEmpty()
+                        && nroFacturaMap.get("id").toString().compareToIgnoreCase(ejCompra.getId().toString()) != 0) {
+                    mensaje.setError(true);
+                    mensaje.setMensaje("El numero de factura ya se encuentra registrada.");
+                    return mensaje;
+
+                }          
 
                 Moneda ejMoneda = monedaManager.get(new Moneda(detalleCompra.getMoneda().getId()));
 
@@ -247,7 +273,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejVehiculo.setTipo(new Tipo(detalleCompra.getVehiculo().getTipo().getId()));
                 ejVehiculo.setTransmision(detalleCompra.getVehiculo().getTransmision());
 
-                vehiculoManager.update(ejVehiculo);
+                vehiculoManager.save(ejVehiculo);
 
                 DetalleCompra ejDetCompra = new DetalleCompra();
                 ejDetCompra.setCambioDia(cambio);
@@ -310,7 +336,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 mensaje.setMensaje("El Nro. Factura no puede estar vacio.");
                 return mensaje;
             }
-            
+
             if (compra.getProveedor() == null || compra.getProveedor().getId() == null
                     || compra.getProveedor().getId() != null
                     && compra.getProveedor().getId().toString().compareToIgnoreCase("") == 0) {
@@ -330,7 +356,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
             ejCompraUp.setNroFactura(compra.getNroFactura());
             ejCompraUp.setFormaPago(compra.getFormaPago());
             ejCompraUp.setProveedor(new Proveedor(compra.getProveedor().getId()));
-            
+
             if (compra.getFormaPago() != null
                     && compra.getFormaPago().compareToIgnoreCase("CREDITO") == 0) {
 
@@ -501,7 +527,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 }
 
             } else {
-               
+
                 ejCompraUp.setEntrega("");
                 ejCompraUp.setMontoInteres("");
                 ejCompraUp.setSaldo("");
@@ -509,7 +535,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejCompraUp.setFechaCuota(null);
                 ejCompraUp.setCantidadCuotas(null);
                 ejCompraUp.setMoraInteres("");
-                
+
                 if (compra.getTipoDescuento() != null
                         && compra.getTipoDescuento().compareToIgnoreCase("GENERAL") == 0) {
 
@@ -523,11 +549,11 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     ejCompraUp.setDescuento(interes + "");
                     ejCompraUp.setMontoDescuento(montoInteres + "");
                     ejCompraUp.setNeto(saldo);
-      
-                }else{
+
+                } else {
                     ejCompraUp.setNeto(Double.parseDouble(ejCompraUp.getMonto()));
                 }
-                
+
                 this.update(ejCompraUp);
             }
 

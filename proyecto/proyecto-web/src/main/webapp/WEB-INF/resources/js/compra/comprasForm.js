@@ -8,7 +8,7 @@ $(document).ready(function(data) {
      regex: "^[0-9]{3}-[0-9]{3}-[0-9]{6}$"
      });*/
 
-    $('#validation-form').validate({
+    $('#validation-formCompra').validate({
         errorElement: 'span',
         errorClass: 'help-inline',
         focusInvalid: false,
@@ -86,74 +86,82 @@ $(document).ready(function(data) {
             $(id_attr).removeClass('glyphicon-remove').addClass('glyphicon-ok');
         },
         submitHandler: function(form) {
-            var $form = $('#validation-form');
+            var $form = $('#validation-formCompra');
             var serialize = $form.find('.tableusuario-input').serialize();
             var idCompra = $('#idCompra').val();
             var idPedido = $('#idPedido').val();
 
             if (idCompra === null || idCompra === '') {
-                var jqXHR = $.post(CONTEXT_ROOT + '/compras/' + idPedido + '/guardar', serialize, function(data, textStatus, jqXHR) {
-                    if (data.error) {
+                if ($("#idProveedor").val() === null || $("#idProveedor").val() === "") {
+                    $.messager.confirm('Error', 'Debe cargar los Datos del Proveedor!');
+                } else {
+                    var jqXHR = $.post(CONTEXT_ROOT + '/compras/guardar', serialize, function(data, textStatus, jqXHR) {
+                        if (data.error) {
+                            $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    + '><i class="fa  fa-remove"></i></button>'
+                                    + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                                    + data.mensaje
+                                    + '</div>');
+                        } else {
+                            cargarDatos(data.id);
+                            $('#idCompra').val(data.id);
+
+                            $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                    + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
+                                    + data.mensaje
+                                    + '</div>');
+
+
+                        }
+
+                    });
+
+                    jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                 + '<button class="close" data-dismiss="alert" type="button"'
                                 + '><i class="fa  fa-remove"></i></button>'
                                 + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
-                                + data.mensaje
+                                + 'Error! Favor comunicarse con el Administrador'
                                 + '</div>');
-                    } else {
-                        cargarDatos(data.id);
-                        $('#idCompra').val(data.id);
-
-                        $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
-                                + '<button type="button" class="close" data-dismiss="alert"'
-                                + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
-                                + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
-                                + data.mensaje
-                                + '</div>');
-
-
-                    }
-
-                });
-
-                jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
-                    $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
-                            + '<button class="close" data-dismiss="alert" type="button"'
-                            + '><i class="fa  fa-remove"></i></button>'
-                            + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
-                            + 'Error! Favor comunicarse con el Administrador'
-                            + '</div>');
-                });
+                    });
+                }
             } else {
-                var jqXHR = $.post(CONTEXT_ROOT + '/compras/' + 1 + '/editar', serialize, function(data, textStatus, jqXHR) {
-                    if (data.error) {
+                if ($("#idProveedor").val() === null || $("#idProveedor").val() === "") {
+                    $.messager.confirm('Error', 'Debe cargar los Datos del Proveedor!');
+                } else {
+                    var jqXHR = $.post(CONTEXT_ROOT + '/compras/' + 1 + '/editar', serialize, function(data, textStatus, jqXHR) {
+                        if (data.error) {
+                            $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    + '><i class="fa  fa-remove"></i></button>'
+                                    + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                                    + data.mensaje
+                                    + '</div>');
+                        } else {
+                            cargarDatos(idCompra);
+                            $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
+                                    + '<button type="button" class="close" data-dismiss="alert"'
+                                    + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
+                                    + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
+                                    + data.mensaje
+                                    + '</div>');
+
+                        }
+
+                    });
+
+                    jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                 + '<button class="close" data-dismiss="alert" type="button"'
                                 + '><i class="fa  fa-remove"></i></button>'
                                 + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
-                                + data.mensaje
+                                + 'Error! Favor comunicarse con el Administrador'
                                 + '</div>');
-                    } else {
-                        cargarDatos(idCompra);
-                        $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
-                                + '<button type="button" class="close" data-dismiss="alert"'
-                                + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
-                                + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
-                                + data.mensaje
-                                + '</div>');
-
-                    }
-
-                });
-
-                jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
-                    $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
-                            + '<button class="close" data-dismiss="alert" type="button"'
-                            + '><i class="fa  fa-remove"></i></button>'
-                            + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
-                            + 'Error! Favor comunicarse con el Administrador'
-                            + '</div>');
-                });
+                    });
+                }
             }
 
         }
@@ -175,7 +183,7 @@ $(document).ready(function(data) {
 
                     } else {
 
-                        $('#validation-form').find('.tableusuario-input').attr("disabled", true);
+                        $('#validation-formCompra').find('.tableusuario-input').attr("disabled", true);
                         $("#aceptar").hide();
 
                         $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
@@ -215,7 +223,7 @@ $(document).ready(function(data) {
     });
     $("#detallado").click(function() {
         if (this.checked) { //chequear status del select
-            $('#validation-form').valid();
+            $('#validation-formCompra').valid();
             $('#grid').trigger('reloadGrid');
             $("#formDescuento").hide();
         }

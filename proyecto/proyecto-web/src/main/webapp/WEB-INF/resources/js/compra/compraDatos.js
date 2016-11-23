@@ -3,19 +3,20 @@ $(document).ready(function(data) {
     if (action === 'VISUALIZAR') {
         $('#botonAprobar').hide();
         $('#aceptar').hide();
-        $('#buttonOption').hide();        
+        $('#buttonOption').hide();
+        $('#validation-formCompra').find('.tableusuario-input').attr("disabled", true);
         $('#validation-form').find('.tableusuario-input').attr("disabled", true);
-        $('#validation-formProveedor').find('.tableusuario-input').attr("disabled", true);
     } else if (action === 'CREAR') {
         $("#general").attr("disabled", true);
         $("#detallado").attr("disabled", true);
         $('#contado').attr("disabled", true);
         $('#credito').attr("disabled", true);
+        $('#aceptar').hide();
         $('#botonAprobar').hide();
     } else if (action === 'CREAR_ORDEN') {
-        $('#validation-formProveedor').find('.tableusuario-input').attr("disabled", true);
+        $('#validation-form').find('.tableusuario-input').attr("disabled", true);
         $('#botonAprobar').hide();
-        $('#buttonOption').hide(); 
+        $('#buttonOption').hide();
     }
 
     if (id !== null) {
@@ -40,7 +41,7 @@ function cargarDatos(id) {
                 $('#botonAprobar').hide();
             } else if (compra.estadoCompra === 'COMPRA_REALIZADA') {
                 $('#botonAprobar').hide();
-                $('#validation-form').find('.tableusuario-input').attr("disabled", true);
+                $('#validation-formCompra').find('.tableusuario-input').attr("disabled", true);
                 $("#aceptar").hide();
             }
             $('#nroFactura').val(compra.nroFactura);
@@ -90,6 +91,10 @@ function cargarDatos(id) {
             $('#neto').val(compra.neto);
 
             if (compra['proveedor.id'] !== null && compra['proveedor.id'] !== "") {
+                $('#idProveedorConta').val(compra['proveedor.id']);
+                $('#validation-form').find('.tableusuario-input').attr("disabled", true);
+                $('#buttonOption').hide();
+                
                 var jqXHR = $.get(CONTEXT_ROOT + "/proveedores/" + compra['proveedor.id'], function(response, textStatus, jqXHR) {
 
                     if (response.error) {
@@ -100,10 +105,10 @@ function cargarDatos(id) {
                                 + response.mensaje
                                 + '</div>');
                     } else {
-                        
+
                         var proveedor = response.data;
 
-                        $('#idProveedor').val(proveedor.id);
+                        $('#idProveedor').val(proveedor.id);                        
                         $('#ruc').val(proveedor.ruc);
                         $('#nombre').val(proveedor.nombre);
                         $('#email').val(proveedor.email);

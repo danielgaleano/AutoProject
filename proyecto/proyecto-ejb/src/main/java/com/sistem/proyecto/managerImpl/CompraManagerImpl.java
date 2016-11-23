@@ -144,6 +144,14 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 mensaje.setMensaje("El campo precio no puede estar vacio.");
                 return mensaje;
             }
+            
+            if (detalleCompra.getCompra().getProveedor() == null || detalleCompra.getCompra().getProveedor().getId() == null
+                    || detalleCompra.getCompra().getProveedor().getId() != null
+                    && detalleCompra.getCompra().getProveedor().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar un proovedor para realizar la compra.");
+                return mensaje;
+            }
 
             if (idCompra == null || idCompra != null
                     && idCompra.toString().compareToIgnoreCase("") == 0) {
@@ -155,13 +163,14 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejCompra.setNroFactura(nroFactura);
                 ejCompra.setTipoCompra("DIRECTA");
                 ejCompra.setEstadoCompra(Compra.COMPRA_PENDIENTE);
-
+                ejCompra.setProveedor(new Proveedor(detalleCompra.getCompra().getProveedor().getId()));
+                
                 this.save(ejCompra);
 
                 String codDetalle = randomString(5, "DET");
 
                 Vehiculo ejVehiculo = new Vehiculo();
-                
+
                 ejVehiculo.setCodigo(ejCompra.getId() + "-" + codDetalle);
                 ejVehiculo.setActivo("S");
                 ejVehiculo.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
@@ -173,7 +182,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejVehiculo.setModelo(new Modelo(detalleCompra.getVehiculo().getModelo().getId()));
                 ejVehiculo.setTipo(new Tipo(detalleCompra.getVehiculo().getTipo().getId()));
                 ejVehiculo.setTransmision(detalleCompra.getVehiculo().getTransmision());
-                
+
                 vehiculoManager.save(ejVehiculo);
 
                 Moneda ejMoneda = monedaManager.get(detalleCompra.getMoneda());
@@ -181,7 +190,6 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 Double cambio = ejMoneda.getValor();
 
                 Long total = Math.round(detalleCompra.getPrecio() * cambio);
-                
 
                 DetalleCompra ejDetCompra = new DetalleCompra();
                 ejDetCompra.setCambioDia(cambio);
@@ -202,9 +210,9 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 Long totalPedido = Long.parseLong("0");
                 DetalleCompra ejDetalle = new DetalleCompra();
                 ejDetalle.setCompra(ejCompra);
-                
+
                 List<DetalleCompra> ejDetalleCompra = detalleCompraManager.list(ejDetalle);
-                
+
                 for (DetalleCompra rpm : ejDetalleCompra) {
                     totalPedido = totalPedido + Math.round(rpm.getTotal());
                 }
@@ -222,11 +230,11 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 Double cambio = ejMoneda.getValor();
 
                 Long total = Math.round(detalleCompra.getPrecio() * cambio);
-                
+
                 String codDetalle = randomString(5, "DET");
 
                 Vehiculo ejVehiculo = new Vehiculo();
-                
+
                 ejVehiculo.setCodigo(ejCompra.getId() + "-" + codDetalle);
                 ejVehiculo.setActivo("S");
                 ejVehiculo.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
@@ -238,7 +246,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejVehiculo.setModelo(new Modelo(detalleCompra.getVehiculo().getModelo().getId()));
                 ejVehiculo.setTipo(new Tipo(detalleCompra.getVehiculo().getTipo().getId()));
                 ejVehiculo.setTransmision(detalleCompra.getVehiculo().getTransmision());
-                
+
                 vehiculoManager.update(ejVehiculo);
 
                 DetalleCompra ejDetCompra = new DetalleCompra();
@@ -255,12 +263,12 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                 detalleCompraManager.save(ejDetCompra);
                 Long totalPedido = Long.parseLong("0");
-                
+
                 DetalleCompra ejDetalle = new DetalleCompra();
                 ejDetalle.setCompra(ejCompra);
-                
+
                 List<DetalleCompra> ejDetalleCompra = detalleCompraManager.list(ejDetalle);
-                
+
                 for (DetalleCompra rpm : ejDetalleCompra) {
                     totalPedido = totalPedido + Math.round(rpm.getTotal());
                 }
@@ -302,6 +310,14 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 mensaje.setMensaje("El Nro. Factura no puede estar vacio.");
                 return mensaje;
             }
+            
+            if (compra.getProveedor() == null || compra.getProveedor().getId() == null
+                    || compra.getProveedor().getId() != null
+                    && compra.getProveedor().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar un proovedor para realizar la compra.");
+                return mensaje;
+            }
 
             if (formaPgo == null || formaPgo != null
                     && formaPgo.compareToIgnoreCase("") == 0) {
@@ -313,7 +329,8 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
             Compra ejCompraUp = this.get(idCompra);
             ejCompraUp.setNroFactura(compra.getNroFactura());
             ejCompraUp.setFormaPago(compra.getFormaPago());
-
+            ejCompraUp.setProveedor(new Proveedor(compra.getProveedor().getId()));
+            
             if (compra.getFormaPago() != null
                     && compra.getFormaPago().compareToIgnoreCase("CREDITO") == 0) {
 
@@ -328,9 +345,9 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                     Double entrega = Double.parseDouble(compra.getEntrega());
 
-                    Double montoInteres = ((ejCompraUp.getPedido().getTotal() - entrega) * interes) / 100;
+                    Double montoInteres = ((Double.parseDouble(ejCompraUp.getMonto()) - entrega) * interes) / 100;
 
-                    Double saldo = (ejCompraUp.getPedido().getTotal() - entrega) + montoInteres;
+                    Double saldo = (Double.parseDouble(ejCompraUp.getMonto()) - entrega) + montoInteres;
 
                     Double montoCuota = saldo / compra.getCantidadCuotas();
 
@@ -406,9 +423,9 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                 } else {
 
-                    Double montoInteres = ((ejCompraUp.getPedido().getTotal()) * interes) / 100;
+                    Double montoInteres = ((Double.parseDouble(ejCompraUp.getMonto())) * interes) / 100;
 
-                    Double saldo = (ejCompraUp.getPedido().getTotal()) + montoInteres;
+                    Double saldo = (Double.parseDouble(ejCompraUp.getMonto())) + montoInteres;
 
                     Double montoCuota = saldo / compra.getCantidadCuotas();
 
@@ -417,7 +434,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     ejCompraUp.setNeto(saldo);
                     ejCompraUp.setMontoCuotas(montoCuota + "");
                     ejCompraUp.setMoraInteres(compra.getMoraInteres());
-                    
+
                     Date fecha = new Date();
 
                     if (compra.getCuotaFecha() != null) {
@@ -484,6 +501,15 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 }
 
             } else {
+               
+                ejCompraUp.setEntrega("");
+                ejCompraUp.setMontoInteres("");
+                ejCompraUp.setSaldo("");
+                ejCompraUp.setMontoCuotas("");
+                ejCompraUp.setFechaCuota(null);
+                ejCompraUp.setCantidadCuotas(null);
+                ejCompraUp.setMoraInteres("");
+                
                 if (compra.getTipoDescuento() != null
                         && compra.getTipoDescuento().compareToIgnoreCase("GENERAL") == 0) {
 
@@ -493,14 +519,16 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                     Double saldo = ejCompraUp.getPedido().getTotal() - montoInteres;
 
-                    ejCompraUp.setSaldo(saldo + "");
+                    ejCompraUp.setSaldo("");
                     ejCompraUp.setDescuento(interes + "");
                     ejCompraUp.setMontoDescuento(montoInteres + "");
                     ejCompraUp.setNeto(saldo);
-
-                    this.update(ejCompraUp);
+      
+                }else{
+                    ejCompraUp.setNeto(Double.parseDouble(ejCompraUp.getMonto()));
                 }
-
+                
+                this.update(ejCompraUp);
             }
 
             mensaje.setError(false);

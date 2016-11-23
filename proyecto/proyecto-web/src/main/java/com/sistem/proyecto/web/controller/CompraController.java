@@ -449,6 +449,50 @@ public class CompraController extends BaseController {
 
         return mensaje;
     }
+    @RequestMapping(value = "/guardar", method = RequestMethod.POST)
+    public @ResponseBody
+    MensajeDTO compraGuardar(@ModelAttribute("Compra") Compra compraRecibido) {
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        MensajeDTO mensaje = new MensajeDTO();
+        Compra ejCompra = new Compra();
+        DetalleCompra ejDetalleCompra = new DetalleCompra();
+        
+        try {
+            inicializarCompraManager();
+            inicializarPedidoManager();
+            inicializarImagenManager();
+            inicializarContactoManager();
+
+            if (compraRecibido.getNroFactura() == null || compraRecibido.getNroFactura() != null
+                    && compraRecibido.getNroFactura().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El Nro. Factura no puede estar vacio.");
+                return mensaje;
+            }
+            if (compraRecibido.getProveedor() == null || compraRecibido.getProveedor().getId() == null
+                    || compraRecibido.getProveedor().getId() != null
+                    && compraRecibido.getProveedor().getId().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar un proveedor para realizar la compra.");
+                return mensaje;
+            }
+            
+            ejCompra.setNroFactura(compraRecibido.getNroFactura());
+            ejCompra.setProveedor(new Proveedor(compraRecibido.getProveedor().getId()));
+            compraManager.save(ejCompra);
+            
+            mensaje.setId(ejCompra.getId());
+            mensaje.setError(false);
+            mensaje.setMensaje("La compra se registro exitosamente.");
+
+        } catch (Exception ex) {
+            mensaje.setError(true);
+            mensaje.setMensaje("Error a guardar el cliente");
+            logger.debug("Error al guardar cliente ", ex);
+        }
+
+        return mensaje;
+    }
 
     @RequestMapping(value = "/directa/guardar", method = RequestMethod.POST)
     public @ResponseBody
@@ -568,9 +612,6 @@ public class CompraController extends BaseController {
 
             mensaje = compraManager.editarCompra(compraRecibido.getId(), compraRecibido, compraRecibido.getFormaPago(),
                     compraRecibido.getTipoDescuento(), userDetail.getIdEmpresa(), userDetail.getId());
-
-            mensaje.setError(false);
-            mensaje.setMensaje("La compra se registro exitosamente.");
 
         } catch (Exception ex) {
             mensaje.setError(true);

@@ -102,7 +102,7 @@ $(document).ready(function (data) {
                                 + '</div>');
                     } else {
                         $('#idProveedor').val(data.id);
-                        
+                        $('#idProveedorConta').val(data.id);
                         $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
                                 + '<button type="button" class="close" data-dismiss="alert"'
                                 + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'

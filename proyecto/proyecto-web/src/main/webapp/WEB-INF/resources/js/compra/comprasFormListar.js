@@ -256,6 +256,7 @@ $(document).ready(function(data) {
             } else {
                 postData['compra.nroFactura'] = $('#nroFactura').val();
             }
+            postData['compra.proveedor.id'] = $('#idProveedor').val();
             postData['vehiculo.tipo.id'] = postData['vehiculo.tipo.nombre'];
             postData['vehiculo.marca.id'] = postData['vehiculo.marca.nombre'];
             postData['moneda.id'] = postData['moneda.nombre'];
@@ -435,6 +436,7 @@ $(document).ready(function(data) {
 
                             },
                             onSuccess: function(data) {
+                                cargarDatos(data.id);
                                 if (data.responseJSON.error === true) {
                                     $('#mensaje').append('<div class="alert alert-error">'
                                             + '<button class="close" data-dismiss="alert" type="button"'
@@ -451,7 +453,7 @@ $(document).ready(function(data) {
                                             + data.responseJSON.mensaje
                                             + '</div>');
                                     $(grid_selector).trigger('reloadGrid');
-                                    cargarDatos(id);
+                                    
 
                                 }
                             }
@@ -551,8 +553,7 @@ $(document).ready(function(data) {
                         keys: true,
                         successfunc: function(data) {
                             if (data.responseJSON.id !== null && data.responseJSON.id !== "") {
-                                $('#idPedido').val(data.responseJSON.id);
-                                pedidoForm(data.responseJSON.id, "recargar");
+                               cargarDatos(data.responseJSON.id);
                             }
                             if (data.responseJSON.error === true) {
                                 $('#mensaje').append('<div class="alert alert-error">'
@@ -571,7 +572,7 @@ $(document).ready(function(data) {
                                         + '</div>');
 
                                 $(grid_selector).setGridParam({postData: {todos: false,
-                                        idPedido: data.responseJSON.id}});
+                                        idCompra: data.responseJSON.id}});
 //                                setTimeout(function() {
 //                                    postData = $(grid_selector).jqGrid("getGridParam", "postData");
 //                                

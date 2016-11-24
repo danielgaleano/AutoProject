@@ -579,7 +579,8 @@ public class CompraController extends BaseController {
             // ejCompra.setNroFactura(compraRecibido.getNroFactura());
 
             compraManager.update(ejCompra);
-
+            
+            mensaje.setId(ejCompra.getId());
             mensaje.setError(false);
             mensaje.setMensaje("El descuento se agrego exitosamente.");
 

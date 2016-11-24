@@ -326,7 +326,7 @@ $(document).ready(function(data) {
                 $("#montoDescuento").val(interes);
                 var neto = precio - interes;
                 $("#neto").val(neto);
-                $("#saldo").val(neto);
+                
             } else {
                 $.messager.alert('Error!!', 'Debe ingresar un valor numerico!!!');
             }

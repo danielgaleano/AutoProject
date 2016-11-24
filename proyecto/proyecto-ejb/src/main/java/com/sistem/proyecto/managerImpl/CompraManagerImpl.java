@@ -282,8 +282,10 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejDetCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 ejDetCompra.setEmpresa(new Empresa(idEmpresa));
                 ejDetCompra.setVehiculo(ejVehiculo);
-                ejDetCompra.setMoneda(detalleCompra.getMoneda());
+                ejDetCompra.setMoneda(ejMoneda);
+                 ejDetCompra.setCambioDia(ejMoneda.getValor());
                 ejDetCompra.setTotal(Double.parseDouble(total.toString()));
+                ejDetCompra.setNeto(Double.parseDouble(total.toString()));
                 ejDetCompra.setPrecio(detalleCompra.getPrecio());
                 ejDetCompra.setCompra(ejCompra);
 
@@ -300,6 +302,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 }
 
                 ejCompra.setMonto(totalPedido.toString());
+                ejCompra.setNeto(Double.parseDouble(totalPedido.toString()));
 
                 this.update(ejCompra);
             }
@@ -541,9 +544,9 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                     Double interes = Double.parseDouble(compra.getDescuento());
 
-                    Double montoInteres = (ejCompraUp.getPedido().getTotal() * interes) / 100;
+                    Double montoInteres = (Double.parseDouble(ejCompraUp.getMonto()) * interes) / 100;
 
-                    Double saldo = ejCompraUp.getPedido().getTotal() - montoInteres;
+                    Double saldo = Double.parseDouble(ejCompraUp.getMonto()) - montoInteres;
 
                     ejCompraUp.setSaldo("");
                     ejCompraUp.setDescuento(interes + "");

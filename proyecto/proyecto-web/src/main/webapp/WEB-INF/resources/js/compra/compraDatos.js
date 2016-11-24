@@ -62,10 +62,12 @@ function cargarDatos(id) {
             if (compra.formaPago === 'CONTADO') {
                 $('#contado').prop("checked", true);
                 $("#formCredito").hide();
+                $("#tipo-descuento").show();
             } else if (compra.formaPago === 'CREDITO') {
                 $('#credito').prop("checked", true);
                 $("#general").attr("disabled", true);
                 $("#detallado").attr("disabled", true);
+                $("#tipo-descuento").hide();
                 $("#formCredito").show();
             }
 

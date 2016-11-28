@@ -23,6 +23,11 @@ public class Vehiculo extends Base {
     /**
      *
      */
+    public static final String PENDIENTE = "PENDIENTE";
+    public static final String MANTENIMIENTO = "MANTENIMIENTO";
+    public static final String STOCK = "STOCK";
+    public static final String VENDIDA = "VENDIDA";
+    
     private static final long serialVersionUID = 1L;
 
     @Column(name = "codigo")
@@ -79,7 +84,13 @@ public class Vehiculo extends Base {
     private String kilometraje;
     
     @Column(name = "precio_venta")
-    private String precioVenta;
+    private Double precioVenta;
+    
+    @Column(name = "precio_costo")
+    private Double precioCosto;
+    
+    @Column(name = "precio_mantenimiento")
+    private Double precioMantenimiento;
     
     @Column(name = "fecha_matenimiento")
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -90,6 +101,9 @@ public class Vehiculo extends Base {
     
     @Column(name = "titulo")
     private Boolean titulo;
+    
+    @Column(name = "estado")
+    private String estado;
 
     public Vehiculo() {
     }
@@ -228,11 +242,11 @@ public class Vehiculo extends Base {
         this.kilometraje = kilometraje;
     }
     
-    public String getPrecioVenta() {
+    public Double getPrecioVenta() {
         return precioVenta;
     }
 
-    public void setPrecioVenta(String precioVenta) {
+    public void setPrecioVenta(Double precioVenta) {
         this.precioVenta = precioVenta;
     }
     
@@ -259,5 +273,31 @@ public class Vehiculo extends Base {
     public void setTitulo(Boolean titulo) {
         this.titulo = titulo;
     }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Double getPrecioCosto() {
+        return precioCosto;
+    }
+
+    public void setPrecioCosto(Double precioCosto) {
+        this.precioCosto = precioCosto;
+    }
+
+    public Double getPrecioMantenimiento() {
+        return precioMantenimiento;
+    }
+
+    public void setPrecioMantenimiento(Double precioMantenimiento) {
+        this.precioMantenimiento = precioMantenimiento;
+    }
+    
+    
 
 }

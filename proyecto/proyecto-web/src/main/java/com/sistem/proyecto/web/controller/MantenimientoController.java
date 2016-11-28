@@ -7,9 +7,8 @@
 package com.sistem.proyecto.web.controller;
 
 import com.google.gson.Gson;
-import com.sistem.proyecto.entity.Modelo;
+import com.sistem.proyecto.entity.Vehiculo;
 import com.sistem.proyecto.entity.Empresa;
-import com.sistem.proyecto.entity.Marca;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
@@ -31,60 +30,67 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import com.sistem.proyecto.manager.utils.DTORetorno;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.sistem.proyecto.manager.utils.PagoDTO;
 
 /**
  *
  * @author daniel
  */
 @Controller
-@RequestMapping(value="/modelos")
-public class ModeloController extends BaseController{
+@RequestMapping(value="/mantenimiento/vehiculos")
+public class MantenimientoController extends BaseController{
     
-    String atributos = "id,nombre,activo,marca.id,marca.nombre,empresa.id,empresa.nombre";
+    String atributos = "id,codigo,activo,marca.id,marca.nombre,modelo.id,modelo.nombre,empresa.id,empresa.nombre,"
+            + "tipo.id,tipo.nombre,transmision,color,anho,caracteristica,proveedor.id,proveedor.nombre";
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView listaModelos(Model model) {
+    public ModelAndView listaVehiculos(Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("modelosListar");       
+        retorno.setViewName("vehiculosListar");       
         return retorno;
 
-    }
-    
-    @RequestMapping(value = "/agregar/{id}", method = RequestMethod.GET)
-    public ModelAndView agregarView(@PathVariable("id") Long id, Model model) {
-        ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("modelosListar");
-        model.addAttribute("action", "AGREGAR");
-        model.addAttribute("id", id);
-        
-        try {
-            inicializarMarcaManager();
-            Marca ejMarca = marcaManager.get(id);
-             model.addAttribute("nombre", ejMarca.getNombre());
-        
-        } catch (Exception ex) {
-            logger.error("Error ", ex);
-        }
-        
-        return retorno;
     }
     
     @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
     public ModelAndView formView(@PathVariable("id") Long id, Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("modelosListar");
+        retorno.setViewName("vehiculoForm");
         model.addAttribute("action", "VISUALIZAR");
         model.addAttribute("id", id);
+        return retorno;
+    }
+    
+    @RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
+    public ModelAndView formEdit(@PathVariable("id") Long id, Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("vehiculoForm");
+        model.addAttribute("action", "EDITAR");
+        model.addAttribute("id", id);
+        return retorno;
+    }
+    
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno Form(@PathVariable("id") Long id) {
+        DTORetorno<Map<String, Object>> retorno = new DTORetorno<>();
+        List<Map<String, Object>> listMapGrupos = null;
         try {
-            inicializarMarcaManager();
-            Marca ejMarca = marcaManager.get(id);
-            model.addAttribute("nombre", ejMarca.getNombre());
-        
+            inicializarVehiculoManager();
+            Vehiculo ejVehiculo = new Vehiculo();
+            ejVehiculo.setId(id);
+
+            Map<String, Object> ejVehiculoMap = vehiculoManager.getAtributos(ejVehiculo, atributos.split(","));
+
+            retorno.setData(ejVehiculoMap);
+            retorno.setError(false);
+            retorno.setMensaje("Se obtuvo exitosamente el vehiculo");
+
         } catch (Exception ex) {
-            logger.error("Error ", ex);
+            logger.error("Error al obtener la compra", ex);
+            retorno.setError(true);
+            retorno.setMensaje("Error al obtener el cliente");
         }
+
         return retorno;
     }
     
@@ -95,24 +101,21 @@ public class ModeloController extends BaseController{
             @ModelAttribute("page") Integer pagina,
             @ModelAttribute("rows") Integer cantidad,
             @ModelAttribute("sidx") String ordenarPor,
-            @ModelAttribute("idMarca") String idMarca,
             @ModelAttribute("sord") String sentidoOrdenamiento,
             @ModelAttribute("todos") boolean todos) {
 
         DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        ordenarPor = "nombre";
-        Modelo ejModelo = new Modelo();
-        ejModelo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+        ordenarPor = "marca.nombre";
         
-        if(idMarca != null && idMarca.compareToIgnoreCase("") != 0){
-            ejModelo.setMarca(new Marca(Long.parseLong(idMarca)));
-        }
-  
+        Vehiculo ejVehiculo = new Vehiculo();
+        ejVehiculo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+        ejVehiculo.setEstado(Vehiculo.MANTENIMIENTO);
+        
         List<Map<String, Object>> listMapGrupos = null;
         try {
 
-            inicializarModeloManager();
+            inicializarVehiculoManager();
 
             Gson gson = new Gson();
             String camposFiltros = null;
@@ -140,7 +143,7 @@ public class ModeloController extends BaseController{
             Integer total = 0;
 
             if (!todos) {
-                total = modeloManager.list(ejModelo, true).size();
+                total = vehiculoManager.list(ejVehiculo, true).size();
             }
 
             Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
@@ -150,7 +153,7 @@ public class ModeloController extends BaseController{
                 pagina = total / cantidad;
             }
 
-            listMapGrupos = modeloManager.listAtributos(ejModelo, atributos.split(","), todos, inicio, cantidad,
+            listMapGrupos = vehiculoManager.listAtributos(ejVehiculo, atributos.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
 
@@ -180,64 +183,44 @@ public class ModeloController extends BaseController{
             model.addAttribute("editar", false);
 
         } catch (Exception ex) {
-            logger.debug("Error al crear modelo", ex);
+            logger.debug("Error al crear vehiculo", ex);
         }
         return new ModelAndView("modelo");
 
     }
     
-    @RequestMapping(value = "/guardar", method = RequestMethod.POST)
+    @RequestMapping(value = "/realizar", method = RequestMethod.POST)
     public @ResponseBody
-    MensajeDTO guardar(@ModelAttribute("Modelo") Modelo modeloRecibido) {
+    MensajeDTO guardar(@ModelAttribute("PagoDTO") PagoDTO pagoRecibido) {
 
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO mensaje = new MensajeDTO();
-        Modelo ejModelo = new Modelo();
         
         try {
-            inicializarModeloManager();
+            inicializarVehiculoManager();
 
-            if (modeloRecibido.getNombre() == null || modeloRecibido.getNombre() != null
-                    && modeloRecibido.getNombre().compareToIgnoreCase("") == 0) {
+            if (pagoRecibido.getIdCompra() == null || pagoRecibido.getIdCompra() != null
+                    && pagoRecibido.getIdCompra().toString().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
-                mensaje.setMensaje("El nombre del modelo no puede estar vacio.");
+                mensaje.setMensaje("Error al realizar el pago.");
                 return mensaje;
             }
 
-            if (modeloRecibido.getMarca() == null || modeloRecibido.getMarca() != null
-                    && modeloRecibido.getMarca().getId() == 0) {
+            if (pagoRecibido.getImportePagar() == null || pagoRecibido.getImportePagar() != null
+                    && pagoRecibido.getImportePagar()  == 0) {
                 mensaje.setError(true);
-                mensaje.setMensaje("La marca del modelo no puede estar vacia.");
+                mensaje.setMensaje("Debe ingresar el importe a Pagar.");
                 return mensaje;
             }
-
-            ejModelo.setNombre(modeloRecibido.getNombre());
-            ejModelo.setMarca(new Marca(modeloRecibido.getMarca().getId()));
             
-            Map<String, Object> modeloMap = modeloManager.getLike(ejModelo, "id".split(","));
+           
 
-            if (modeloMap != null && !modeloMap.isEmpty()) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El modelo de vehiculo ya se encuentra registrado.");
-                return mensaje;
 
-            }
-
-            ejModelo = new Modelo();
-            ejModelo.setActivo("S");
-            ejModelo.setNombre(modeloRecibido.getNombre());
-            ejModelo.setMarca(modeloRecibido.getMarca());
-            ejModelo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-
-            modeloManager.save(ejModelo);
-
-            mensaje.setError(false);
-            mensaje.setMensaje("El modelo " + modeloRecibido.getNombre() + " se guardo exitosamente.");
 
         } catch (Exception ex) {
             mensaje.setError(true);
-            mensaje.setMensaje("Error a guardar el modelo");
-            logger.debug("Error al guardar modelo ", ex);
+            mensaje.setMensaje("Error a guardar el vehiculo");
+            logger.debug("Error al guardar vehiculo ", ex);
         }
 
         return mensaje;
@@ -245,45 +228,52 @@ public class ModeloController extends BaseController{
    
     @RequestMapping(value = "/editar", method = RequestMethod.POST)
     public @ResponseBody
-    MensajeDTO editar(@ModelAttribute("Modelo") Modelo modeloRecibido) {
+    MensajeDTO editar(@ModelAttribute("Vehiculo") Vehiculo vehiculoRecibido) {
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO retorno = new MensajeDTO();
-        Modelo ejModelo = new Modelo();
+        Vehiculo ejVehiculo = new Vehiculo();
         try {
-            inicializarModeloManager();
+            inicializarVehiculoManager();
 
-            if (modeloRecibido.getNombre() == null || modeloRecibido.getNombre() != null
-                    && modeloRecibido.getNombre().compareToIgnoreCase("") == 0) {
+            if (vehiculoRecibido.getCodigo() == null || vehiculoRecibido.getCodigo() != null
+                    && vehiculoRecibido.getCodigo().compareToIgnoreCase("") == 0) {
                 retorno.setError(true);
-                retorno.setMensaje("El campo nombre no puede estar vacio.");
+                retorno.setMensaje("El codigo del vehiculo no puede estar vacio.");
+                return retorno;
+            }
+
+            if (vehiculoRecibido.getMarca() == null || vehiculoRecibido.getMarca() != null
+                    && vehiculoRecibido.getMarca().getId() == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("La marca del vehiculo no puede estar vacio.");
                 return retorno;
             }
             
-            if (modeloRecibido.getMarca() == null || modeloRecibido.getMarca() != null
-                    && modeloRecibido.getMarca().getId() == 0) {
+            if (vehiculoRecibido.getModelo() == null || vehiculoRecibido.getModelo() != null
+                    && vehiculoRecibido.getModelo().getId() == 0) {
                 retorno.setError(true);
-                retorno.setMensaje("La marca del modelo no puede estar vacia.");
+                retorno.setMensaje("El modelo del vehiculo no puede estar vacio.");
                 return retorno;
             }
             
-//            Map<String, Object> modeloMap = modeloManager.getLike(ejModelo, "id".split(","));
+//            Map<String, Object> modeloMap = vehiculoManager.getLike(ejVehiculo, "id".split(","));
 //
 //            if (modeloMap != null && !modeloMap.isEmpty() && modeloMap.get("id").toString()
-//                    .compareToIgnoreCase(modeloRecibido.getId().toString()) != 0) {
+//                    .compareToIgnoreCase(vehiculoRecibido.getId().toString()) != 0) {
 //                retorno.setError(true);
 //                retorno.setMensaje("El modelo de vehiculo ya se encuentra registrado.");
 //                return retorno;
 //
 //            }
 
-            if (modeloRecibido.getId() != null) {
+            if (vehiculoRecibido.getId() != null) {
 
-                Modelo modelo = modeloManager.get(modeloRecibido.getId());
+                Vehiculo modelo = vehiculoManager.get(vehiculoRecibido.getId());
                 modelo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 modelo.setIdUsuarioModificacion(userDetail.getId());
-                modelo.setNombre(modeloRecibido.getNombre());
+                modelo.setCodigo(vehiculoRecibido.getCodigo());
 
-                modeloManager.update(modelo);
+                vehiculoManager.update(modelo);
 
                 retorno.setError(false);
                 retorno.setMensaje("El modelo se modifico exitosamente.");
@@ -309,12 +299,12 @@ public class ModeloController extends BaseController{
 
         try {
 
-            inicializarModeloManager();
+            inicializarVehiculoManager();
 
-            Modelo modelo = modeloManager.get(id);
+            Vehiculo modelo = vehiculoManager.get(id);
 
             if (modelo != null) {
-                nombre = modelo.getNombre().toString();
+                nombre = modelo.getCodigo().toString();
             }
 
             if (modelo != null && modelo.getActivo().toString()
@@ -329,7 +319,7 @@ public class ModeloController extends BaseController{
             modelo.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
             modelo.setIdUsuarioModificacion(userDetail.getId());
 
-            modeloManager.update(modelo);
+            vehiculoManager.update(modelo);
 
             retorno.setError(false);
             retorno.setMensaje("El modelo " + nombre + " se activo exitosamente.");
@@ -355,12 +345,12 @@ public class ModeloController extends BaseController{
 
         try {
 
-            inicializarModeloManager();
+            inicializarVehiculoManager();
 
-            Modelo modelo = modeloManager.get(id);
+            Vehiculo modelo = vehiculoManager.get(id);
 
             if (modelo != null) {
-                nombre = modelo.getNombre().toString();
+                nombre = modelo.getCodigo().toString();
             }
 
             if (modelo != null && modelo.getActivo().toString()
@@ -375,7 +365,7 @@ public class ModeloController extends BaseController{
             modelo.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
             modelo.setIdUsuarioEliminacion(userDetail.getId());
 
-            modeloManager.update(modelo);
+            vehiculoManager.update(modelo);
 
             retorno.setError(false);
             retorno.setMensaje("El modelo " + nombre + " se desactivo exitosamente.");

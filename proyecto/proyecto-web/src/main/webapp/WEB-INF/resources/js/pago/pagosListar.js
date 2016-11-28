@@ -1,5 +1,37 @@
 
 $(document).ready(function(data) {
+    
+    $("#interes").keypress(function(e) {
+        setTimeout(function() {
+            if ($.isNumeric(e.key) || e.key === 'Backspace') {
+                $("#neto").val("0");
+                var monto = parseInt($("#monto").val()) + parseInt($("#saldo").val());
+                console.log(monto);
+                var neto = parseInt($("#interes").val()) + monto;
+                console.log(neto);
+                $("#neto").val(neto);
+
+            } else {
+                $.messager.alert('Error!!', 'Debe ingresar un valor numerico!!!');
+            }
+        }, 0);
+
+    });
+
+    $("#importePagar").keypress(function(e) {
+        setTimeout(function() {
+            if ($.isNumeric(e.key) || e.key === 'Backspace') {
+
+                var monto = $("#neto").val();
+                var montoCuota = $("#importePagar").val() - monto;
+                $("#vuelto").val(montoCuota);
+
+            } else {
+                $.messager.alert('Error!!', 'Debe ingresar un valor numerico!!!');
+            }
+        }, 0);
+
+    });
 
     var isEditarInline = false;
     var isStatus = true;
@@ -21,7 +53,7 @@ $(document).ready(function(data) {
         }, 0);
     });
     $(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/compras/listar',
+        url: CONTEXT_ROOT + '/pagos/listar',
         datatype: 'json',
         mtype: 'GET',
         height: 100,
@@ -245,9 +277,7 @@ $(document).ready(function(data) {
                 //width: 700,
                 recreateForm: true,
                 beforeShowForm: function(e) {
-                    var form = $(e[0]);
-                    form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-                    style_edit_form(form);
+
                 }
             },
     {
@@ -257,25 +287,14 @@ $(document).ready(function(data) {
         recreateForm: true,
         viewPagerButtons: false,
         beforeShowForm: function(e) {
-            console.log(e);
-            var form = $(e[0]);
-            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar')
-                    .wrapInner('<div class="widget-header" />')
-            style_edit_form(form);
+
         }
     },
     {
         //delete record form
         recreateForm: true,
         beforeShowForm: function(e) {
-            var form = $(e[0]);
-            if (form.data('styled'))
-                return false;
 
-            form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
-            style_delete_form(form);
-
-            form.data('styled', true);
         },
         onClick: function(e) {
             //alert(1);
@@ -285,9 +304,8 @@ $(document).ready(function(data) {
         //search form
         recreateForm: true,
         afterShowSearch: function(e) {
-            var form = $(e[0]);
-            form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
-            style_search_form(form);
+
+
         },
         afterRedraw: function() {
             style_search_filters($(this));
@@ -302,7 +320,13 @@ $(document).ready(function(data) {
             {
                 //view record form
                 recreateForm: true,
-                beforeShowForm: function(e,p) {
+                beforeShowForm: function(e, p) {
+
+                    $('#viewhdgrid').hide();
+                    $('#viewcntgrid').hide();
+                    $('#viewmodgrid').hide();
+
+
                     var id = e[0].elements[0].value;
                     console.log(e[0].elements[0].value);
                     var jqXHR = $.get(CONTEXT_ROOT + "/pagos/" + id, function(response, textStatus, jqXHR) {
@@ -316,34 +340,87 @@ $(document).ready(function(data) {
                                     + '</div>');
                         } else {
                             var pago = response.data;
-
-                            $('#idPago').val(pago.id);
+                            // $('.ui-jqdialog-titlebar-close').trigger('click');
+                            $('#idCompra').val(pago.idCompra);
+                            $('#docPagar').val(pago.docPagar);
                             $('#nroFactura').val(pago.nroFactura);
                             $('#montoTotal').val(pago.neto);
-                  
-                            $('#ruc').val(pago["proveedor.ruc"]);
-                            $('#nombre').val(pago["proveedor.nombre"]);
                             
-                            $('#telefono').val(pago["proveedor.telefono"]);
-                            $('#direccion').val(pago["proveedor.direccion"]);
+                            $('#saldo').val(pago.saldo);
                             
-                            if(pago.formaPago == "CONTADO"){
-                                $('#importePagar').val(pago.neto);
-                                $('#id-date-picker').val(pago.fechaCompra);
-                            }
-                            else if(pago.formaPago == "CREDITO" ){
-                                $('#importePagar').val(pago.montoCuotas);
-                                $('#id-date-picker').val(pago.fechaCuota);
-                                $('#nroCuota').val(pago.nroCuota);
-                            }
-                            
+                            if (pago.idProveedor !== null && pago.idProveedor !== "") {
+                                
+                                $('#idProveedorConta').val(pago.idProveedor);
+                                $('#validation-formProvee').find('.tableusuario-input').attr("disabled", true);
+                                $('#buttonOption').hide();
 
-//                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
-//                        + '<button type="button" class="close" data-dismiss="alert"'
-//                        + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
-//                        + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
-//                        + response.mensaje
-//                        + '</div>');
+                                var jqXHR = $.get(CONTEXT_ROOT + "/proveedores/" + pago.idProveedor, function(response, textStatus, jqXHR) {
+
+                                    if (response.error) {
+                                        $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                                                + '<button class="close" data-dismiss="alert" type="button"'
+                                                + '><i class="fa  fa-remove"></i></button>'
+                                                + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                                                + response.mensaje
+                                                + '</div>');
+                                    } else {
+
+                                        var proveedor = response.data;
+
+                                        $('#idProveedor').val(proveedor.id);
+                                        $('#ruc').val(proveedor.ruc);
+                                        $('#nombre').val(proveedor.nombre);
+                                        $('#email').val(proveedor.email);
+                                        $('#telefono').val(proveedor.telefono);
+                                        $('#direccion').val(proveedor.direccion);
+                                        $('#comentario').val(proveedor.comentario);
+                                        $('#fax').val(proveedor.fax);
+                                        $('#pais').val(proveedor.pais);
+                                        $('#ciudad').val(proveedor.ciudad);
+                                        $('#codigoPostal').val(proveedor.codigoPostal);
+                                        $('#comentario').val(proveedor.comentario);
+
+
+                                    }
+
+                                });
+
+                                jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
+                                    $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                                            + '<button class="close" data-dismiss="alert" type="button"'
+                                            + '><i class="fa  fa-remove"></i></button>'
+                                            + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                                            + 'Error! Favor comunicarse con el Administrador'
+                                            + '</div>');
+                                });
+                            }
+
+                            if (pago.formaPago === "CONTADO") {
+                                if(parseInt(pago.saldo) > 0 && pago.saldo !== null){
+                                    $('#neto').val(pago.saldo);
+                                }else{
+                                    if(pago.cancelado){
+                                      $('#neto').val(pago.saldo);  
+                                    }else{
+                                      $('#neto').val(pago.importePagar);  
+                                    }
+                                    
+                                }
+                                $('#monto').val(0);
+                                $('#id-date-picker').val(pago.fechaCuota);
+                                $('#nroCuota').hide();
+                                $('#monto').hide();
+                                $('#id-date-picker').hide();
+                            }
+                            else if (pago.formaPago === "CREDITO") {
+                                $('#monto').val(pago.monto);
+                                $('#neto').val(pago.importePagar);
+                                $('#id-date-picker').val(pago.fechaCuota);
+                                $('#nroCuota').val(pago.cuota);
+                            }
+
+
+
 
                         }
 

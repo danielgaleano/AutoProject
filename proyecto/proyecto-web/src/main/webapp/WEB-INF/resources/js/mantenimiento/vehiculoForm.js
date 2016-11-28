@@ -26,21 +26,6 @@ $(document).ready(function (data) {
             },
             modelo: {
                 required: true
-            },
-            color: {
-                required: true
-            },
-            chasis: {
-                required: true
-            },
-            motor: {
-                required: true
-            },
-            kilometraje: {
-                required: true
-            },
-            precioVenta: {
-                required: true
             }
         },
         messages: {
@@ -49,12 +34,7 @@ $(document).ready(function (data) {
             },
             tipo: "Debe seleccionar un tipo de vehiculo!",
             marca: "Debe seleccionar una marca de vehiculo!",
-            modelo: "Debe seleccionar un modelo de vehiculo!",
-            color: "Debe agregar un color al vehiculo!",
-            chasis: "Debe agregar el chasis al vehiculo!",
-            motor: "Debe agregar el motor al vehiculo!",
-            kilometraje: "Debe agregar el kilometraje al vehiculo!",
-            precioVenta: "Debe agregar el precio de venta al vehiculo!"
+            modelo: "Debe seleccionar un modelo de vehiculo!"
         },
         invalidHandler: function (event, validator) { //display error alert on form submit   
             $('.alert-error', $('.login-form')).show();
@@ -86,12 +66,17 @@ $(document).ready(function (data) {
             $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
             $(id_attr).removeClass('glyphicon-remove').addClass('glyphicon-ok');
         },
-        submitHandler: function (form) {           
+        submitHandler: function (form) {
+            if($("#id-disable-check").is(':checked')){
+               $("#tieneContacto").val(true);
+            }else{
+               $("#tieneContacto").val(false); 
+            }
             var $form = $('#validation-form');
             var serialize = $form.find('.tableusuario-input').serialize();
-            var idVehiculo = $('#idVehiculo').val();
+            var idCliente = $('#idCliente').val();
             
-            if (idVehiculo === null || idVehiculo === '') {
+            if (idCliente === null || idCliente === '') {
                 var jqXHR = $.post(CONTEXT_ROOT + '/vehiculos/guardar', serialize, function (data, textStatus, jqXHR) {
                     if (data.error) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'

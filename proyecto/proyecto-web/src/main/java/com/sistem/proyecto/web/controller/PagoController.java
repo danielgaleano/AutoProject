@@ -28,8 +28,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import com.sistem.proyecto.utils.DTORetorno;
+import com.sistem.proyecto.manager.utils.DTORetorno;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
+import com.sistem.proyecto.manager.utils.PagoDTO;
 import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;
 
@@ -86,16 +87,16 @@ public class PagoController extends BaseController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno calcularDeduda(@PathVariable("id") Long id) {
-        DTORetorno<Map<String, Object>> retorno = new DTORetorno<>();
+        DTORetorno<PagoDTO> retorno = new DTORetorno<>();
         List<Map<String, Object>> listMapGrupos = null;
         try {
-            inicializarCompraManager();
-            Compra ejCompra = new Compra();
-            ejCompra.setId(id);
+            inicializarMovimientoManager();
+            PagoDTO ejPago = new PagoDTO();
+        
 
-            Map<String, Object> ejCompraMap = compraManager.getAtributos(ejCompra, atributosCompras.split(","));
+            DTORetorno<PagoDTO> ejPagoMap = movimientoManager.obtenerDatosPago(id);
 
-            retorno.setData(ejCompraMap);
+            retorno.setData(ejPagoMap.getData());
             retorno.setError(false);
             retorno.setMensaje("Se obtuvo exitosamente la compra");
 
@@ -124,7 +125,7 @@ public class PagoController extends BaseController {
 
         Compra ejemplo = new Compra();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-        ejemplo.setEstadoCompra(Compra.COMPRA_PENDIENTE);
+        ejemplo.setEstadoCompra(Compra.COMPRA_APROBADA);
 
         List<Map<String, Object>> listMapGrupos = null;
 
@@ -192,104 +193,46 @@ public class PagoController extends BaseController {
 
         return retorno;
     }
-
-    @RequestMapping(value = "/detalles/descuento", method = RequestMethod.POST)
+    
+    @RequestMapping(value = "/realizar", method = RequestMethod.POST)
     public @ResponseBody
-    MensajeDTO guardarDescuento(@ModelAttribute("Compra") DetalleCompra compraRecibido) {
+    MensajeDTO guardar(@ModelAttribute("PagoDTO") PagoDTO pagoRecibido) {
+
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO mensaje = new MensajeDTO();
-        Compra ejCompra = new Compra();
-        DetalleCompra ejDetalleCompra = new DetalleCompra();
-        List<Map<String, Object>> listMapGrupos = null;
+        
         try {
-            inicializarCompraManager();
-            inicializarDetalleCompraManager();
+            inicializarMovimientoManager();
 
-            if (compraRecibido.getPorcentajeDescuento() == null || compraRecibido.getPorcentajeDescuento() != null
-                    && compraRecibido.getPorcentajeDescuento().compareToIgnoreCase("") == 0) {
+            if (pagoRecibido.getIdCompra() == null || pagoRecibido.getIdCompra() != null
+                    && pagoRecibido.getIdCompra().toString().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
-                mensaje.setMensaje("El Interes de Descuento no puede estar vacio.");
+                mensaje.setMensaje("Error al realizar el pago.");
                 return mensaje;
             }
 
-            ejDetalleCompra = detalleCompraManager.get(compraRecibido.getId());
-
-            Double descuento = (ejDetalleCompra.getPrecio() * Double.valueOf(compraRecibido.getPorcentajeDescuento())) / 100;
-            Double neto = ejDetalleCompra.getPrecio() - descuento;
-
-            ejDetalleCompra.setNeto(neto);
-
-            detalleCompraManager.update(ejDetalleCompra);
-
-            ejCompra = compraManager.get(ejDetalleCompra.getCompra());
-
-            ejDetalleCompra = new DetalleCompra();
-            ejDetalleCompra.setCompra(ejCompra);
-
-            List<DetalleCompra> ejDetalles = detalleCompraManager.list(ejDetalleCompra);
-            
-            Double netoPagar = 0.0;
-            
-            for (DetalleCompra rpm : ejDetalles) {
-                if (rpm.getNeto() != null) {
-                    netoPagar = netoPagar + Double.valueOf(rpm.getNeto()) ;
-                } else {
-                    netoPagar = netoPagar + Double.valueOf(rpm.getPrecio());
-
-                }
+            if (pagoRecibido.getImportePagar() == null || pagoRecibido.getImportePagar() != null
+                    && pagoRecibido.getImportePagar()  == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar el importe a Pagar.");
+                return mensaje;
             }
-            ejCompra.setNeto(netoPagar);
-            ejCompra.setFormaPago("CONTADO");
-            ejCompra.setTipoDescuento("DETALLADO");
-            ejCompra.setNroFactura(compraRecibido.getNroFactura());
             
-            compraManager.update(ejCompra);
+           mensaje = movimientoManager.realizarCompra(pagoRecibido.getIdCompra(), pagoRecibido.getImportePagar(), pagoRecibido.getInteres(),
+                   pagoRecibido.getDocPagar(), userDetail.getIdEmpresa(), userDetail.getId());
 
-            mensaje.setError(true);
-            mensaje.setMensaje("El descuento se agrego exitosamente.");
+
 
         } catch (Exception ex) {
             mensaje.setError(true);
-            mensaje.setMensaje("Error al agregar el descuento");
-            logger.error("Error al agregar el descuento ", ex);
+            mensaje.setMensaje("Error a guardar el vehiculo");
+            logger.debug("Error al guardar vehiculo ", ex);
         }
 
         return mensaje;
     }
 
-    @RequestMapping(value = "/{id}/editar", method = RequestMethod.POST)
-    public @ResponseBody
-    MensajeDTO editarCompra(@PathVariable("id") Long id, @ModelAttribute("Compra") Compra compraRecibido) {
-
-        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        MensajeDTO mensaje = new MensajeDTO();
-        Compra ejCompra = new Compra();
-        DetalleCompra ejDetalleCompra = new DetalleCompra();
-        try {
-            inicializarCompraManager();
-
-            if (compraRecibido.getNroFactura() == null || compraRecibido.getNroFactura() != null
-                    && compraRecibido.getNroFactura().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El Nro. Factura no puede estar vacio.");
-                return mensaje;
-            }
-
-            mensaje = compraManager.editarCompra(compraRecibido.getId(), compraRecibido, compraRecibido.getFormaPago(),
-                    compraRecibido.getTipoDescuento(), userDetail.getIdEmpresa(), userDetail.getId());
-
-            mensaje.setError(false);
-            mensaje.setMensaje("La compra se registro exitosamente.");
-
-        } catch (Exception ex) {
-            mensaje.setError(true);
-            mensaje.setMensaje("Error a guardar la compra");
-            logger.debug("Error al guardar la compra ", ex);
-        }
-
-        return mensaje;
-    }
-
+    
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO desactivar(@PathVariable("id") Long id) {

@@ -8,6 +8,7 @@ package com.sistem.proyecto.managerImpl;
 import com.sistem.proyecto.entity.Compra;
 import com.sistem.proyecto.entity.DetalleCompra;
 import com.sistem.proyecto.entity.DetallePedido;
+import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Moneda;
 import com.sistem.proyecto.entity.Pedido;
@@ -135,6 +136,9 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
 
                 vehiculo.setCodigo(ejPedido.getId() + "-" + codDetalle);
                 vehiculo.setActivo("S");
+                vehiculo.setEmpresa(new Empresa(idEmpresa));
+                vehiculo.setEstado(Vehiculo.PENDIENTE);
+                vehiculo.setProveedor(ejPedido.getProveedor());
                 vehiculo.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                 vehiculo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
 
@@ -256,6 +260,7 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
                     ejCompra = new Compra();
                     ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
                     ejCompra.setActivo("S");
+                    ejCompra.setEstadoPago(DocumentoPagar.PENDIENTE);
                     ejCompra.setTipoCompra("INDIRECTA");
                     ejCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                     ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
@@ -263,6 +268,7 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
                     ejCompra.setProveedor(pedido.getProveedor());
                     ejCompra.setPedido(pedido);
                     ejCompra.setMonto(totalPedido + "");
+                    ejCompra.setSaldo(0+"");
                     compraManager.save(ejCompra);
 
                     DetallePedido ejDetalle = new DetallePedido();
@@ -415,12 +421,14 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
                         ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
                         ejCompra.setActivo("S");
                         ejCompra.setTipoCompra("INDIRECTA");
+                        ejCompra.setEstadoPago(DocumentoPagar.PENDIENTE);
                         ejCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                         ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                         ejCompra.setEmpresa(new Empresa(idEmpresa));
                         ejCompra.setProveedor(pedido.getProveedor());
                         ejCompra.setPedido(pedido);
                         ejCompra.setMonto(totalPedido + "");
+                        ejCompra.setSaldo(0+"");
                         compraManager.save(ejCompra);
 
                         DetallePedido ejDetalle = new DetallePedido();

@@ -1,7 +1,10 @@
 package com.sistem.proyecto.entity;
 
+import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  * @author daniel
@@ -18,51 +23,91 @@ import javax.persistence.Transient;
  */
 @Entity
 public class Venta extends Base {
+    
+    public static final String VENTA_PENDIENTE = "VENTA_PENDIENTE";
+    public static final String VENTA_APROBADA = "VENTA_APROBADA";
+    public static final String VENTA_REALIZADA = "VENTA_REALIZADA";
 
-    private static final long serialVersionUID = 1L;
-
-    @Column(name = "codigo")
-    private String codigo;
-
-    @ManyToOne(optional = false)
-    private Usuario usuario;
-
-    @Column(name = "fecha_entrega", nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date fechaEntrega;
-
-    @Column(name = "observacion", nullable = true)
-    private String observacion;
-
-    @Column(name = "confirmado")
-    private Boolean confirmado;
-
+    @Column(name = "nro_factura", nullable = true)
+    private String nroFactura;
+    
+    @Column(name = "fechaVenta")
+    private Timestamp fechaVenta;
+    
+    @Column(name = "tipo_venta")
+    private String tipoVenta;
+    
+    @Column(name = "forma_pago")
+    private String formaPago;
+    
+    @Column(name = "descripcion")
+    private String descripcion;
+    
+    @Column(name = "porcentaje_interes_credito")
+    private String porcentajeInteresCredito;
+    
+    @Column(name = "monto_interes")
+    private String montoInteres;
+    
+    @Column(name = "tipo_mora_interes")
+    private String tipoMoraInteres;
+    
+    @Column(name = "mora_interes")
+    private String moraInteres;
+    
+    @Column(name = "cantidad_cuotas")
+    private Long cantidadCuotas;
+    
+    @Column(name = "monto_cuotas")
+    private String montoCuotas;
+    
+    @Column(name = "monto_total_cuotas")
+    private String montoTotalCuotas;
+    
+    @Column(name = "fechaCuota")
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date fechaCuota;
+    
+    @Column(name = "entrega")
+    private String entrega;
+    
+    @Column(name = "saldo")
+    private String saldo;
+    
+    @Column(name = "tipo_descuento")
+    private String tipoDescuento;
+    
     @Column(name = "descuento")
-    private Double descuento;
-            
-    @Column(name = "cantidas_total")
-    private Long cantidadTotal;        
-
-    @Column(name = "total", nullable = true)
-    private Double total;
-
-    @Column(name = "neto", nullable = true)
+    private String descuento;
+    
+    @Column(name = "monto")
+    private String monto;
+    
+    @Column(name = "monto_descuento")
+    private String montoDescuento;
+    
+    @Column(name = "neto")
     private Double neto;
     
     @ManyToOne
     @JoinColumn(name = "cliente")
-    private Cliente cliente ;
+    private Cliente cliente;
     
-    @OneToMany(mappedBy="venta")
-    private List<DetalleVenta> detalleVenta;
-
     @ManyToOne
     @JoinColumn(name = "empresa")
     private Empresa empresa;
     
+    @Column(name = "estado")
+    private String estadoVenta;
+    
     @Transient
-    private String fecha;
+    private String cuotaFecha;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venta")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Collection<DetalleVenta> detalleVentaCollection;
 
+    
     public Venta() {
     }
 
@@ -70,99 +115,256 @@ public class Venta extends Base {
         setId(id);
     }
 
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
+    
+    /**
+     * @return the nroFactura
+     */
+    public String getNroFactura() {
+        return nroFactura;
     }
 
     /**
-     * @return the usuario
+     * @param nroFactura the nroFactura to set
      */
-    public Usuario getUsuario() {
-        return usuario;
+    public void setNroFactura(String nroFactura) {
+        this.nroFactura = nroFactura;
     }
 
     /**
-     * @param usuario the usuario to set
+     * @return the fechaVenta
      */
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public Timestamp getFechaVenta() {
+        return fechaVenta;
     }
 
     /**
-     * @return the fechaEntrega
+     * @param fechaVenta the fechaVenta to set
      */
-    public Date getFechaEntrega() {
-        return fechaEntrega;
+    public void setFechaVenta(Timestamp fechaVenta) {
+        this.fechaVenta = fechaVenta;
     }
 
     /**
-     * @param fechaEntrega the fechaEntrega to set
+     * @return the tipoVenta
      */
-    public void setFechaEntrega(Date fechaEntrega) {
-        this.fechaEntrega = fechaEntrega;
+    public String getTipoVenta() {
+        return tipoVenta;
     }
 
     /**
-     * @return the observacion
+     * @param tipoVenta the tipoVenta to set
      */
-    public String getObservacion() {
-        return observacion;
+    public void setTipoVenta(String tipoVenta) {
+        this.tipoVenta = tipoVenta;
     }
 
     /**
-     * @param observacion the observacion to set
+     * @return the formaPago
      */
-    public void setObservacion(String observacion) {
-        this.observacion = observacion;
+    public String getFormaPago() {
+        return formaPago;
     }
 
     /**
-     * @return the confirmado
+     * @param formaPago the formaPago to set
      */
-    public Boolean getConfirmado() {
-        return confirmado;
+    public void setFormaPago(String formaPago) {
+        this.formaPago = formaPago;
     }
 
     /**
-     * @param confirmado the confirmado to set
+     * @return the descripcion
      */
-    public void setConfirmado(Boolean confirmado) {
-        this.confirmado = confirmado;
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    /**
+     * @param descripcion the descripcion to set
+     */
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getPorcentajeInteresCredito() {
+        return porcentajeInteresCredito;
+    }
+
+    public void setPorcentajeInteresCredito(String porcentajeInteresCredito) {
+        this.porcentajeInteresCredito = porcentajeInteresCredito;
+    }
+
+    
+
+    /**
+     * @return the montoInteres
+     */
+    public String getMontoInteres() {
+        return montoInteres;
+    }
+
+    /**
+     * @param montoInteres the montoInteres to set
+     */
+    public void setMontoInteres(String montoInteres) {
+        this.montoInteres = montoInteres;
+    }
+
+    /**
+     * @return the tipoMoraInteres
+     */
+    public String getTipoMoraInteres() {
+        return tipoMoraInteres;
+    }
+
+    /**
+     * @param tipoMoraInteres the tipoMoraInteres to set
+     */
+    public void setTipoMoraInteres(String tipoMoraInteres) {
+        this.tipoMoraInteres = tipoMoraInteres;
+    }
+
+    /**
+     * @return the moraInteres
+     */
+    public String getMoraInteres() {
+        return moraInteres;
+    }
+
+    /**
+     * @param moraInteres the moraInteres to set
+     */
+    public void setMoraInteres(String moraInteres) {
+        this.moraInteres = moraInteres;
+    }
+
+    /**
+     * @return the cantidadCuotas
+     */
+    public Long getCantidadCuotas() {
+        return cantidadCuotas;
+    }
+
+    /**
+     * @param cantidadCuotas the cantidadCuotas to set
+     */
+    public void setCantidadCuotas(Long cantidadCuotas) {
+        this.cantidadCuotas = cantidadCuotas;
+    }
+
+    /**
+     * @return the montoCuotas
+     */
+    public String getMontoCuotas() {
+        return montoCuotas;
+    }
+
+    /**
+     * @param montoCuotas the montoCuotas to set
+     */
+    public void setMontoCuotas(String montoCuotas) {
+        this.montoCuotas = montoCuotas;
+    }
+
+    /**
+     * @return the montoTotalCuotas
+     */
+    public String getMontoTotalCuotas() {
+        return montoTotalCuotas;
+    }
+
+    /**
+     * @param montoTotalCuotas the montoTotalCuotas to set
+     */
+    public void setMontoTotalCuotas(String montoTotalCuotas) {
+        this.montoTotalCuotas = montoTotalCuotas;
+    }
+
+    /**
+     * @return the fechaCuota
+     */
+    public Date getFechaCuota() {
+        return fechaCuota;
+    }
+
+    /**
+     * @param fechaCuota the fechaCuota to set
+     */
+    public void setFechaCuota(Date fechaCuota) {
+        this.fechaCuota = fechaCuota;
+    }
+
+    /**
+     * @return the entrega
+     */
+    public String getEntrega() {
+        return entrega;
+    }
+
+    /**
+     * @param entrega the entrega to set
+     */
+    public void setEntrega(String entrega) {
+        this.entrega = entrega;
+    }
+
+    /**
+     * @return the saldo
+     */
+    public String getSaldo() {
+        return saldo;
+    }
+
+    /**
+     * @param saldo the saldo to set
+     */
+    public void setSaldo(String saldo) {
+        this.saldo = saldo;
     }
 
     /**
      * @return the descuento
      */
-    public Double getDescuento() {
+    public String getDescuento() {
         return descuento;
     }
 
     /**
-     * @param d the descuento to set
+     * @param descuento the descuento to set
      */
-    public void setDescuento(Double d) {
-        this.descuento = d;
+    public void setDescuento(String descuento) {
+        this.descuento = descuento;
     }
 
     /**
-     * @return the total
+     * @return the monto
      */
-    public Double getTotal() {
-        return total;
+    public String getMonto() {
+        return monto;
     }
 
     /**
-     * @param total the total to set
+     * @param monto the monto to set
      */
-    public void setTotal(Double total) {
-        this.total = total;
+    public void setMonto(String monto) {
+        this.monto = monto;
     }
-   /**
+
+    /**
+     * @return the montoDescuento
+     */
+    public String getMontoDescuento() {
+        return montoDescuento;
+    }
+
+    /**
+     * @param montoDescuento the montoDescuento to set
+     */
+    public void setMontoDescuento(String montoDescuento) {
+        this.montoDescuento = montoDescuento;
+    }
+
+    /**
      * @return the neto
      */
     public Double getNeto() {
@@ -175,21 +377,7 @@ public class Venta extends Base {
     public void setNeto(Double neto) {
         this.neto = neto;
     }
-  
-    /**
-     * @return la empresa del pedido
-     */
-    public Empresa getEmpresa() {
-        return empresa;
-    }
 
-    /**
-     * @param empresa la empresa del pedido
-     */
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
-    
     /**
      * @return the cliente
      */
@@ -205,39 +393,67 @@ public class Venta extends Base {
     }
 
     /**
-     * @return the fecha
+     * @return the empresa
      */
-    public String getFecha() {
-        return fecha;
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
     /**
-     * @param fecha the fecha to set
+     * @param empresa the empresa to set
      */
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     /**
-     * @return the cantidadTotal
+     * @return the tipoDescuento
      */
-    public Long getCantidadTotal() {
-        return cantidadTotal;
+    public String getTipoDescuento() {
+        return tipoDescuento;
     }
 
     /**
-     * @param cantidadTotal the cantidadTotal to set
+     * @param tipoDescuento the tipoDescuento to set
      */
-    public void setCantidadTotal(Long cantidadTotal) {
-        this.cantidadTotal = cantidadTotal;
-    }
-    
-    public List<DetalleVenta> getDetalle() {
-        return detalleVenta;
+    public void setTipoDescuento(String tipoDescuento) {
+        this.tipoDescuento = tipoDescuento;
     }
 
-    public void setDetalle(List<DetalleVenta> detalleVenta) {
-        this.detalleVenta = detalleVenta;
+    /**
+     * @return the detalleVentaCollection
+     */
+    public Collection<DetalleVenta> getDetalleVentaCollection() {
+        return detalleVentaCollection;
+    }
+
+    /**
+     * @param detalleVentaCollection the detalleVentaCollection to set
+     */
+    public void setDetalleVentaCollection(Collection<DetalleVenta> detalleVentaCollection) {
+        this.detalleVentaCollection = detalleVentaCollection;
+    }
+
+    public String getEstadoVenta() {
+        return estadoVenta;
+    }
+
+    public void setEstadoVenta(String estadoVenta) {
+        this.estadoVenta = estadoVenta;
+    }
+
+    /**
+     * @return the cuotaFecha
+     */
+    public String getCuotaFecha() {
+        return cuotaFecha;
+    }
+
+    /**
+     * @param cuotaFecha the cuotaFecha to set
+     */
+    public void setCuotaFecha(String cuotaFecha) {
+        this.cuotaFecha = cuotaFecha;
     }
 }
 

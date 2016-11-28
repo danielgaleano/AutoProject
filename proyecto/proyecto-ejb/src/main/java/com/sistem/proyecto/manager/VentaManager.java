@@ -6,7 +6,9 @@
 
 package com.sistem.proyecto.manager;
 
+import com.sistem.proyecto.entity.DetalleVenta;
 import com.sistem.proyecto.entity.Venta;
+import com.sistem.proyecto.manager.utils.MensajeDTO;
 import javax.ejb.Local;
 
 /**
@@ -15,5 +17,9 @@ import javax.ejb.Local;
  */
 @Local
 public interface VentaManager extends GenericDao<Venta, Long> {
+    
+    public MensajeDTO guardarVenta(Long idCompra, DetalleVenta venta, String nroFactura, String formaPgo, String tipoPago, Long idEmpresa, Long idUsuario) throws Exception;
+    
+    public MensajeDTO editarVenta(Long idCompra, Venta venta, String formaPgo, String tipoPago, Long idEmpresa, Long idUsuario) throws Exception;
     
 }

@@ -18,145 +18,56 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 public class DetalleVenta extends Base {
     
-    //public static final String APROBADO = "APROBADO";
-    //public static final String PENDIENTE = "PENDIENTE";
-    //public static final String RECHAZADO = "RECHAZADO";
+    private static final long serialVersionUID = 798618560888L;   
     
-    //@EmbeddedId
-    //private DetalleVentaPK detalleVentaPK;
     
-    //@MapsId("serialVersionUID")
-    //@ManyToOne
-    //private Venta venta;
+    @Column(name = "precio")
+    private Double precio;
+    
+    @Column(name = "total")
+    private Double total;
+    
+    @Column(name = "porcentaje_descuento")
+    private String porcentajeDescuento;
+    
+    @Column(name = "monto_descuento")
+    private Double montoDescuento;
+    
+    @Column(name = "neto")
+    private Double neto;
+    
+    @ManyToOne
+    @JoinColumn(name = "moneda")
+    private Moneda moneda;
+    
+    @Column(name = "cambio_dia")
+    private Double cambioDia;
+    
+    @ManyToOne
+    @JoinColumn(name = "empresa")
+    private Empresa empresa;   
+    
+    @ManyToOne
+    @JoinColumn(name = "vehiculo")
+    private Vehiculo vehiculo;
     
     @ManyToOne
     @JoinColumn(name = "venta")
     private Venta venta;
     
-    @OneToOne(optional = false)
-    @JoinColumn(name = "vehiculo", referencedColumnName = "id")
-    private Vehiculo vehiculo;
-    
-    @NotNull
-    @Column(name = "cantidad")
-    private Long cantidad;
-    
-    @NotNull
-    @Column(name = "precio")
-    private Double precio;
-    
-    
-    @Column(name = "cambio_dia")
-    private Double cambioDia;
-    
-    @NotNull
-    @Column(name = "total")
-    private Double total;
-    
-    @ManyToOne
-    @JoinColumn(name = "moneda")
-    private Moneda moneda; 
-    
-    @ManyToOne
-    @JoinColumn(name = "empresa")
-    private Empresa empresa;
-    
     @Transient
-    private String fecha;
-    
-    //@ManyToOne
-    //@JoinColumn(name = "venta")
-    //private Venta venta;
+    private String nroFactura;
     
     public DetalleVenta() {
 
     }
 
     /**
-     * @param ventaId
-     * @param ordenId 
-     *            
+     * @param id
+     *            el id de Rol
      */
-    public DetalleVenta(Long id ) {
+    public DetalleVenta(Long id) {
             super(id);
-            //detalleVentaPK = new DetalleVentaPK(ventaId, ordenId);
-    }
-
-//    public DetalleVentaPK getVentaDetallePK() {
-//        return detalleVentaPK;
-//    }
-//
-//    public void setDetalleVentaPK(DetalleVentaPK detalleVentaPK) {
-//        this.detalleVentaPK = detalleVentaPK;
-//    }
-    
-    /**
-     * @return the vehiculo
-     */
-    public Vehiculo getVehiculo() {
-        return vehiculo;
-    }
-
-    /**
-     * @param vehiculo the vehiculo to set
-     */
-    public void setVehiculo(Vehiculo vehiculo) {
-        this.vehiculo = vehiculo;
-    }
-    
-    
-    /**
-     * @return the cantidad
-     */
-    public Long getCantidad() {
-        return cantidad;
-    }
-
-    /**
-     * @param cantidad the cantidad to set
-     */
-    public void setCantidad(Long cantidad) {
-        this.cantidad = cantidad;
-    }
-
-   
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    /**
-     * @param empresa the empresa to set
-     */
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
-
-    /**
-     * @return the moneda
-     */
-    public Moneda getMoneda() {
-        return moneda;
-    }
-
-    /**
-     * @param moneda the moneda to set
-     */
-    public void setMoneda(Moneda moneda) {
-        this.moneda = moneda;
-    }
-
-    /**
-     * @return the pedido
-     */
-    public Venta getVenta() {
-        return venta;
-    }
-
-    /**
-     * @param venta the venta to set
-     */
-    public void setVenta(Venta venta) {
-        this.venta = venta;
     }
 
     /**
@@ -174,6 +85,62 @@ public class DetalleVenta extends Base {
     }
 
     /**
+     * @return the porcentajeDescuento
+     */
+    public String getPorcentajeDescuento() {
+        return porcentajeDescuento;
+    }
+
+    /**
+     * @param porcentajeDescuento the porcentajeDescuento to set
+     */
+    public void setPorcentajeDescuento(String porcentajeDescuento) {
+        this.porcentajeDescuento = porcentajeDescuento;
+    }
+
+    /**
+     * @return the MontoDescuento
+     */
+    public Double getMontoDescuento() {
+        return montoDescuento;
+    }
+
+    /**
+     * @param montoDescuento the MontoDescuento to set
+     */
+    public void setMontoDescuento(Double montoDescuento) {
+        this.montoDescuento = montoDescuento;
+    }
+
+    /**
+     * @return the neto
+     */
+    public Double getNeto() {
+        return neto;
+    }
+
+    /**
+     * @param neto the neto to set
+     */
+    public void setNeto(Double neto) {
+        this.neto = neto;
+    }
+
+    /**
+     * @return the moneda
+     */
+    public Moneda getMoneda() {
+        return moneda;
+    }
+
+    /**
+     * @param moneda the moneda to set
+     */
+    public void setMoneda(Moneda moneda) {
+        this.moneda = moneda;
+    }
+
+    /**
      * @return the cambioDia
      */
     public Double getCambioDia() {
@@ -188,31 +155,62 @@ public class DetalleVenta extends Base {
     }
 
     /**
-     * @return the total
+     * @return the empresa
      */
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    /**
+     * @param empresa the empresa to set
+     */
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+
+
+    /**
+     * @return the vehiculo
+     */
+    public Vehiculo getVehiculo() {
+        return vehiculo;
+    }
+
+    /**
+     * @param vehiculo the vehiculo to set
+     */
+    public void setVehiculo(Vehiculo vehiculo) {
+        this.vehiculo = vehiculo;
+    }
+
+    /**
+     * @return the venta
+     */
+    public Venta getVenta() {
+        return venta;
+    }
+
+    /**
+     * @param venta the venta to set
+     */
+    public void setVenta(Venta venta) {
+        this.venta = venta;
+    }
+
+    public String getNroFactura() {
+        return nroFactura;
+    }
+
+    public void setNroFactura(String nroFactura) {
+        this.nroFactura = nroFactura;
+    }
+
     public Double getTotal() {
         return total;
     }
 
-    /**
-     * @param total the total to set
-     */
     public void setTotal(Double total) {
         this.total = total;
-    }
-
-    /**
-     * @return the fecha
-     */
-    public String getFecha() {
-        return fecha;
-    }
-
-    /**
-     * @param fecha the fecha to set
-     */
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
     }    
     
 }

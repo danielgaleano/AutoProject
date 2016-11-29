@@ -48,7 +48,7 @@ $(document).ready(function(data) {
         },
         messages: {
             nroFactura: {
-                required: "Debe ingresar un número de factura!"
+                required: "Debe ingresar un numero de factura!"
             },
             formaPago: "Debe seleccionar un tipo de pago!",
             tipoDescuento: "Debe seleccionar un tipo de descuento!",

@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Venta;
 import com.sistem.proyecto.userDetail.UserDetail;
-import com.sistem.proyecto.utils.DTORetorno;
+import com.sistem.proyecto.manager.utils.DTORetorno;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
 import java.util.ArrayList;

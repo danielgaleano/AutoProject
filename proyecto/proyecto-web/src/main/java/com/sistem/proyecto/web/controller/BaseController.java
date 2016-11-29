@@ -91,6 +91,7 @@ public class BaseController {
     protected DocumentoPagarManager documentoPagarManager;
     
 
+
     protected VentaManager ventaManager;
     
     protected DetalleVentaManager detalleVentaManager;
@@ -98,6 +99,7 @@ public class BaseController {
     protected DocumentoCobrarManager documentoCobrarManager;
 
     protected MovimientoManager movimientoManager;
+
 
 
     public static final Logger logger = LoggerFactory

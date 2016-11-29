@@ -63,6 +63,7 @@ $(document).ready(function(data) {
                                 + '</div>');
                     } else {
                         cargarDatos(data.id);
+                        $("#grid").trigger("reloadGrid", [{page: 1, current: true}]);
                         $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
                                 + '<button type="button" class="close" data-dismiss="alert"'
                                 + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'

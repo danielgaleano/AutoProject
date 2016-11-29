@@ -71,21 +71,21 @@
                                                         <label class="col-lg-5 control-label">Nro. Factura(*)</label>
                                                         <div class="col-lg-7">
                                                             <input id="nroFactura" disabled="disabled" name="nroFactura" type="text" placeholder="Nro. de factura" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="factura1"></span>
+                                                            <span class="glyphicon form-control-feedback" id="nroFactura1"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                                         <label class="col-lg-6 control-label">Monto Deuda:</label>
                                                         <div class="col-lg-6">
                                                             <input id="montoTotal" name="montoTotal" type="text" disabled="disabled" placeholder="Monto Total" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="factura1"></span>
+                                                            <span class="glyphicon form-control-feedback" id="montoTotal1"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                                         <label class="col-lg-6 control-label">Saldo:</label>
                                                         <div class="col-lg-6">
                                                             <input id="saldo" name="saldo" type="text" disabled="disabled" placeholder="Monto Total" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="factura1"></span>
+                                                            <span class="glyphicon form-control-feedback" id="saldo1"></span>
                                                         </div>
                                                     </div>
 
@@ -115,36 +115,40 @@
                                                         <label class="col-lg-6 control-label">Importe</label>
                                                         <div class="col-lg-6">
                                                             <input  id="monto" type="text" name="monto" disabled="disabled" placeholder="Nro.Cuota" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="nroCuota1"></span>
+                                                            <span class="glyphicon form-control-feedback" id="monto1"></span>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Interes</label>
-                                                        <div class="col-lg-8">
-                                                            <input  id="interes" type="text" name="interes"  placeholder="Interes" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="importePagar1"></span>
+                                                    <div class="row">
+                                                        <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                            <label class="col-lg-4 control-label">Interes</label>
+                                                            <div class="col-lg-6">
+                                                                <input  id="interes" type="text" name="interes"  placeholder="Interes" class="form-control tableusuario-input " /> 
+                                                                <span class="glyphicon form-control-feedback" id="interes1" style="right: 15px"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                            <label class="col-lg-4 control-label">Neto a Pagar</label>
+                                                            <div class="col-lg-6">
+                                                                <input  id="netoOculto" type="hidden" disabled="disabled" placeholder="Neto" class="form-control tableusuario-input " /> 
+                                                                <input  id="neto" type="text" name="interes" disabled="disabled" placeholder="Neto" class="form-control tableusuario-input " /> 
+                                                                <span class="glyphicon form-control-feedback" id="neto1"></span>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Neto a Pagar</label>
-                                                        <div class="col-lg-6">
-                                                            <input  id="netoOculto" type="hidden" disabled="disabled" placeholder="Neto" class="form-control tableusuario-input " /> 
-                                                            <input  id="neto" type="text" name="interes" disabled="disabled" placeholder="Neto" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="importePagar1"></span>
+                                                    <div class="row">
+                                                        <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                            <label class="col-lg-4 control-label">Importe a pagar</label>
+                                                            <div class="col-lg-6">
+                                                                <input  id="importePagar" type="text" name="importePagar"  placeholder="Neto a pagar" class="form-control tableusuario-input " /> 
+                                                                <span class="glyphicon form-control-feedback" id="importePagar1" style="right: 15px"></span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Importe a pagar</label>
-                                                        <div class="col-lg-8">
-                                                            <input  id="importePagar" type="text" name="importePagar"  placeholder="Neto a pagar" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="importePagar1"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Vuelto</label>
-                                                        <div class="col-lg-8">
-                                                            <input  id="vuelto" type="text" name="vuelto" disabled="disabled" placeholder="Saldo" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="saldo1"></span>
+                                                        <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                            <label class="col-lg-4 control-label">Vuelto</label>
+                                                            <div class="col-lg-6">
+                                                                <input  id="vuelto" type="text" name="vuelto" disabled="disabled" placeholder="Saldo" class="form-control tableusuario-input " /> 
+                                                                <span class="glyphicon form-control-feedback" id="vuelto1"></span>
+                                                            </div>
                                                         </div>
                                                     </div>
 
@@ -301,7 +305,7 @@
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/lib/jquery.number.min.js}" charset="UTF-8"></script>
     <script type="text/javascript">
-        $('#entrega, #montoTotal, #montoDescuento, #montoCuota, #montoInteres, #saldo, #neto').number(true, 0, ',', '.');
+        $('#entrega, #montoTotal, #montoDescuento, #montoCuota, #montoInteres, #saldo, #neto, #interes, #importePagar, #monto, #vuelto').number(true, 0, ',', '.');
         //console.log($.number( 5020.2364, 2 )); // Outputs: 5,020.24)
     </script>
     <!--    <script th:src="@{~/proyecto/resources/js/lib/dropzone.js}"></script>

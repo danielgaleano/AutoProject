@@ -129,6 +129,12 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/compras/detalles/descuento").hasAnyAuthority("Compra.Realizar")
                 .antMatchers("/compras/registros/visualizar/**").hasAnyAuthority("Compra.Visualizar")
                 .antMatchers("/compras/detalles/agregar/**").hasAnyAuthority("Compra.Visualizar")
+                //------Pagos----//
+                .antMatchers("/pagos**").hasAnyAuthority("Pago.Listar")
+                .antMatchers("/pagos/realizar/*").hasAnyAuthority("Pago.Realizar")
+                //------ventas----//
+                .antMatchers("/ventas**").hasAnyAuthority("Venta.Listar")
+                .antMatchers("/ventas/realizar/*").hasAnyAuthority("Venta.Realizar")
                 //------Tipos----//
                 .antMatchers("/tipos**").hasAnyAuthority("Tipo.Listar")
                 .antMatchers("/tipos/crear**").hasAnyAuthority("Tipo.Crear")

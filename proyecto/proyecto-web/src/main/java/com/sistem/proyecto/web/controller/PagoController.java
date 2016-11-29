@@ -218,6 +218,19 @@ public class PagoController extends BaseController {
                 return mensaje;
             }
             
+            if (pagoRecibido.getInteres()== null || pagoRecibido.getInteres() != null
+                    && pagoRecibido.getInteres()  == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar el interes a Pagar.");
+                return mensaje;
+            }
+            
+            if (pagoRecibido.getInteres() > pagoRecibido.getImportePagar() ) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El interes no puede ser mayor al importe a pagar.");
+                return mensaje;
+            }
+            
            mensaje = movimientoManager.realizarCompra(pagoRecibido.getIdCompra(), pagoRecibido.getImportePagar(), pagoRecibido.getInteres(),
                    pagoRecibido.getIdDocPagar(), userDetail.getIdEmpresa(), userDetail.getId());
 

@@ -256,7 +256,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
                         } else {
                             docPagar = new DocumentoPagar();
-                            
+
                             docPagar = documentoPagarManager.get(idDocPago);
 
                             docPagar.setSaldo(0.0);
@@ -279,21 +279,21 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                             ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                             ejMovimiento.setUsuario(new Usuario(idUsuario));
                         }
-                    }else{
-                        
+                    } else {
+
                     }
                 } else {
                     netoPago = deudaTotal + Math.round(interes);
 
                     saldo = Math.round(Monto) - netoPago;
-                    
+
                     docPagar = new DocumentoPagar();
                     docPagar = documentoPagarManager.get(idDocPago);
 
                     if (saldo < 0) {
-                        
-                        saldo =  netoPago - Math.round(Monto);
-                        
+
+                        saldo = netoPago - Math.round(Monto);
+
                         docPagar.setEstado(DocumentoPagar.PARCIAL);
                         docPagar.setSaldo(Double.parseDouble(saldo.toString()));
                         documentoPagarManager.update(docPagar);
@@ -314,7 +314,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         ejMovimiento.setUsuario(new Usuario(idUsuario));
 
                     } else {
-                        
+
                         docPagar.setSaldo(0.0);
                         docPagar.setEstado(DocumentoPagar.CANCELADO);
                         documentoPagarManager.update(docPagar);
@@ -337,6 +337,24 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                 }
 
                 this.save(ejMovimiento);
+                
+                DetalleCompra ejDetalle = new DetalleCompra();
+                ejDetalle.setCompra(ejCompra);
+                List<DetalleCompra> listDetalle = detalleCompraManager.list(ejDetalle);
+
+                Long montoTotal = Math.round(ejCompra.getNeto());
+
+                Long costoVehiculo = montoTotal / Long.parseLong(listDetalle.size() + "");
+
+                for (DetalleCompra rpm : listDetalle) {
+
+                    rpm.getVehiculo().setEstado(Vehiculo.MANTENIMIENTO);
+                    rpm.getVehiculo().setPrecioCosto(Double.parseDouble(costoVehiculo.toString()));
+
+                    vehiculoManager.update(rpm.getVehiculo());
+
+                }
+                
             } else {
 
                 if (ejCompra.getEstadoPago().compareToIgnoreCase(DocumentoPagar.PENDIENTE) == 0) {
@@ -490,17 +508,6 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                 }
             }
 
-            DetalleCompra ejDetalle = new DetalleCompra();
-            ejDetalle.setCompra(ejCompra);
-            List<DetalleCompra> listDetalle = detalleCompraManager.list(ejDetalle);
-
-            for (DetalleCompra rpm : listDetalle) {
-
-                rpm.getVehiculo().setEstado(Vehiculo.MANTENIMIENTO);
-
-                vehiculoManager.update(rpm.getVehiculo());
-
-            }
             mensaje.setId(idCompra);
             mensaje.setError(false);
             mensaje.setMensaje("El pago se realizo exitosamente.");

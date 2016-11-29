@@ -45,331 +45,208 @@
                 <!-- <form:input path="fichero" type="file" class="hidden" />
                 <form:input path="nuevoFichero" type="boolean" class="hidden" /> -->
                 <div>
-                    <div class="tabbable">
-                        <ul class="nav nav-tabs padding-12 tab-color-blue background-blue" id="myTab4">
-                            <li class="active">
-                                <a data-toggle="tab" href="#home4">Venta</a>
-                            </li>
+                    <form id="validation-formVenta" class="form-horizontal dropzone" enctype="multipart/form-data">
+                        <div class="box-body">
 
-                            <li>
-                                <a data-toggle="tab" href="#profile4">Datos Cliente</a>
-                            </li>
-
-                        </ul>
-
-                        <div class="tab-content">
-                            <div id="home4" class="tab-pane in active">
-                                <form id="validation-formVenta" class="form-horizontal dropzone" enctype="multipart/form-data">
-                                    <div class="box-body">
-
-                                        <div class="col-xs-12">
-                                            <div id="mensaje"></div>
-                                            <div class="col-xs-12 col-sm-12">
-                                                <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
-                                                    <input  id="idClienteConta" name="cliente.id" type="hidden"  class="form-control tableusuario-input" />
-                                                    <input  id="idVenta" name="id" type="hidden" th:value="${id}" class="form-control tableusuario-input" />
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-5 control-label">Nro. Factura(*)</label>
-                                                        <div class="col-lg-7">
-                                                            <input id="nroFactura" name="nroFactura" type="text" data-mask="" data-inputmask="'mask': '999-999[-999999]'" placeholder="Nro. de factura" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="factura1"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                        <label class="col-lg-6 control-label">Monto Total:</label>
-                                                        <div class="col-lg-6">
-                                                            <input id="montoTotal" name="montoTotal" type="text" disabled="disabled" placeholder="Monto Total" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="factura1"></span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-lg-1 pull-right">
-                                                        <button id="aceptar" class="btn btn-primary" type="submit">
-                                                            <i class="fa fa-check bigger-110"></i>
-                                                            Guardar
-                                                        </button>
-                                                    </div>
-<!--
-                                                    <span class="col-lg-12 middle">Datos del Proveedor</span>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
-                                                        <div class="col-lg-12">
-                                                            <input id="ruc" name="ruc" type="text" disabled="disabled" placeholder="Nro. de ruc/documento" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="ruc1"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">                                    
-                                                        <div class="col-lg-12">
-                                                            <input id="nombre" name="nombre" type="text" disabled="disabled" placeholder="Razon Social" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="nombre1"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
-                                                        <div class="col-lg-12">
-                                                            <input id="direccion" name="direccion" disabled="disabled" type="text" placeholder="Direccion" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="direccion1"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
-                                                        <div class="col-lg-12">
-                                                            <input id="telefono" name="telefono" disabled="disabled" type="text" placeholder="Nro. de telefono" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="telefono1"></span>
-                                                        </div>
-                                                    </div>-->
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                        <label class="col-lg-2 control-label">Forma de pago</label>
-                                                        <div class="radio col-lg-2">
-                                                            <label>
-                                                                <input type="radio" name="formaPago" id="contado" value="CONTADO" class="tableusuario-input "/>
-                                                                Contado
-                                                            </label>
-                                                        </div>
-                                                        <div class="radio col-lg-2">
-                                                            <label>
-                                                                <input type="radio" name="formaPago" id="credito" value="CREDITO" class="tableusuario-input "/>
-                                                                Credito
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <div id="formCredito" style="display:none;">
-                                                        <div class="row">
-
-                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
-                                                                <label class="col-lg-4 control-label">Entrega:</label>
-                                                                <div class="col-lg-8">
-                                                                    <input id="entrega" name="entrega" type="text" placeholder="Entrega" class="form-control tableusuario-input "/> 
-                                                                    <span class="glyphicon form-control-feedback" id="factura1"></span>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-2 col-md-2">
-                                                                <label class="col-lg-5 control-label">%Interes</label>
-                                                                <div class="col-lg-7">
-                                                                    <input   id="interes" name="porcentajeInteresCredito" type="text"  class="form-control tableusuario-input"/> 
-                                                                    <span class="glyphicon form-control-feedback" id="interes1" style="right: 15px"></span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
-                                                                <label class="col-lg-5 control-label">Monto Interes</label>
-                                                                <div class="col-lg-7">
-                                                                    <input   id="montoInteres" disabled="disabled" name="montoInteres" type="text" placeholder="Monto Interes" class="form-control tableusuario-input"/> 
-                                                                    <span class="glyphicon form-control-feedback" id="montoInteres1"></span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-2 col-md-2">
-                                                                <label class="col-lg-5 control-label">Cuotas</label>
-                                                                <div class="col-lg-7">
-                                                                    <input  id="cuotas" name="cantidadCuotas" type="number"  class="form-control tableusuario-input"/> 
-                                                                    <span class="glyphicon form-control-feedback" id="cuotas1" style="right: 15px"></span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
-                                                                <label class="col-lg-5 control-label">Monto Cuotas</label>
-                                                                <div class="col-lg-7">
-                                                                    <input   id="montoCuota" disabled="disabled" name="montoCuota" type="text" placeholder="Monto Cuotas" class="form-control tableusuario-input"/> 
-                                                                    <span class="glyphicon form-control-feedback" id="montoCuota1"></span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                                <label class="col-lg-4 control-label">Fecha 1ra cuota</label>
-                                                                <div class="col-lg-5">
-
-                                                                    <input class="form-control tableusuario-input date-picker" id="id-date-picker" name="cuotaFecha" type="text" data-date-format="yyyy-mm-dd" />
-
-                                                                    <span class="glyphicon form-control-feedback" id="fechaCuota1"></span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                                <label class="col-lg-6 control-label">%Interes por Mora</label>
-                                                                <div class="col-lg-2">
-                                                                    <input   id="moraInteres" name="moraInteres" type="text"  class="form-control tableusuario-input"/> 
-                                                                    <span class="glyphicon form-control-feedback" id="interesMora1" style="right: 15px"></span>
-                                                                </div>
-                                                            </div>
-                                                        </div>    
-                                                    </div> 
-                                                    <div id="tipo-descuento" class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12" style="display:none;">
-                                                        <label class="col-lg-2 control-label">Tipo de descuento</label>
-                                                        <div class="radio col-lg-2">
-                                                            <label>
-                                                                <input type="radio" name="tipoDescuento" id="general" value="GENERAL" class="tableusuario-input "/>
-                                                                General
-                                                            </label>
-                                                        </div>
-                                                        <div class="radio col-lg-2">
-                                                            <label>
-                                                                <input type="radio" name="tipoDescuento" id="detallado" value="DETALLADO" class="tableusuario-input "/>
-                                                                Detallado
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <div id="formDescuento" style="display:none;">
-                                                        <div class="row">
-                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                                <label class="col-lg-6 control-label">Descuento %</label>
-                                                                <div class="col-lg-3">
-                                                                    <input   id="descuento" name="descuento" type="text" class="form-control tableusuario-input"/> 
-                                                                    <span class="glyphicon form-control-feedback" id="descuento1"></span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                                <label class="col-lg-6 control-label">Monto Descuento</label>
-                                                                <div class="col-lg-6">
-                                                                    <input   id="montoDescuento" disabled="disabled" name="montoDescuento" type="text" placeholder="Monto Descuento" class="form-control tableusuario-input"/> 
-                                                                    <span class="glyphicon form-control-feedback" id="montoDescuento1"></span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Saldo</label>
-                                                        <div class="col-lg-8">
-                                                            <input  id="saldo" type="text" name="saldo" disabled="disabled" placeholder="Saldo" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="saldo1"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Neto a pagar</label>
-                                                        <div class="col-lg-6">
-                                                            <input  id="neto" type="text" name="neto" disabled="disabled" placeholder="Neto a pagar" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="neto1"></span>
-                                                        </div>
-                                                    </div>
-
-                                                </div>                           
+                            <div class="col-xs-12">
+                                <div id="mensaje"></div>
+                                <div class="col-xs-12 col-sm-12">
+                                    <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
+                                        <input  id="idClienteConta" name="cliente.id" type="hidden"  class="form-control tableusuario-input" />
+                                        <input  id="idVenta" name="id" type="hidden" th:value="${id}" class="form-control tableusuario-input" />
+                                        <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                            <label class="col-lg-5 control-label">Nro. Factura(*)</label>
+                                            <div class="col-lg-7">
+                                                <input id="nroFactura" name="nroFactura" type="text" data-mask="" data-inputmask="'mask': '999-999[-999999]'" placeholder="Nro. de factura" class="form-control tableusuario-input "/> 
+                                                <span class="glyphicon form-control-feedback" id="factura1"></span>
                                             </div>
-
                                         </div>
-                                    </div>
+                                        <div class="form-group  col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                            <label class="col-lg-4 control-label">Cliente(*)</label>
+                                            <div class="col-lg-6">
+                                                <select class="tableusuario-input " id="tipo"  name="tipo.id" data-placeholder="Seleccione el tipo">
 
-                                </form>
-                                <div class="row">
-                                    <div class="col-xs-12">                       
-                                        <table id="grid" style="width: 95%;"></table>
-                                        <div id="grid-pager"></div>
-
-                                    </div>
-                                </div>  
-                            </div>
-
-                            <div id="profile4" class="tab-pane">
-                                <form id="validation-form" class="form-horizontal dropzone" enctype="multipart/form-data">
-                                    <div class="box-body">
-                                        <div id="mensaje"/>   
-                                        <div class="col-xs-12">
-
-                                            <div id="user-profile-1" class="user-profile row" style="padding-top: 2em; padding-left: 1em; padding-right: 1em;">
-
-                                                <input  id="idCliente" name="id" type="hidden"  class="form-control tableusuario-input" />
-
-                                                <div class="col-xs-12 col-sm-12">
-
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">RUC/Documento(*)</label>
-                                                        <div class="col-lg-4">
-                                                            <input  id="ruc" name="ruc" type="text" placeholder="ruc" data-mask="" data-inputmask-regex="^[0-9]{5}[0-9]?[0-9]?[0-9]?(-)?[0-9]?$"  class="form-control tableusuario-input "/>
-                                                            <span class="glyphicon form-control-feedback" id="ruc1"></span> 
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Razon Social(*)</label>
-                                                        <div class="col-lg-6">
-                                                            <input id="nombre" name="nombre" type="text" placeholder="Nombre" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="nombre1"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Email(*)</label>
-                                                        <div class="col-lg-6">
-                                                            <input  id="email" name="email" type="text" placeholder="Email" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="email1"></span>
-                                                        </div>
-                                                    </div>
-
-
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Telefono(*)</label>
-                                                        <div class="col-lg-4">
-                                                            <input  id="telefono" name="telefono" type="text" placeholder="Telefono" data-mask="" data-inputmask="'mask': '999 999 [999 999]'" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="telefono1"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Fax</label>
-                                                        <div class="col-lg-4">
-                                                            <input  id="fax" name="fax" type="text" placeholder="Fax" data-mask="" data-inputmask="'mask': '999 999 [999 999]'"  class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="fax1"></span>
-                                                        </div>
-                                                    </div>
-
-
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Pais</label>
-                                                        <div class="col-lg-6">
-                                                            <input  id="pais" type="text" name="pais" placeholder="Pais" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="pais1"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Ciudad</label>
-                                                        <div class="col-lg-6">
-                                                            <input  id="ciudad" type="text" name="ciudad" placeholder="Ciudad" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="pais1"></span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Codigo Postal</label>
-                                                        <div class="col-lg-4">
-                                                            <input  id="codigoPostal" type="text" name="codigoPostal" placeholder="Codigo Postal" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="pais1"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Direccion</label>
-                                                        <div class="col-lg-8">
-                                                            <input  id="direccion" type="text" name="direccion" placeholder="Direccion" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="direccion1"></span>
-                                                        </div>
-                                                    </div>
-
-
-
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                        <label class="col-lg-2 control-label">Comentario</label>
-                                                        <div class="col-lg-6">
-                                                            <textarea rows="3"   id="comentario" name="comentario" type="text" placeholder="Comentario"  class="form-control limited tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="comentario1"></span>
-                                                        </div>
-                                                    </div>                                             
-                                                </div>
+                                                </select>
+                                                <span class="glyphicon form-control-feedback" id="tipo1"></span>
                                             </div>
-
                                         </div>
-                                    </div>
-                                    <div id="buttonOption" class="clearfix box-footer">
-                                        <div class="col-md-offset-3 col-md-9">
+                                        <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                            <label class="col-lg-6 control-label">Monto Total:</label>
+                                            <div class="col-lg-6">
+                                                <input id="montoTotal" name="montoTotal" type="text" disabled="disabled" placeholder="Monto Total" class="form-control tableusuario-input "/> 
+                                                <span class="glyphicon form-control-feedback" id="factura1"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-1 pull-right">
                                             <button id="aceptar" class="btn btn-primary" type="submit">
                                                 <i class="fa fa-check bigger-110"></i>
                                                 Guardar
                                             </button>
-                                            &nbsp; &nbsp; &nbsp;
-                                            <button id="cancelar" class="btn btn-default" type="reset" >
-                                                <i class="fa fa-undo bigger-110"></i>
-                                                Cancelar
-                                            </button>
-
                                         </div>
-                                    </div>
+                                        <!--
+                                                                                            <span class="col-lg-12 middle">Datos del Proveedor</span>
+                                                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
+                                                                                                <div class="col-lg-12">
+                                                                                                    <input id="ruc" name="ruc" type="text" disabled="disabled" placeholder="Nro. de ruc/documento" class="form-control tableusuario-input "/> 
+                                                                                                    <span class="glyphicon form-control-feedback" id="ruc1"></span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">                                    
+                                                                                                <div class="col-lg-12">
+                                                                                                    <input id="nombre" name="nombre" type="text" disabled="disabled" placeholder="Razon Social" class="form-control tableusuario-input "/> 
+                                                                                                    <span class="glyphicon form-control-feedback" id="nombre1"></span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
+                                                                                                <div class="col-lg-12">
+                                                                                                    <input id="direccion" name="direccion" disabled="disabled" type="text" placeholder="Direccion" class="form-control tableusuario-input "/> 
+                                                                                                    <span class="glyphicon form-control-feedback" id="direccion1"></span>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
+                                                                                                <div class="col-lg-12">
+                                                                                                    <input id="telefono" name="telefono" disabled="disabled" type="text" placeholder="Nro. de telefono" class="form-control tableusuario-input "/> 
+                                                                                                    <span class="glyphicon form-control-feedback" id="telefono1"></span>
+                                                                                                </div>
+                                                                                            </div>-->
+                                        <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                            <label class="col-lg-2 control-label">Forma de pago</label>
+                                            <div class="radio col-lg-2">
+                                                <label>
+                                                    <input type="radio" name="formaPago" id="contado" value="CONTADO" class="tableusuario-input "/>
+                                                    Contado
+                                                </label>
+                                            </div>
+                                            <div class="radio col-lg-2">
+                                                <label>
+                                                    <input type="radio" name="formaPago" id="credito" value="CREDITO" class="tableusuario-input "/>
+                                                    Credito
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div id="formCredito" style="display:none;">
+                                            <div class="row">
 
-                                </form>
+                                                <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
+                                                    <label class="col-lg-4 control-label">Entrega:</label>
+                                                    <div class="col-lg-8">
+                                                        <input id="entrega" name="entrega" type="text" placeholder="Entrega" class="form-control tableusuario-input "/> 
+                                                        <span class="glyphicon form-control-feedback" id="factura1"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group col-xs-12 col-sm-12 col-lg-2 col-md-2">
+                                                    <label class="col-lg-5 control-label">%Interes</label>
+                                                    <div class="col-lg-7">
+                                                        <input   id="interes" name="porcentajeInteresCredito" type="text"  class="form-control tableusuario-input"/> 
+                                                        <span class="glyphicon form-control-feedback" id="interes1" style="right: 15px"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
+                                                    <label class="col-lg-5 control-label">Monto Interes</label>
+                                                    <div class="col-lg-7">
+                                                        <input   id="montoInteres" disabled="disabled" name="montoInteres" type="text" placeholder="Monto Interes" class="form-control tableusuario-input"/> 
+                                                        <span class="glyphicon form-control-feedback" id="montoInteres1"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-xs-12 col-sm-12 col-lg-2 col-md-2">
+                                                    <label class="col-lg-5 control-label">Cuotas</label>
+                                                    <div class="col-lg-7">
+                                                        <input  id="cuotas" name="cantidadCuotas" type="number"  class="form-control tableusuario-input"/> 
+                                                        <span class="glyphicon form-control-feedback" id="cuotas1" style="right: 15px"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-xs-12 col-sm-12 col-lg-3 col-md-3">
+                                                    <label class="col-lg-5 control-label">Monto Cuotas</label>
+                                                    <div class="col-lg-7">
+                                                        <input   id="montoCuota" disabled="disabled" name="montoCuota" type="text" placeholder="Monto Cuotas" class="form-control tableusuario-input"/> 
+                                                        <span class="glyphicon form-control-feedback" id="montoCuota1"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                    <label class="col-lg-4 control-label">Fecha 1ra cuota</label>
+                                                    <div class="col-lg-5">
+
+                                                        <input class="form-control tableusuario-input date-picker" id="id-date-picker" name="cuotaFecha" type="text" data-date-format="yyyy-mm-dd" />
+
+                                                        <span class="glyphicon form-control-feedback" id="fechaCuota1"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                    <label class="col-lg-6 control-label">%Interes por Mora</label>
+                                                    <div class="col-lg-2">
+                                                        <input   id="moraInteres" name="moraInteres" type="text"  class="form-control tableusuario-input"/> 
+                                                        <span class="glyphicon form-control-feedback" id="interesMora1" style="right: 15px"></span>
+                                                    </div>
+                                                </div>
+                                            </div>    
+                                        </div> 
+                                        <div id="tipo-descuento" class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12" style="display:none;">
+                                            <label class="col-lg-2 control-label">Tipo de descuento</label>
+                                            <div class="radio col-lg-2">
+                                                <label>
+                                                    <input type="radio" name="tipoDescuento" id="general" value="GENERAL" class="tableusuario-input "/>
+                                                    General
+                                                </label>
+                                            </div>
+                                            <div class="radio col-lg-2">
+                                                <label>
+                                                    <input type="radio" name="tipoDescuento" id="detallado" value="DETALLADO" class="tableusuario-input "/>
+                                                    Detallado
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div id="formDescuento" style="display:none;">
+                                            <div class="row">
+                                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                    <label class="col-lg-6 control-label">Descuento %</label>
+                                                    <div class="col-lg-3">
+                                                        <input   id="descuento" name="descuento" type="text" class="form-control tableusuario-input"/> 
+                                                        <span class="glyphicon form-control-feedback" id="descuento1"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                    <label class="col-lg-6 control-label">Monto Descuento</label>
+                                                    <div class="col-lg-6">
+                                                        <input   id="montoDescuento" disabled="disabled" name="montoDescuento" type="text" placeholder="Monto Descuento" class="form-control tableusuario-input"/> 
+                                                        <span class="glyphicon form-control-feedback" id="montoDescuento1"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                            <label class="col-lg-4 control-label">Saldo</label>
+                                            <div class="col-lg-8">
+                                                <input  id="saldo" type="text" name="saldo" disabled="disabled" placeholder="Saldo" class="form-control tableusuario-input " /> 
+                                                <span class="glyphicon form-control-feedback" id="saldo1"></span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                            <label class="col-lg-4 control-label">Neto a pagar</label>
+                                            <div class="col-lg-6">
+                                                <input  id="neto" type="text" name="neto" disabled="disabled" placeholder="Neto a pagar" class="form-control tableusuario-input " /> 
+                                                <span class="glyphicon form-control-feedback" id="neto1"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>                           
+                                </div>
+
                             </div>
+                        </div>
+
+                    </form>
+                    <div class="row">
+                        <div class="col-xs-12">                       
+                            <table id="grid" style="width: 95%;"></table>
+                            <div id="grid-pager"></div>
 
                         </div>
-                    </div>
+                    </div> 
                 </div>                              
             </div>
             <!-- Your Page Content Here -->

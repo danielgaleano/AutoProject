@@ -1,7 +1,7 @@
 
 $(document).ready(function(data) {
     $("#interes").keypress(function(e) {
-        setTimeout(function() {           
+        setTimeout(function() {
             if ($.isNumeric(e.key) || e.key === 'Backspace') {
                 $("#neto").val("0");
                 var monto = parseInt($("#monto").val()) + parseInt($("#netoOculto").val());
@@ -55,7 +55,7 @@ $(document).ready(function(data) {
         url: CONTEXT_ROOT + '/pagos/listar',
         datatype: 'json',
         mtype: 'GET',
-        height: 100,
+        height: 150,
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
@@ -119,6 +119,216 @@ $(document).ready(function(data) {
             filters: null,
             estado: action,
             todos: false
+        },
+        onSelectRow: function(id) {
+            var jqXHR = $.get(CONTEXT_ROOT + "/pagos/" + id, function(response, textStatus, jqXHR) {
+
+                if (response.error) {
+                    $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                            + '<button class="close" data-dismiss="alert" type="button"'
+                            + '><i class="fa  fa-remove"></i></button>'
+                            + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                            + response.mensaje
+                            + '</div>');
+                } else {
+                    var pago = response.data;
+                    // $('.ui-jqdialog-titlebar-close').trigger('click');
+                    $('#idCompra').val(pago.idCompra);
+                    $('#docPagar').val(pago.idDocPagar);
+                    $('#nroFactura').val(pago.nroFactura);
+                    $('#montoTotal').val(pago.neto);
+
+                    $('#saldo').val(pago.saldo);
+
+                    if (pago.idProveedor !== null && pago.idProveedor !== "") {
+
+                        $('#idProveedorConta').val(pago.idProveedor);
+                        $('#validation-formProvee').find('.tableusuario-input').attr("disabled", true);
+                        $('#buttonOption').hide();
+
+                        var jqXHR = $.get(CONTEXT_ROOT + "/proveedores/" + pago.idProveedor, function(response, textStatus, jqXHR) {
+
+                            if (response.error) {
+                                $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                                        + '<button class="close" data-dismiss="alert" type="button"'
+                                        + '><i class="fa  fa-remove"></i></button>'
+                                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                                        + response.mensaje
+                                        + '</div>');
+                            } else {
+
+                                var proveedor = response.data;
+
+                                $('#idProveedor').val(proveedor.id);
+                                $('#ruc').val(proveedor.ruc);
+                                $('#nombre').val(proveedor.nombre);
+                                $('#email').val(proveedor.email);
+                                $('#telefono').val(proveedor.telefono);
+                                $('#direccion').val(proveedor.direccion);
+                                $('#comentario').val(proveedor.comentario);
+                                $('#fax').val(proveedor.fax);
+                                $('#pais').val(proveedor.pais);
+                                $('#ciudad').val(proveedor.ciudad);
+                                $('#codigoPostal').val(proveedor.codigoPostal);
+                                $('#comentario').val(proveedor.comentario);
+
+
+                            }
+
+                        });
+
+                        jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
+                            $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    + '><i class="fa  fa-remove"></i></button>'
+                                    + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                                    + 'Error! Favor comunicarse con el Administrador'
+                                    + '</div>');
+                        });
+                    }
+
+                    if (pago.formaPago === "CONTADO") {
+                        if (parseInt(pago.saldo) > 0 && pago.saldo !== null) {
+                            $('#neto').val(pago.saldo);
+                            $('#netoOculto').val(pago.saldo);
+                        } else {
+                            if (pago.cancelado) {
+                                $('#neto').val(pago.saldo);
+                                $('#netoOculto').val(pago.saldo);
+                            } else {
+                                $('#neto').val(pago.importePagar);
+                                $('#netoOculto').val(pago.importePagar);
+                            }
+
+                        }
+                        $('#monto').val(0);
+                        $('#id-date-picker').val(pago.fechaCuota);
+                        $('#nroCuota').hide();
+                        $('#monto').hide();
+                        $('#id-date-picker').hide();
+                    }
+                    else if (pago.formaPago === "CREDITO") {
+                        $('#monto').val(pago.monto);
+                        $('#neto').val(pago.importePagar);
+                        $('#netoOculto').val(pago.importePagar);
+                        $('#id-date-picker').val(pago.fechaCuota);
+                        $('#nroCuota').val(pago.cuota);
+                        $('#nroCuota').show();
+                        $('#monto').show();
+                        $('#id-date-picker').show();
+                    }
+
+
+
+
+                }
+
+            });
+        },
+        ondblClickRow: function(id) {
+            var jqXHR = $.get(CONTEXT_ROOT + "/pagos/" + id, function(response, textStatus, jqXHR) {
+
+                if (response.error) {
+                    $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                            + '<button class="close" data-dismiss="alert" type="button"'
+                            + '><i class="fa  fa-remove"></i></button>'
+                            + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                            + response.mensaje
+                            + '</div>');
+                } else {
+                    var pago = response.data;
+                    // $('.ui-jqdialog-titlebar-close').trigger('click');
+                    $('#idCompra').val(pago.idCompra);
+                    $('#docPagar').val(pago.idDocPagar);
+                    $('#nroFactura').val(pago.nroFactura);
+                    $('#montoTotal').val(pago.neto);
+
+                    $('#saldo').val(pago.saldo);
+
+                    if (pago.idProveedor !== null && pago.idProveedor !== "") {
+
+                        $('#idProveedorConta').val(pago.idProveedor);
+                        $('#validation-formProvee').find('.tableusuario-input').attr("disabled", true);
+                        $('#buttonOption').hide();
+
+                        var jqXHR = $.get(CONTEXT_ROOT + "/proveedores/" + pago.idProveedor, function(response, textStatus, jqXHR) {
+
+                            if (response.error) {
+                                $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                                        + '<button class="close" data-dismiss="alert" type="button"'
+                                        + '><i class="fa  fa-remove"></i></button>'
+                                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                                        + response.mensaje
+                                        + '</div>');
+                            } else {
+
+                                var proveedor = response.data;
+
+                                $('#idProveedor').val(proveedor.id);
+                                $('#ruc').val(proveedor.ruc);
+                                $('#nombre').val(proveedor.nombre);
+                                $('#email').val(proveedor.email);
+                                $('#telefono').val(proveedor.telefono);
+                                $('#direccion').val(proveedor.direccion);
+                                $('#comentario').val(proveedor.comentario);
+                                $('#fax').val(proveedor.fax);
+                                $('#pais').val(proveedor.pais);
+                                $('#ciudad').val(proveedor.ciudad);
+                                $('#codigoPostal').val(proveedor.codigoPostal);
+                                $('#comentario').val(proveedor.comentario);
+
+
+                            }
+
+                        });
+
+                        jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
+                            $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    + '><i class="fa  fa-remove"></i></button>'
+                                    + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                                    + 'Error! Favor comunicarse con el Administrador'
+                                    + '</div>');
+                        });
+                    }
+
+                    if (pago.formaPago === "CONTADO") {
+                        if (parseInt(pago.saldo) > 0 && pago.saldo !== null) {
+                            $('#neto').val(pago.saldo);
+                            $('#netoOculto').val(pago.saldo);
+                        } else {
+                            if (pago.cancelado) {
+                                $('#neto').val(pago.saldo);
+                                $('#netoOculto').val(pago.saldo);
+                            } else {
+                                $('#neto').val(pago.importePagar);
+                                $('#netoOculto').val(pago.importePagar);
+                            }
+
+                        }
+                        $('#monto').val(0);
+                        $('#id-date-picker').val(pago.fechaCuota);
+                        $('#nroCuota').hide();
+                        $('#monto').hide();
+                        $('#id-date-picker').hide();
+                    }
+                    else if (pago.formaPago === "CREDITO") {
+                        $('#monto').val(pago.monto);
+                        $('#neto').val(pago.importePagar);
+                        $('#netoOculto').val(pago.importePagar);
+                        $('#id-date-picker').val(pago.fechaCuota);
+                        $('#nroCuota').val(pago.cuota);
+                        $('#nroCuota').show();
+                        $('#monto').show();
+                        $('#id-date-picker').show();
+                    }
+
+
+
+
+                }
+
+            });
         },
         jsonReader: {
             root: 'retorno',
@@ -267,7 +477,7 @@ $(document).ready(function(data) {
                 searchicon: 'ace-icon fa fa-search orange',
                 refresh: true,
                 refreshicon: 'ace-icon fa fa-refresh green',
-                view: true,
+                view: false,
                 viewicon: 'ace-icon fa fa-search-plus grey',
             },
             {
@@ -344,11 +554,11 @@ $(document).ready(function(data) {
                             $('#docPagar').val(pago.idDocPagar);
                             $('#nroFactura').val(pago.nroFactura);
                             $('#montoTotal').val(pago.neto);
-                            
+
                             $('#saldo').val(pago.saldo);
-                            
+
                             if (pago.idProveedor !== null && pago.idProveedor !== "") {
-                                
+
                                 $('#idProveedorConta').val(pago.idProveedor);
                                 $('#validation-formProvee').find('.tableusuario-input').attr("disabled", true);
                                 $('#buttonOption').hide();
@@ -395,18 +605,18 @@ $(document).ready(function(data) {
                             }
 
                             if (pago.formaPago === "CONTADO") {
-                                if(parseInt(pago.saldo) > 0 && pago.saldo !== null){
+                                if (parseInt(pago.saldo) > 0 && pago.saldo !== null) {
                                     $('#neto').val(pago.saldo);
                                     $('#netoOculto').val(pago.saldo);
-                                }else{
-                                    if(pago.cancelado){
-                                      $('#neto').val(pago.saldo); 
-                                      $('#netoOculto').val(pago.saldo);
-                                    }else{
-                                      $('#neto').val(pago.importePagar); 
-                                      $('#netoOculto').val(pago.importePagar);
+                                } else {
+                                    if (pago.cancelado) {
+                                        $('#neto').val(pago.saldo);
+                                        $('#netoOculto').val(pago.saldo);
+                                    } else {
+                                        $('#neto').val(pago.importePagar);
+                                        $('#netoOculto').val(pago.importePagar);
                                     }
-                                    
+
                                 }
                                 $('#monto').val(0);
                                 $('#id-date-picker').val(pago.fechaCuota);

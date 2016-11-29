@@ -108,6 +108,9 @@ public class Compra extends Base{
     @Column(name = "estado")
     private String estadoCompra;
     
+    @Column(name = "estado_pago")
+    private String estadoPago;
+    
     @Transient
     private String cuotaFecha;
     
@@ -470,6 +473,14 @@ public class Compra extends Base{
      */
     public void setCuotaFecha(String cuotaFecha) {
         this.cuotaFecha = cuotaFecha;
+    }
+
+    public String getEstadoPago() {
+        return estadoPago;
+    }
+
+    public void setEstadoPago(String estadoPago) {
+        this.estadoPago = estadoPago;
     }
     
     

@@ -10,7 +10,7 @@
     <link rel="stylesheet" th:href="@{/resources/dist/css/style.css}" type="text/css"/>
     <link th:href="@{/resources/css/datepicker.min.css}" rel="stylesheet" />
     <link th:href="@{/resources/bootstrap/css/bootstrap-datetimepicker.min.css}" rel="stylesheet" />
-    
+    <link th:href="@{/resources/css/sol.css}" rel="stylesheet" />    
     <title>Vehiculo</title>
     <script th:inline="javascript">
         var action = /*[[${action}]]*/'';
@@ -63,122 +63,111 @@
 
                                             <div id="user-profile-1" class="user-profile row" style="padding-top: 2em; padding-left: 1em; padding-right: 1em;">
                                                
-                                                <input id="idVehiculo" name="id" type="hidden"  class="form-control tableusuario-input" />
+                                                <input id="idVehiculo" name="id" type="hidden" th:value="${id}"  class="form-control tableusuario-input" />
+                                                <input id="idTipo" name="tipo.id" type="hidden"  class="form-control tableusuario-input" />
+                                                <input id="idMarca" name="marca.id" type="hidden"  class="form-control tableusuario-input" />
+                                                 <input id="idModelo" name="modelo.id" type="hidden"  class="form-control tableusuario-input" />
                                                 <div class="col-xs-12 col-sm-12">
 
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                         <label class="col-lg-4 control-label">Codigo(*)</label>
                                                         <div class="col-lg-8">
-                                                            <input  id="codigo" name="codigo" type="text" placeholder="Codigo" disabled="disabled" class="form-control tableusuario-input "/>
+                                                            <input  id="codigo" name="codigo" type="text" placeholder="Codigo" disabled="disabled" class="form-control tableusuario-input"/>
                                                             <span class="glyphicon form-control-feedback" id="codigo1"></span> 
                                                         </div>
                                                     </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-4 control-label">Año</label>
+                                                        <div class="col-lg-8">
+                                                            <input id="anho" name="anho" type="text" placeholder="Año" class="form-control tableusuario-input"/> 
+                                                            <span class="glyphicon form-control-feedback" id="anho1"></span>
+                                                        </div>
+                                                    </div>
 
-                                                    <div class="form-group  col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                        <label class="col-lg-2 control-label">Tipo(*)</label>
-                                                        <div class="col-lg-6">
-                                                            <select class="form-control tableusuario-input " id="tipo"  name="tipo" data-placeholder="Seleccione el tipo">
+                                                    <div class="form-group  col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-3 control-label">Tipo(*)</label>
+                                                        <div class="col-lg-8">
+                                                            <select class="tableusuario-input " id="tipo"  name="tipo.id" data-placeholder="Seleccione el tipo">
 
-                                                                <option value="">Seleccione el Tipo</option>
-                                                                <option  th:each="tipo : ${tipos}" th:value="${tipo.id}" th:text="${tipo.nombre}"/>
-                                                                <th:block th:each="tipo : ${tipos}">
-                                                                    <option selected="selected" th:value="${tipo.id}" th:text="${tipo.nombre}"/>
-                                                                    <option th:value="${tipo.id}" th:text="${tipo.nombre}"/>                                  
-                                                                </th:block>
                                                             </select>
                                                             <span class="glyphicon form-control-feedback" id="tipo1"></span>
                                                         </div>
                                                     </div>
                                                     
-                                                    <div class="form-group  col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                        <label class="col-lg-2 control-label">Marca(*)</label>
-                                                        <div class="col-lg-6">
-                                                            <select class="form-control tableusuario-input " id="marca"  name="marca" data-placeholder="Seleccione la Marca">
+                                                    <div class="form-group  col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-3 control-label">Marca(*)</label>
+                                                        <div class="col-lg-8">
+                                                            <select class="tableusuario-input " id="marca"  name="marca" data-placeholder="Seleccione la Marca">
 
-                                                                <option value="">Seleccione la Marca</option>
-                                                                <option  th:each="marca : ${marcas}" th:value="${marca.id}" th:text="${marca.nombre}"/>
-                                                                <th:block th:each="marca : ${marcas}">
-                                                                    <option selected="selected" th:value="${marca.id}" th:text="${marca.nombre}"/>
-                                                                    <option th:value="${marca.id}" th:text="${marca.nombre}"/>                                  
-                                                                </th:block>
                                                             </select>
                                                             <span class="glyphicon form-control-feedback" id="marca1"></span>
                                                         </div>
                                                     </div>
                                                     
-                                                    <div class="form-group  col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                        <label class="col-lg-2 control-label">Modelo(*)</label>
-                                                        <div class="col-lg-6">
-                                                            <select class="form-control tableusuario-input " id="modelo"  name="modelo" data-placeholder="Seleccione el Modelo">
+                                                    <div class="form-group  col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-3 control-label">Modelo(*)</label>
+                                                        <div class="col-lg-8">
+                                                            <select class=" tableusuario-input " id="modelo"  name="modelo" data-placeholder="Seleccione el Modelo">
 
-                                                                <option value="">Seleccione el Modelo</option>
-                                                                <option  th:each="modelo : ${modelos}" th:value="${modelo.id}" th:text="${modelo.nombre}"/>
-                                                                <th:block th:each="modelo : ${modelos}">
-                                                                    <option selected="selected" th:value="${modelo.id}" th:text="${modelo.nombre}"/>
-                                                                    <option th:value="${modelo.id}" th:text="${modelo.nombre}"/>                                  
-                                                                </th:block>
                                                             </select>
                                                             <span class="glyphicon form-control-feedback" id="modelo1"></span>
                                                         </div>
                                                     </div>
 
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Año</label>
-                                                        <div class="col-lg-8">
-                                                            <input id="anho" name="anho" type="text" placeholder="Año" class="form-control tableusuario-input "/> 
-                                                            <span class="glyphicon form-control-feedback" id="anho1"></span>
-                                                        </div>
-                                                    </div>
 
-
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                                         <label class="col-lg-4 control-label">Color</label>
                                                         <div class="col-lg-8">
-                                                            <input  id="color" name="color" type="text" placeholder="Color" data-mask="" data-inputmask="'mask': '(999)999-999'" class="form-control tableusuario-input "/> 
+                                                            <input  id="color" name="color" type="text" placeholder="Color"  class="form-control tableusuario-input "/> 
                                                             <span class="glyphicon form-control-feedback" id="color1"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Chasis</label>
+                                                        <div class="col-lg-8">
+                                                            <input  id="chasis" type="text" name="chasis" placeholder="Chasis" class="form-control tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="chasis1"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Motor</label>
+                                                        <div class="col-lg-8">
+                                                            <input  id="motor" type="text" name="motor" placeholder="Motor" class="form-control tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="motor1"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                         <label class="col-lg-4 control-label">Chapa</label>
                                                         <div class="col-lg-8">
-                                                            <input  id="chapa" name="chapa" type="text" placeholder="Chapa" data-mask="" data-inputmask="'mask': '(0\\999)999-999'" class="form-control tableusuario-input"/> 
+                                                            <input  id="chapa" name="chapa" type="text" placeholder="Chapa"  class="form-control tableusuario-input"/> 
                                                             <span class="glyphicon form-control-feedback" id="chapa1"></span>
                                                         </div>
                                                     </div>
-
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                        <label class="col-lg-2 control-label">Chasis</label>
-                                                        <div class="col-lg-6">
-                                                            <input  id="chasis" type="text" name="chasis" placeholder="Chasis" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="chasis1"></span>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                        <label class="col-lg-2 control-label">Motor</label>
-                                                        <div class="col-lg-6">
-                                                            <input  id="motor" type="text" name="motor" placeholder="Motor" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="motor1"></span>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                        <label class="col-lg-2 control-label">Kilometraje</label>
-                                                        <div class="col-lg-6">
+   
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-4 control-label">Kilometraje</label>
+                                                        <div class="col-lg-8">
                                                             <input  id="kilometraje" type="text" name="kilometraje" placeholder="Chasis" class="form-control tableusuario-input " /> 
                                                             <span class="glyphicon form-control-feedback" id="kilometraje1"></span>
                                                         </div>
                                                     </div>
                                                     
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                         <label class="col-lg-6 control-label">Fecha Mantenimiento</label>
                                                         <div class="col-lg-6">
                                                             <input class="form-control date-picker" id="id-date-picker" name="fechaMantenimineto" type="text" data-date-format="yyyy-mm-dd" />
                                                             <span class="add-on" ><i class="icon-calendar"></i></span>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-6 control-label">Costo Manten.</label>
+                                                        <div class="col-lg-6">
+                                                            <input  id="kilometraje" type="text" name="kilometraje" placeholder="Chasis" class="form-control tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="kilometraje1"></span>
+                                                        </div>
+                                                    </div>
 
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                         
                                                         <div class="checkbox">
                                                             <label>
@@ -187,7 +176,7 @@
                                                             </label>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                         <div class="radio col-lg-2">
                                                             <label>
                                                                 <input type="checkbox" name="titulo" id="titulo" class="tableusuario-input "/>
@@ -195,9 +184,16 @@
                                                             </label>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-6 control-label">Precio Costo</label>
+                                                        <div class="col-lg-6">
+                                                            <input  id="precioCosto" type="text" name="precioCosto" placeholder="Precio Costo" class="form-control tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="precioVenta1"></span>
+                                                        </div>
+                                                    </div>
                                                     
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
-                                                        <label class="col-lg-2 control-label">Precio de Venta</label>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                        <label class="col-lg-6 control-label">Precio de Venta</label>
                                                         <div class="col-lg-6">
                                                             <input  id="precioVenta" type="text" name="precioVenta" placeholder="Precio de Venta" class="form-control tableusuario-input " /> 
                                                             <span class="glyphicon form-control-feedback" id="precioVenta1"></span>
@@ -336,12 +332,13 @@
     <script th:src="@{~/proyecto/resources/js/lib/moment.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/lib/bootstrap-editable.min.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/dist/js/jquery.inputmask.bundle.js}" charset="UTF-8"></script>
-    <script th:src="@{~/proyecto/resources/bootstrap/js/bootstrap-datepicker.min.js}" charset="UTF-8"></script>
-    <script th:src="@{~/proyecto/resources/plugins/datepicker/locales/bootstrap-datetimepicker.es.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/bootstrap-datepicker.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/bootstrap/js/bootstrap-datetimepicker.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/plugins/datepicker/locales/bootstrap-datepicker.es.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/base.js}" charset="UTF-8"></script>
+    <script th:src="@{/resources/js/lib/sol.js}"></script>
     <script th:src="@{~/proyecto/resources/js/vehiculo/vehiculoDatos.js}" charset="UTF-8"></script>
     <script th:src="@{~/proyecto/resources/js/vehiculo/vehiculoForm.js}" charset="UTF-8"></script>
-    <script th:src="@{~/proyecto/resources/js/vehiculo/detallesForm.js}" charset="UTF-8"></script>
     
 
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>

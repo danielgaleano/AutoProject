@@ -12,7 +12,7 @@ import com.sistem.proyecto.entity.Permiso;
 import com.sistem.proyecto.entity.Marca;
 import com.sistem.proyecto.entity.Tipo;
 import com.sistem.proyecto.userDetail.UserDetail;
-import com.sistem.proyecto.utils.DTORetorno;
+import com.sistem.proyecto.manager.utils.DTORetorno;
 import com.sistem.proyecto.utils.DatosDTO;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.manager.utils.MensajeDTO;

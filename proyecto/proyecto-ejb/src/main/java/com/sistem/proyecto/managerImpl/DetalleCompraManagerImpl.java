@@ -28,7 +28,8 @@ import javax.ejb.Stateless;
 @Stateless
 public class DetalleCompraManagerImpl extends GenericDaoImpl<DetalleCompra, Long>
         implements DetalleCompraManager {
-
+    
+    
  
     @Override
     protected Class<DetalleCompra> getEntityBeanType() {

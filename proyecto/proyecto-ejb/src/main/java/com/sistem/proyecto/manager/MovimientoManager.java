@@ -7,7 +7,9 @@
 package com.sistem.proyecto.manager;
 
 import com.sistem.proyecto.entity.Movimiento;
+import com.sistem.proyecto.manager.utils.DTORetorno;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
+import com.sistem.proyecto.manager.utils.PagoDTO;
 import javax.ejb.Local;
 
 /**
@@ -17,9 +19,9 @@ import javax.ejb.Local;
 @Local
 public interface MovimientoManager extends GenericDao<Movimiento, Long> {
     
-    public MensajeDTO obtenerDatosPago(Long idCompra) throws Exception;
+    public DTORetorno<PagoDTO> obtenerDatosPago(Long idCompra) throws Exception;
     
-    public MensajeDTO realizarCompra(Long idCompra, String Monto, Long idDocPago, Long idEmpresa, Long idUsuario) throws Exception;
+    public MensajeDTO realizarCompra(Long idCompra, Double Monto, Double interes, Long idDocPago, Long idEmpresa, Long idUsuario) throws Exception;
     
     public MensajeDTO rechazar(Long idDetalle, Long idPedido, Long idEmpresa, Long idUsuario) throws Exception;
     

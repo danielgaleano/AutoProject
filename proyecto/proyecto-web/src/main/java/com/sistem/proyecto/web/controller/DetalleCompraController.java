@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.sistem.proyecto.utils.DTORetorno;
+import com.sistem.proyecto.manager.utils.DTORetorno;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
 import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;

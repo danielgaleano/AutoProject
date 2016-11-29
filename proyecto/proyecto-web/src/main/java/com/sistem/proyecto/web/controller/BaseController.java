@@ -26,6 +26,7 @@ import com.sistem.proyecto.manager.MarcaManager;
 import com.sistem.proyecto.manager.ModeloManager;
 import com.sistem.proyecto.manager.VehiculoManager;
 import com.sistem.proyecto.manager.MonedaManager;
+import com.sistem.proyecto.manager.MovimientoManager;
 import com.sistem.proyecto.manager.PedidoManager;
 import com.sistem.proyecto.manager.UsuarioManager;
 import com.sistem.proyecto.manager.VentaManager;
@@ -89,15 +90,37 @@ public class BaseController {
     
     protected DocumentoPagarManager documentoPagarManager;
     
+
     protected VentaManager ventaManager;
     
     protected DetalleVentaManager detalleVentaManager;
     
     protected DocumentoCobrarManager documentoCobrarManager;
 
+    protected MovimientoManager movimientoManager;
+
+
     public static final Logger logger = LoggerFactory
             .getLogger("proyecto");
+    
+    protected void inicializarMovimientoManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
+        if (movimientoManager == null) {
+            try {
 
+                movimientoManager = (MovimientoManager) context.lookup("java:app/proyecto-ejb/MovimientoManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
+    }
+    
     protected void inicializarImagenManager() throws Exception {
         if (context == null) {
             try {

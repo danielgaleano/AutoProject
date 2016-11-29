@@ -177,6 +177,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejCompra.setNroFactura(nroFactura);
                 ejCompra.setTipoCompra("DIRECTA");
                 ejCompra.setEstadoCompra(Compra.COMPRA_PENDIENTE);
+                ejCompra.setEstadoPago(DocumentoPagar.PENDIENTE);
                 ejCompra.setProveedor(new Proveedor(detalleCompra.getCompra().getProveedor().getId()));
 
                 this.save(ejCompra);
@@ -187,6 +188,9 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                 ejVehiculo.setCodigo(ejCompra.getId() + "-" + codDetalle);
                 ejVehiculo.setActivo("S");
+                ejVehiculo.setEmpresa(new Empresa(idEmpresa));
+                ejVehiculo.setEstado(Vehiculo.PENDIENTE);
+                ejVehiculo.setProveedor(new Proveedor(detalleCompra.getCompra().getProveedor().getId()));
                 ejVehiculo.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                 ejVehiculo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 ejVehiculo.setAnho(detalleCompra.getVehiculo().getAnho());

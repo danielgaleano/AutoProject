@@ -219,7 +219,7 @@ public class PagoController extends BaseController {
             }
             
            mensaje = movimientoManager.realizarCompra(pagoRecibido.getIdCompra(), pagoRecibido.getImportePagar(), pagoRecibido.getInteres(),
-                   pagoRecibido.getDocPagar(), userDetail.getIdEmpresa(), userDetail.getId());
+                   pagoRecibido.getIdDocPagar(), userDetail.getIdEmpresa(), userDetail.getId());
 
 
 

@@ -67,6 +67,9 @@ public class Movimiento extends Base {
     @Column(name = "importe")
     private Double importe;
     
+    @Column(name = "neto")
+    private Double neto;
+    
     @Column(name = "saldo")
     private Double saldo;
     
@@ -313,6 +316,14 @@ public class Movimiento extends Base {
      */
     public void setInteres(Double interes) {
         this.interes = interes;
+    }
+
+    public Double getNeto() {
+        return neto;
+    }
+
+    public void setNeto(Double neto) {
+        this.neto = neto;
     }
     
     

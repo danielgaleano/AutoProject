@@ -1,13 +1,12 @@
 
 $(document).ready(function(data) {
-    
     $("#interes").keypress(function(e) {
-        setTimeout(function() {
+        setTimeout(function() {           
             if ($.isNumeric(e.key) || e.key === 'Backspace') {
                 $("#neto").val("0");
-                var monto = parseInt($("#monto").val()) + parseInt($("#saldo").val());
+                var monto = parseInt($("#monto").val()) + parseInt($("#netoOculto").val());
                 console.log(monto);
-                var neto = parseInt($("#interes").val()) + monto;
+                var neto = parseInt($("#interes").val()) + parseInt($("#netoOculto").val());
                 console.log(neto);
                 $("#neto").val(neto);
 
@@ -342,7 +341,7 @@ $(document).ready(function(data) {
                             var pago = response.data;
                             // $('.ui-jqdialog-titlebar-close').trigger('click');
                             $('#idCompra').val(pago.idCompra);
-                            $('#docPagar').val(pago.docPagar);
+                            $('#docPagar').val(pago.idDocPagar);
                             $('#nroFactura').val(pago.nroFactura);
                             $('#montoTotal').val(pago.neto);
                             
@@ -398,11 +397,14 @@ $(document).ready(function(data) {
                             if (pago.formaPago === "CONTADO") {
                                 if(parseInt(pago.saldo) > 0 && pago.saldo !== null){
                                     $('#neto').val(pago.saldo);
+                                    $('#netoOculto').val(pago.saldo);
                                 }else{
                                     if(pago.cancelado){
-                                      $('#neto').val(pago.saldo);  
+                                      $('#neto').val(pago.saldo); 
+                                      $('#netoOculto').val(pago.saldo);
                                     }else{
-                                      $('#neto').val(pago.importePagar);  
+                                      $('#neto').val(pago.importePagar); 
+                                      $('#netoOculto').val(pago.importePagar);
                                     }
                                     
                                 }
@@ -415,6 +417,7 @@ $(document).ready(function(data) {
                             else if (pago.formaPago === "CREDITO") {
                                 $('#monto').val(pago.monto);
                                 $('#neto').val(pago.importePagar);
+                                $('#netoOculto').val(pago.importePagar);
                                 $('#id-date-picker').val(pago.fechaCuota);
                                 $('#nroCuota').val(pago.cuota);
                             }

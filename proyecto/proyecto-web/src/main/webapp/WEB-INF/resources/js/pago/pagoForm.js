@@ -104,7 +104,7 @@ function cargarDatos(id) {
             var pago = response.data;
             // $('.ui-jqdialog-titlebar-close').trigger('click');
             $('#idCompra').val(pago.idCompra);
-            $('#docPagar').val(pago.docPagar);
+            $('#docPagar').val(pago.idDocPagar);
             $('#nroFactura').val(pago.nroFactura);
             $('#montoTotal').val(pago.neto);
 
@@ -113,12 +113,16 @@ function cargarDatos(id) {
             if (pago.formaPago === "CONTADO") {
                 if (parseInt(pago.saldo) > 0 && pago.saldo !== null) {
                     $('#neto').val(pago.saldo);
+                    $('#netoOculto').val(pago.saldo);
                 } else {
                     if (pago.cancelado) {
                         $('#neto').val(pago.saldo);
+                        $('#netoOculto').val(pago.saldo);
                     } else {
                         $('#neto').val(pago.importePagar);
+                        $('#netoOculto').val(pago.importePagar);
                     }
+
                 }
                 $('#monto').val(0);
                 $('#id-date-picker').val(pago.fechaCuota);
@@ -129,6 +133,7 @@ function cargarDatos(id) {
             else if (pago.formaPago === "CREDITO") {
                 $('#monto').val(pago.monto);
                 $('#neto').val(pago.importePagar);
+                $('#netoOculto').val(pago.importePagar);
                 $('#id-date-picker').val(pago.fechaCuota);
                 $('#nroCuota').val(pago.cuota);
             }

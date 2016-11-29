@@ -25,6 +25,8 @@ public class DocumentoPagar extends Base {
     public static final String PENDIENTE = "PENDIENTE";
     public static final String CANCELADO = "CANCELADO";
     
+    private static final long serialVersionUID = 1554546L;
+    
     @Column(name = "nro_cuota", nullable = true)
     private String nroCuota;
     
@@ -47,6 +49,13 @@ public class DocumentoPagar extends Base {
     
     @Column(name = "estado")
     private String estado;
+    
+    public DocumentoPagar() {
+    }
+
+    public DocumentoPagar(Long id) {
+        setId(id);
+    }
     
     
     /**

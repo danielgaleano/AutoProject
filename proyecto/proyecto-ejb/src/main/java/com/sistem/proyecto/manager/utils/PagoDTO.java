@@ -20,7 +20,7 @@ public class PagoDTO {
     
     private Long idProveedor;
     
-    private Long docPagar;
+    private Long idDocPagar;
     
     private String nroFactura;
     
@@ -61,12 +61,12 @@ public class PagoDTO {
         this.idCompra = idCompra;
     }
 
-    public Long getDocPagar() {
-        return docPagar;
+    public Long getIdDocPagar() {
+        return idDocPagar;
     }
 
-    public void setDocPagar(Long docPagar) {
-        this.docPagar = docPagar;
+    public void setIdDocPagar(Long idDocPagar) {
+        this.idDocPagar = idDocPagar;
     }
     
     

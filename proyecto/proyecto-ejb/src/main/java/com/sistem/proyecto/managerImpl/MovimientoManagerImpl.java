@@ -101,7 +101,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         pago.setMonto(Math.round(rpm.getMonto()) + "");
                         pago.setCuota(rpm.getNroCuota());
                         pago.setFechaCuota(rpm.getFecha());
-                        pago.setDocPagar(rpm.getId());
+                        pago.setIdDocPagar(rpm.getId());
 
                         tieneDeuda = false;
                         System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
@@ -192,16 +192,17 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
             if (ejCompra.getFormaPago().compareToIgnoreCase("CREDITO") == 0) {
 
                 DocumentoPagar docPagar = new DocumentoPagar();
+                docPagar.setId(idDocPago);
 
                 docPagar = documentoPagarManager.get(idDocPago);
 
                 Long deudaTotal = Math.round(docPagar.getMonto());
 
-                docPagar = new DocumentoPagar();
-                docPagar.setEstado(DocumentoPagar.PARCIAL);
-                docPagar.setCompra(ejCompra);
+                DocumentoPagar docParcial = new DocumentoPagar();
+                docParcial.setEstado(DocumentoPagar.PARCIAL);
+                docParcial.setCompra(ejCompra);
 
-                List<DocumentoPagar> documentosParcial = documentoPagarManager.list(docPagar, "fecha", "asc");
+                List<DocumentoPagar> documentosParcial = documentoPagarManager.list(docParcial, "fecha", "asc");
                 Long idDocumento = null;
                 boolean tieneParcia = false;
 
@@ -213,76 +214,94 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                     System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
 
                 }
-
-                if (Math.round(Monto) > saldo) {
-                    docPagar = documentoPagarManager.get(idDocumento);
-
-                    docPagar.setSaldo(0.0);
-                    docPagar.setEstado(DocumentoPagar.CANCELADO);
-                    documentoPagarManager.update(docPagar);
-
-                    netoPago = (deudaTotal - saldo) + Math.round(interes);
-
-                    saldo = Math.round(Monto) - netoPago;
-
-                    if (saldo < 0) {
-                        Long netoSaldo = netoPago - Math.round(Monto);
-
-                        docPagar = documentoPagarManager.get(idDocumento);
-
-                        docPagar.setSaldo(Double.parseDouble(netoSaldo.toString()));
-                        docPagar.setEstado(DocumentoPagar.PARCIAL);
-                        
-                        documentoPagarManager.update(docPagar);
-                        
-                        ejMovimiento.setCompra(ejCompra);
-                        ejMovimiento.setEmpresa(new Empresa(idEmpresa));
-                        ejMovimiento.setImporte(Monto);
-                        ejMovimiento.setInteres(interes);
-                        ejMovimiento.setSaldo(Double.parseDouble(netoSaldo.toString()));
-                        ejMovimiento.setActivo("S");
-                        ejMovimiento.setProveedor(ejCompra.getProveedor());
-                        ejMovimiento.setTipoTransaccion("O");
-                        ejMovimiento.setVuelto(0.0);
-                        ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
-                        ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                        ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                        ejMovimiento.setUsuario(new Usuario(idUsuario));
-                    }else{
+                if (tieneParcia) {
+                    if (Math.round(Monto) > saldo) {
+                        docPagar = new DocumentoPagar();
                         docPagar = documentoPagarManager.get(idDocumento);
 
                         docPagar.setSaldo(0.0);
                         docPagar.setEstado(DocumentoPagar.CANCELADO);
-                        
                         documentoPagarManager.update(docPagar);
+
+                        netoPago = (deudaTotal - saldo) + Math.round(interes);
+
+                        saldo = Math.round(Monto) - netoPago;
+
+                        if (saldo < 0) {
+                            Long netoSaldo = netoPago - Math.round(Monto);
+
+                            docPagar = new DocumentoPagar();
+
+                            docPagar = documentoPagarManager.get(idDocPago);
+
+                            docPagar.setSaldo(Double.parseDouble(netoSaldo.toString()));
+                            docPagar.setEstado(DocumentoPagar.PARCIAL);
+
+                            documentoPagarManager.update(docPagar);
+
+                            ejMovimiento.setCompra(ejCompra);
+                            ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                            ejMovimiento.setImporte(Monto);
+                            ejMovimiento.setNeto(Monto);
+                            ejMovimiento.setInteres(interes);
+                            ejMovimiento.setSaldo(Double.parseDouble(netoSaldo.toString()));
+                            ejMovimiento.setActivo("S");
+                            ejMovimiento.setProveedor(ejCompra.getProveedor());
+                            ejMovimiento.setTipoTransaccion("O");
+                            ejMovimiento.setVuelto(0.0);
+                            ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setUsuario(new Usuario(idUsuario));
+
+                        } else {
+                            docPagar = new DocumentoPagar();
+                            
+                            docPagar = documentoPagarManager.get(idDocPago);
+
+                            docPagar.setSaldo(0.0);
+                            docPagar.setEstado(DocumentoPagar.CANCELADO);
+
+                            documentoPagarManager.update(docPagar);
+
+                            ejMovimiento.setCompra(ejCompra);
+                            ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                            ejMovimiento.setImporte(Monto);
+                            ejMovimiento.setInteres(interes);
+                            ejMovimiento.setNeto(Monto - Double.parseDouble(saldo.toString()));
+                            ejMovimiento.setSaldo(0.0);
+                            ejMovimiento.setActivo("S");
+                            ejMovimiento.setProveedor(ejCompra.getProveedor());
+                            ejMovimiento.setTipoTransaccion("O");
+                            ejMovimiento.setVuelto(Double.parseDouble(saldo.toString()));
+                            ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setUsuario(new Usuario(idUsuario));
+                        }
+                    }else{
                         
-                        ejMovimiento.setCompra(ejCompra);
-                        ejMovimiento.setEmpresa(new Empresa(idEmpresa));
-                        ejMovimiento.setImporte(Monto);
-                        ejMovimiento.setInteres(interes);
-                        ejMovimiento.setSaldo(0.0);
-                        ejMovimiento.setActivo("S");
-                        ejMovimiento.setProveedor(ejCompra.getProveedor());
-                        ejMovimiento.setTipoTransaccion("O");
-                        ejMovimiento.setVuelto(Double.parseDouble(saldo.toString()));
-                        ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
-                        ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                        ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                        ejMovimiento.setUsuario(new Usuario(idUsuario));
                     }
+                } else {
+                    netoPago = deudaTotal + Math.round(interes);
 
-                } else if (tieneParcia) {
-                    saldo = saldo - Math.round(Monto);
+                    saldo = Math.round(Monto) - netoPago;
+                    
+                    docPagar = new DocumentoPagar();
+                    docPagar = documentoPagarManager.get(idDocPago);
 
-                    docPagar = documentoPagarManager.get(idDocumento);
-
-                    if (saldo > 0) {
+                    if (saldo < 0) {
+                        
+                        saldo =  netoPago - Math.round(Monto);
+                        
+                        docPagar.setEstado(DocumentoPagar.PARCIAL);
                         docPagar.setSaldo(Double.parseDouble(saldo.toString()));
                         documentoPagarManager.update(docPagar);
 
                         ejMovimiento.setCompra(ejCompra);
                         ejMovimiento.setEmpresa(new Empresa(idEmpresa));
                         ejMovimiento.setImporte(Monto);
+                        ejMovimiento.setNeto(Monto);
                         ejMovimiento.setInteres(interes);
                         ejMovimiento.setSaldo(Double.parseDouble(saldo.toString()));
                         ejMovimiento.setActivo("S");
@@ -295,6 +314,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         ejMovimiento.setUsuario(new Usuario(idUsuario));
 
                     } else {
+                        
                         docPagar.setSaldo(0.0);
                         docPagar.setEstado(DocumentoPagar.CANCELADO);
                         documentoPagarManager.update(docPagar);
@@ -302,19 +322,20 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         ejMovimiento.setCompra(ejCompra);
                         ejMovimiento.setEmpresa(new Empresa(idEmpresa));
                         ejMovimiento.setImporte(Monto);
+                        ejMovimiento.setNeto(Monto - Double.parseDouble(saldo.toString()));
                         ejMovimiento.setInteres(interes);
                         ejMovimiento.setSaldo(0.0);
                         ejMovimiento.setActivo("S");
                         ejMovimiento.setProveedor(ejCompra.getProveedor());
                         ejMovimiento.setTipoTransaccion("O");
-                        ejMovimiento.setVuelto(0.0);
+                        ejMovimiento.setVuelto(Double.parseDouble(saldo.toString()));
                         ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
                         ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                         ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                         ejMovimiento.setUsuario(new Usuario(idUsuario));
                     }
                 }
-                
+
                 this.save(ejMovimiento);
             } else {
 
@@ -333,6 +354,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         ejMovimiento.setCompra(ejCompra);
                         ejMovimiento.setEmpresa(new Empresa(idEmpresa));
                         ejMovimiento.setImporte(Monto);
+                        ejMovimiento.setNeto(Monto);
                         ejMovimiento.setInteres(interes);
                         ejMovimiento.setSaldo(Double.parseDouble(netoSaldo.toString()));
                         ejMovimiento.setActivo("S");
@@ -353,6 +375,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                             ejMovimiento.setCompra(ejCompra);
                             ejMovimiento.setEmpresa(new Empresa(idEmpresa));
                             ejMovimiento.setImporte(Monto);
+                            ejMovimiento.setNeto(Monto - Double.parseDouble(saldo.toString()));
                             ejMovimiento.setInteres(interes);
                             ejMovimiento.setSaldo(0.0);
                             ejMovimiento.setActivo("S");

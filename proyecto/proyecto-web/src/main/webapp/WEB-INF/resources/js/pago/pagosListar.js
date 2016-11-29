@@ -420,6 +420,9 @@ $(document).ready(function(data) {
                                 $('#netoOculto').val(pago.importePagar);
                                 $('#id-date-picker').val(pago.fechaCuota);
                                 $('#nroCuota').val(pago.cuota);
+                                $('#nroCuota').show();
+                                $('#monto').show();
+                                $('#id-date-picker').show();
                             }
 
 

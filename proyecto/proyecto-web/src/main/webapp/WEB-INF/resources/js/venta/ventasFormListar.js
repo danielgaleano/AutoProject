@@ -86,6 +86,23 @@ $(document).ready(function(data) {
                 return $("#idVenta").val();
             }
         },
+        onSelectRow: function(row, isSelected) {
+            var data = $(grid_selector).jqGrid('getRowData', row);
+            setTimeout(function() {
+                var neto =  parseInt($('#montoTotal').val());
+                console.log(neto);
+                if($.isNumeric(neto) !== true){
+                    neto = 0;
+                }
+                console.log(neto);
+                if(isSelected){
+                    neto = neto + parseInt(data.precioCosto);
+                }else{
+                    neto = neto - parseInt(data.precioCosto);
+                }
+                $('#montoTotal').val(neto);
+            }, 0);
+        },
         jsonReader: {
             root: 'retorno',
             page: 'page',

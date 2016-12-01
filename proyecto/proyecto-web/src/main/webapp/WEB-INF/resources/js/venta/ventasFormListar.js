@@ -39,7 +39,7 @@ $(document).ready(function(data) {
     //ventaForm($("#idVenta").val(), action);
 
     $(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/venta/detalles/listar',
+        url: CONTEXT_ROOT + '/vehiculos/listar',
         datatype: 'json',
         mtype: 'GET',
         height: 150,
@@ -49,8 +49,8 @@ $(document).ready(function(data) {
         colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'COTIZACION', 'PRECIO', 'TOTAL', '', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'vehiculo.codigo', index: 'vehiculo.codigo', key: true, width: 100, editable: false},
-            {name: 'vehiculo.tipo.nombre', index: 'vehiculo.tipo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+            {name: 'codigo', index: 'codigo', key: true, width: 100, editable: false},
+            {name: 'tipo.nombre', index: 'tipo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     dataUrl: CONTEXT_ROOT + '/tipos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',
                     buildSelect: function(resp) {
@@ -68,7 +68,7 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'vehiculo.marca.nombre', index: 'vehiculo.marca.nombre', width: 150, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
+            {name: 'marca.nombre', index: 'marca.nombre', width: 150, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     dataEvents: [
                         {type: 'change', fn: function(e) {
@@ -102,7 +102,7 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }},
-            {name: 'vehiculo.modelo.nombre', index: 'vehiculo.modelo.nombre', width: 130, editable: true, edittype: 'select',
+            {name: 'modelo.nombre', index: 'modelo.nombre', width: 130, editable: true, edittype: 'select',
                 editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     
@@ -122,10 +122,10 @@ $(document).ready(function(data) {
                     }
                 }
             },
-            {name: 'vehiculo.caracteristica', index: 'vehiculo.caracteristica', width: 130, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
-            {name: 'vehiculo.anho', index: 'vehiculo.anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'vehiculo.color', index: 'vehiculo.color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'vehiculo.transmision', index: 'vehiculo.transmision', width: 110, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
+            {name: 'caracteristica', index: 'caracteristica', width: 130, sortable: false, editable: true, edittype: "textarea", editoptions: {rows: "2", cols: "10"}},
+            {name: 'anho', index: 'anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'color', index: 'color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'transmision', index: 'transmision', width: 110, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
             {name: 'moneda.nombre', index: 'moneda.nombre', width: 120, editable: true, edittype: "select",
                 editoptions: {
                     dataEvents: [

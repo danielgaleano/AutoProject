@@ -302,6 +302,8 @@ public class VehiculoController extends BaseController {
                 modelo.setChasis(vehiculoRecibido.getChasis());
                 modelo.setColor(vehiculoRecibido.getColor());
                 modelo.setKilometraje(vehiculoRecibido.getKilometraje());
+                modelo.setMotor(vehiculoRecibido.getMotor());
+                modelo.setPrecioVenta(vehiculoRecibido.getPrecioVenta());
                 modelo.setPrecioMantenimiento(vehiculoRecibido.getPrecioMantenimiento());
                 modelo.setFechaMantenimiento(vehiculoRecibido.getFechaMantenimiento());
                 modelo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));

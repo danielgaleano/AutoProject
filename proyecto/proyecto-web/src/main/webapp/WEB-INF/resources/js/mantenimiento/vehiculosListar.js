@@ -28,7 +28,7 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRANSMISION', 'PRECIO DE VENTA', ''],
+        colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRANSMISION', 'PRECIO DE COSTO', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'codigo', index: 'codigo', width: 60, editable: false},
@@ -38,7 +38,7 @@ $(document).ready(function(data) {
             {name: 'anho', index: 'anho', width: 60, editable: false},
             {name: 'color', index: 'color', width: 70, sortable: false},
             {name: 'transmision', index: 'transmision', width: 90, sortable: false},
-            {name: 'precioVenta', index: 'precioVenta', width: 90, sortable: false},
+            {name: 'precioCosto', index: 'precioCosto', formatter: 'number', width: 90, sortable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {

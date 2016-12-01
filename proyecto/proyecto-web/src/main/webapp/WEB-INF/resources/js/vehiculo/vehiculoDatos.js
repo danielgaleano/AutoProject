@@ -36,7 +36,7 @@ $(document).ready(function(data) {
                         + '</div>');
             } else {
                 var vehiculo = response.data;
-
+                $('#idMarca').val(vehiculo['marca.id']);
                 $('#tipo').searchableOptionList({
                     data: CONTEXT_ROOT + "/tipos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc",
                     converter: function(sol, rawDataFromUrl) {
@@ -69,7 +69,7 @@ $(document).ready(function(data) {
                         }
                     }
                 });
-                
+
                 $('#marca').searchableOptionList({
                     data: CONTEXT_ROOT + "/marcas/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc",
                     converter: function(sol, rawDataFromUrl) {
@@ -98,13 +98,48 @@ $(document).ready(function(data) {
                     maxHeight: '220px',
                     events: {
                         onChange: function(a) {
-                            $('#idMarca').val(a.getSelection()[0].value);
+                            
+                            setTimeout(function() {
+                                $('#idMarca').val(a.getSelection()[0].value);
+                                $('#sol').find('.sol-container').remove();
+                                $('#sol').find('.sol-option').remove();
+                                console.log(newSol);
+                                newSol.options.data = CONTEXT_ROOT + "/modelos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idMarca=" + a.getSelection()[0].value ;
+                                newSol.items = "";
+                                newSol.init();
+                                
+                                $('#modelo').searchableOptionList({
+                                    data: CONTEXT_ROOT + "/modelos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idMarca=" + a.getSelection()[0].value,
+                                    converter: function(sol, rawDataFromUrl) {
+                                        var solData = [];
+                                        $.each(rawDataFromUrl.retorno, function() {
+
+                                            var aSingleOptionItem = {
+                                                // required attributes
+                                                "type": "option",
+                                                "label": this['nombre'],
+                                                "value": this['id'],
+                                                // optional attributes
+                                                "selected": false
+                                            };
+                                            solData.push(aSingleOptionItem);
+                                        });
+                                        return solData;
+                                    },
+                                    maxHeight: '220px',
+                                    events: {
+                                        onChange: function(a) {
+                                            $('#idModelo').val(a.getSelection()[0].value);
+                                        }
+                                    }
+                                });
+                            }, 0);
                         }
                     }
                 });
-                
-                $('#modelo').searchableOptionList({
-                    data: CONTEXT_ROOT + "/modelos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc",
+
+                var newSol = $('#modelo').searchableOptionList({
+                    data: CONTEXT_ROOT + "/modelos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idMarca="+$('#idMarca').val(),
                     converter: function(sol, rawDataFromUrl) {
                         var solData = [];
                         $.each(rawDataFromUrl.retorno, function() {

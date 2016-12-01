@@ -610,6 +610,8 @@ public class CompraController extends BaseController {
                 mensaje.setMensaje("El Nro. Factura no puede estar vacio.");
                 return mensaje;
             }
+            
+            
 
             mensaje = compraManager.editarCompra(compraRecibido.getId(), compraRecibido, compraRecibido.getFormaPago(),
                     compraRecibido.getTipoDescuento(), userDetail.getIdEmpresa(), userDetail.getId());

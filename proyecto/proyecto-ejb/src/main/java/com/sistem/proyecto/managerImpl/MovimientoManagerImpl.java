@@ -359,9 +359,9 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
                 for (DetalleCompra rpm : listDetalle) {
 
-                    Long porcentajeVehiculo = Math.round(rpm.getNeto()) / montoTotal;
+                    Double porcentajeVehiculo = rpm.getNeto() / montoTotal;
 
-                    Long costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
+                    Double costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
 
                     rpm.getVehiculo().setEstado(Vehiculo.MANTENIMIENTO);
                     rpm.getVehiculo().setPrecioCosto(Double.parseDouble(costoInteresVeh.toString()));
@@ -555,14 +555,14 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
                     for (DetalleCompra rpm : listDetalle) {
 
-                        Long porcentajeVehiculo = Math.round(rpm.getNeto()) / montoTotal;
+                        Double porcentajeVehiculo = rpm.getNeto() / montoTotal;
 
-                        Long costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
+                        Double costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
 
-                        Long costoVeh = Math.round(rpm.getNeto()) - costoInteresVeh;
+                        Double costoVeh = Math.round(rpm.getNeto()) - costoInteresVeh;
 
                         rpm.getVehiculo().setEstado(Vehiculo.MANTENIMIENTO);
-                        rpm.getVehiculo().setPrecioCosto(Double.parseDouble(costoVeh.toString()));
+                        rpm.getVehiculo().setPrecioCosto(costoVeh);
 
                         vehiculoManager.update(rpm.getVehiculo());
 

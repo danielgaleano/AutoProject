@@ -133,7 +133,9 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
                 }
 
                 String codDetalle = randomString(5, "DET");
-
+               
+                ejPedido = pedidoManager.get(ejPedido);
+                
                 vehiculo.setCodigo(ejPedido.getId() + "-" + codDetalle);
                 vehiculo.setActivo("S");
                 vehiculo.setEmpresa(new Empresa(idEmpresa));

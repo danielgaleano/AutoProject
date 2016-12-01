@@ -226,7 +226,7 @@ $(document).ready(function(data) {
             $('#validation-formCompra').valid();
             $('#grid').trigger('reloadGrid');
             $("#formDescuento").hide();
-            $("#aceptar").hide();
+            //$("#aceptar").hide();
         }
     });
 

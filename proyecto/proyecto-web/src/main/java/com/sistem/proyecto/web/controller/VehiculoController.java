@@ -38,13 +38,13 @@ import com.sistem.proyecto.manager.utils.DTORetorno;
 @RequestMapping(value = "/vehiculos")
 public class VehiculoController extends BaseController {
 
-    String atributos = "id,codigo,activo,marca.id,marca.nombre,modelo.id,modelo.nombre,empresa.id,empresa.nombre,"
+    String atributos = "id,codigo,activo,marca.id,precioCosto,precioVenta,marca.nombre,modelo.id,modelo.nombre,empresa.id,empresa.nombre,"
             + "tipo.id,tipo.nombre,transmision,color,anho,caracteristica,proveedor.id,proveedor.nombre";
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listaVehiculos(Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("vehiculosListar");
+        retorno.setViewName("stockListar");
         return retorno;
 
     }
@@ -66,7 +66,7 @@ public class VehiculoController extends BaseController {
         model.addAttribute("id", id);
         return retorno;
     }
-
+   
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno listar(@ModelAttribute("_search") boolean filtrar,
@@ -79,10 +79,12 @@ public class VehiculoController extends BaseController {
 
         DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        ordenarPor = "codigo";
+        ordenarPor = "marca.nombre";
+        
         Vehiculo ejVehiculo = new Vehiculo();
         ejVehiculo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-
+        ejVehiculo.setEstado(Vehiculo.STOCK);
+        
         List<Map<String, Object>> listMapGrupos = null;
         try {
 

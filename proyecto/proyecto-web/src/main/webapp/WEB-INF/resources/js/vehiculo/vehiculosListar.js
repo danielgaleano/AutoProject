@@ -31,11 +31,11 @@ $(document).ready(function(data) {
         colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRANSMISION', 'PRECIO DE VENTA', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'codigo', index: 'codigo', key: true, width: 60, editable: false},
-            {name: 'tipo.nombre', index: 'tipo.nombre', key: true, width: 100, editable: false},
-            {name: 'marca.nombre', index: 'marca.nombre', key: true, width: 100, editable: false},
-            {name: 'modelo.nombre', index: 'modelo.nombre', key: true, width: 100, editable: false},
-            {name: 'anho', index: 'anho', key: true, width: 60, editable: false},
+            {name: 'codigo', index: 'codigo', width: 60, editable: false},
+            {name: 'tipo.nombre', index: 'tipo.nombre', width: 100, editable: false},
+            {name: 'marca.nombre', index: 'marca.nombre', width: 100, editable: false},
+            {name: 'modelo.nombre', index: 'modelo.nombre', width: 100, editable: false},
+            {name: 'anho', index: 'anho', width: 60, editable: false},
             {name: 'color', index: 'color', width: 70, sortable: false},
             {name: 'transmision', index: 'transmision', width: 90, sortable: false},
             {name: 'precioVenta', index: 'precioVenta', width: 90, sortable: false},
@@ -90,7 +90,7 @@ $(document).ready(function(data) {
             filters: null,
             todos: false
         },
-        serializeRowData:function(data){
+        serializeRowData: function(data) {
             console.log(data);
             return data;
         },
@@ -99,10 +99,10 @@ $(document).ready(function(data) {
             page: 'page',
             total: 'total',
             records: function(obj) {
-                if(obj.retorno !== null){
+                if (obj.retorno !== null) {
                     return obj.retorno.length;
-                }else{
-                    return 0 ;
+                } else {
+                    return 0;
                 }
             }
         },
@@ -133,34 +133,22 @@ $(document).ready(function(data) {
                 var ini = '<div style="float: none;" class="btn-group btn-group-sm">';
                 var fin = '</div>';
                 if (isStatus) {
-                    var estado = dato.activo;
-                    if (estado === 'S') {
-                        //var labelActivo = '<span class="table-estado label label-success" value="S">Activo</span>';
-                        if (isEditarInline) {
-
-                            edit = editInlineButton(cl, permisoEditar);
-                            $(grid_selector).setRowData(ids[i], {act: edit});
-
-                        } else {
-
-                            asignar = "";
-                            visuali = visualizarButton(cl, permisoVisualizar,null);
-                            editForm = editFormButton(cl, permisoEditar);
-                            //desact = desactivarButton(cl, permisoDesactivar);
-                            //$(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
-                            $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
-                        }
-                        //$(grid_selector).setRowData(ids[i], {activo: labelActivo});
-                    } else {
-                        asignar = "";
-                        visuali = visualizarButton(cl, permisoVisualizar,null);
-                        editForm = editFormButton(cl, permisoEditar);
-                        $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
-//                        var labelInactivo = '<span class="table-estado label label-danger"  value="N" >Inactivo</span>';
-//                        activar = activarButton(cl, permisoActivar);
-//                        $(grid_selector).setRowData(ids[i], {act: ini + activar + fin});
-//                        $(grid_selector).setRowData(ids[i], {activo: labelInactivo});
+                    var content = window.location.href;
+                    if (permisoEditar) {
+                        editForm = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + content + '/editar/' + cl + '"'
+                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Agregar Stock">'
+                                + ' <span class="fa fa-fw fa-wrench"></span></a>';
                     }
+                    asignar = "";
+                    //visuali = visualizarButton(cl, permisoVisualizar,null);
+                    //editForm = editFormButton(cl, permisoEditar);
+                    //desact = desactivarButton(cl, permisoDesactivar);
+                    //$(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
+                    $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
+
+
+
                 } else {
                     if (isEditarInline) {
 
@@ -169,7 +157,7 @@ $(document).ready(function(data) {
                     } else {
 
                         //asignar = asigButton(cl, true);
-                        visuali = visualizarButton(cl, permisoVisualizar,null);
+                        visuali = visualizarButton(cl, permisoVisualizar, null);
                         editForm = editFormButton(cl, permisoEditar);
                         $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + fin});
                     }
@@ -214,6 +202,6 @@ function parseBolean(val) {
     }
 
 }
-            
+
 
 

@@ -442,7 +442,7 @@ $(document).ready(function(data) {
                     {name: "estado", index: "estado", width: 130, align: "right", sortable: false}
                 ],
                 height: '100%',
-                rowNum: 10,
+                rowNum: 60,
                 sortname: 'num',
                 sortorder: "asc",
                 jsonReader: {

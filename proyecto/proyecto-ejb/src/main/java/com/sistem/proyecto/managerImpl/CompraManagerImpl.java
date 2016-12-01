@@ -553,6 +553,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     Double saldo = Double.parseDouble(ejCompraUp.getMonto()) - montoInteres;
 
                     ejCompraUp.setSaldo("");
+                    ejCompraUp.setTipoDescuento("GENERAL");
                     ejCompraUp.setDescuento(interes + "");
                     ejCompraUp.setMontoDescuento(montoInteres + "");
                     ejCompraUp.setNeto(saldo);

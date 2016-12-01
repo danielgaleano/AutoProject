@@ -337,17 +337,22 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                 }
 
                 this.save(ejMovimiento);
+                
+                Vehiculo ejVehiculo = new Vehiculo();
+                ejVehiculo.setEstado("PENDIENTE");
 
                 DetalleCompra ejDetalle = new DetalleCompra();
                 ejDetalle.setCompra(ejCompra);
+                ejDetalle.setVehiculo(ejVehiculo);
+                
                 List<DetalleCompra> listDetalle = detalleCompraManager.list(ejDetalle);
 
-                Long montoTotal = Long.parseLong(Math.round(Double.parseDouble(ejCompra.getMonto()))+"");
+                Long montoTotal = Long.parseLong(Math.round(Double.parseDouble(ejCompra.getMonto())) + "");
 
                 Long montoTotalImteres = Long.parseLong("0");
 
                 if (ejCompra.getEntrega() != null && ejCompra.getEntrega().compareToIgnoreCase("") != 0) {
-                    montoTotalImteres = Long.parseLong(Math.round(Double.parseDouble(ejCompra.getEntrega()))+"") + Math.round(ejCompra.getNeto());
+                    montoTotalImteres = Long.parseLong(Math.round(Double.parseDouble(ejCompra.getEntrega())) + "") + Math.round(ejCompra.getNeto());
                 } else {
                     montoTotalImteres = Math.round(ejCompra.getNeto());
                 }
@@ -527,20 +532,20 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                     ejDetalle.setCompra(ejCompra);
                     List<DetalleCompra> listDetalle = detalleCompraManager.list(ejDetalle);
 
-                    Long montoTotal = Long.parseLong(Math.round(Double.parseDouble(ejCompra.getMonto()))+"");
+                    Long montoTotal = Long.parseLong(Math.round(Double.parseDouble(ejCompra.getMonto())) + "");
 
                     Long montoTotalImteres = Long.parseLong("0");
 
-                    if (ejCompra.getMontoDescuento()!= null && ejCompra.getMontoDescuento().compareToIgnoreCase("") != 0) {
-                        montoTotalImteres = Long.parseLong(Math.round(Double.parseDouble(ejCompra.getMontoDescuento()))+"");
-                    } 
+                    if (ejCompra.getMontoDescuento() != null && ejCompra.getMontoDescuento().compareToIgnoreCase("") != 0) {
+                        montoTotalImteres = Long.parseLong(Math.round(Double.parseDouble(ejCompra.getMontoDescuento())) + "");
+                    }
 
                     for (DetalleCompra rpm : listDetalle) {
 
                         Long porcentajeVehiculo = Math.round(rpm.getNeto()) / montoTotal;
 
                         Long costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
-                        
+
                         Long costoVeh = Math.round(rpm.getNeto()) - costoInteresVeh;
 
                         rpm.getVehiculo().setEstado(Vehiculo.MANTENIMIENTO);
@@ -553,8 +558,6 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                     DetalleCompra ejDetalle = new DetalleCompra();
                     ejDetalle.setCompra(ejCompra);
                     List<DetalleCompra> listDetalle = detalleCompraManager.list(ejDetalle);
-
-                    
 
                     for (DetalleCompra rpm : listDetalle) {
 

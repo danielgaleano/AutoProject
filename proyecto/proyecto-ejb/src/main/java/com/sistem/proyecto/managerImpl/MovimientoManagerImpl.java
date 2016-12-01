@@ -337,14 +337,14 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                 }
 
                 this.save(ejMovimiento);
-                
+
                 Vehiculo ejVehiculo = new Vehiculo();
                 ejVehiculo.setEstado("PENDIENTE");
 
                 DetalleCompra ejDetalle = new DetalleCompra();
                 ejDetalle.setCompra(ejCompra);
                 ejDetalle.setVehiculo(ejVehiculo);
-                
+
                 List<DetalleCompra> listDetalle = detalleCompraManager.list(ejDetalle);
 
                 Long montoTotal = Long.parseLong(Math.round(Double.parseDouble(ejCompra.getMonto())) + "");
@@ -359,15 +359,28 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
                 for (DetalleCompra rpm : listDetalle) {
 
-                    Long porcentajeVehiculo = Math.round(rpm.getNeto()) / montoTotal;
+                    Double porcentajeVehiculo = rpm.getNeto() / montoTotal;
 
-                    Long costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
+                    Double costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
 
                     rpm.getVehiculo().setEstado(Vehiculo.MANTENIMIENTO);
                     rpm.getVehiculo().setPrecioCosto(Double.parseDouble(costoInteresVeh.toString()));
 
                     vehiculoManager.update(rpm.getVehiculo());
 
+                }
+
+                docParcial = new DocumentoPagar();
+                docParcial.setEstado(DocumentoPagar.PENDIENTE);
+                docParcial.setCompra(ejCompra);
+
+                int documentosPendientes = documentoPagarManager.list(docParcial, "fecha", "asc").size();
+
+                if (documentosPendientes <= 0) {
+                    ejCompra.setEstadoPago(DocumentoPagar.CANCELADO);
+                    ejCompra.setEstadoCompra(Compra.COMPRA_REALIZADA);
+
+                    compraManager.update(ejCompra);
                 }
 
             } else {
@@ -542,14 +555,14 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
                     for (DetalleCompra rpm : listDetalle) {
 
-                        Long porcentajeVehiculo = Math.round(rpm.getNeto()) / montoTotal;
+                        Double porcentajeVehiculo = rpm.getNeto() / montoTotal;
 
-                        Long costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
+                        Double costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
 
-                        Long costoVeh = Math.round(rpm.getNeto()) - costoInteresVeh;
+                        Double costoVeh = Math.round(rpm.getNeto()) - costoInteresVeh;
 
                         rpm.getVehiculo().setEstado(Vehiculo.MANTENIMIENTO);
-                        rpm.getVehiculo().setPrecioCosto(Double.parseDouble(costoVeh.toString()));
+                        rpm.getVehiculo().setPrecioCosto(costoVeh);
 
                         vehiculoManager.update(rpm.getVehiculo());
 

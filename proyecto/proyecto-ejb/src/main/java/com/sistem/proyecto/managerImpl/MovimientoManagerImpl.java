@@ -132,7 +132,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
             } else {
                 pago.setMonto(ejCompra.getMonto().toString());
 
-                if (ejCompra.getSaldo() != null) {
+                if (ejCompra.getSaldo() != null && ejCompra.getSaldo().compareToIgnoreCase("") != 0) {
                     pago.setSaldo(Double.parseDouble(ejCompra.getSaldo()));
                     pago.setImportePagar(Double.parseDouble(ejCompra.getNeto().toString()));
                     pago.setMonto(Math.round(ejCompra.getNeto()) + "");

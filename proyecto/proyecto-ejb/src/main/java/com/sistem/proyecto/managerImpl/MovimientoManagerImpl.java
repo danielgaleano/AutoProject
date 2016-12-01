@@ -87,42 +87,61 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                 pago.setCantidadCuotas(ejCompra.getCantidadCuotas());
 
                 DocumentoPagar docPagar = new DocumentoPagar();
-                docPagar.setEstado(DocumentoPagar.PENDIENTE);
+                docPagar.setEstado(DocumentoPagar.ENTREGA);
                 docPagar.setCompra(ejCompra);
 
-                List<DocumentoPagar> documentos = documentoPagarManager.list(docPagar, "fecha", "asc");
-                boolean tieneDeuda = true;
-                Long deudaTotal = Long.parseLong("0");
-
-                for (DocumentoPagar rpm : documentos) {
-                    if (tieneDeuda) {
-                        deudaTotal = Math.round(deudaTotal + rpm.getMonto());
+                List<DocumentoPagar> entrega = documentoPagarManager.list(docPagar, "fecha", "asc");
+                if (entrega != null) {
+                    for (DocumentoPagar rpm : entrega) {
 
                         pago.setMonto(Math.round(rpm.getMonto()) + "");
                         pago.setCuota(rpm.getNroCuota());
                         pago.setFechaCuota(rpm.getFecha());
                         pago.setIdDocPagar(rpm.getId());
 
-                        tieneDeuda = false;
                         System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
                     }
+                } else {
+
+                    docPagar = new DocumentoPagar();
+                    docPagar.setEstado(DocumentoPagar.PENDIENTE);
+                    docPagar.setCompra(ejCompra);
+
+                    List<DocumentoPagar> documentos = documentoPagarManager.list(docPagar, "fecha", "asc");
+
+                    boolean tieneDeuda = true;
+                    Long deudaTotal = Long.parseLong("0");
+
+                    for (DocumentoPagar rpm : documentos) {
+                        if (tieneDeuda) {
+                            deudaTotal = Math.round(deudaTotal + rpm.getMonto());
+
+                            pago.setMonto(Math.round(rpm.getMonto()) + "");
+                            pago.setCuota(rpm.getNroCuota());
+                            pago.setFechaCuota(rpm.getFecha());
+                            pago.setIdDocPagar(rpm.getId());
+
+                            tieneDeuda = false;
+                            System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
+                        }
+                    }
+                    docPagar = new DocumentoPagar();
+                    docPagar.setEstado(DocumentoPagar.PARCIAL);
+                    docPagar.setCompra(ejCompra);
+
+                    List<DocumentoPagar> documentosParcial = documentoPagarManager.list(docPagar, "fecha", "asc");
+
+                    for (DocumentoPagar rpm : documentosParcial) {
+                        Long saldo = Math.round(rpm.getSaldo());
+
+                        deudaTotal = deudaTotal + saldo;
+
+                        pago.setSaldo(Double.parseDouble(rpm.getSaldo().toString()));
+                        System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
+
+                    }
+                    pago.setImportePagar(Double.parseDouble(deudaTotal.toString()));
                 }
-                docPagar = new DocumentoPagar();
-                docPagar.setEstado(DocumentoPagar.PARCIAL);
-                docPagar.setCompra(ejCompra);
-
-                List<DocumentoPagar> documentosParcial = documentoPagarManager.list(docPagar, "fecha", "asc");
-
-                for (DocumentoPagar rpm : documentosParcial) {
-                    Long saldo = Math.round(rpm.getSaldo());
-
-                    deudaTotal = deudaTotal + saldo;
-
-                    pago.setSaldo(Double.parseDouble(rpm.getSaldo().toString()));
-                    System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
-
-                }
-                pago.setImportePagar(Double.parseDouble(deudaTotal.toString()));
 
                 retorno.setData(pago);
 

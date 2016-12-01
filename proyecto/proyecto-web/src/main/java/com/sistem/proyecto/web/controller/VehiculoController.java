@@ -237,12 +237,6 @@ public class VehiculoController extends BaseController {
         try {
             inicializarVehiculoManager();
 
-            if (vehiculoRecibido.getCodigo() == null || vehiculoRecibido.getCodigo() != null
-                    && vehiculoRecibido.getCodigo().compareToIgnoreCase("") == 0) {
-                retorno.setError(true);
-                retorno.setMensaje("El codigo del vehiculo no puede estar vacio.");
-                return retorno;
-            }
 
             if (vehiculoRecibido.getMarca() == null || vehiculoRecibido.getMarca() != null
                     && vehiculoRecibido.getMarca().getId() == 0) {

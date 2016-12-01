@@ -413,6 +413,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     ejAPagar = new DocumentoPagar();
                     ejAPagar.setActivo("S");
                     ejAPagar.setNroCuota("0");
+                    ejAPagar.setCompra(ejCompraUp);
                     ejAPagar.setMonto(entrega);
                     ejAPagar.setEstado(DocumentoPagar.ENTREGA);
                     ejAPagar.setFecha(new Timestamp(System.currentTimeMillis()));

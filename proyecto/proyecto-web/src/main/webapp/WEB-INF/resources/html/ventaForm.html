@@ -8,7 +8,7 @@
     <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
     <link th:href="@{/resources/dist/css/jquery.modal.css}" rel="stylesheet" />
     <link th:href="@{/resources/bootstrap/css/bootstrap-datetimepicker.min.css}" rel="stylesheet" />
-
+    <link th:href="@{/resources/css/sol.css}" rel="stylesheet" /> 
     <title>Venta</title>
     <script th:inline="javascript">
         var id = /*[[${id}]]*/'';
@@ -64,7 +64,7 @@
                                         <div class="form-group  col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                             <label class="col-lg-4 control-label">Cliente(*)</label>
                                             <div class="col-lg-6">
-                                                <select class="tableusuario-input " id="tipo"  name="tipo.id" data-placeholder="Seleccione el tipo">
+                                                <select class="tableusuario-input " id="cliente"  name="cliente.id" data-placeholder="Seleccione el tipo">
 
                                                 </select>
                                                 <span class="glyphicon form-control-feedback" id="tipo1"></span>
@@ -265,6 +265,7 @@
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
     <script th:src="@{/resources/js/venta/ventasForm.js}"></script>
     <script th:src="@{~/proyecto/resources/js/cliente/clienteForm.js}" charset="UTF-8"></script>
+    <script th:src="@{/resources/js/lib/sol.js}"></script>
     <script th:src="@{/resources/js/venta/ventaDatos.js}"></script>
     <script th:src="@{/resources/js/venta/ventasFormListar.js}"></script>
 

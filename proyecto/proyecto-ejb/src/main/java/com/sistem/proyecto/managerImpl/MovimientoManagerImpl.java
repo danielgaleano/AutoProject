@@ -337,24 +337,34 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                 }
 
                 this.save(ejMovimiento);
-                
+
                 DetalleCompra ejDetalle = new DetalleCompra();
                 ejDetalle.setCompra(ejCompra);
                 List<DetalleCompra> listDetalle = detalleCompraManager.list(ejDetalle);
 
-                Long montoTotal = Math.round(ejCompra.getNeto());
+                Long montoTotal = Long.parseLong(ejCompra.getMonto());
 
-                Long costoVehiculo = montoTotal / Long.parseLong(listDetalle.size() + "");
+                Long montoTotalImteres = Long.parseLong("0");
+
+                if (ejCompra.getEntrega() != null && ejCompra.getEntrega().compareToIgnoreCase("") != 0) {
+                    montoTotalImteres = Long.parseLong(ejCompra.getEntrega()) + Math.round(ejCompra.getNeto());
+                } else {
+                    montoTotalImteres = Math.round(ejCompra.getNeto());
+                }
 
                 for (DetalleCompra rpm : listDetalle) {
 
+                    Long porcentajeVehiculo = Math.round(rpm.getNeto()) / montoTotal;
+
+                    Long costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
+
                     rpm.getVehiculo().setEstado(Vehiculo.MANTENIMIENTO);
-                    rpm.getVehiculo().setPrecioCosto(Double.parseDouble(costoVehiculo.toString()));
+                    rpm.getVehiculo().setPrecioCosto(Double.parseDouble(costoInteresVeh.toString()));
 
                     vehiculoManager.update(rpm.getVehiculo());
 
                 }
-                
+
             } else {
 
                 if (ejCompra.getEstadoPago().compareToIgnoreCase(DocumentoPagar.PENDIENTE) == 0) {
@@ -387,7 +397,10 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         this.save(ejMovimiento);
                     } else {
                         if (saldo > 0) {
+
                             ejCompra.setEstadoPago(DocumentoPagar.CANCELADO);
+                            ejCompra.setEstadoCompra(Compra.COMPRA_REALIZADA);
+
                             compraManager.update(ejCompra);
 
                             ejMovimiento.setCompra(ejCompra);
@@ -410,6 +423,8 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         } else if (saldo == 0) {
 
                             ejCompra.setEstadoPago(DocumentoPagar.CANCELADO);
+                            ejCompra.setEstadoCompra(Compra.COMPRA_REALIZADA);
+
                             compraManager.update(ejCompra);
 
                             ejMovimiento.setCompra(ejCompra);
@@ -430,7 +445,8 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
                         }
                     }
-                } else {
+                } else if (ejCompra.getEstadoPago().compareToIgnoreCase(DocumentoPagar.PARCIAL) == 0) {
+
                     netoPago = Long.parseLong(ejCompra.getSaldo()) + Math.round(interes);
 
                     saldo = Math.round(Monto) - netoPago;
@@ -506,6 +522,50 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         }
                     }
                 }
+                if (ejCompra.getTipoDescuento().compareToIgnoreCase("GENERAL") == 0) {
+                    DetalleCompra ejDetalle = new DetalleCompra();
+                    ejDetalle.setCompra(ejCompra);
+                    List<DetalleCompra> listDetalle = detalleCompraManager.list(ejDetalle);
+
+                    Long montoTotal = Long.parseLong(ejCompra.getMonto());
+
+                    Long montoTotalImteres = Long.parseLong("0");
+
+                    if (ejCompra.getMontoDescuento()!= null && ejCompra.getMontoDescuento().compareToIgnoreCase("") != 0) {
+                        montoTotalImteres = Long.parseLong(ejCompra.getMontoDescuento());
+                    } 
+
+                    for (DetalleCompra rpm : listDetalle) {
+
+                        Long porcentajeVehiculo = Math.round(rpm.getNeto()) / montoTotal;
+
+                        Long costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
+                        
+                        Long costoVeh = Math.round(rpm.getNeto()) - costoInteresVeh;
+
+                        rpm.getVehiculo().setEstado(Vehiculo.MANTENIMIENTO);
+                        rpm.getVehiculo().setPrecioCosto(Double.parseDouble(costoVeh.toString()));
+
+                        vehiculoManager.update(rpm.getVehiculo());
+
+                    }
+                } else {
+                    DetalleCompra ejDetalle = new DetalleCompra();
+                    ejDetalle.setCompra(ejCompra);
+                    List<DetalleCompra> listDetalle = detalleCompraManager.list(ejDetalle);
+
+                    
+
+                    for (DetalleCompra rpm : listDetalle) {
+
+                        rpm.getVehiculo().setEstado(Vehiculo.MANTENIMIENTO);
+                        rpm.getVehiculo().setPrecioCosto(rpm.getNeto());
+
+                        vehiculoManager.update(rpm.getVehiculo());
+
+                    }
+                }
+
             }
 
             mensaje.setId(idCompra);

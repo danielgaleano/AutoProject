@@ -23,6 +23,39 @@ $(document).ready(function(data) {
         cargarDatos(id);
     }
 
+    $('#cliente').searchableOptionList({
+        data: CONTEXT_ROOT + "/clientes/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc",
+        converter: function(sol, rawDataFromUrl) {
+            var solData = [];
+            $.each(rawDataFromUrl.retorno, function() {
+
+//                var select = false;
+//                if (this['id'] === vehiculo['tipo.id']) {
+//                    select = true; // label and value are returned from Java layer
+//                } else {
+//                    select = false; // label and value are returned from Java layer
+//                }
+
+                var aSingleOptionItem = {
+                    // required attributes
+                    "type": "option",
+                    "label": this['nombre'],
+                    "value": this['id'],
+                    // optional attributes
+                    "selected": false
+                };
+                solData.push(aSingleOptionItem);
+            });
+            return solData;
+        },
+        maxHeight: '220px',
+        events: {
+            onChange: function(a) {
+                $('#idTipo').val(a.getSelection()[0].value);
+            }
+        }
+    });
+
 });
 
 function cargarDatos(id) {
@@ -97,7 +130,7 @@ function cargarDatos(id) {
                 $('#idProveedorConta').val(venta['cliente.id']);
                 $('#validation-form').find('.tableusuario-input').attr("disabled", true);
                 $('#buttonOption').hide();
-                
+
                 var jqXHR = $.get(CONTEXT_ROOT + "/clientes/" + venta['cliente.id'], function(response, textStatus, jqXHR) {
 
                     if (response.error) {
@@ -111,7 +144,7 @@ function cargarDatos(id) {
 
                         var cliente = response.data;
 
-                        $('#idProveedor').val(cliente.id);                        
+                        $('#idProveedor').val(cliente.id);
                         $('#ruc').val(cliente.ruc);
                         $('#nombre').val(cliente.nombre);
                         $('#email').val(cliente.email);

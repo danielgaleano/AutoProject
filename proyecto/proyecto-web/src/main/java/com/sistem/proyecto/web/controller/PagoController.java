@@ -219,7 +219,7 @@ public class PagoController extends BaseController {
             }
             
             if (pagoRecibido.getInteres()== null || pagoRecibido.getInteres() != null
-                    && pagoRecibido.getInteres()  == 0) {
+                    && pagoRecibido.getInteres().toString().compareToIgnoreCase("")  == 0) {
                 mensaje.setError(true);
                 mensaje.setMensaje("Debe ingresar el interes a Pagar.");
                 return mensaje;

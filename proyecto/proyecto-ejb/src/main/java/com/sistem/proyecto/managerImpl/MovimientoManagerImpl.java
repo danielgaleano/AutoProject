@@ -91,7 +91,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                 docPagar.setCompra(ejCompra);
 
                 List<DocumentoPagar> entrega = documentoPagarManager.list(docPagar, "fecha", "asc");
-                if (entrega != null) {
+                if (entrega != null && !entrega.isEmpty()) {
                     for (DocumentoPagar rpm : entrega) {
 
                         pago.setMonto(Math.round(rpm.getMonto()) + "");

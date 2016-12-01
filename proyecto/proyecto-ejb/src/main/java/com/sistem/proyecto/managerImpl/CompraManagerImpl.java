@@ -240,9 +240,9 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 this.update(ejCompra);
 
             } else {
-                
+
                 ejCompra = this.get(idCompra);
-                
+
                 Compra ejFactura = new Compra();
                 ejFactura.setNroFactura(nroFactura);
                 Map<String, Object> nroFacturaMap = this.getAtributos(ejFactura, "id".split(","), true, true);
@@ -253,7 +253,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     mensaje.setMensaje("El numero de factura ya se encuentra registrada.");
                     return mensaje;
 
-                }          
+                }
 
                 Moneda ejMoneda = monedaManager.get(new Moneda(detalleCompra.getMoneda().getId()));
 
@@ -287,7 +287,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejDetCompra.setEmpresa(new Empresa(idEmpresa));
                 ejDetCompra.setVehiculo(ejVehiculo);
                 ejDetCompra.setMoneda(ejMoneda);
-                 ejDetCompra.setCambioDia(ejMoneda.getValor());
+                ejDetCompra.setCambioDia(ejMoneda.getValor());
                 ejDetCompra.setTotal(Double.parseDouble(total.toString()));
                 ejDetCompra.setNeto(Double.parseDouble(total.toString()));
                 ejDetCompra.setPrecio(detalleCompra.getPrecio());
@@ -411,7 +411,14 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     }
 
                     ejAPagar = new DocumentoPagar();
-
+                    ejAPagar.setActivo("S");
+                    ejAPagar.setNroCuota("0");
+                    ejAPagar.setMonto(entrega);
+                    ejAPagar.setEstado(DocumentoPagar.ENTREGA);
+                    ejAPagar.setFecha(new Timestamp(System.currentTimeMillis()));
+                    
+                    documentoPagarManager.save(ejAPagar);
+                    
                     int contador = 1;
                     boolean tieneFecha = true;
                     for (int i = 1; i <= compra.getCantidadCuotas(); i++) {

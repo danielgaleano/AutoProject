@@ -189,9 +189,9 @@ public class MantenimientoController extends BaseController{
 
     }
     
-    @RequestMapping(value = "/realizar", method = RequestMethod.POST)
+    @RequestMapping(value = "/guardar", method = RequestMethod.POST)
     public @ResponseBody
-    MensajeDTO guardar(@ModelAttribute("PagoDTO") PagoDTO pagoRecibido) {
+    MensajeDTO guardar(@ModelAttribute("Vehiculo") Vehiculo vehiculoRecibido) {
 
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO mensaje = new MensajeDTO();
@@ -199,19 +199,42 @@ public class MantenimientoController extends BaseController{
         try {
             inicializarVehiculoManager();
 
-            if (pagoRecibido.getIdCompra() == null || pagoRecibido.getIdCompra() != null
-                    && pagoRecibido.getIdCompra().toString().compareToIgnoreCase("") == 0) {
+            if (vehiculoRecibido.getAnho() == null || vehiculoRecibido.getAnho() != null
+                    && vehiculoRecibido.getAnho().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
-                mensaje.setMensaje("Error al realizar el pago.");
+                mensaje.setMensaje("Debe ingresar el año del vehiculo.");
+                return mensaje;
+            }
+            
+            if (vehiculoRecibido.getChasis() == null || vehiculoRecibido.getChasis() != null
+                    && vehiculoRecibido.getChasis().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar el chasis del vehiculo.");
+                return mensaje;
+            }
+            
+            if (vehiculoRecibido.getMotor() == null || vehiculoRecibido.getMotor() != null
+                    && vehiculoRecibido.getMotor().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar el motor del vehiculo.");
+                return mensaje;
+            }
+            
+            if (vehiculoRecibido.getKilometraje() == null || vehiculoRecibido.getKilometraje() != null
+                    && vehiculoRecibido.getKilometraje().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar el kilometraje del vehiculo.");
+                return mensaje;
+            }
+            
+            if (vehiculoRecibido.getPrecioVenta() == null || vehiculoRecibido.getPrecioVenta() != null
+                    && vehiculoRecibido.getPrecioVenta().toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe ingresar el precio de venta del vehiculo.");
                 return mensaje;
             }
 
-            if (pagoRecibido.getImportePagar() == null || pagoRecibido.getImportePagar() != null
-                    && pagoRecibido.getImportePagar()  == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("Debe ingresar el importe a Pagar.");
-                return mensaje;
-            }
+            
             
            
 

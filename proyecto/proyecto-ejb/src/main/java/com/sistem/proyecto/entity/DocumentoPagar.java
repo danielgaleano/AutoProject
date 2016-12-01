@@ -21,6 +21,7 @@ import javax.persistence.Temporal;
 @Entity
 public class DocumentoPagar extends Base {
     
+    public static final String ENTREGA = "ENTREGA";
     public static final String PARCIAL = "PARCIAL";
     public static final String PENDIENTE = "PENDIENTE";
     public static final String CANCELADO = "CANCELADO";

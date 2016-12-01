@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.sistem.proyecto.web.controller;
 
 import com.google.gson.Gson;
@@ -36,20 +35,20 @@ import com.sistem.proyecto.manager.utils.DTORetorno;
  * @author daniel
  */
 @Controller
-@RequestMapping(value="/vehiculos")
-public class VehiculoController extends BaseController{
-    
+@RequestMapping(value = "/vehiculos")
+public class VehiculoController extends BaseController {
+
     String atributos = "id,codigo,activo,marca.id,marca.nombre,modelo.id,modelo.nombre,empresa.id,empresa.nombre,"
             + "tipo.id,tipo.nombre,transmision,color,anho,caracteristica,proveedor.id,proveedor.nombre";
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listaVehiculos(Model model) {
         ModelAndView retorno = new ModelAndView();
-        retorno.setViewName("vehiculosListar");       
+        retorno.setViewName("vehiculosListar");
         return retorno;
 
     }
-    
+
     @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
     public ModelAndView formView(@PathVariable("id") Long id, Model model) {
         ModelAndView retorno = new ModelAndView();
@@ -58,7 +57,7 @@ public class VehiculoController extends BaseController{
         model.addAttribute("id", id);
         return retorno;
     }
-    
+
     @RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
     public ModelAndView formEdit(@PathVariable("id") Long id, Model model) {
         ModelAndView retorno = new ModelAndView();
@@ -67,7 +66,7 @@ public class VehiculoController extends BaseController{
         model.addAttribute("id", id);
         return retorno;
     }
-    
+
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno listar(@ModelAttribute("_search") boolean filtrar,
@@ -145,7 +144,7 @@ public class VehiculoController extends BaseController{
 
         return retorno;
     }
-    
+
     @RequestMapping(value = "/crear", method = RequestMethod.GET)
     public ModelAndView crear(Model model) {
 
@@ -160,7 +159,7 @@ public class VehiculoController extends BaseController{
         return new ModelAndView("modelo");
 
     }
-    
+
     @RequestMapping(value = "/guardar", method = RequestMethod.POST)
     public @ResponseBody
     MensajeDTO guardar(@ModelAttribute("Vehiculo") Vehiculo vehiculoRecibido) {
@@ -168,7 +167,7 @@ public class VehiculoController extends BaseController{
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO mensaje = new MensajeDTO();
         Vehiculo ejVehiculo = new Vehiculo();
-        
+
         try {
             inicializarVehiculoManager();
 
@@ -185,7 +184,7 @@ public class VehiculoController extends BaseController{
                 mensaje.setMensaje("La marca del vehiculo no puede estar vacio.");
                 return mensaje;
             }
-            
+
             if (vehiculoRecibido.getModelo() == null || vehiculoRecibido.getModelo() != null
                     && vehiculoRecibido.getModelo().getId() == 0) {
                 mensaje.setError(true);
@@ -203,7 +202,6 @@ public class VehiculoController extends BaseController{
 //                return mensaje;
 //
 //            }
-
             ejVehiculo = new Vehiculo();
             ejVehiculo.setActivo("S");
             ejVehiculo.setCodigo(vehiculoRecibido.getCodigo());
@@ -229,7 +227,7 @@ public class VehiculoController extends BaseController{
 
         return mensaje;
     }
-   
+
     @RequestMapping(value = "/editar", method = RequestMethod.POST)
     public @ResponseBody
     MensajeDTO editar(@ModelAttribute("Vehiculo") Vehiculo vehiculoRecibido) {
@@ -252,35 +250,73 @@ public class VehiculoController extends BaseController{
                 retorno.setMensaje("La marca del vehiculo no puede estar vacio.");
                 return retorno;
             }
-            
+
             if (vehiculoRecibido.getModelo() == null || vehiculoRecibido.getModelo() != null
                     && vehiculoRecibido.getModelo().getId() == 0) {
                 retorno.setError(true);
                 retorno.setMensaje("El modelo del vehiculo no puede estar vacio.");
                 return retorno;
             }
-            
-//            Map<String, Object> modeloMap = vehiculoManager.getLike(ejVehiculo, "id".split(","));
-//
-//            if (modeloMap != null && !modeloMap.isEmpty() && modeloMap.get("id").toString()
-//                    .compareToIgnoreCase(vehiculoRecibido.getId().toString()) != 0) {
-//                retorno.setError(true);
-//                retorno.setMensaje("El modelo de vehiculo ya se encuentra registrado.");
-//                return retorno;
-//
-//            }
+
+            if (vehiculoRecibido.getAnho() == null || vehiculoRecibido.getAnho() != null
+                    && vehiculoRecibido.getAnho().compareToIgnoreCase("") == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("Debe ingresar el año del vehiculo.");
+                return retorno;
+            }
+
+            if (vehiculoRecibido.getChasis() == null || vehiculoRecibido.getChasis() != null
+                    && vehiculoRecibido.getChasis().compareToIgnoreCase("") == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("Debe ingresar el chasis del vehiculo.");
+                return retorno;
+            }
+
+            if (vehiculoRecibido.getMotor() == null || vehiculoRecibido.getMotor() != null
+                    && vehiculoRecibido.getMotor().compareToIgnoreCase("") == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("Debe ingresar el motor del vehiculo.");
+                return retorno;
+            }
+
+            if (vehiculoRecibido.getKilometraje() == null || vehiculoRecibido.getKilometraje() != null
+                    && vehiculoRecibido.getKilometraje().compareToIgnoreCase("") == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("Debe ingresar el kilometraje del vehiculo.");
+                return retorno;
+            }
+
+            if (vehiculoRecibido.getPrecioVenta() == null || vehiculoRecibido.getPrecioVenta() != null
+                    && vehiculoRecibido.getPrecioVenta().toString().compareToIgnoreCase("") == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("Debe ingresar el precio de venta del vehiculo.");
+                return retorno;
+            }
 
             if (vehiculoRecibido.getId() != null) {
 
                 Vehiculo modelo = vehiculoManager.get(vehiculoRecibido.getId());
+
+                if (vehiculoRecibido.getPrecioVenta() <= modelo.getPrecioCosto()) {
+                    retorno.setError(true);
+                    retorno.setMensaje("El precio de venta no puede ser menor al precio de costo.");
+                    return retorno;
+                }
+                modelo.setAnho(vehiculoRecibido.getAnho());
+                modelo.setCedulaVerde(vehiculoRecibido.getCedulaVerde());
+                modelo.setChapa(vehiculoRecibido.getChapa());
+                modelo.setChasis(vehiculoRecibido.getChasis());
+                modelo.setColor(vehiculoRecibido.getColor());
+                modelo.setKilometraje(vehiculoRecibido.getKilometraje());
+                modelo.setPrecioMantenimiento(vehiculoRecibido.getPrecioMantenimiento());
+                modelo.setFechaMantenimiento(vehiculoRecibido.getFechaMantenimiento());
                 modelo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 modelo.setIdUsuarioModificacion(userDetail.getId());
-                modelo.setCodigo(vehiculoRecibido.getCodigo());
 
                 vehiculoManager.update(modelo);
 
                 retorno.setError(false);
-                retorno.setMensaje("El modelo se modifico exitosamente.");
+                retorno.setMensaje("El vehiculo se modifico exitosamente.");
                 return retorno;
             }
 
@@ -292,7 +328,7 @@ public class VehiculoController extends BaseController{
         }
         return retorno;
     }
-    
+
     @RequestMapping(value = "/activar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO activar(@PathVariable("id") Long id) {

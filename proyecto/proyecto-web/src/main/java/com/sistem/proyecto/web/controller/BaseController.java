@@ -27,6 +27,7 @@ import com.sistem.proyecto.manager.ModeloManager;
 import com.sistem.proyecto.manager.VehiculoManager;
 import com.sistem.proyecto.manager.MonedaManager;
 import com.sistem.proyecto.manager.MovimientoManager;
+import com.sistem.proyecto.manager.NumeracionFacturaManager;
 import com.sistem.proyecto.manager.PedidoManager;
 import com.sistem.proyecto.manager.UsuarioManager;
 import com.sistem.proyecto.manager.VentaManager;
@@ -81,6 +82,8 @@ public class BaseController {
     protected DetallePedidoManager detallePedidoManager;
     
     protected MonedaManager monedaManager;
+    
+    protected NumeracionFacturaManager numeracionFacturaManager;
     
     protected EmpleoManager empleoManager;
     
@@ -536,6 +539,24 @@ public class BaseController {
         }
     }
 
+    protected void inicializarNumeracionFacturaManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
+        if (numeracionFacturaManager == null) {
+            try {
+
+                numeracionFacturaManager = (NumeracionFacturaManager) context.lookup("java:app/proyecto-ejb/NumeracionFacturaManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
+    }
+    
     
 
     String randomString(int len, String variable) {

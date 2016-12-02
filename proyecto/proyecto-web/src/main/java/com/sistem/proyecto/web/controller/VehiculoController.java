@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import com.sistem.proyecto.manager.utils.DTORetorno;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -40,6 +42,8 @@ public class VehiculoController extends BaseController {
 
     String atributos = "id,codigo,activo,marca.id,precioCosto,precioVenta,marca.nombre,modelo.id,modelo.nombre,empresa.id,empresa.nombre,"
             + "tipo.id,tipo.nombre,transmision,color,anho,caracteristica,proveedor.id,proveedor.nombre";
+    
+    SimpleDateFormat sdfSimple = new SimpleDateFormat("yyyy-MM-dd");
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listaVehiculos(Model model) {
@@ -236,6 +240,10 @@ public class VehiculoController extends BaseController {
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO retorno = new MensajeDTO();
         Vehiculo ejVehiculo = new Vehiculo();
+        
+         
+        
+        
         try {
             inicializarVehiculoManager();
 
@@ -305,6 +313,9 @@ public class VehiculoController extends BaseController {
                     retorno.setMensaje("El precio de venta no puede ser menor al precio de costo.");
                     return retorno;
                 }
+                Date fechaMan = sdfSimple.parse(vehiculoRecibido.getMantenimientoFecha());
+               
+                
                 modelo.setTipo(vehiculoRecibido.getTipo());
                 modelo.setMarca(vehiculoRecibido.getMarca());
                 modelo.setModelo(vehiculoRecibido.getModelo());
@@ -318,7 +329,7 @@ public class VehiculoController extends BaseController {
                 modelo.setMotor(vehiculoRecibido.getMotor());
                 modelo.setPrecioVenta(vehiculoRecibido.getPrecioVenta());
                 modelo.setPrecioMantenimiento(vehiculoRecibido.getPrecioMantenimiento());
-                modelo.setFechaMantenimiento(vehiculoRecibido.getFechaMantenimiento());
+                modelo.setFechaMantenimiento(fechaMan);
                 modelo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 modelo.setIdUsuarioModificacion(userDetail.getId());
                 
@@ -334,7 +345,7 @@ public class VehiculoController extends BaseController {
         } catch (Exception ex) {
             System.out.println("Error " + ex);
             retorno.setError(true);
-            retorno.setMensaje("Error al modificar el modelo.");
+            retorno.setMensaje("Debe seleccionar un modelo.");
 
         }
         return retorno;

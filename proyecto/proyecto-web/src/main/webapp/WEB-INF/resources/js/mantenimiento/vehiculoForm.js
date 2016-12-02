@@ -1,5 +1,8 @@
 
 $(document).ready(function (data) {
+    
+    $('.date-picker').datepicker('option', 'dateFormat', 'yyyy-mm-dd');
+    
     $(":input").inputmask();
 //    $("#documento").inputmask("Regex", {
 //        regex: "^[0-9]{5}([0-9])?([0-9])?([0-9])?(-)?([0-9])?$"

@@ -1,5 +1,8 @@
 
 $(document).ready(function (data) {
+    
+    $('.date-picker').datepicker('option', 'dateFormat', 'yyyy-mm-dd');
+    
     $(":input").inputmask();
 //    $("#documento").inputmask("Regex", {
 //        regex: "^[0-9]{5}([0-9])?([0-9])?([0-9])?(-)?([0-9])?$"
@@ -27,18 +30,18 @@ $(document).ready(function (data) {
             modelo: {
                 required: true
             },
-            color: {
-                required: true
-            },
+//            color: {
+//                required: true
+//            },
             chasis: {
                 required: true
             },
             motor: {
                 required: true
             },
-            kilometraje: {
-                required: true
-            },
+//            kilometraje: {
+//                required: true
+//            },
             precioVenta: {
                 required: true
             }
@@ -50,10 +53,10 @@ $(document).ready(function (data) {
             tipo: "Debe seleccionar un tipo de vehiculo!",
             marca: "Debe seleccionar una marca de vehiculo!",
             modelo: "Debe seleccionar un modelo de vehiculo!",
-            color: "Debe agregar un color al vehiculo!",
+//            color: "Debe agregar un color al vehiculo!",
             chasis: "Debe agregar el chasis al vehiculo!",
             motor: "Debe agregar el motor al vehiculo!",
-            kilometraje: "Debe agregar el kilometraje al vehiculo!",
+//            kilometraje: "Debe agregar el kilometraje al vehiculo!",
             precioVenta: "Debe agregar el precio de venta al vehiculo!"
         },
         invalidHandler: function (event, validator) { //display error alert on form submit   

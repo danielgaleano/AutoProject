@@ -69,23 +69,22 @@
                                                  <input id="idModelo" name="modelo.id" type="hidden"  class="form-control tableusuario-input" />
                                                 <div class="col-xs-12 col-sm-12">
 
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                <div class="row">
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                                         <label class="col-lg-4 control-label">Codigo(*)</label>
-                                                        <div class="col-lg-8">
+                                                        <div class="col-lg-5">
                                                             <input  id="codigo" name="codigo" type="text" placeholder="Codigo" disabled="disabled" class="form-control tableusuario-input"/>
                                                             <span class="glyphicon form-control-feedback" id="codigo1"></span> 
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Año</label>
-                                                        <div class="col-lg-8">
-                                                            <input id="anho" name="anho" type="text" placeholder="Año" class="form-control tableusuario-input"/> 
-                                                            <span class="glyphicon form-control-feedback" id="anho1"></span>
-                                                        </div>
-                                                    </div>
+                                                    
+                                                </div>
+                                                    
+                                                    
+                                                <div class="row">
 
                                                     <div class="form-group  col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                        <label class="col-lg-3 control-label">Tipo(*)</label>
+                                                        <label class="col-lg-4 control-label">Tipo(*)</label>
                                                         <div class="col-lg-8">
                                                             <select class="tableusuario-input " id="tipo"  name="tipo.id" data-placeholder="Seleccione el tipo">
 
@@ -95,7 +94,7 @@
                                                     </div>
                                                     
                                                     <div class="form-group  col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                        <label class="col-lg-3 control-label">Marca(*)</label>
+                                                        <label class="col-lg-4 control-label">Marca(*)</label>
                                                         <div class="col-lg-8">
                                                             <select class="tableusuario-input " id="marca"  name="marca" data-placeholder="Seleccione la Marca">
 
@@ -105,7 +104,7 @@
                                                     </div>
                                                     
                                                     <div id="sol" class="form-group  col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                        <label class="col-lg-3 control-label">Modelo(*)</label>
+                                                        <label class="col-lg-4 control-label">Modelo(*)</label>
                                                         <div class="col-lg-8">
                                                             <select class=" tableusuario-input " id="modelo"  name="modelo" data-placeholder="Seleccione el Modelo">
 
@@ -113,92 +112,141 @@
                                                             <span class="glyphicon form-control-feedback" id="modelo1"></span>
                                                         </div>
                                                     </div>
-
+                                                    
+                                                 </div>
+                                                    
+                                                    
+                                                 <div class="row">
+                                                     
+                                                   <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Año</label>
+                                                        <div class="col-lg-5">
+                                                            <input id="anho" name="anho" type="text" placeholder="Año" class="form-control tableusuario-input"/> 
+                                                            <span class="glyphicon form-control-feedback" id="anho1"></span>
+                                                        </div>
+                                                    </div>
 
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                        <label class="col-lg-3 control-label">Color</label>
-                                                        <div class="col-lg-9">
+                                                        <label class="col-lg-4 control-label">Color</label>
+                                                        <div class="col-lg-5">
                                                             <input  id="color" name="color" type="text" placeholder="Color"  class="form-control tableusuario-input "/> 
                                                             <span class="glyphicon form-control-feedback" id="color1"></span>
                                                         </div>
                                                     </div>
+                                                 
+                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Kilometraje</label>
+                                                        <div class="col-lg-5">
+                                                            <input  id="kilometraje" type="text" name="kilometraje" placeholder="Kilometraje" class="form-control tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="kilometraje1"></span>
+                                                        </div>
+                                                    </div>
+                                                     
+                                                     
+                                                 </div>
+                                                    
+                                                    
+                                                 <div class="row">
+                                                     
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                        <label class="col-lg-3 control-label">Chasis</label>
-                                                        <div class="col-lg-9">
+                                                        <label class="col-lg-4 control-label">Chasis</label>
+                                                        <div class="col-lg-8">
                                                             <input  id="chasis" type="text" name="chasis" placeholder="Chasis" class="form-control tableusuario-input " /> 
                                                             <span class="glyphicon form-control-feedback" id="chasis1"></span>
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                        <label class="col-lg-3 control-label">Motor</label>
-                                                        <div class="col-lg-9">
+                                                        <label class="col-lg-4 control-label">Motor</label>
+                                                        <div class="col-lg-8">
                                                             <input  id="motor" type="text" name="motor" placeholder="Motor" class="form-control tableusuario-input " /> 
                                                             <span class="glyphicon form-control-feedback" id="motor1"></span>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
+                                                     
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                                         <label class="col-lg-4 control-label">Chapa</label>
-                                                        <div class="col-lg-8">
+                                                        <div class="col-lg-6">
                                                             <input  id="chapa" name="chapa" type="text" placeholder="Chapa"  class="form-control tableusuario-input"/> 
                                                             <span class="glyphicon form-control-feedback" id="chapa1"></span>
                                                         </div>
                                                     </div>
+                                                     
+                                                  </div>
    
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-4 control-label">Kilometraje</label>
-                                                        <div class="col-lg-8">
-                                                            <input  id="kilometraje" type="text" name="kilometraje" placeholder="Chasis" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="kilometraje1"></span>
-                                                        </div>
-                                                    </div>
+                                                  <div class="row"> 
+                                                      
                                                     
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-6 control-label">Fecha Mantenimiento</label>
-                                                        <div class="col-lg-6">
-                                                            <input class="form-control date-picker" id="id-date-picker" name="fechaMantenimineto" type="text" data-date-format="yyyy-mm-dd" />
-                                                            <span class="add-on" ><i class="icon-calendar"></i></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-6 control-label">Costo Manten.</label>
-                                                        <div class="col-lg-6">
-                                                            <input  id="kilometraje" type="text" name="kilometraje" placeholder="Chasis" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="kilometraje1"></span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
                                                         
+                                                        <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                            <label class="col-lg-4 control-label">Fecha Manten.</label>
+                                                            <div class="col-lg-8">
+                                                                <input class="form-control tableusuario-input date-picker" id="id-date-picker" name="fechaMantenimiento" type="text" data-date-format="yyyy-mm-dd" />
+                                                                <span class="glyphicon form-control-feedback" id="id-date-picker1"></span>
+                                                            </div>
+                                                        </div>
+                                                      <div class="form-group col-xs-12 col-sm-12 col-lg-1 col-md-1"></div>
+                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">   
                                                         <div class="checkbox">
-                                                            <label>
+                                                            <label class="col-lg-6">
                                                                 <input type="checkbox" name="cedulaVerde" id="cedulaVerde" class="tableusuario-input "/>
                                                                 Cédula Verde
                                                             </label>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <div class="radio col-lg-2">
-                                                            <label>
+                                                    
+                                                    
+                                                      
+                                                      
+                                                      
+                                                    
+                                                      
+                                                  </div>
+
+                                                  <div class="row">   
+                                                      
+                                                    
+                                                    
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Costo Manten.</label>
+                                                        <div class="col-lg-8">
+                                                            <input  id="precioMantenimiento" type="text" name="precioMantenimiento" placeholder="Costo Mantenimiento" class="form-control tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="precioMantenimiento1"></span>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                      <div class="form-group col-xs-12 col-sm-12 col-lg-1 col-md-1"></div>
+                                                      <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <div class="checkbox">
+                                                            <label class="col-lg-6">
                                                                 <input type="checkbox" name="titulo" id="titulo" class="tableusuario-input "/>
                                                                 Título
                                                             </label>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-6 control-label">Precio Costo</label>
-                                                        <div class="col-lg-6">
-                                                            <input  id="precioCosto" type="text" disabled="disabled" name="precioCosto" placeholder="Precio Costo" class="form-control tableusuario-input " /> 
-                                                            <span class="glyphicon form-control-feedback" id="precioVenta1"></span>
+                                                    
+                                                      
+                                                   </div>
+                                                    
+                                                    
+                                                   <div class="row"> 
+                                                      
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Precio Costo</label>
+                                                        <div class="col-lg-8">
+                                                            <input  id="precioCosto" type="text" disabled="disabled" name="precioCosto" placeholder="Precio de Costo" class="form-control tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="precioCosto1"></span>
                                                         </div>
                                                     </div>
                                                     
-                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-6 col-md-6">
-                                                        <label class="col-lg-6 control-label">Precio de Venta</label>
-                                                        <div class="col-lg-6">
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Precio de Venta</label>
+                                                        <div class="col-lg-8">
                                                             <input  id="precioVenta" type="text" name="precioVenta" placeholder="Precio de Venta" class="form-control tableusuario-input " /> 
                                                             <span class="glyphicon form-control-feedback" id="precioVenta1"></span>
                                                         </div>
                                                     </div>
+                                                       
+                                                   </div>
                                                     
                                                 </div>
                                             </div>
@@ -342,6 +390,11 @@
     
 
     <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.number.min.js}" charset="UTF-8"></script>
+    
+    <script type="text/javascript">
+          $('#kilometraje, #precioMantenimiento, #precioCosto, #precioVenta').number( true, 0, ',', '.' );
+    </script>
     <!--    <script th:src="@{~/proyecto/resources/js/lib/dropzone.js}"></script>
         <script th:src="@{~/proyecto/resources/js/upload_image.js}"></script> -->
 

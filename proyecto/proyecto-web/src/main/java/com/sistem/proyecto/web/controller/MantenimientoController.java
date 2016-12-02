@@ -40,8 +40,9 @@ import com.sistem.proyecto.manager.utils.PagoDTO;
 @RequestMapping(value="/mantenimiento/vehiculos")
 public class MantenimientoController extends BaseController{
     
-    String atributos = "id,codigo,activo,marca.id,precioCosto,marca.nombre,modelo.id,modelo.nombre,empresa.id,empresa.nombre,"
-            + "tipo.id,tipo.nombre,transmision,color,anho,caracteristica,proveedor.id,proveedor.nombre";
+    String atributos = "id,codigo,activo,marca.id,precioCosto,precioVenta,precioMantenimiento,marca.nombre,modelo.id,modelo.nombre,empresa.id,empresa.nombre,"
+            + "tipo.id,tipo.nombre,transmision,color,anho,caracteristica,proveedor.id,proveedor.nombre,"
+            + "cedulaVerde,titulo,kilometraje,motor,chasis,chapa,fechaMantenimiento";
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listaVehiculos(Model model) {

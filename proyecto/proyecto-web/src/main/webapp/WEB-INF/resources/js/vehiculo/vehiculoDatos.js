@@ -1,6 +1,10 @@
 
 $(document).ready(function(data) {
-
+    SearchableOptionList.defaults.texts.noItemsAvailable = "No se encontraron datos";
+    SearchableOptionList.defaults.texts.selectAll = 'Select all';
+    SearchableOptionList.defaults.texts.selectNone = 'Select none';
+    SearchableOptionList.defaults.texts.quickDelete = '&times;';
+    SearchableOptionList.defaults.texts.searchplaceholder = 'Seleccione Opcion';
 
 
 
@@ -188,6 +192,16 @@ $(document).ready(function(data) {
                 $('#precioVenta').val(vehiculo.precioVenta);
                 $('#precioCosto').val(vehiculo.precioCosto);
                 $('#precioMantenimiento').val(vehiculo.precioMantenimiento);
+                //$('#cedulaVerde').val(vehiculo.cedulaVerde);
+                //$('#titulo').val(vehiculo.titulo);
+                
+                console.log("ced= " + vehiculo.cedulaVerde);
+                if(vehiculo.cedulaVerde == "t" || vehiculo.cedulaVerde == 1 || vehiculo.cedulaVerde == "True"){
+                    $('#cedulaVerde').prop("checked", true);
+                }
+                if(vehiculo.titulo == "t" || vehiculo.titulo == 1 || vehiculo.titulo == "True"){
+                    $('#titulo').prop("checked", true);
+                }
 
 
 //                $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'

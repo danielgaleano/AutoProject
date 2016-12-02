@@ -137,8 +137,8 @@ $(document).ready(function(data) {
                     if (permisoEditar) {
                         editForm = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
                                 + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + content + '/editar/' + cl + '"'
-                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Agregar Stock">'
-                                + ' <span class="fa fa-fw fa-cart-arrow-down"></span></a>';
+                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Editar Stock">'
+                                + ' <span class="fa fa-fw fa-wrench"></span></a>';
                     }
                     asignar = "";
                     //visuali = visualizarButton(cl, permisoVisualizar,null);

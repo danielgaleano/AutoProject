@@ -240,6 +240,13 @@ public class VehiculoController extends BaseController {
             inicializarVehiculoManager();
 
 
+            if (vehiculoRecibido.getTipo() == null || vehiculoRecibido.getTipo() != null
+                    && vehiculoRecibido.getTipo().getId() == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("El tipo del vehiculo no puede estar vacio.");
+                return retorno;
+            }
+            
             if (vehiculoRecibido.getMarca() == null || vehiculoRecibido.getMarca() != null
                     && vehiculoRecibido.getMarca().getId() == 0) {
                 retorno.setError(true);
@@ -298,8 +305,12 @@ public class VehiculoController extends BaseController {
                     retorno.setMensaje("El precio de venta no puede ser menor al precio de costo.");
                     return retorno;
                 }
+                modelo.setTipo(vehiculoRecibido.getTipo());
+                modelo.setMarca(vehiculoRecibido.getMarca());
+                modelo.setModelo(vehiculoRecibido.getModelo());
                 modelo.setAnho(vehiculoRecibido.getAnho());
                 modelo.setCedulaVerde(vehiculoRecibido.getCedulaVerde());
+                modelo.setTitulo(vehiculoRecibido.getTitulo());
                 modelo.setChapa(vehiculoRecibido.getChapa());
                 modelo.setChasis(vehiculoRecibido.getChasis());
                 modelo.setColor(vehiculoRecibido.getColor());
@@ -310,7 +321,9 @@ public class VehiculoController extends BaseController {
                 modelo.setFechaMantenimiento(vehiculoRecibido.getFechaMantenimiento());
                 modelo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 modelo.setIdUsuarioModificacion(userDetail.getId());
-
+                
+                modelo.setEstado(Vehiculo.STOCK);
+                
                 vehiculoManager.update(modelo);
 
                 retorno.setError(false);

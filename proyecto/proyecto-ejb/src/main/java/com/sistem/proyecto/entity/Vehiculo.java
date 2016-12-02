@@ -104,6 +104,9 @@ public class Vehiculo extends Base {
     
     @Column(name = "estado")
     private String estado;
+    
+    @Transient
+    private String mantenimientoFecha;
 
     public Vehiculo() {
     }
@@ -298,6 +301,19 @@ public class Vehiculo extends Base {
         this.precioMantenimiento = precioMantenimiento;
     }
     
+    /**
+     * @return the mantenimientoFecha
+     */
+    public String getMantenimientoFecha() {
+        return mantenimientoFecha;
+    }
+
+    /**
+     * @param mantenimientoFecha the mantenimientoFecha to set
+     */
+    public void setMantenimientoFecha(String mantenimientoFecha) {
+        this.mantenimientoFecha = mantenimientoFecha;
+    }
     
 
 }

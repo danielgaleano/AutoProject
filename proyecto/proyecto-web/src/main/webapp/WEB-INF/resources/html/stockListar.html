@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
     <div th:include="include/head :: head" th:remove="tag"></div>
-    <title>Stock de vehiculos en mantenimiento</title>
+    <title>Stock de vehiculos</title>
     <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
     <link th:href="@{/resources/css/icon.css}" rel="stylesheet" />
 
@@ -22,8 +22,8 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Mantenimiento
-                <small>Stock de vehiculos en mantenimiento.</small>
+                Stock
+                <small>Stock de vehiculos.</small>
             </h1>
             <ol class="breadcrumb">
                 <!--<a sec:authorize="hasRole('Cliente.Crear')"  href="clientes/crear" class="btn btn-primary" role="button">Crear</a>-->
@@ -59,7 +59,7 @@
     <script th:src="@{/resources/js/base.js}"></script>
     <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
-    <script th:src="@{/resources/js/mantenimiento/vehiculosListar.js}"></script>
+    <script th:src="@{/resources/js/vehiculo/vehiculosListar.js}"></script>
 
 
 </body>

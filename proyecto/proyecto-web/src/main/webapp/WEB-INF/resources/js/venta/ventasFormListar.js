@@ -89,19 +89,43 @@ $(document).ready(function(data) {
         onSelectRow: function(row, isSelected) {
             var data = $(grid_selector).jqGrid('getRowData', row);
             setTimeout(function() {
-                var neto =  parseInt($('#montoTotal').val());
+                var neto = parseInt($('#montoTotal').val());
                 console.log(neto);
-                if($.isNumeric(neto) !== true){
+                if ($.isNumeric(neto) !== true) {
                     neto = 0;
                 }
                 console.log(neto);
-                if(isSelected){
+                if (isSelected) {
                     neto = neto + parseInt(data.precioCosto);
-                }else{
+                } else {
                     neto = neto - parseInt(data.precioCosto);
                 }
                 $('#montoTotal').val(neto);
             }, 0);
+        },
+        onSelectAll: function(aRowids, status) {
+            console.log(aRowids);
+            console.log(status);
+            if (status) {
+                var neto = parseInt($('#montoTotal').val());
+                if ($.isNumeric(neto) !== true) {
+                    neto = 0;
+                }
+                for (var i = 0; i < aRowids.length; i++) {
+                    var data = $(grid_selector).jqGrid('getRowData', aRowids[i]);
+                    var isSelect = $(grid_selector).jqGrid("getGridParam", "selarrrow");
+                    console.log(isSelect);
+                    console.log("neto");
+                    neto = neto + parseInt(data.precioCosto);
+                    console.log(neto+"netooo");
+
+
+                }
+                console.log(neto);
+                $('#montoTotal').val(neto);
+            } else {
+                $('#montoTotal').val("0");
+            }
         },
         jsonReader: {
             root: 'retorno',

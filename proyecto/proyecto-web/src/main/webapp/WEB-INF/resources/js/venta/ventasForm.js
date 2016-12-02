@@ -88,6 +88,9 @@ $(document).ready(function(data) {
         submitHandler: function(form) {
             var $form = $('#validation-formVenta');
             var serialize = $form.find('.tableusuario-input').serialize();
+            var itemsVenta = $("#grid").jqGrid("getGridParam", "selarrrow");                        
+            serialize = serialize +"&itemsVenta="+itemsVenta;
+            console.log(serialize);
             var idVenta = $('#idVenta').val();
             //var idPedido = $('#idPedido').val();
 

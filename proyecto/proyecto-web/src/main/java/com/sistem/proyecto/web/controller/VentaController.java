@@ -7,10 +7,12 @@
 package com.sistem.proyecto.web.controller;
 
 import com.google.gson.Gson;
+import com.sistem.proyecto.entity.DetalleVenta;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Venta;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.manager.utils.DTORetorno;
+import com.sistem.proyecto.manager.utils.MensajeDTO;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
 import java.util.ArrayList;
@@ -41,7 +43,7 @@ public class VentaController extends BaseController {
     String atributosVentas = "id,estadoVenta,nroFactura,fechaCuota,fechaVenta,tipoVenta,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
             + "tipoMoraInteres,moraInteres,cantidadCuotas,montoCuotas,cliente.nombre,activo,"
             + "entrega,saldo,tipoDescuento,descuento,monto,montoDescuento,neto,"
-            + "cliente.id,cliente.ruc,cliente.nombre,cliente.direccion,cliente.telefono";
+            + "cliente.id,cliente.documento,cliente.nombre,cliente.direccion,cliente.telefono";
 
     
     @RequestMapping(method = RequestMethod.GET)
@@ -150,26 +152,14 @@ public class VentaController extends BaseController {
             }
             // ejemplo.setActivo("S");
             if (ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0) {
-                ordenarPor = "codigo";
+                ordenarPor = "nroFactura";
             }
-            List<Long> ventas = new ArrayList<Long>();
-            Venta ejOrden = new Venta();
-            ejOrden.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-            //ejOrden.setEstadoVenta(Venta.ORDEN_COMPRA);
-
-            listVentasMap = ventaManager.listAtributos(ejOrden, "id".split(","), true, null, null,
-                    "id".split(","), "ASD".split(","), true, true, "id", null,
-                    null, null, null, null, null, null, null, null, true);
-
-            for (Map<String, Object> rpm : listVentasMap) {
-                ventas.add(Long.parseLong(rpm.get("id").toString()));
-            }
-
+            
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
 
             if (!todos) {
-                total = ventaManager.list(ejemplo, true).size() - ventas.size();
+                total = ventaManager.list(ejemplo, true).size();
             }
 
             Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
@@ -181,7 +171,7 @@ public class VentaController extends BaseController {
 
             listMapGrupos = ventaManager.listAtributos(ejemplo, atributosVentas.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
-                    "id", ventas, "OP_NOT_IN", null, null, null, null, null, true);
+                    null, null, null, null, null, null, null, null, true);
 
             if (todos) {
                 total = listMapGrupos.size();
@@ -200,6 +190,150 @@ public class VentaController extends BaseController {
         }
 
         return retorno;
+    }
+    
+    @RequestMapping(value = "detalles/listar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno listarDetalle(@ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filtros,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("idVenta") String idVenta,
+            @ModelAttribute("idDetalle") String idDetalle,
+            @ModelAttribute("estado") String estado,
+            @ModelAttribute("todos") boolean todos) {
+
+        DTORetorno retorno = new DTORetorno();
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        DetalleVenta ejemplo = new DetalleVenta();
+        ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+       
+        if (idVenta != null && idVenta.compareToIgnoreCase("") != 0) {
+            ejemplo.setVenta(new Venta(Long.parseLong(idVenta)));
+        }else  if (idDetalle != null && idDetalle.compareToIgnoreCase("") != 0) {
+            ejemplo.setId(Long.parseLong(idDetalle));
+        }      
+        List<Map<String, Object>> listMapGrupos = null;
+        
+        try {
+    
+            inicializarDetalleVentaManager();
+
+            Gson gson = new Gson();
+            String camposFiltros = null;
+            String valorFiltro = null;
+
+            if (filtrar) {
+                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
+                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
+                    for (ReglaDTO regla : filtro.getRules()) {
+                        if (camposFiltros == null) {
+                            camposFiltros = regla.getField();
+                            valorFiltro = regla.getData();
+                        } else {
+                            camposFiltros += "," + regla.getField();
+                        }
+                    }
+                } else {
+                    //ejemplo = generarEjemplo(filtro, ejemplo);
+                }
+
+            }
+            // ejemplo.setActivo("S");
+            if(ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0){
+                ordenarPor = "tipo.nombre";
+            }
+            
+            pagina = pagina != null ? pagina : 1;
+            Integer total = 0;
+            if (idVenta != null && idVenta.compareToIgnoreCase("") != 0
+                    || idDetalle != null && idDetalle.compareToIgnoreCase("") != 0) {
+                if (!todos) {
+                    total = detalleVentaManager.list(ejemplo, true).size();
+                }
+
+                Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+
+                if (total < inicio) {
+                    inicio = total - total % cantidad;
+                    pagina = total / cantidad;
+                }
+
+                listMapGrupos = detalleVentaManager.listAtributos(ejemplo, atributos.split(","), todos, inicio, cantidad,
+                        ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                        null, null, null, null, null, null, null, null, true);
+
+                if (todos) {
+                    total = listMapGrupos.size();
+                }
+
+            }
+            Integer totalPaginas = total / cantidad;
+            retorno.setTotal(totalPaginas + 1);
+            retorno.setRetorno(listMapGrupos);
+            retorno.setPage(pagina);
+
+        } catch (Exception e) {
+
+            logger.error("Error al listar", e);
+        }
+
+        return retorno;
+    }
+    
+    @RequestMapping(value = "/guardar", method = RequestMethod.POST)
+    public @ResponseBody
+    MensajeDTO guardar(@ModelAttribute("Venta") Venta ventaRecibido) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        MensajeDTO mensaje = new MensajeDTO();
+        Venta ejVenta = new Venta();
+        try {
+            inicializarVentaManager();
+
+            if (ventaRecibido.getNroFactura() == null || ventaRecibido.getNroFactura() != null
+                    && ventaRecibido.getNroFactura().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El numero de factura no puede estar vacia.");
+                return mensaje;
+            }
+
+            if (ventaRecibido.getCliente() == null ||
+                        ventaRecibido.getCliente().getId() == null
+                        || ventaRecibido.getCliente().getId() != null
+                        && ventaRecibido.getCliente().getId().toString().compareToIgnoreCase("") == 0) {
+                    mensaje.setError(true);
+                    mensaje.setMensaje("Se debe ingresar un cliente para realizar la venta.");
+                    return mensaje;
+                }
+
+            if (ventaRecibido.getFormaPago() == null || ventaRecibido.getFormaPago() != null
+                    && ventaRecibido.getFormaPago().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe seleccionar una forma de pago.");
+                return mensaje;
+            }
+            
+            if (ventaRecibido.getItemsVenta() == null || ventaRecibido.getItemsVenta() != null
+                    && ventaRecibido.getItemsVenta().isEmpty()) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe seleccionar un vehiculo para realizar la venta.");
+                return mensaje;
+            }
+
+            mensaje = ventaManager.guardarVenta(ventaRecibido.getItemsVenta(), ventaRecibido
+                    , ventaRecibido.getNroFactura(), ventaRecibido.getFormaPago(), "GENERAL", userDetail.getIdEmpresa(), userDetail.getId());
+
+
+        } catch (Exception e) {
+            mensaje.setError(true);
+            mensaje.setMensaje("Error a guardar el usuario");
+            System.out.println("Error" + e);
+        }
+
+        return mensaje;
     }
     
 }

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.sistem.proyecto.managerImpl;
 
 import com.sistem.proyecto.entity.Cliente;
@@ -38,7 +37,7 @@ import javax.ejb.Stateless;
  */
 @Stateless
 public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
-		implements VentaManager{
+        implements VentaManager {
 
     @EJB(mappedName = "java:app/proyecto-ejb/VehiculoManagerImpl")
     private VehiculoManager vehiculoManager;
@@ -65,7 +64,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
     }
 
     @Override
-    public MensajeDTO guardarVenta(Long idVenta, DetalleVenta detalleVenta, String nroFactura, String formaPgo, String tipoDescuento, Long idEmpresa, Long idUsuario) throws Exception {
+    public MensajeDTO guardarVenta(List<Long> itemVentas, Venta venta, String nroFactura, String formaPgo, String tipoDescuento, Long idEmpresa, Long idUsuario) throws Exception {
         MensajeDTO mensaje = new MensajeDTO();
         Venta ejVenta = new Venta();
         try {
@@ -77,79 +76,25 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                 return mensaje;
             }
 
-            if (detalleVenta.getVehiculo().getTipo() == null || detalleVenta.getVehiculo().getTipo().getId() != null
-                    && detalleVenta.getVehiculo().getTipo().getId().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El tipo de vehiculo no puede estar vacio.");
-                return mensaje;
-            }
+            Double montoTotal = 0.0;
 
-            if (detalleVenta.getVehiculo().getMarca() == null || detalleVenta.getVehiculo().getMarca().getId() != null
-                    && detalleVenta.getVehiculo().getMarca().getId().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("La marca de vehiculo no puede estar vacio.");
-                return mensaje;
-            }
+            for (Long rpm : itemVentas) {
+                Vehiculo ejVehiculo = vehiculoManager.get(rpm);
 
-            if (detalleVenta.getVehiculo().getModelo() == null || detalleVenta.getVehiculo().getModelo().getId() != null
-                    && detalleVenta.getVehiculo().getModelo().getId().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El modelo del vehiculo no puede estar vacio.");
-                return mensaje;
+                montoTotal = montoTotal + ejVehiculo.getPrecioVenta();
             }
+            ejVenta.setNroFactura(nroFactura);
+            ejVenta.setActivo("S");
+            ejVenta.setEmpresa(new Empresa(idEmpresa));
+            ejVenta.setFormaPago(formaPgo);
+            ejVenta.setCliente(new Cliente(venta.getCliente().getId()));
+            ejVenta.setTipoDescuento(tipoDescuento);
+            ejVenta.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+            ejVenta.setFechaVenta(new Timestamp(System.currentTimeMillis()));
+            ejVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
 
-            if (detalleVenta.getVehiculo().getAnho() == null || detalleVenta.getVehiculo().getAnho() != null
-                    && detalleVenta.getVehiculo().getAnho().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El año del vehiculo no puede estar vacio.");
-                return mensaje;
-            }
-
-            if (detalleVenta.getVehiculo().getColor() == null || detalleVenta.getVehiculo().getColor() != null
-                    && detalleVenta.getVehiculo().getColor().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El color del vehiculo no puede estar vacio.");
-                return mensaje;
-            }
-
-            if (detalleVenta.getVehiculo().getColor() == null || detalleVenta.getVehiculo().getColor() != null
-                    && detalleVenta.getVehiculo().getColor().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El color del vehiculo no puede estar vacio.");
-                return mensaje;
-            }
-
-            if (detalleVenta.getVehiculo().getTransmision() == null || detalleVenta.getVehiculo().getTransmision() != null
-                    && detalleVenta.getVehiculo().getTransmision().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("La transmision del vehiculo no puede estar vacia.");
-                return mensaje;
-            }
-
-            if (detalleVenta.getMoneda() == null || detalleVenta.getMoneda().getId() != null
-                    && detalleVenta.getMoneda().getId().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El campo moneda no puede estar vacia.");
-                return mensaje;
-            }
-
-            if (detalleVenta.getPrecio() == null || detalleVenta.getPrecio() != null
-                    && detalleVenta.getPrecio().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El campo precio no puede estar vacio.");
-                return mensaje;
-            }
-
-            if (detalleVenta.getVenta().getCliente() == null || detalleVenta.getVenta().getCliente().getId() == null
-                    || detalleVenta.getVenta().getCliente().getId() != null
-                    && detalleVenta.getVenta().getCliente().getId().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("Debe ingresar un proovedor para realizar la venta.");
-                return mensaje;
-            }
-
-            if (idVenta == null || idVenta != null
-                    && idVenta.toString().compareToIgnoreCase("") == 0) {
+            if (formaPgo != null
+                    && formaPgo.compareToIgnoreCase("CREDITO") == 0) {
 
                 Venta ejFactura = new Venta();
                 ejFactura.setNroFactura(nroFactura);
@@ -162,142 +107,248 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                     return mensaje;
 
                 }
+                ejVenta.setCantidadCuotas(venta.getCantidadCuotas());
+                ejVenta.setPorcentajeInteresCredito(venta.getPorcentajeInteresCredito());
+                ejVenta.setMoraInteres(venta.getMoraInteres());
 
-                ejVenta.setActivo("S");
-                ejVenta.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                ejVenta.setEmpresa(new Empresa(idEmpresa));
-                ejVenta.setNroFactura(nroFactura);
-                ejVenta.setTipoVenta("DIRECTA");
-                ejVenta.setEstadoVenta(Venta.VENTA_PENDIENTE);
-                ejVenta.setCliente(new Cliente(detalleVenta.getVenta().getCliente().getId()));
+                Double interes = Double.parseDouble(venta.getPorcentajeInteresCredito());
+
+                if (venta.getEntrega() != null
+                        && venta.getEntrega().compareToIgnoreCase("") != 0) {
+
+                    Double entrega = Double.parseDouble(venta.getEntrega());
+
+                    Double montoInteres = ((montoTotal - entrega) * interes) / 100;
+
+                    Double saldo = (montoTotal - entrega) + montoInteres;
+
+                    Double montoCuota = saldo / venta.getCantidadCuotas();
+
+                    ejVenta.setEntrega(entrega + "");
+                    ejVenta.setMontoInteres(montoInteres + "");
+                    ejVenta.setSaldo(saldo + "");
+                    ejVenta.setNeto(saldo);
+                    ejVenta.setMontoCuotas(montoCuota + "");
+
+                    Date fecha = new Date();
+
+                    if (venta.getCuotaFecha() != null) {
+                        fecha = sdfSimple.parse(venta.getCuotaFecha());
+                    }
+
+                    ejVenta.setFechaCuota(fecha);
+
+                    this.save(ejVenta);
+
+                    DocumentoCobrar ejACobrar = new DocumentoCobrar();
+                    ejACobrar.setVenta(ejVenta);
+
+                    List<DocumentoCobrar> aCobrar = documentoCobrarManager.list(ejACobrar);
+
+                    for (DocumentoCobrar rpm : aCobrar) {
+                        documentoCobrarManager.delete(rpm.getId());
+                    }
+
+                    ejACobrar = new DocumentoCobrar();
+
+                    int contador = 1;
+                    boolean tieneFecha = true;
+                    for (int i = 1; i <= venta.getCantidadCuotas(); i++) {
+
+                        ejACobrar = new DocumentoCobrar();
+                        ejACobrar.setVenta(ejVenta);
+                        ejACobrar.setActivo("S");
+                        ejACobrar.setNroCuota(i + "");
+                        ejACobrar.setMonto(montoCuota);
+                        ejACobrar.setEstado(DocumentoCobrar.PENDIENTE);
+
+                        if (venta.getCuotaFecha() != null
+                                && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
+
+                            Calendar date = Calendar.getInstance();
+                            if (tieneFecha) {
+                                date.set(Calendar.MONTH, fecha.getMonth());
+                                tieneFecha = false;
+
+                            } else {
+                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
+                                contador++;
+                            }
+
+                            date.set(Calendar.DATE, fecha.getDate());
+
+                            ejACobrar.setFecha(date.getTime());
+
+                        } else {
+
+                            Calendar date = Calendar.getInstance();
+                            date.set(Calendar.DATE, 5);
+                            date.set(Calendar.MONTH, fecha.getMonth() + contador);
+
+                            ejACobrar.setFecha(date.getTime());
+                            contador++;
+                        }
+
+                        documentoCobrarManager.save(ejACobrar);
+
+                    }
+
+                    Long montoTotalImteres = Long.parseLong("0");
+
+                    if (ejVenta.getEntrega() != null && ejVenta.getEntrega().compareToIgnoreCase("") != 0) {
+                        montoTotalImteres = Long.parseLong(Math.round(Double.parseDouble(ejVenta.getEntrega())) + "") + Math.round(ejVenta.getNeto());
+                    } else {
+                        montoTotalImteres = Math.round(ejVenta.getNeto());
+                    }
+
+                    for (Long rpm : itemVentas) {
+
+                        Vehiculo ejVehiculo = vehiculoManager.get(rpm);
+
+                        Double porcentajeVehiculo = ejVehiculo.getPrecioVenta() / montoTotal;
+
+                        Double costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
+
+                        Double costoVeh = Math.round(ejVehiculo.getPrecioVenta()) - costoInteresVeh;
+
+                        DetalleVenta ejDetVenta = new DetalleVenta();
+                        ejDetVenta.setActivo("S");
+                        ejDetVenta.setEmpresa(new Empresa(idEmpresa));
+                        ejDetVenta.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                        ejDetVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                        ejDetVenta.setVehiculo(new Vehiculo(rpm));
+                        ejDetVenta.setNeto(costoVeh);
+                        ejDetVenta.setMontoDescuento(costoInteresVeh);
+                        ejDetVenta.setPorcentajeDescuento(porcentajeVehiculo + "");
+                        ejDetVenta.setVenta(ejVenta);
+
+                        detalleVentaManager.save(ejDetVenta);
+
+                    }
+
+                } else {
+
+                    Double montoInteres = (montoTotal * interes) / 100;
+
+                    Double saldo = montoTotal + montoInteres;
+
+                    Double montoCuota = saldo / venta.getCantidadCuotas();
+
+                    ejVenta.setMontoInteres(montoInteres + "");
+                    ejVenta.setSaldo(saldo + "");
+                    ejVenta.setNeto(saldo);
+                    ejVenta.setMontoCuotas(montoCuota + "");
+                    ejVenta.setMoraInteres(venta.getMoraInteres());
+
+                    Date fecha = new Date();
+
+                    if (venta.getCuotaFecha() != null) {
+                        fecha = sdfSimple.parse(venta.getCuotaFecha());
+                    }
+
+                    ejVenta.setFechaCuota(fecha);
+
+                    this.save(ejVenta);
+
+                    DocumentoCobrar ejACobrar = new DocumentoCobrar();
+                    ejACobrar.setVenta(ejVenta);
+
+                    List<DocumentoCobrar> aCobrar = documentoCobrarManager.list(ejACobrar);
+
+                    for (DocumentoCobrar rpm : aCobrar) {
+                        documentoCobrarManager.delete(rpm.getId());
+                    }
+
+                    ejACobrar = new DocumentoCobrar();
+
+                    int contador = 1;
+                    boolean tieneFecha = true;
+
+                    for (int i = 1; i <= venta.getCantidadCuotas(); i++) {
+
+                        ejACobrar = new DocumentoCobrar();
+                        ejACobrar.setVenta(ejVenta);
+                        ejACobrar.setActivo("S");
+                        ejACobrar.setNroCuota(i + "");
+                        ejACobrar.setMonto(montoCuota);
+                        ejACobrar.setEstado(DocumentoCobrar.PENDIENTE);
+
+                        if (venta.getCuotaFecha() != null
+                                && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
+
+                            Calendar date = Calendar.getInstance();
+                            if (tieneFecha) {
+                                date.set(Calendar.MONTH, fecha.getMonth());
+                                tieneFecha = false;
+
+                            } else {
+                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
+                                contador++;
+                            }
+
+                            date.set(Calendar.DATE, fecha.getDate());
+
+                            ejACobrar.setFecha(date.getTime());
+
+                        } else {
+
+                            Calendar date = Calendar.getInstance();
+                            date.set(Calendar.DATE, 5);
+                            date.set(Calendar.MONTH, fecha.getMonth() + contador);
+
+                            ejACobrar.setFecha(date.getTime());
+                            contador++;
+                        }
+
+                        documentoCobrarManager.save(ejACobrar);
+
+                    }
+                }
+
+            } else {
+
+                Double interes = Double.parseDouble(venta.getDescuento());
+
+                Double montoInteres = (montoTotal * interes) / 100;
+
+                Double saldo = montoTotal - montoInteres;
+
+                ejVenta.setDescuento(Math.round(interes) + "");
+                ejVenta.setMontoDescuento(Math.round(montoInteres) + "");
+                ejVenta.setNeto(saldo);
 
                 this.save(ejVenta);
 
-                String codDetalle = randomString(5, "DET");
+                Long montoTotalImteres = Long.parseLong("0");
 
-                Vehiculo ejVehiculo = new Vehiculo();
-
-                ejVehiculo.setCodigo(ejVenta.getId() + "-" + codDetalle);
-                ejVehiculo.setActivo("S");
-                ejVehiculo.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejVehiculo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                ejVehiculo.setAnho(detalleVenta.getVehiculo().getAnho());
-                ejVehiculo.setCaracteristica(detalleVenta.getVehiculo().getCaracteristica());
-                ejVehiculo.setColor(detalleVenta.getVehiculo().getColor());
-                ejVehiculo.setMarca(new Marca(detalleVenta.getVehiculo().getMarca().getId()));
-                ejVehiculo.setModelo(new Modelo(detalleVenta.getVehiculo().getModelo().getId()));
-                ejVehiculo.setTipo(new Tipo(detalleVenta.getVehiculo().getTipo().getId()));
-                ejVehiculo.setTransmision(detalleVenta.getVehiculo().getTransmision());
-
-                vehiculoManager.save(ejVehiculo);
-
-                Moneda ejMoneda = monedaManager.get(detalleVenta.getMoneda());
-
-                Double cambio = ejMoneda.getValor();
-
-                Long total = Math.round(detalleVenta.getPrecio() * cambio);
-
-                DetalleVenta ejDetVenta = new DetalleVenta();
-                ejDetVenta.setCambioDia(cambio);
-                ejDetVenta.setActivo("S");
-                ejDetVenta.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejDetVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                ejDetVenta.setEmpresa(new Empresa(idEmpresa));
-                ejDetVenta.setVehiculo(ejVehiculo);
-                ejDetVenta.setMoneda(detalleVenta.getMoneda());
-                ejDetVenta.setCambioDia(detalleVenta.getCambioDia());
-                ejDetVenta.setTotal(Double.parseDouble(total.toString()));
-                ejDetVenta.setNeto(Double.parseDouble(total.toString()));
-                ejDetVenta.setPrecio(detalleVenta.getPrecio());
-                ejDetVenta.setVenta(ejVenta);
-
-                detalleVentaManager.save(ejDetVenta);
-
-                Long totalPedido = Long.parseLong("0");
-                DetalleVenta ejDetalle = new DetalleVenta();
-                ejDetalle.setVenta(ejVenta);
-
-                List<DetalleVenta> ejDetalleVenta = detalleVentaManager.list(ejDetalle);
-
-                for (DetalleVenta rpm : ejDetalleVenta) {
-                    totalPedido = totalPedido + Math.round(rpm.getTotal());
+                if (ejVenta.getMontoDescuento() != null && ejVenta.getMontoDescuento().compareToIgnoreCase("") != 0) {
+                    montoTotalImteres = Long.parseLong(Math.round(Double.parseDouble(ejVenta.getMontoDescuento())) + "");
                 }
 
-                ejVenta.setMonto(totalPedido.toString());
+                for (Long rpm : itemVentas) {
 
-                this.update(ejVenta);
+                    Vehiculo ejVehiculo = vehiculoManager.get(rpm);
 
-            } else {
-                
-                ejVenta = this.get(idVenta);
-                
-                Venta ejFactura = new Venta();
-                ejFactura.setNroFactura(nroFactura);
-                Map<String, Object> nroFacturaMap = this.getAtributos(ejFactura, "id".split(","), true, true);
+                    Double porcentajeVehiculo = ejVehiculo.getPrecioVenta() / montoTotal;
 
-                if (nroFacturaMap != null && !nroFacturaMap.isEmpty()
-                        && nroFacturaMap.get("id").toString().compareToIgnoreCase(ejVenta.getId().toString()) != 0) {
-                    mensaje.setError(true);
-                    mensaje.setMensaje("El numero de factura ya se encuentra registrada.");
-                    return mensaje;
+                    Double costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
 
-                }          
+                    Double costoVeh = Math.round(ejVehiculo.getPrecioVenta()) - costoInteresVeh;
 
-                Moneda ejMoneda = monedaManager.get(new Moneda(detalleVenta.getMoneda().getId()));
+                    DetalleVenta ejDetVenta = new DetalleVenta();
+                    ejDetVenta.setActivo("S");
+                    ejDetVenta.setEmpresa(new Empresa(idEmpresa));
+                    ejDetVenta.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                    ejDetVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    ejDetVenta.setVehiculo(new Vehiculo(rpm));
+                    ejDetVenta.setNeto(costoVeh);
+                    ejDetVenta.setPrecio(ejVehiculo.getPrecioVenta());
+                    ejDetVenta.setMontoDescuento(costoInteresVeh);
+                    ejDetVenta.setPorcentajeDescuento(porcentajeVehiculo.toString());
+                    ejDetVenta.setVenta(ejVenta);
 
-                Double cambio = ejMoneda.getValor();
-
-                Long total = Math.round(detalleVenta.getPrecio() * cambio);
-
-                String codDetalle = randomString(5, "DET");
-
-                Vehiculo ejVehiculo = new Vehiculo();
-
-                ejVehiculo.setCodigo(ejVenta.getId() + "-" + codDetalle);
-                ejVehiculo.setActivo("S");
-                ejVehiculo.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejVehiculo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                ejVehiculo.setAnho(detalleVenta.getVehiculo().getAnho());
-                ejVehiculo.setCaracteristica(detalleVenta.getVehiculo().getCaracteristica());
-                ejVehiculo.setColor(detalleVenta.getVehiculo().getColor());
-                ejVehiculo.setMarca(new Marca(detalleVenta.getVehiculo().getMarca().getId()));
-                ejVehiculo.setModelo(new Modelo(detalleVenta.getVehiculo().getModelo().getId()));
-                ejVehiculo.setTipo(new Tipo(detalleVenta.getVehiculo().getTipo().getId()));
-                ejVehiculo.setTransmision(detalleVenta.getVehiculo().getTransmision());
-
-                vehiculoManager.save(ejVehiculo);
-
-                DetalleVenta ejDetVenta = new DetalleVenta();
-                ejDetVenta.setCambioDia(cambio);
-                ejDetVenta.setActivo("S");
-                ejDetVenta.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
-                ejDetVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-                ejDetVenta.setEmpresa(new Empresa(idEmpresa));
-                ejDetVenta.setVehiculo(ejVehiculo);
-                ejDetVenta.setMoneda(ejMoneda);
-                 ejDetVenta.setCambioDia(ejMoneda.getValor());
-                ejDetVenta.setTotal(Double.parseDouble(total.toString()));
-                ejDetVenta.setNeto(Double.parseDouble(total.toString()));
-                ejDetVenta.setPrecio(detalleVenta.getPrecio());
-                ejDetVenta.setVenta(ejVenta);
-
-                detalleVentaManager.save(ejDetVenta);
-                Long totalPedido = Long.parseLong("0");
-
-                DetalleVenta ejDetalle = new DetalleVenta();
-                ejDetalle.setVenta(ejVenta);
-
-                List<DetalleVenta> ejDetalleVenta = detalleVentaManager.list(ejDetalle);
-
-                for (DetalleVenta rpm : ejDetalleVenta) {
-                    totalPedido = totalPedido + Math.round(rpm.getTotal());
+                    detalleVentaManager.save(ejDetVenta);
                 }
-
-                ejVenta.setMonto(totalPedido.toString());
-                ejVenta.setNeto(Double.parseDouble(totalPedido.toString()));
-
-                this.update(ejVenta);
             }
 
             mensaje.setError(false);

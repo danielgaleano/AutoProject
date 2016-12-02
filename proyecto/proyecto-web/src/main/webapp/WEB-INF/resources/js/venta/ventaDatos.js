@@ -51,7 +51,7 @@ $(document).ready(function(data) {
         maxHeight: '220px',
         events: {
             onChange: function(a) {
-                $('#idTipo').val(a.getSelection()[0].value);
+                $('#idClienteConta').val(a.getSelection()[0].value);
             }
         }
     });

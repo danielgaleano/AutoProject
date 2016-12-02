@@ -28,7 +28,7 @@ public class Venta extends Base {
     public static final String VENTA_APROBADA = "VENTA_APROBADA";
     public static final String VENTA_REALIZADA = "VENTA_REALIZADA";
 
-    @Column(name = "nro_factura", nullable = true)
+    @Column(name = "nro_factura", nullable = false)
     private String nroFactura;
     
     @Column(name = "fechaVenta")
@@ -102,6 +102,9 @@ public class Venta extends Base {
     
     @Transient
     private String cuotaFecha;
+    
+    @Transient
+    private List<Long> itemsVenta;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "venta")
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -455,5 +458,15 @@ public class Venta extends Base {
     public void setCuotaFecha(String cuotaFecha) {
         this.cuotaFecha = cuotaFecha;
     }
+
+    public List<Long> getItemsVenta() {
+        return itemsVenta;
+    }
+
+    public void setItemsVenta(List<Long> itemsVenta) {
+        this.itemsVenta = itemsVenta;
+    }
+    
+    
 }
 

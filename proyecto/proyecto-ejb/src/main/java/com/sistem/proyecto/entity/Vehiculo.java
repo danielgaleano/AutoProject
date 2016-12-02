@@ -28,7 +28,7 @@ public class Vehiculo extends Base {
     public static final String STOCK = "STOCK";
     public static final String VENDIDA = "VENDIDA";
     
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 154454564L;
 
     @Column(name = "codigo")
     private String codigo;

@@ -231,7 +231,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         docPagar.setSaldo(0.0);
                         docPagar.setEstado(DocumentoPagar.CANCELADO);
                         documentoPagarManager.update(docPagar);
-                        
+
                         ejMovimiento.setCompra(ejCompra);
                         ejMovimiento.setEmpresa(new Empresa(idEmpresa));
                         ejMovimiento.setImporte(Monto);
@@ -594,8 +594,14 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                     }
                 }
                 if (ejCompra.getTipoDescuento().compareToIgnoreCase("GENERAL") == 0) {
+                    
+                    Vehiculo ejVehiculo = new Vehiculo();
+                    ejVehiculo.setEstado("PENDIENTE");
+
                     DetalleCompra ejDetalle = new DetalleCompra();
                     ejDetalle.setCompra(ejCompra);
+                    ejDetalle.setVehiculo(ejVehiculo);
+                    
                     List<DetalleCompra> listDetalle = detalleCompraManager.list(ejDetalle);
 
                     Long montoTotal = Long.parseLong(Math.round(Double.parseDouble(ejCompra.getMonto())) + "");

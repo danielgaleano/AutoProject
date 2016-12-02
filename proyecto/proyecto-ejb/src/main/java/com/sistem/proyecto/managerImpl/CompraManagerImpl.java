@@ -567,7 +567,8 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     ejCompraUp.setNeto(saldo);
 
                 } else {
-                    ejCompraUp.setNeto(Double.parseDouble(ejCompraUp.getMonto()));
+                    //ejCompraUp.setNeto(Double.parseDouble(ejCompraUp.getMonto()));
+                    ejCompraUp.setTipoDescuento("DETALLADO");
                 }
 
                 this.update(ejCompraUp);

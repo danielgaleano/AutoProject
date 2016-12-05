@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+    <div th:include="include/head :: head" th:remove="tag"></div>
+    <title>Pedidos</title>
+    <link th:href="@{/resources/css/datepicker.min.css}" rel="stylesheet" />
+    <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
+    <link th:href="@{/resources/css/icon.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/resources/bootstrap/css/bootstrap-datetimepicker.min.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/resources/css/bootstrap-timepicker.css}" type="text/css"/>
+    <link th:href="@{/resources/css/sol.css}" rel="stylesheet" />
+
+</head>
+<body>
+    <nav th:replace="include/navbar :: navbar"></nav>
+    <div class="content-wrapper">
+
+        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Crear'')')}"/>
+        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Editar'')')}"/>
+        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Activar'')')}"/>
+        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Desactivar'')')}"/>
+        <div class="tabldetalle-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Detalle'')')}"/>
+        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Pedido.Visualizar'')')}"/>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Reporte Movimientos
+
+            </h1>
+        </section>
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="space-6"></div>
+
+
+                <div class="vspace-12-sm"></div>
+
+                <div class="col-sm-12">
+                    <div class="widget-box">
+                        <div class="widget-header widget-header-flat widget-header-small">
+                            <h5 class="widget-title">
+                                <i class="ace-icon fa fa-signal"></i>
+                                Reporte de Transacciones
+                            </h5>
+                            <div th:include="include/scripts :: [id='filterButton']" th:remove="tag"></div>
+                            <div id="filtroReporteTiempo" class="row" style="display: none;">
+                                <div class="col-sm-12">        
+                                    <form class="form-horizontal" id="validation-form">
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Tiempo Actualizacion: </label>
+
+                                            <div class="col-sm-9">
+                                                <div class="col-xs-8 col-sm-6">
+                                                    <div class="input-group bootstrap-timepicker">
+
+                                                        <input id="timepicker" type="text" class="input-sm form-control timepicker" placeholder="Fecha Inicio" />
+                                                        <span class="input-group-addon">
+                                                            <i class="fa fa-clock-o bigger-110"></i>
+                                                        </span>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="box-footer">
+                                            <div class="col-md-offset-4 col-md-9">
+                                                <a type="button" id="tiempoAceptar" class="btn btn-primary btn-mini">Aceptar</a>
+                                                <a type="button" th:onclick="'filtrarTiempo();'" class="btn btn-mini">Cancelar</a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div id="filtroReporte" class="row" style="display: none;">
+                                <div class="col-sm-12">
+                                    <hr/>
+                                    <form class="form-horizontal" id="validation-form">
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Fecha: </label>
+
+                                            <div class="col-sm-9">
+                                                <div class="col-xs-8 col-sm-6">
+                                                    <div class="input-group">
+
+                                                        <input id="date-timeDesde" type="text" class="input-sm form-control" placeholder="Fecha Inicio" />
+
+                                                        <span class="input-group-addon">
+                                                            <i class="fa fa-exchange"></i>
+                                                        </span>
+
+                                                        <input id="date-timeHasta" type="text" placeholder="Fecha Fin" class="input-sm form-control" />
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Tipo Transaccion: </label>
+
+                                            <div class="col-sm-9">
+                                                <div class="col-xs-8 col-sm-6">
+                                                    <select id="transaccion" name="selectEntidad">
+                                                        <option value="">Todos</option>
+                                                        <option value="I">Ingresos</option>
+                                                        <option value="O">Egresos</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>                                                                              
+                                        <div class="box-footer">
+                                            <div class="col-md-offset-4 col-md-9">
+                                                <a type="button" th:onclick="'filtrarReporte();'" class="btn btn-primary btn-mini">Aceptar</a>
+                                                <a type="button" th:onclick="'filtrar();'" class="btn btn-mini">Cancelar</a>
+                                            </div>
+                                        </div>
+                                    </form>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">                               
+                                <div class="col-sm-12">
+
+                                    <div class="widget-body">
+                                        <div class="widget-main">
+                                            <div class="chart">
+                                                <div class="hr hr8 hr-double"></div>
+                                                <div id="movimiento" style="height: 300px; width: 100%;"></div>
+                                            </div>
+                                        </div>                                       
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="col-sm-12">
+                                    <!-- BAR CHART -->
+                                    <div class="widget-body">
+
+
+                                        <table id="grid" style="width: 95%;"></table>
+                                        <div id="grid-pager"></div>
+
+
+                                    </div>
+                                </div>                               
+                                <!-- /.box -->
+                            </div>
+                        </div>
+                        <!-- /.widget-body -->
+                    </div><!-- /.widget-box -->
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+
+        </section>
+
+    </div>    
+    <!-- /.content -->
+    <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{/resources/js/base.js}"></script>
+    <script th:src="@{/resources/js/lib/sol.js}"></script>
+    <script th:src="@{/resources/js/reportes/reporteMovimiento.js}"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/moment.min.js}"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/bootstrap-datetimepicker.min.js}"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/bootstrap-timepicker.js}"></script>
+    <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
+    <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/canvasjs.min.js}"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.easypiechart.min.js}"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.flot.min.js}"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.flot.pie.min.js}"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.flot.resize.min.js}"></script>
+
+
+</body>
+</html>

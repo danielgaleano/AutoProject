@@ -37,6 +37,9 @@ $("#globalSearch").button({
         groupOp: "OR",
         rules: rules
     });
+    
+    postData.fechaInicio = $('#date-timeDesde').val().toString();
+    postData.fechaFin = $('#date-timeHasta').val().toString();
     $("#grid").jqGrid("setGridParam", {search: true});
     $("#grid").trigger("reloadGrid", [{page: 1, current: true}]);
     return false;

@@ -8,6 +8,21 @@ and open the template in the editor.
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     
+    <div id="filterButton" >
+        <div class="widget-toolbar no-border">
+            <div class="inline dropdown-hover">
+                <button  th:onclick="'filtrar();'" class="btn btn-minier btn-primary">
+                    <i class="fa fa-fw fa-search"></i>
+                    Filtrar
+                </button>
+                <button id="recargar"  class="btn btn-minier" >
+                    <i class="glyphicon glyphicon-refresh"></i>
+                    Recargar
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <div id="scripts">
         <script th:src="@{~/proyecto/resources/js/lib/jquery.min.js}"></script>
         <script th:src="@{~/proyecto/resources/dist/js/jquery.2.1.1.min.js}"></script>

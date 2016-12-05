@@ -224,6 +224,10 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                         detalleVentaManager.save(ejDetVenta);
 
+                        ejVehiculo.setEstado(Vehiculo.VENDIDA);
+
+                        vehiculoManager.update(ejVehiculo);
+
                     }
 
                 } else {
@@ -348,6 +352,10 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                     ejDetVenta.setVenta(ejVenta);
 
                     detalleVentaManager.save(ejDetVenta);
+
+                    ejVehiculo.setEstado(Vehiculo.VENDIDA);
+
+                    vehiculoManager.update(ejVehiculo);
                 }
             }
 

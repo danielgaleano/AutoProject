@@ -62,6 +62,8 @@ $(document).ready(function(data) {
                                 + data.mensaje
                                 + '</div>');
                     } else {
+                        $('#interes').val("0");
+                        $('#importePagar').val("");
                         cargarDatos(data.id);
                         $("#grid").trigger("reloadGrid", [{page: 1, current: true}]);
                         $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
@@ -110,10 +112,9 @@ function cargarDatos(id) {
             $('#montoTotal').val(pago.neto);
 
             $('#saldo').val(pago.saldo);
-           
-            $('#interes').val("0");
-            $('#importePagar').val("");
-            
+
+
+
             if (pago.formaPago === "CONTADO") {
                 if (parseInt(pago.saldo) > 0 && pago.saldo !== null) {
                     $('#neto').val(pago.saldo);

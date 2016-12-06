@@ -33,6 +33,10 @@ public class Movimiento extends Base {
     private Compra compra;
     
     @ManyToOne
+    @JoinColumn(name = "venta")
+    private Venta venta;
+    
+    @ManyToOne
     @JoinColumn(name = "proveedor")
     private Proveedor proveedor;
     
@@ -324,6 +328,14 @@ public class Movimiento extends Base {
 
     public void setNeto(Double neto) {
         this.neto = neto;
+    }
+
+    public Venta getVenta() {
+        return venta;
+    }
+
+    public void setVenta(Venta venta) {
+        this.venta = venta;
     }
     
     

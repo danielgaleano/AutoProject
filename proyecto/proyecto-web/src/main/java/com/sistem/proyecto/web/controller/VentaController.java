@@ -36,8 +36,9 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/ventas")
 public class VentaController extends BaseController {
     
-    String atributos = "id,codigo,fechaEntrega,observacion,confirmado,total,cliente.id,"
-            + "cliente.nombre,activo,usuario.nombre,cantidadAprobados,cantidadTotal";
+    String atributos = "id,vehiculo.chasis,vehiculo.precioVenta,vehiculo.precioCosto,neto,vehiculo.codigo,vehiculo.activo,vehiculo.marca.id,vehiculo.precioCosto,vehiculo.precioVenta,vehiculo.marca.nombre,vehiculo.modelo.id,vehiculo.modelo.nombre,empresa.id,empresa.nombre,"
+            + "vehiculo.tipo.id,vehiculo.tipo.nombre,vehiculo.transmision,vehiculo.color,vehiculo.anho,vehiculo.caracteristica,vehiculo.proveedor.id,vehiculo.proveedor.nombre";
+    
     String atributosAcobrar = "id,nroCuota,monto,saldo,montoInteres,fecha,estado";
 
     String atributosVentas = "id,estadoVenta,nroFactura,fechaCuota,fechaVenta,tipoVenta,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"

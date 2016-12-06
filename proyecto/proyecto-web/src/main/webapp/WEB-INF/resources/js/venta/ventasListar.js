@@ -197,19 +197,20 @@ $(document).ready(function(data) {
             subgrid_table_id = subgrid_id + "_t";
             $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table>");
             $("#" + subgrid_table_id).jqGrid({
-                url: CONTEXT_ROOT + '/venta/detalles/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idVenta=' + row_id,
+                url: CONTEXT_ROOT + '/ventas/detalles/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idVenta=' + row_id,
                 datatype: 'json',
                 mtype: 'GET',
-                colNames: ['CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'TRASMISION', 'MONEDA', 'PRECIO', 'NETO'],
+                colNames: ['CODIGO','CHASIS', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'TRASMISION', 'PRECIO COSTO', 'PRECIO VENTA', 'NETO VENTA'],
                 colModel: [
                     {name: "vehiculo.codigo", index: "vehiculo.codigo", width: 80, key: true},
+                    {name: "vehiculo.chasis", index: "vehiculo.chasis", width: 80},
                     {name: "vehiculo.tipo.nombre", index: "vehiculo.tipo.nombre", width: 130},
                     {name: "vehiculo.marca.nombre", index: "vehiculo.marca.nombre", width: 80, align: "right"},
                     {name: "vehiculo.modelo.nombre", index: "vehiculo.modelo.nombre", width: 80, align: "right"},
                     {name: "vehiculo.anho", index: "vehiculo.anho", width: 100, align: "right", sortable: false},
                     {name: "vehiculo.transmision", index: "vehiculo.transmision", width: 100, align: "right", sortable: false},
-                    {name: "moneda.nombre", index: "moneda.nombre", width: 100, align: "right", sortable: false},
-                    {name: "precio", index: "precio", width: 100, align: "right", formatter: 'number', sortable: false},
+                    {name: "vehiculo.precioCosto", index: "vehiculo.precioCosto", formatter: 'number', width: 100, align: "right", sortable: false},
+                    {name: "vehiculo.precioVenta", index: "vehiculo.precioVenta", formatter: 'number', width: 100, align: "right", formatter: 'number', sortable: false},
                     {name: "neto", index: "neto", width: 100, align: "right", formatter: 'number', sortable: false}
                 ],
                 height: '100%',

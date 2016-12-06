@@ -238,6 +238,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         ejMovimiento.setNeto(Monto);
                         ejMovimiento.setInteres(0.0);
                         ejMovimiento.setSaldo(0.0);
+                        ejMovimiento.setCuota(Long.parseLong(docPagar.getNroCuota()));
                         ejMovimiento.setActivo("S");
                         ejMovimiento.setProveedor(ejCompra.getProveedor());
                         ejMovimiento.setTipoTransaccion("O");
@@ -296,6 +297,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                                 ejMovimiento.setImporte(Monto);
                                 ejMovimiento.setNeto(Monto);
                                 ejMovimiento.setInteres(interes);
+                                ejMovimiento.setCuota(Long.parseLong(docPagar.getNroCuota()));
                                 ejMovimiento.setSaldo(Double.parseDouble(netoSaldo.toString()));
                                 ejMovimiento.setActivo("S");
                                 ejMovimiento.setProveedor(ejCompra.getProveedor());
@@ -320,6 +322,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                                 ejMovimiento.setEmpresa(new Empresa(idEmpresa));
                                 ejMovimiento.setImporte(Monto);
                                 ejMovimiento.setInteres(interes);
+                                ejMovimiento.setCuota(Long.parseLong(docPagar.getNroCuota()));
                                 ejMovimiento.setNeto(Monto - Double.parseDouble(saldo.toString()));
                                 ejMovimiento.setSaldo(0.0);
                                 ejMovimiento.setActivo("S");
@@ -355,6 +358,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                             ejMovimiento.setImporte(Monto);
                             ejMovimiento.setNeto(Monto);
                             ejMovimiento.setInteres(interes);
+                            ejMovimiento.setCuota(Long.parseLong(docPagar.getNroCuota()));
                             ejMovimiento.setSaldo(Double.parseDouble(saldo.toString()));
                             ejMovimiento.setActivo("S");
                             ejMovimiento.setProveedor(ejCompra.getProveedor());
@@ -374,6 +378,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                             ejMovimiento.setCompra(ejCompra);
                             ejMovimiento.setEmpresa(new Empresa(idEmpresa));
                             ejMovimiento.setImporte(Monto);
+                            ejMovimiento.setCuota(Long.parseLong(docPagar.getNroCuota()));
                             ejMovimiento.setNeto(Monto - Double.parseDouble(saldo.toString()));
                             ejMovimiento.setInteres(interes);
                             ejMovimiento.setSaldo(0.0);

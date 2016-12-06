@@ -506,6 +506,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                             ejMovimiento.setCompra(ejCompra);
                             ejMovimiento.setEmpresa(new Empresa(idEmpresa));
                             ejMovimiento.setImporte(Monto);
+                            ejMovimiento.setNeto(Monto);
                             ejMovimiento.setInteres(interes);
                             ejMovimiento.setSaldo(0.0);
                             ejMovimiento.setActivo("S");
@@ -538,6 +539,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         ejMovimiento.setCompra(ejCompra);
                         ejMovimiento.setEmpresa(new Empresa(idEmpresa));
                         ejMovimiento.setImporte(Monto);
+                        ejMovimiento.setNeto(Monto);
                         ejMovimiento.setInteres(interes);
                         ejMovimiento.setSaldo(Double.parseDouble(netoSaldo.toString()));
                         ejMovimiento.setActivo("S");
@@ -562,6 +564,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                             ejMovimiento.setImporte(Monto);
                             ejMovimiento.setInteres(interes);
                             ejMovimiento.setSaldo(0.0);
+                            ejMovimiento.setNeto(Monto - Double.parseDouble(saldo.toString()));
                             ejMovimiento.setActivo("S");
                             ejMovimiento.setProveedor(ejCompra.getProveedor());
                             ejMovimiento.setTipoTransaccion("O");
@@ -584,6 +587,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                             ejMovimiento.setImporte(Monto);
                             ejMovimiento.setInteres(interes);
                             ejMovimiento.setSaldo(0.0);
+                            ejMovimiento.setNeto(Monto);
                             ejMovimiento.setActivo("S");
                             ejMovimiento.setProveedor(ejCompra.getProveedor());
                             ejMovimiento.setTipoTransaccion("O");

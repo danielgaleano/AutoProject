@@ -210,7 +210,7 @@ public class ReportesController extends BaseController {
         Movimiento ejemplo = new Movimiento();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
         ejemplo.setTipoTransaccion("O");
-        
+
         try {
             inicializarMovimientoManager();
             inicializarProveedorManager();
@@ -239,11 +239,11 @@ public class ReportesController extends BaseController {
 
             Proveedor ejProveedor = new Proveedor();
             ejProveedor.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-            
-            if(estado != null && estado.compareToIgnoreCase("") != 0){
+
+            if (estado != null && estado.compareToIgnoreCase("") != 0) {
                 ejProveedor.setId(Long.parseLong(estado));
             }
-            
+
             List<Map<String, Object>> listMapProveedor = proveedorManager.listAtributos(ejProveedor, "id,nombre".split(","));
 
             Long total = Long.parseLong("0");
@@ -256,7 +256,7 @@ public class ReportesController extends BaseController {
                         "fechaIngreso".split(","), "asd".split(","), true, true, null, null,
                         null, null, null, atributoInicio, valorInicio, atributoFin,
                         valorFin, null, true);
-                
+
                 Long totalEgreso = Long.parseLong("0");
 
                 for (Map<String, Object> rpm : listMapGrupos) {
@@ -264,7 +264,7 @@ public class ReportesController extends BaseController {
                 }
 
                 total = total + totalEgreso;
-                
+
                 if (totalEgreso > 0) {
                     DetalleCanvas ejEgreso = new DetalleCanvas();
                     ejEgreso.setLabel(pro.get("nombre").toString());
@@ -343,8 +343,9 @@ public class ReportesController extends BaseController {
                     }
 
                 } else {
-                    ejemplo.setProveedor(new Proveedor(Long.parseLong(filtro.getData())));
-                    //ejemplo = generarEjemplo(filtro, ejemplo);
+                    if (filtro.getData() != null && filtro.getData().compareToIgnoreCase("") != 0) {
+                        ejemplo.setProveedor(new Proveedor(Long.parseLong(filtro.getData())));
+                    }//ejemplo = generarEjemplo(filtro, ejemplo);
                 }
 
             }

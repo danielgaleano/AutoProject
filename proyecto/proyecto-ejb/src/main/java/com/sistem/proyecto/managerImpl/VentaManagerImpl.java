@@ -85,6 +85,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
             }
             ejVenta.setNroFactura(nroFactura);
             ejVenta.setActivo("S");
+            ejVenta.setEstadoVenta(Venta.VENTA_PENDIENTE);
             ejVenta.setEmpresa(new Empresa(idEmpresa));
             ejVenta.setFormaPago(formaPgo);
             ejVenta.setCliente(new Cliente(venta.getCliente().getId()));
@@ -225,7 +226,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                         detalleVentaManager.save(ejDetVenta);
 
-                        ejVehiculo.setEstado(Vehiculo.VENDIDA);
+                        ejVehiculo.setEstado(Vehiculo.PROVESO_VENTA);
 
                         vehiculoManager.update(ejVehiculo);
 
@@ -354,7 +355,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                     detalleVentaManager.save(ejDetVenta);
 
-                    ejVehiculo.setEstado(Vehiculo.VENDIDA);
+                    ejVehiculo.setEstado(Vehiculo.PROVESO_VENTA);
 
                     vehiculoManager.update(ejVehiculo);
                 }

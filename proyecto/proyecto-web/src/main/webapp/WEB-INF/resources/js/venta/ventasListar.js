@@ -10,6 +10,7 @@ $(document).ready(function(data) {
         var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
         var permisoVisualizar = parseBolean($(this).find('.tablvisualizar-permiso').text());
         var permisoDetalle = parseBolean($(this).find('.tabladd-permiso').text());
+        var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
     }
 
 
@@ -91,6 +92,7 @@ $(document).ready(function(data) {
             atributos: "id,nombre",
             filters: null,
             estado: action,
+            idVenta: action,
             todos: false
         },
         jsonReader: {
@@ -146,8 +148,8 @@ $(document).ready(function(data) {
                             asignar = "";
                             visuali = visualizarButton(cl, permisoVisualizar, null);
                             //edit = editInlineButton(cl, permisoEditar);
-                            editForm = detalleButton(cl, permisoDetalle, 'Realizar Venta', 'ventas/editar');
-                            //desact = desactivarButton(cl, permisoDesactivar);
+                            editForm = detalleButton(cl, permisoDetalle, 'Editar Venta', 'ventas/editar');
+                            desact = desactivarButton(cl, permisoDesactivar,"Cancelar Venta");
                             $(grid_selector).setRowData(ids[i], {act: ini + visuali + editForm + desact + fin});
                         }
                         $(grid_selector).setRowData(ids[i], {estadoVenta: labelActivo});

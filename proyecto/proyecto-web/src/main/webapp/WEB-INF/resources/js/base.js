@@ -145,14 +145,22 @@ function editFormButton(id, permisoEditar) {
     return button;
 }
 
-function desactivarButton(id, permisoDesactivar) {
+function desactivarButton(id, permisoDesactivar, title) {
     var content = window.location.href;
     var button = '';
     if (permisoDesactivar) {
-        button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+        if (title !== null  && title !== "" ) {
+            button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');"'
+                + '  class=" btn btn-xs btn-danger" style="float:left;cursor:pointer;" type="button" title="'+title+'" onclick="desactivar(this,' + id + ');">'
+                + ' <span class="glyphicon glyphicon-trash"></span></a>';
+        }else{
+            button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
                 + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');"'
                 + '  class=" btn btn-xs btn-danger" style="float:left;cursor:pointer;" type="button" title="Desactivar" onclick="desactivar(this,' + id + ');">'
                 + ' <span class="glyphicon glyphicon-trash"></span></a>';
+        }
+        
     }
 
     return button;

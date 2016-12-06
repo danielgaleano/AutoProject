@@ -154,7 +154,7 @@ $(document).ready(function(data) {
                     }
                 }},
             {name: 'moneda.valor', index: 'moneda.valor', width: 160, sortable: false, formatter: 'number', resize: false, editable: true, disabled: true, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
-            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter: 'number', resize: false, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
+            {name: 'precio', index: 'precio', width: 160, sortable: false, editable: true, formatter: 'number', resize: false, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}, //unformat: spinnerNumber,
                 editoptions: {
                     dataEvents: [
                         {type: 'click', fn: function(e) {

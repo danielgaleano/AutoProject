@@ -39,14 +39,14 @@ $(document).ready(function(data) {
     //ventaForm($("#idVenta").val(), action);
 
     $(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/vehiculos/listar',
+        url: CONTEXT_ROOT + '/ventas/vehiculos/listar',
         datatype: 'json',
         mtype: 'GET',
         height: 150,
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'ID_VEHICULO', 'CHASIS', 'KILOMETRAJE', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRASMISION', 'PRECIO COSTO', 'PRECIO VENTA', 'PROVEEDOR', 'CARACTERISTICA'],
+        colNames: ['ID', 'ID_VEHICULO', 'CHASIS', 'KILOMETRAJE', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRASMISION', 'PRECIO COSTO', 'PRECIO VENTA', 'PROVEEDOR', 'CARACTERISTICA',''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'codigo', index: 'codigo', key: true, width: 100, editable: false},
@@ -61,7 +61,8 @@ $(document).ready(function(data) {
             {name: 'precioCosto', index: 'precioCosto', width: 120, editable: true, formatter: 'number', edittype: "select"},
             {name: 'precioVenta', index: 'precioVenta', width: 160, sortable: false, formatter: 'number', resize: false, editable: true, disabled: true, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'proveedor.nombre', index: 'proveedor.nombre', width: 160, sortable: false, editable: true, disabled: true, editoptions: {disabled: true}, resize: false},
-            {name: 'caracteristica', index: 'caracteristica', width: 160, sortable: false, resize: false, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}}
+            {name: 'caracteristica', index: 'caracteristica', width: 160, sortable: false, resize: false, editoptions: {disabled: true}, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
+            {name: 'estado', index: 'estado', hidden: true, width: 100, editable: false}
         ],
         viewrecords: true,
         rowNum: 10,

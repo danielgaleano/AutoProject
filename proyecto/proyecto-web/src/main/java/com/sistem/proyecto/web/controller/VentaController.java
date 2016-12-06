@@ -9,12 +9,14 @@ package com.sistem.proyecto.web.controller;
 import com.google.gson.Gson;
 import com.sistem.proyecto.entity.DetalleVenta;
 import com.sistem.proyecto.entity.Empresa;
+import com.sistem.proyecto.entity.Vehiculo;
 import com.sistem.proyecto.entity.Venta;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.manager.utils.DTORetorno;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
+import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +39,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class VentaController extends BaseController {
     
     String atributos = "id,vehiculo.chasis,vehiculo.precioVenta,vehiculo.precioCosto,neto,vehiculo.codigo,vehiculo.activo,vehiculo.marca.id,vehiculo.precioCosto,vehiculo.precioVenta,vehiculo.marca.nombre,vehiculo.modelo.id,vehiculo.modelo.nombre,empresa.id,empresa.nombre,"
-            + "vehiculo.tipo.id,vehiculo.tipo.nombre,vehiculo.transmision,vehiculo.color,vehiculo.anho,vehiculo.caracteristica,vehiculo.proveedor.id,vehiculo.proveedor.nombre";
+            + "vehiculo.tipo.id,vehiculo.tipo.nombre,vehiculo.transmision,vehiculo.color,vehiculo.estado,vehiculo.anho,vehiculo.caracteristica,vehiculo.proveedor.id,vehiculo.proveedor.nombre";
     
     String atributosAcobrar = "id,nroCuota,monto,saldo,montoInteres,fecha,estado";
+    
+    String atributosVehiculo = "id,codigo,estado,activo,marca.id,precioCosto,precioVenta,marca.nombre,modelo.id,modelo.nombre,empresa.id,empresa.nombre,"
+            + "tipo.id,tipo.nombre,transmision,color,anho,caracteristica,proveedor.id,proveedor.nombre";
 
     String atributosVentas = "id,estadoVenta,nroFactura,fechaCuota,fechaVenta,tipoVenta,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
             + "tipoMoraInteres,moraInteres,cantidadCuotas,montoCuotas,cliente.nombre,activo,"
@@ -116,6 +121,7 @@ public class VentaController extends BaseController {
             @ModelAttribute("rows") Integer cantidad,
             @ModelAttribute("sidx") String ordenarPor,
             @ModelAttribute("estado") String estado,
+            @ModelAttribute("idVenta") String idVenta,
             @ModelAttribute("sord") String sentidoOrdenamiento,
             @ModelAttribute("todos") boolean todos) {
 
@@ -272,6 +278,100 @@ public class VentaController extends BaseController {
 
             }
             Integer totalPaginas = total / cantidad;
+            retorno.setTotal(totalPaginas + 1);
+            retorno.setRetorno(listMapGrupos);
+            retorno.setPage(pagina);
+
+        } catch (Exception e) {
+
+            logger.error("Error al listar", e);
+        }
+
+        return retorno;
+    }
+    
+    @RequestMapping(value = "/vehiculos/listar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno listar(@ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filtros,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("idVenta") String idVenta,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos) {
+
+        DTORetorno retorno = new DTORetorno();
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        ordenarPor = "marca.nombre";
+        
+        Vehiculo ejVehiculo = new Vehiculo();
+        ejVehiculo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+        ejVehiculo.setEstado(Vehiculo.STOCK);
+        
+        List<Map<String, Object>> listMapGrupos = null;
+        
+        List<Map<String, Object>> listMapVenta = null;
+        try {
+
+            inicializarVehiculoManager();
+
+            Gson gson = new Gson();
+            String camposFiltros = null;
+            String valorFiltro = null;
+
+            if (filtrar) {
+                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
+                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
+                    for (ReglaDTO regla : filtro.getRules()) {
+                        if (camposFiltros == null) {
+                            camposFiltros = regla.getField();
+                            valorFiltro = regla.getData();
+                        } else {
+                            camposFiltros += "," + regla.getField();
+                        }
+                    }
+                } else {
+                    //ejemplo = generarEjemplo(filtro, ejemplo);
+                }
+
+            }
+            // ejemplo.setActivo("S");
+
+            pagina = pagina != null ? pagina : 1;
+            Integer total = 0;
+
+            if(idVenta != null && idVenta.compareToIgnoreCase("") != 0){
+                DetalleVenta ejDetalle = new DetalleVenta();
+                ejDetalle.setVenta(new Venta(Long.parseLong(idVenta)));
+                List<Map<String, Object>> listDetalle = detalleVentaManager.listAtributos(ejDetalle, "vehiculo.id".split(","));
+                List<Long> idVehiculos =new ArrayList<>();
+                
+                for(Map<String, Object> rpm : listDetalle){
+                    idVehiculos.add(Long.parseLong(rpm.get("vehiculo.id").toString()));
+                }
+                
+            }
+            if (!todos) {
+                total = vehiculoManager.list(ejVehiculo, true).size();
+            }
+
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+
+            if (total < inicio) {
+                inicio = total - total % cantidad;
+                pagina = total / cantidad;
+            }
+
+            listMapGrupos = vehiculoManager.listAtributos(ejVehiculo, atributosVehiculo.split(","), todos, inicio, cantidad,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    null, null, null, null, null, null, null, null, true);
+
+            if (todos) {
+                total = listMapGrupos.size();
+            }
+            Integer totalPaginas = total / cantidad;
+
             retorno.setTotal(totalPaginas + 1);
             retorno.setRetorno(listMapGrupos);
             retorno.setPage(pagina);

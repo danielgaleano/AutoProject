@@ -268,6 +268,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                 ejVehiculo.setCodigo(ejCompra.getId() + "-" + codDetalle);
                 ejVehiculo.setActivo("S");
                 ejVehiculo.setEmpresa(new Empresa(idEmpresa));
+                ejVehiculo.setEstado(Vehiculo.PENDIENTE);
                 ejVehiculo.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                 ejVehiculo.setProveedor(new Proveedor(ejCompra.getProveedor().getId()));
                 ejVehiculo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));

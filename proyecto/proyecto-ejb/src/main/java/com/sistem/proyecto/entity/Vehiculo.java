@@ -27,6 +27,7 @@ public class Vehiculo extends Base {
     public static final String MANTENIMIENTO = "MANTENIMIENTO";
     public static final String STOCK = "STOCK";
     public static final String VENDIDA = "VENDIDA";
+    public static final String PROVESO_VENTA = "PROCESO_VENTA";
     
     private static final long serialVersionUID = 154454564L;
 

@@ -94,9 +94,8 @@ $(document).ready(function(data) {
             {name: 'vehiculo.modelo.nombre', index: 'vehiculo.modelo.nombre', width: 130, editable: true, edittype: 'select',
                 editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
-                    
                     dataUrl: CONTEXT_ROOT + "/modelos/listar?_search=false&todos=true&idMarca=&rows=10&page=1&sidx=&sord=asc",
-                    buildSelect: function(resp) {                       
+                    buildSelect: function(resp) {
                         var sel = '<select>';
                         sel += '<option value="">Seleccione la opcion</option>';
                         var obj = $.parseJSON(resp);
@@ -110,7 +109,7 @@ $(document).ready(function(data) {
                         return sel;
                     }
                 }
-            },           
+            },
             {name: 'vehiculo.anho', index: 'vehiculo.anho', width: 90, editable: true, sorttype: "date", unformat: pickYear, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.color', index: 'vehiculo.color', width: 90, sortable: false, editable: true, editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},
             {name: 'vehiculo.transmision', index: 'vehiculo.transmision', width: 110, editable: true, edittype: "select", editoptions: {value: "MECANICO:MECANICO;AUTOMATICO:AUTOMATICO"}},
@@ -372,7 +371,7 @@ $(document).ready(function(data) {
                     {name: "id", key: true, hidden: true, index: "id", width: 100, align: "right", sortable: false},
                     {name: "moneda.nombre", index: "moneda.nombre", width: 100, align: "right", sortable: false},
                     {name: "precio", index: "precio", width: 100, align: "right", formatter: 'number', sortable: false, editable: false, disabled: true, editoptions: {disabled: true}},
-                    {name: "total", index: "total", width: 100, align: "right", formatter: 'number', sortable: false, editable: true, disabled: true, editoptions: {disabled: true}},                   
+                    {name: "total", index: "total", width: 100, align: "right", formatter: 'number', sortable: false, editable: true, disabled: true, editoptions: {disabled: true}},
                     {name: "porcentajeDescuento", index: "porcentajeDescuento", editable: true, width: 100, align: "right", sortable: false,
                         editoptions: {
                             dataEvents: [
@@ -531,6 +530,10 @@ $(document).ready(function(data) {
                         mtype: "POST",
                         datatype: 'json',
                         keys: true,
+                        serializeRowData: function(postData) {
+                            postData['nroFactura'] = $('#factura').val();
+                            return postData;
+                        },
                         successfunc: function(data) {
                             if (data.responseJSON.id !== null && data.responseJSON.id !== "") {
                                 compraForm(data.responseJSON.id, "recargar");

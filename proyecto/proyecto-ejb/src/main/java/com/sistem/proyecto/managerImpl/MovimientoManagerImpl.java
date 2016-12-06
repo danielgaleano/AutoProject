@@ -101,6 +101,8 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
                         System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
                     }
+                    
+                    pago.setImportePagar(Double.parseDouble(pago.getMonto()));
                 } else {
 
                     docPagar = new DocumentoPagar();

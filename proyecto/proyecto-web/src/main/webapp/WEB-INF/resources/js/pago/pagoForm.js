@@ -110,7 +110,10 @@ function cargarDatos(id) {
             $('#montoTotal').val(pago.neto);
 
             $('#saldo').val(pago.saldo);
-
+           
+            $('#interes').val("0");
+            $('#importePagar').val("");
+            
             if (pago.formaPago === "CONTADO") {
                 if (parseInt(pago.saldo) > 0 && pago.saldo !== null) {
                     $('#neto').val(pago.saldo);

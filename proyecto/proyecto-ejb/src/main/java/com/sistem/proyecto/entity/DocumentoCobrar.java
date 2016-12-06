@@ -8,6 +8,7 @@ package com.sistem.proyecto.entity;
 
 import java.util.Date;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
@@ -16,6 +17,7 @@ import javax.persistence.Temporal;
  *
  * @author daniel
  */
+@Entity
 public class DocumentoCobrar extends Base {
     
     public static final String PARCIAL = "PARCIAL";

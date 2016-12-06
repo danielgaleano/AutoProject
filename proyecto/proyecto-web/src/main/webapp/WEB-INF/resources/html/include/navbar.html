@@ -148,6 +148,7 @@ and open the template in the editor.
                         <li><a sec:authorize="hasRole('SuperUsuario')" th:href="@{/roles}"><i class="fa fa-users"></i> <span>Roles</span></a></li>
                         <li><a sec:authorize="hasRole('SuperUsuario')" th:href="@{/permisos}"><i class="fa fa-key"></i> <span>Permisos</span></a></li>
                         <li><a sec:authorize="hasRole('Moneda.Listar')" th:href="@{/monedas}"><i class="fa fa-fw fa-dollar"></i> <span>Monedas</span></a></li>
+                        <li><a  th:href="@{/facturas}"><i class="fa fa-key"></i> <span>Facturas</span></a></li>
                     </ul>
                   </li>
                   

@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,10 +34,11 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * @author daniel
  */
+@Controller
+@RequestMapping(value = "/facturas")
 public class NumeracionFacturaController extends BaseController {
     
-    String atributos = "id,nombre,activo,empresa.id,empresa.nombre,simbolo,valor,porDefecto,"
-            +"inicio,medio,fin,timbrado,fechaInicio,fechaFin";
+    String atributos = "id,nombre,empresa.id,empresa.nombre,valor";
     
     
     SimpleDateFormat sdfSimple = new SimpleDateFormat("yyyy-MM-dd");
@@ -152,9 +154,6 @@ public class NumeracionFacturaController extends BaseController {
             }
 
             NumeracionFactura numeracion = numeracionFacturaManager.get(numeracionFacturaRecibido.getId());
-            numeracion.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-            numeracion.setIdUsuarioModificacion(userDetail.getId());
-            
             numeracion.setValor(numeracionFacturaRecibido.getValor());
             
 
@@ -173,5 +172,61 @@ public class NumeracionFacturaController extends BaseController {
         return retorno;
     }
     
+    @RequestMapping(value = "/optener", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno optenerFactura() {
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        DTORetorno<String> retorno = new DTORetorno<>();
+        List<Map<String, Object>> listMapGrupos = null;
+        try {
+            inicializarNumeracionFacturaManager();
+
+            NumeracionFactura ejNumeracion = new NumeracionFactura();
+            ejNumeracion.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            List<NumeracionFactura> ejFactura = numeracionFacturaManager.list(ejNumeracion,false);
+            Long contador = Long.parseLong("0");
+            String inicio = "";
+            String medio = "";
+            for(NumeracionFactura rpm : ejFactura){
+                
+                if(rpm.getNombre().compareToIgnoreCase("FINAL") == 0){
+                    contador = Long.parseLong(rpm.getValor()) + 1;
+                    rpm.setValor(contador.toString());
+                    numeracionFacturaManager.update(rpm);
+                }else if(rpm.getNombre().compareToIgnoreCase("INICIO") == 0){
+                    inicio = rpm.getValor();
+                }else if(rpm.getNombre().compareToIgnoreCase("MEDIO") == 0){
+                    medio = rpm.getValor();
+                }
+            }
+            
+            String valor = "";
+            if(contador.toString().length() > 1){
+                valor = "0000"+ contador.toString();
+            }else if(contador.toString().length() > 2){
+                valor = "000"+ contador.toString();
+            }else if(contador.toString().length() > 3){
+                valor = "00"+ contador.toString();
+            }else if(contador.toString().length() > 4){
+                valor = "0"+ contador.toString();
+            }else if(contador.toString().length() > 5){
+                valor = contador.toString();
+            }else if(contador.toString().length() < 2){
+                valor = "00000"+ contador.toString();
+            }
+            
+            String factura = inicio +"-"+medio+"-"+valor;
+            retorno.setData(factura);
+            retorno.setError(false);
+            retorno.setMensaje("El numero de factura se genero exitosamente.");
+
+        } catch (Exception ex) {
+            logger.error("Error al generar el numero de factura", ex);
+            retorno.setError(true);
+            retorno.setMensaje("Error al generar el numero de factura");
+        }
+
+        return retorno;
+    }
     
 }

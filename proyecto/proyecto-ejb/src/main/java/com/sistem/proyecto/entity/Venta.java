@@ -58,6 +58,9 @@ public class Venta extends Base {
     @Column(name = "cantidad_cuotas")
     private Long cantidadCuotas;
     
+    @Column(name = "dias_gracia")
+    private Long diasGracia;
+    
     @Column(name = "monto_cuotas")
     private String montoCuotas;
     
@@ -465,6 +468,14 @@ public class Venta extends Base {
 
     public void setItemsVenta(List<Long> itemsVenta) {
         this.itemsVenta = itemsVenta;
+    }
+
+    public Long getDiasGracia() {
+        return diasGracia;
+    }
+
+    public void setDiasGracia(Long diasGracia) {
+        this.diasGracia = diasGracia;
     }
     
     

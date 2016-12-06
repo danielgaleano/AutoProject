@@ -110,6 +110,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                 ejVenta.setCantidadCuotas(venta.getCantidadCuotas());
                 ejVenta.setPorcentajeInteresCredito(venta.getPorcentajeInteresCredito());
                 ejVenta.setMoraInteres(venta.getMoraInteres());
+                ejVenta.setDiasGracia(venta.getDiasGracia());
 
                 Double interes = Double.parseDouble(venta.getPorcentajeInteresCredito());
 
@@ -209,7 +210,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                         Double costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
 
-                        Double costoVeh = Math.round(ejVehiculo.getPrecioVenta()) - costoInteresVeh;
+                        Double costoVeh =   costoInteresVeh - Math.round(ejVehiculo.getPrecioVenta());
 
                         DetalleVenta ejDetVenta = new DetalleVenta();
                         ejDetVenta.setActivo("S");
@@ -217,8 +218,8 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         ejDetVenta.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                         ejDetVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                         ejDetVenta.setVehiculo(new Vehiculo(rpm));
-                        ejDetVenta.setNeto(costoVeh);
-                        ejDetVenta.setMontoDescuento(costoInteresVeh);
+                        ejDetVenta.setNeto(costoInteresVeh);
+                        ejDetVenta.setMontoDescuento(costoVeh);
                         ejDetVenta.setPorcentajeDescuento(porcentajeVehiculo + "");
                         ejDetVenta.setVenta(ejVenta);
 

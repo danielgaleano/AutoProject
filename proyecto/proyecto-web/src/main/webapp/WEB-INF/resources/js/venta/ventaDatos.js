@@ -1,5 +1,7 @@
 $(document).ready(function(data) {
 
+
+
     if (action === 'VISUALIZAR') {
         $('#botonAprobar').hide();
         $('#aceptar').hide();
@@ -21,6 +23,20 @@ $(document).ready(function(data) {
 
     if (id !== null) {
         cargarDatos(id);
+    } else {
+        var jqXHR = $.get(CONTEXT_ROOT + "/facturas/optener", function(response, textStatus, jqXHR) {
+            if (response.error) {
+                $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                        + '<button class="close" data-dismiss="alert" type="button"'
+                        + '><i class="fa  fa-remove"></i></button>'
+                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                        + response.mensaje
+                        + '</div>');
+            } else {
+                $('#nroFactura').val(response.data);
+            }
+
+        });
     }
 
     $('#cliente').searchableOptionList({

@@ -96,9 +96,9 @@ $(document).ready(function(data) {
                 }
                 console.log(neto);
                 if (isSelected) {
-                    neto = neto + parseInt(data.precioCosto);
+                    neto = neto + parseInt(data.precioVenta);
                 } else {
-                    neto = neto - parseInt(data.precioCosto);
+                    neto = neto - parseInt(data.precioVenta);
                 }
                 $('#montoTotal').val(neto);
             }, 0);
@@ -116,7 +116,7 @@ $(document).ready(function(data) {
                     var isSelect = $(grid_selector).jqGrid("getGridParam", "selarrrow");
                     console.log(isSelect);
                     console.log("neto");
-                    neto = neto + parseInt(data.precioCosto);
+                    neto = neto + parseInt(data.precioVenta);
                     console.log(neto+"netooo");
 
 

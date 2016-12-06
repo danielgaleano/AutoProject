@@ -87,7 +87,9 @@ $(document).ready(function(data) {
         },
         submitHandler: function(form) {
             var $form = $('#validation-formVenta');
+            $('#nroFactura').attr("disabled", false);
             var serialize = $form.find('.tableusuario-input').serialize();
+            $('#nroFactura').attr("disabled", true);
             var itemsVenta = $("#grid").jqGrid("getGridParam", "selarrrow");                        
             serialize = serialize +"&itemsVenta="+itemsVenta;
             console.log(serialize);

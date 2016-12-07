@@ -205,6 +205,9 @@ $(document).ready(function(data) {
             $("#detallado").attr("disabled", true);
             $("#formCredito").show();
             $("#tipo-descuento").hide();
+            $("#formDescuento").hide();
+            $('#general').prop("checked", false);
+            $('#detallado').prop("checked", false);
         }
     });
     $("#contado").click(function() {

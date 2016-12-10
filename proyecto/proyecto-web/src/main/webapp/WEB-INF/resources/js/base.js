@@ -38,8 +38,9 @@ $("#globalSearch").button({
         rules: rules
     });
     
-    postData.fechaInicio = $('#date-timeDesde').val().toString();
-    postData.fechaFin = $('#date-timeHasta').val().toString();
+    postData.fechaInicio = $('#date-timeDesde').val();
+    postData.fechaFin = $('#date-timeHasta').val();
+    
     $("#grid").jqGrid("setGridParam", {search: true});
     $("#grid").trigger("reloadGrid", [{page: 1, current: true}]);
     return false;

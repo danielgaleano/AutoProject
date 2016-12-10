@@ -8,7 +8,10 @@ package com.sistem.proyecto.web.controller;
 
 import com.google.gson.Gson;
 import com.sistem.proyecto.entity.Cliente;
+import com.sistem.proyecto.entity.Compra;
 import com.sistem.proyecto.entity.DetalleVenta;
+import com.sistem.proyecto.entity.DocumentoCobrar;
+import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Vehiculo;
 import com.sistem.proyecto.entity.Venta;
@@ -51,7 +54,7 @@ public class VentaController extends BaseController {
     String atributosVentas = "id,estadoVenta,nroFactura,fechaCuota,fechaVenta,tipoVenta,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
             + "tipoMoraInteres,moraInteres,cantidadCuotas,montoCuotas,cliente.nombre,activo,"
             + "entrega,saldo,tipoDescuento,descuento,monto,montoDescuento,neto,"
-            + "cliente.id,cliente.documento,cliente.nombre,cliente.direccion,cliente.telefono";
+            + "cliente.id,cliente.documento,cliente.nombre,cliente.direccion,cliente.telefono,diasGracia";
 
     
     @RequestMapping(method = RequestMethod.GET)
@@ -544,6 +547,90 @@ public class VentaController extends BaseController {
 
         return retorno;
 
+    }
+    
+    @RequestMapping(value = "/docApagar/listar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno listarApagar(@ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filtros,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("idVenta") String idVenta,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos) {
+
+        DTORetorno retorno = new DTORetorno();
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        DocumentoCobrar ejemplo = new DocumentoCobrar();
+        ejemplo.setVenta(new Venta(Long.parseLong(idVenta)));
+
+        List<Map<String, Object>> listMapGrupos = null;
+
+        try {
+
+            inicializarDocumentoCobrarManager();
+
+            Gson gson = new Gson();
+            String camposFiltros = null;
+            String valorFiltro = null;
+
+            if (filtrar) {
+                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
+                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
+                    for (ReglaDTO regla : filtro.getRules()) {
+                        if (camposFiltros == null) {
+                            camposFiltros = regla.getField();
+                            valorFiltro = regla.getData();
+                        } else {
+                            camposFiltros += "," + regla.getField();
+                        }
+                    }
+                } else {
+                    //ejemplo = generarEjemplo(filtro, ejemplo);
+                }
+
+            }
+            // ejemplo.setActivo("S");
+            if (ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0) {
+                ordenarPor = "numeroPedido";
+            }
+
+            pagina = pagina != null ? pagina : 1;
+            Integer total = 0;
+
+            if (!todos) {
+                total = documentoCobrarManager.list(ejemplo, true).size();
+            }
+
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+
+            if (total < inicio) {
+                inicio = total - total % cantidad;
+                pagina = total / cantidad;
+            }
+
+            listMapGrupos = documentoCobrarManager.listAtributos(ejemplo, atributosAcobrar.split(","), todos, inicio, cantidad,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    null, null, null, null, null, null, null, null, true);
+
+            if (todos) {
+                total = listMapGrupos.size();
+            }
+            Integer totalPaginas = total / cantidad;
+
+            retorno.setTotal(totalPaginas + 1);
+            retorno.setRetorno(listMapGrupos);
+            retorno.setPage(pagina);
+
+        } catch (Exception e) {
+            retorno.setError(true);
+            retorno.setMensaje("Error al optener pedidos");
+            logger.error("Error al listar", e);
+        }
+
+        return retorno;
     }
     
 }

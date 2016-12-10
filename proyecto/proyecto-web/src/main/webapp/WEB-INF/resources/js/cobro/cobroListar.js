@@ -58,16 +58,18 @@ $(document).ready(function(data) {
         height: 150,
         hidegrid: false,
         rownumbers: true,
-        //width: $(".content").width(),
-        colNames: ['ID', 'NRO. FACTURA', 'FORMA PAGO', 'TIPO DESCUENTO', 'NETO', 'PROVEEDOR', 'TELF. PROVEEDOR', ''],
+        width: 1050,
+        colNames: ['ID', 'NRO. FACTURA', 'FORMA PAGO', 'CUOTA PENDIENTE', 'MONTO CUOTA', 'TIPO DESCUENTO', 'NETO', 'CLIENTE', 'TELF. CLIENTE', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'nroFactura', index: 'nroFactura', width: 90, editable: false},
             {name: 'formaPago', index: 'formaPago', width: 90, editable: false},
+            {name: 'cuota', index: 'cuota', formatter: 'int', width: 90, editable: false},
+            {name: 'montoCuota', index: 'montoCuota', formatter: 'number', width: 90, editable: false},
             {name: 'tipoDescuento', index: 'tipoDescuento', width: 150, editable: true},
             {name: 'neto', index: 'neto', width: 90, formatter: 'number', sortable: false},
-            {name: 'proveedor.nombre', index: 'proveedor.nombre', width: 90, sortable: false},
-            {name: 'proveedor.telefono', index: 'proveedor.telefono', width: 90, sortable: false},
+            {name: 'cliente.nombre', index: 'cliente.nombre', width: 90, sortable: false},
+            {name: 'cliente.telefono', index: 'cliente.telefono', width: 90, sortable: false},
             {name: 'act', index: 'act', width: 160, fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {
@@ -121,7 +123,7 @@ $(document).ready(function(data) {
             todos: false
         },
         onSelectRow: function(id) {
-            var jqXHR = $.get(CONTEXT_ROOT + "/pagos/" + id, function(response, textStatus, jqXHR) {
+            var jqXHR = $.get(CONTEXT_ROOT + "/cobros/" + id, function(response, textStatus, jqXHR) {
 
                 if (response.error) {
                     $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
@@ -133,7 +135,7 @@ $(document).ready(function(data) {
                 } else {
                     var pago = response.data;
                     // $('.ui-jqdialog-titlebar-close').trigger('click');
-                    $('#idCompra').val(pago.idCompra);
+                    $('#idVenta').val(pago.idCompra);
                     $('#docPagar').val(pago.idDocPagar);
                     $('#nroFactura').val(pago.nroFactura);
                     $('#montoTotal').val(pago.neto);
@@ -142,11 +144,11 @@ $(document).ready(function(data) {
 
                     if (pago.idProveedor !== null && pago.idProveedor !== "") {
 
-                        $('#idProveedorConta').val(pago.idProveedor);
+                        $('#idCliente').val(pago.idProveedor);
                         $('#validation-formProvee').find('.tableusuario-input').attr("disabled", true);
                         $('#buttonOption').hide();
 
-                        var jqXHR = $.get(CONTEXT_ROOT + "/proveedores/" + pago.idProveedor, function(response, textStatus, jqXHR) {
+                        var jqXHR = $.get(CONTEXT_ROOT + "/clientes/" + pago.idProveedor, function(response, textStatus, jqXHR) {
 
                             if (response.error) {
                                 $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
@@ -157,20 +159,36 @@ $(document).ready(function(data) {
                                         + '</div>');
                             } else {
 
-                                var proveedor = response.data;
+                                var cliente = response.data;
 
-                                $('#idProveedor').val(proveedor.id);
-                                $('#ruc').val(proveedor.ruc);
-                                $('#nombre').val(proveedor.nombre);
-                                $('#email').val(proveedor.email);
-                                $('#telefono').val(proveedor.telefono);
-                                $('#direccion').val(proveedor.direccion);
-                                $('#comentario').val(proveedor.comentario);
-                                $('#fax').val(proveedor.fax);
-                                $('#pais').val(proveedor.pais);
-                                $('#ciudad').val(proveedor.ciudad);
-                                $('#codigoPostal').val(proveedor.codigoPostal);
-                                $('#comentario').val(proveedor.comentario);
+                                $('#idCliente').val(cliente.id);
+                                $('#idEmpleo').val(cliente['empleo.id']);
+                                $('#idContacto').val(cliente['contacto.id']);
+                                $('#documento').val(cliente.documento);
+                                $('#nombre').val(cliente.nombre);
+                                $('#id-date-picker-cliente').val(cliente.fechaNacimiento);
+                                $('#sexo').val(cliente.sexo);
+                                $('#pais').val(cliente.pais);
+                                $('#email').val(cliente.email);
+                                $('#telefono').val(cliente.telefono);
+                                $('#telefonoMovil').val(cliente.telefonoMovil);
+                                $('#direccion').val(cliente.direccion);
+                                $('#comentario').val(cliente.comentario);
+                                $('#nombreEmpresa').val(cliente['empleo.nombreEmpresa']);
+                                $('#actividad').val(cliente['empleo.actividad']);
+                                $('#cargo').val(cliente['empleo.cargo']);
+                                $('#antiguedad').val(cliente['empleo.antiguedad']);
+                                $('#salario').val(cliente['empleo.salario']);
+                                $('#telefonoEmpleo').val(cliente['empleo.telefono']);
+                                $('#direccionEmpleo').val(cliente['empleo.direccion']);
+                                $('#comentarioEmpleo').val(cliente['empleo.comentario']);
+                                $('#movilContacto').val(cliente['contacto.movil']);
+                                $('#documentoContacto').val(cliente['contacto.documento']);
+                                $('#nombreContacto').val(cliente['contacto.nombre']);
+                                $('#cargoContacto').val(cliente['contacto.cargo']);
+                                $('#telefonoContacto').val(cliente['contacto.telefono']);
+                                $('#emailContacto').val(cliente['contacto.email']);
+                                $('#comentarioContacto').val(cliente['contacto.comentario']);
 
 
                             }
@@ -186,8 +204,12 @@ $(document).ready(function(data) {
                                     + '</div>');
                         });
                     }
-
+                    
+                    $('#formaPago').val(pago.formaPago);
+                    $('#formaPagoCred').val(pago.formaPago);
                     if (pago.formaPago === "CONTADO") {
+                        $('#contado_dato').show();
+                        $('#credito_dato').hide();
                         if (parseInt(pago.saldo) > 0 && pago.saldo !== null) {
                             $('#neto').val(pago.saldo);
                             $('#netoOculto').val(pago.saldo);
@@ -208,6 +230,8 @@ $(document).ready(function(data) {
                         $('#id-date-picker').hide();
                     }
                     else if (pago.formaPago === "CREDITO") {
+                        $('#contado_dato').hide();
+                        $('#credito_dato').show();
                         $('#monto').val(pago.monto);
                         $('#neto').val(pago.importePagar);
                         $('#netoOculto').val(pago.importePagar);
@@ -430,9 +454,10 @@ $(document).ready(function(data) {
             subgrid_table_id = subgrid_id + "_t";
             $("#" + subgrid_id).html("<table id='" + subgrid_table_id + "' class='scroll'></table>");
             $("#" + subgrid_table_id).jqGrid({
-                url: CONTEXT_ROOT + '/compras/docApagar/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idCompra=' + row_id,
+                url: CONTEXT_ROOT + '/ventas/docApagar/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idVenta=' + row_id,
                 datatype: 'json',
                 mtype: 'GET',
+                width: 650,
                 colNames: ['NRO. CUOTA', 'MONTO', 'SALDO', 'FECHA VENCIMIENTO', 'ESTADO'],
                 colModel: [
                     {name: "nroCuota", index: "nroCuota", width: 120, key: true},

@@ -21,6 +21,8 @@ public interface MovimientoManager extends GenericDao<Movimiento, Long> {
     
     public DTORetorno<PagoDTO> obtenerDatosPago(Long idCompra) throws Exception;
     
+    public DTORetorno<PagoDTO> obtenerDatosCobro(Long idVenta) throws Exception;
+    
     public MensajeDTO realizarCompra(Long idCompra, Double Monto, Double interes, Long idDocPago, Long idEmpresa, Long idUsuario) throws Exception;
     
     public MensajeDTO rechazar(Long idDetalle, Long idPedido, Long idEmpresa, Long idUsuario) throws Exception;

@@ -67,7 +67,7 @@ $(document).ready(function(data) {
         maxHeight: '220px',
         events: {
             onChange: function(a) {
-                $('#idClienteConta').val(a.getSelection()[0].value);
+                $('#idCliente').val(a.getSelection()[0].value);
             }
         }
     });
@@ -95,7 +95,8 @@ function cargarDatos(id) {
                 $("#aceptar").hide();
             }
             $('#nroFactura').val(venta.nroFactura);
-
+            $('#diasGracia').val(venta.diasGracia);
+            
             if (venta.nroFactura !== null && venta.nroFactura !== " "
                     && action !== 'VISUALIZAR') {
                 $('#botonAprobar').show();

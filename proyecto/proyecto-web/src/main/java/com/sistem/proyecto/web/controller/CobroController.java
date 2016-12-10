@@ -9,10 +9,13 @@ import com.google.gson.Gson;
 import com.sistem.proyecto.entity.Cliente;
 import com.sistem.proyecto.entity.Compra;
 import com.sistem.proyecto.entity.DetalleCompra;
+import com.sistem.proyecto.entity.DocumentoCobrar;
+import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Pedido;
 import com.sistem.proyecto.entity.Permiso;
 import com.sistem.proyecto.entity.Proveedor;
+import com.sistem.proyecto.entity.Venta;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
@@ -47,10 +50,10 @@ public class CobroController extends BaseController {
     String atributosDetalle = "id,numeroPedido,codigo,fechaEntrega,observacion,confirmado,descuento,total,neto,proveedor.id,"
             + "proveedor.nombre";
 
-    String atributosCompras = "id,nroFactura,fechaCompra,tipoCompra,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
-            + "tipoMoraInteres,moraInteres,cantidadCuotas,montoCuotas,proveedor.nombre,activo,pedido.usuario.nombre,"
-            + "entrega,saldo,tipoDescuento,descuento,monto,montoDescuento,neto,pedido.numeroPedido,pedido.codigo,pedido.fechaEntrega,"
-            + "pedido.cantidadAprobados,pedido.cantidadTotal,pedido.total,proveedor.id,proveedor.ruc,proveedor.nombre,proveedor.direccion,proveedor.telefono";
+    String atributosVentas = "id,estadoVenta,nroFactura,fechaCuota,fechaVenta,tipoVenta,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
+            + "tipoMoraInteres,moraInteres,cantidadCuotas,montoCuotas,cliente.nombre,activo,"
+            + "entrega,saldo,tipoDescuento,descuento,monto,montoDescuento,neto,"
+            + "cliente.id,cliente.documento,cliente.nombre,cliente.direccion,cliente.telefono";
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listarPermisos(Model model) {
@@ -92,9 +95,8 @@ public class CobroController extends BaseController {
         try {
             inicializarMovimientoManager();
             PagoDTO ejPago = new PagoDTO();
-        
 
-            DTORetorno<PagoDTO> ejPagoMap = movimientoManager.obtenerDatosPago(id);
+            DTORetorno<PagoDTO> ejPagoMap = movimientoManager.obtenerDatosCobro(id);
 
             retorno.setData(ejPagoMap.getData());
             retorno.setError(false);
@@ -123,15 +125,16 @@ public class CobroController extends BaseController {
         DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
-        Compra ejemplo = new Compra();
+        Venta ejemplo = new Venta();
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-        ejemplo.setEstadoCompra(Compra.COMPRA_APROBADA);
+        ejemplo.setEstadoVenta(Venta.VENTA_APROBADA);
 
         List<Map<String, Object>> listMapGrupos = null;
 
         try {
 
-            inicializarCompraManager();
+            inicializarVentaManager();
+            inicializarDocumentoCobrarManager();
 
             Gson gson = new Gson();
             String camposFiltros = null;
@@ -162,7 +165,7 @@ public class CobroController extends BaseController {
             Integer total = 0;
 
             if (!todos) {
-                total = compraManager.list(ejemplo, true).size();
+                total = ventaManager.list(ejemplo, true).size();
             }
 
             Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
@@ -172,9 +175,35 @@ public class CobroController extends BaseController {
                 pagina = total / cantidad;
             }
 
-            listMapGrupos = compraManager.listAtributos(ejemplo, atributosCompras.split(","), todos, inicio, cantidad,
+            listMapGrupos = ventaManager.listAtributos(ejemplo, atributosVentas.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
+            for (Map<String, Object> rpm : listMapGrupos) {
+
+                if (rpm.get("formaPago").toString().compareToIgnoreCase("CREDITO") == 0) {
+
+                    DocumentoCobrar docPagar = new DocumentoCobrar();
+                    docPagar.setEstado(DocumentoPagar.PENDIENTE);
+                    docPagar.setVenta(new Venta(Long.parseLong(rpm.get("id").toString())));
+
+                    List<DocumentoCobrar> documentos = documentoCobrarManager.list(docPagar, "fecha", "asc");
+
+                    boolean tieneDeuda = true;
+
+                    for (DocumentoCobrar doc : documentos) {
+                        if (tieneDeuda) {
+                            rpm.put("cuota",doc.getNroCuota());
+                            rpm.put("montoCuota", doc.getMonto());
+
+                            tieneDeuda = false;
+
+                        }
+                    }
+                } else {
+                    rpm.put("cuota", 0);
+                    rpm.put("montoCuota", 0);
+                }
+            }
 
             if (todos) {
                 total = listMapGrupos.size();
@@ -187,20 +216,20 @@ public class CobroController extends BaseController {
 
         } catch (Exception e) {
             retorno.setError(true);
-            retorno.setMensaje("Error al optener pedidos");
+            retorno.setMensaje("Error al optener ventas");
             logger.error("Error al listar", e);
         }
 
         return retorno;
     }
-    
+
     @RequestMapping(value = "/realizar", method = RequestMethod.POST)
     public @ResponseBody
     MensajeDTO guardar(@ModelAttribute("PagoDTO") PagoDTO pagoRecibido) {
 
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO mensaje = new MensajeDTO();
-        
+
         try {
             inicializarMovimientoManager();
 
@@ -212,29 +241,27 @@ public class CobroController extends BaseController {
             }
 
             if (pagoRecibido.getImportePagar() == null || pagoRecibido.getImportePagar() != null
-                    && pagoRecibido.getImportePagar()  == 0) {
+                    && pagoRecibido.getImportePagar() == 0) {
                 mensaje.setError(true);
                 mensaje.setMensaje("Debe ingresar el importe a Pagar.");
                 return mensaje;
             }
-            
-            if (pagoRecibido.getInteres()== null || pagoRecibido.getInteres() != null
-                    && pagoRecibido.getInteres().toString().compareToIgnoreCase("")  == 0) {
+
+            if (pagoRecibido.getInteres() == null || pagoRecibido.getInteres() != null
+                    && pagoRecibido.getInteres().toString().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
                 mensaje.setMensaje("Debe ingresar el interes a Pagar.");
                 return mensaje;
             }
-            
-            if (pagoRecibido.getInteres() > pagoRecibido.getImportePagar() ) {
+
+            if (pagoRecibido.getInteres() > pagoRecibido.getImportePagar()) {
                 mensaje.setError(true);
                 mensaje.setMensaje("El interes no puede ser mayor al importe a pagar.");
                 return mensaje;
             }
-            
-           mensaje = movimientoManager.realizarCompra(pagoRecibido.getIdCompra(), pagoRecibido.getImportePagar(), pagoRecibido.getInteres(),
-                   pagoRecibido.getIdDocPagar(), userDetail.getIdEmpresa(), userDetail.getId());
 
-
+            mensaje = movimientoManager.realizarCompra(pagoRecibido.getIdCompra(), pagoRecibido.getImportePagar(), pagoRecibido.getInteres(),
+                    pagoRecibido.getIdDocPagar(), userDetail.getIdEmpresa(), userDetail.getId());
 
         } catch (Exception ex) {
             mensaje.setError(true);
@@ -245,7 +272,6 @@ public class CobroController extends BaseController {
         return mensaje;
     }
 
-    
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO desactivar(@PathVariable("id") Long id) {

@@ -35,7 +35,6 @@
                     </h3>
 
                     <div class="widget-toolbar no-border">
-                        <a sec:authorize="hasRole('Venta.Realizar')" id="botonAprobar" class="btn btn-primary bigger" role="button" hidden="hidden">Aprobar</a>
                         <a th:href="@{/ventas}" class="btn btn-primary btn-light bigger" role="button">
                             <i class="ace-icon fa fa-arrow-left"></i>
                             Volver
@@ -174,7 +173,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                    <label class="col-lg-6 control-label">%Interes por Mora</label>
+                                                    <label class="col-lg-6 control-label">%Interes/Moratorio</label>
                                                     <div class="col-lg-4">
                                                         <input   id="moraInteres" name="moraInteres" type="text"  class="form-control tableusuario-input"/> 
                                                         <span class="glyphicon form-control-feedback" id="interesMora1" style="right: 15px"></span>
@@ -183,7 +182,7 @@
                                                 <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
                                                     <label class="col-lg-5 control-label">Dias Grac.</label>
                                                     <div class="col-lg-4">
-                                                        <input  id="cuotas" name="diasGracia" type="number"  class="form-control tableusuario-input"/> 
+                                                        <input  id="diasGracia" name="diasGracia" type="number"  class="form-control tableusuario-input"/> 
                                                         <span class="glyphicon form-control-feedback" id="cuotas1" style="right: 15px"></span>
                                                     </div>
                                                 </div>

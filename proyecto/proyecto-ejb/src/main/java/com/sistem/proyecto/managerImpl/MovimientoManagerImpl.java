@@ -25,6 +25,8 @@ import com.sistem.proyecto.manager.utils.DTORetorno;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
 import com.sistem.proyecto.manager.utils.PagoDTO;
 import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -39,7 +41,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
     @EJB(mappedName = "java:app/proyecto-ejb/CompraManagerImpl")
     private CompraManager compraManager;
-    
+
     @EJB(mappedName = "java:app/proyecto-ejb/VentaManagerImpl")
     private VentaManager ventaManager;
 
@@ -51,7 +53,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
     @EJB(mappedName = "java:app/proyecto-ejb/DocumentoPagarManagerImpl")
     private DocumentoPagarManager documentoPagarManager;
-    
+
     @EJB(mappedName = "java:app/proyecto-ejb/DocumentoCobrarManagerImpl")
     private DocumentoCobrarManager documentoCobrarManager;
 
@@ -111,7 +113,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
                         System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
                     }
-                    
+
                     pago.setImportePagar(Double.parseDouble(pago.getMonto()));
                 } else {
 
@@ -280,6 +282,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
                     }
                     if (tieneParcia) {
+                        
                         if (Math.round(Monto) > saldo) {
                             docPagar = new DocumentoPagar();
                             docPagar = documentoPagarManager.get(idDocumento);
@@ -347,6 +350,45 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                                 ejMovimiento.setUsuario(new Usuario(idUsuario));
                             }
                         } else {
+                            docPagar = new DocumentoPagar();
+                            docPagar = documentoPagarManager.get(idDocumento);
+                            
+                            
+                            
+                            if (Math.round(interes) > Math.round(Monto)) {
+                                mensaje.setError(true);
+                                mensaje.setMensaje("No se aceptan pagos menores al interes.");
+                                return mensaje;
+                            }
+                            
+                            netoPago = saldo + Math.round(interes);
+
+                            saldo =  netoPago - Math.round(Monto);
+                            
+                            if(saldo > 0){
+                                
+                                docPagar.setSaldo(Double.parseDouble(saldo+""));
+                                docPagar.setEstado(DocumentoPagar.PARCIAL);
+
+                                documentoPagarManager.update(docPagar);
+                                
+                                ejMovimiento.setCompra(ejCompra);
+                                ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                                ejMovimiento.setImporte(Monto);
+                                ejMovimiento.setNeto(Monto);
+                                ejMovimiento.setInteres(interes);
+                                ejMovimiento.setCuota(Long.parseLong(docPagar.getNroCuota()));
+                                ejMovimiento.setSaldo(Double.parseDouble(saldo.toString()));
+                                ejMovimiento.setActivo("S");
+                                ejMovimiento.setProveedor(ejCompra.getProveedor());
+                                ejMovimiento.setTipoTransaccion("O");
+                                ejMovimiento.setVuelto(0.0);
+                                ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                                ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                                ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                                ejMovimiento.setUsuario(new Usuario(idUsuario));
+                                
+                            }
 
                         }
                     } else {
@@ -615,14 +657,14 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                     }
                 }
                 if (ejCompra.getTipoDescuento().compareToIgnoreCase("GENERAL") == 0) {
-                    
+
                     Vehiculo ejVehiculo = new Vehiculo();
                     ejVehiculo.setEstado("PENDIENTE");
 
                     DetalleCompra ejDetalle = new DetalleCompra();
                     ejDetalle.setCompra(ejCompra);
                     ejDetalle.setVehiculo(ejVehiculo);
-                    
+
                     List<DetalleCompra> listDetalle = detalleCompraManager.list(ejDetalle);
 
                     Long montoTotal = Long.parseLong(Math.round(Double.parseDouble(ejCompra.getMonto())) + "");
@@ -707,7 +749,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
             pago.setFormaPago(ejVenta.getFormaPago());
             //pago.setSaldo(Double.parseDouble(ejCompra.getSaldo()));
 
-            if (ejVenta.getEstadoVenta().compareToIgnoreCase(Compra.COMPRA_REALIZADA) == 0) {
+            if (ejVenta.getEstadoVenta().compareToIgnoreCase(Venta.VENTA_REALIZADA) == 0) {
                 pago.setCancelado(true);
                 retorno.setError(false);
                 retorno.setMensaje("La cuenta ya se encuentra cancelada.");
@@ -723,7 +765,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                 docPagar.setVenta(ejVenta);
 
                 List<DocumentoCobrar> entrega = documentoCobrarManager.list(docPagar, "fecha", "asc");
-                
+
                 if (entrega != null && !entrega.isEmpty()) {
                     for (DocumentoCobrar rpm : entrega) {
 
@@ -734,7 +776,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
                         System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
                     }
-                    
+
                     pago.setImportePagar(Double.parseDouble(pago.getMonto()));
                 } else {
 
@@ -747,9 +789,17 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                     boolean tieneDeuda = true;
                     Long deudaTotal = Long.parseLong("0");
 
+                    Date fechaActual = new Date();
+
+                    Calendar date = Calendar.getInstance();
+
                     for (DocumentoCobrar rpm : documentos) {
                         if (tieneDeuda) {
                             deudaTotal = Math.round(deudaTotal + rpm.getMonto());
+
+                            date.set(Calendar.YEAR, rpm.getFecha().getYear() + 1900);
+                            date.set(Calendar.MONTH, rpm.getFecha().getMonth());
+                            date.set(Calendar.DATE, rpm.getFecha().getDate() + Integer.parseInt(ejVenta.getDiasGracia() + ""));
 
                             pago.setMonto(Math.round(rpm.getMonto()) + "");
                             pago.setCuota(rpm.getNroCuota());
@@ -760,14 +810,35 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                             System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
                         }
                     }
+
+                    int dias = diferenciaEnDias(fechaActual, date.getTime());
+
+                    Double montoInteresPendiente = 0.0;
+
+                    Double interes = Double.parseDouble(ejVenta.getMoraInteres()) / 100;
+
+                    Double interesDias = Double.parseDouble(dias + "") / 360;
+
+                    if (dias > 0) {
+                        montoInteresPendiente = interesDias * interes * deudaTotal;
+
+                    }
+
                     docPagar = new DocumentoCobrar();
                     docPagar.setEstado(DocumentoPagar.PARCIAL);
                     docPagar.setVenta(ejVenta);
 
                     List<DocumentoCobrar> documentosParcial = documentoCobrarManager.list(docPagar, "fecha", "asc");
 
+                    date = Calendar.getInstance();
+                    Long saldo = Long.parseLong("0");
                     for (DocumentoCobrar rpm : documentosParcial) {
-                        Long saldo = Math.round(rpm.getSaldo());
+
+                        saldo = Math.round(rpm.getSaldo());
+
+                        date.set(Calendar.YEAR, rpm.getFecha().getYear() + 1900);
+                        date.set(Calendar.MONTH, rpm.getFecha().getMonth());
+                        date.set(Calendar.DATE, rpm.getFecha().getDate() + Integer.parseInt(ejVenta.getDiasGracia() + ""));
 
                         deudaTotal = deudaTotal + saldo;
 
@@ -775,6 +846,20 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
 
                     }
+                    int diasParcial = diferenciaEnDias(fechaActual, date.getTime());
+
+                    Double montoInteresParcial = 0.0;
+
+                    Double interesDiasParcial = Double.parseDouble(diasParcial + "") / 360;
+
+                    if (diasParcial > 0) {
+                        montoInteresParcial = interesDiasParcial * interes * saldo;
+
+                    }
+                    deudaTotal = deudaTotal + Math.round(montoInteresParcial) + Math.round(montoInteresPendiente);
+
+                    pago.setMontoInteres(montoInteresParcial + montoInteresPendiente);
+
                     pago.setImportePagar(Double.parseDouble(deudaTotal.toString()));
                 }
 
@@ -810,7 +895,14 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
         //To change body of generated methods, choose Tools | Templates.
         return retorno; //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
+
+    public static int diferenciaEnDias(Date fechaMayor, Date fechaMenor) {
+
+        long diferenciaEn_ms = fechaMayor.getTime() - fechaMenor.getTime();
+
+        long dias = diferenciaEn_ms / (1000 * 60 * 60 * 24);
+
+        return (int) dias;
+    }
 
 }

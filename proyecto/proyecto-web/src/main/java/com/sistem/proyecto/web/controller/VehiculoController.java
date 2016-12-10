@@ -313,7 +313,12 @@ public class VehiculoController extends BaseController {
                     retorno.setMensaje("El precio de venta no puede ser menor al precio de costo.");
                     return retorno;
                 }
-                Date fechaMan = sdfSimple.parse(vehiculoRecibido.getMantenimientoFecha());
+                if(vehiculoRecibido.getMantenimientoFecha() != null && vehiculoRecibido.getMantenimientoFecha().compareToIgnoreCase("")!= 0){
+                    Date fechaMan = sdfSimple.parse(vehiculoRecibido.getMantenimientoFecha());
+                    modelo.setFechaMantenimiento(fechaMan);
+                    modelo.setPrecioMantenimiento(vehiculoRecibido.getPrecioMantenimiento());
+                }
+                
                
                 
                 modelo.setTipo(vehiculoRecibido.getTipo());
@@ -328,8 +333,8 @@ public class VehiculoController extends BaseController {
                 modelo.setKilometraje(vehiculoRecibido.getKilometraje());
                 modelo.setMotor(vehiculoRecibido.getMotor());
                 modelo.setPrecioVenta(vehiculoRecibido.getPrecioVenta());
-                modelo.setPrecioMantenimiento(vehiculoRecibido.getPrecioMantenimiento());
-                modelo.setFechaMantenimiento(fechaMan);
+                
+                
                 modelo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 modelo.setIdUsuarioModificacion(userDetail.getId());
                 

@@ -165,13 +165,21 @@ function desactivarButton(id, permisoDesactivar, title) {
 
     return button;
 }
-function activarButton(id, permisoActivar) {
+function activarButton(id, permisoActivar, title) {
     var button = '';
     if (permisoActivar) {
-        button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+        if (title !== null  && title !== "" ) {
+            button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');"'
+                + '  class="btn btn-xs btn-success" style="float:left;cursor:pointer;" type="button" title="'+title+'" onclick="activar(this,' + id + ');">'
+                + ' <span class="ace-icon fa fa-check bigger-120"></span></a>';
+        }else{
+            button = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
                 + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');"'
                 + '  class="btn btn-xs btn-success" style="float:left;cursor:pointer;" type="button" title="Activar" onclick="activar(this,' + id + ');">'
                 + ' <span class="ace-icon fa fa-check bigger-120"></span></a>';
+        }
+        
     }
 
     return button;

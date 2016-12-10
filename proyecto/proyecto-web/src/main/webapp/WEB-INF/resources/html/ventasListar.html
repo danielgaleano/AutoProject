@@ -19,7 +19,7 @@
 
         <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Realizar'')')}"/>
         <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Editar'')')}"/>
-        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Activar'')')}"/>
+        <div class="tablaprobar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Activar'')')}"/>
         <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Desactivar'')')}"/>
         <div class="tabldetalle-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Detalle'')')}"/>
         <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Visualizar'')')}"/>

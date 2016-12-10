@@ -7,6 +7,7 @@
 package com.sistem.proyecto.web.controller;
 
 import com.google.gson.Gson;
+import com.sistem.proyecto.entity.Cliente;
 import com.sistem.proyecto.entity.DetalleVenta;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Vehiculo;
@@ -17,6 +18,7 @@ import com.sistem.proyecto.manager.utils.MensajeDTO;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
 import static com.sistem.proyecto.web.controller.BaseController.logger;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -450,6 +452,98 @@ public class VentaController extends BaseController {
         }
 
         return mensaje;
+    }
+    
+    @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    MensajeDTO desactivar(@PathVariable("id") Long id) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        MensajeDTO retorno = new MensajeDTO();
+        String nombre = "";
+        Venta ejVenta = new Venta();
+        ejVenta.setId(id);
+        ejVenta.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+        
+        try {
+
+            inicializarVentaManager();
+
+            ejVenta = ventaManager.get(ejVenta);
+
+            if (ejVenta != null) {
+                nombre = ejVenta.getNroFactura().toString();
+            }
+
+            if (ejVenta != null && ejVenta.getEstadoVenta()
+                    .compareToIgnoreCase(Venta.VENTA_RECHAZADA) == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("La venta " + nombre + " ya se encuentra rechazada.");
+            }
+            ejVenta.setEstadoVenta(Venta.VENTA_RECHAZADA);
+            ejVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejVenta.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
+
+            ventaManager.update(ejVenta);
+
+            retorno.setError(false);
+            retorno.setMensaje("La venta " + nombre + " ya se  rechazo exitosamente.");
+
+        } catch (Exception ex) {
+            retorno.setError(true);
+            retorno.setMensaje("Error al tratar de rechazar la venta.");
+            logger.error("Error al tratar de rechazar la venta.", ex);
+        }
+
+        return retorno;
+
+    }
+
+    @RequestMapping(value = "/activar/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    MensajeDTO activar(@PathVariable("id") Long id) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        MensajeDTO retorno = new MensajeDTO();
+        String nombre = "";
+
+        Venta ejVenta = new Venta();
+        ejVenta.setId(id);
+        ejVenta.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+        try {
+
+            inicializarVentaManager();
+
+            ejVenta = ventaManager.get(ejVenta);
+
+            if (ejVenta != null) {
+                nombre = ejVenta.getNroFactura().toString();
+            }
+
+            if (ejVenta != null && ejVenta.getEstadoVenta()
+                    .compareToIgnoreCase(Venta.VENTA_APROBADA) == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("La venta " + nombre + " ya se encuentra aprobada.");
+            }
+            ejVenta.setEstadoVenta(Venta.VENTA_APROBADA);
+            ejVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejVenta.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
+
+            ventaManager.update(ejVenta);
+
+            retorno.setError(false);
+            retorno.setMensaje("La venta " + nombre + " ya se  aprobo exitosamente.");
+
+        } catch (Exception ex) {
+            retorno.setError(true);
+            retorno.setMensaje("Error al tratar de aprobar la venta.");
+            logger.debug("Error al tratar de aprobar la venta", ex);
+        }
+
+        return retorno;
+
     }
     
 }

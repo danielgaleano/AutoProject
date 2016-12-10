@@ -6,11 +6,14 @@ $(document).ready(function(data) {
     if (action === "VISUALIZAR") {
         var permisoVisualizar = false;
         var permisoEditar = false;
+        var permisoDesactivar = false;
+        var permisoActivar = false;       
     } else {
         var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
         var permisoVisualizar = parseBolean($(this).find('.tablvisualizar-permiso').text());
         var permisoDetalle = parseBolean($(this).find('.tabladd-permiso').text());
         var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
+        var permisoActivar = parseBolean($(this).find('.tablaprobar-permiso').text())
     }
 
 
@@ -150,7 +153,9 @@ $(document).ready(function(data) {
                             //edit = editInlineButton(cl, permisoEditar);
                             editForm = detalleButton(cl, permisoDetalle, 'Editar Venta', 'ventas/editar');
                             desact = desactivarButton(cl, permisoDesactivar,"Cancelar Venta");
-                            $(grid_selector).setRowData(ids[i], {act: ini + visuali + editForm + desact + fin});
+                            activar = activarButton(cl, permisoActivar,"Aprobar Venta");
+                            
+                            $(grid_selector).setRowData(ids[i], {act: ini + visuali + editForm + activar + desact + fin});
                         }
                         $(grid_selector).setRowData(ids[i], {estadoVenta: labelActivo});
                     } else if (estado === 'VENTA_APROBADA') {

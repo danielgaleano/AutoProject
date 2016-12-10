@@ -10,6 +10,10 @@ $(document).ready(function(data) {
         var permisoVisualizar = false;
         var permisoEditar = false;
         var permisoAgegar = false;
+        
+        $('#botonAprobar').hide();
+        $('#aceptar').hide();
+        $('#validation-formVenta').find('.tableusuario-input').attr("disabled", true);
     } else {
         var permisoAprobar = parseBolean($(this).find('.tablaprobar-permiso').text());
         var permisoRechazar = parseBolean($(this).find('.tablrechazar-permiso').text());

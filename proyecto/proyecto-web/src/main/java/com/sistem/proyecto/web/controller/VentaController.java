@@ -315,6 +315,7 @@ public class VentaController extends BaseController {
         try {
 
             inicializarVehiculoManager();
+            inicializarDetalleVentaManager();
 
             Gson gson = new Gson();
             String camposFiltros = null;
@@ -341,7 +342,10 @@ public class VentaController extends BaseController {
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
 
+            Integer totalValor = 0;
+            
             if(idVenta != null && idVenta.compareToIgnoreCase("") != 0){
+                
                 DetalleVenta ejDetalle = new DetalleVenta();
                 ejDetalle.setVenta(new Venta(Long.parseLong(idVenta)));
                 List<Map<String, Object>> listDetalle = detalleVentaManager.listAtributos(ejDetalle, "vehiculo.id".split(","));
@@ -350,10 +354,17 @@ public class VentaController extends BaseController {
                 for(Map<String, Object> rpm : listDetalle){
                     idVehiculos.add(Long.parseLong(rpm.get("vehiculo.id").toString()));
                 }
+                Vehiculo vehiculo = new Vehiculo();
+                vehiculo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
                 
+                listMapVenta = vehiculoManager.listAtributos(vehiculo, atributosVehiculo.split(","), true , null, null,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    "id", idVehiculos, "OP_IN", null, null, null, null, null, true);
+                
+                totalValor = listMapVenta.size();
             }
             if (!todos) {
-                total = vehiculoManager.list(ejVehiculo, true).size();
+                total = vehiculoManager.list(ejVehiculo, true).size() + totalValor;
             }
 
             Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
@@ -366,7 +377,11 @@ public class VentaController extends BaseController {
             listMapGrupos = vehiculoManager.listAtributos(ejVehiculo, atributosVehiculo.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
-
+           
+            if(listMapVenta != null){
+               listMapGrupos.addAll(listMapVenta);
+           }
+ 
             if (todos) {
                 total = listMapGrupos.size();
             }

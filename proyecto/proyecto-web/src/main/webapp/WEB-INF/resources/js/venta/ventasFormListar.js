@@ -151,6 +151,20 @@ $(document).ready(function(data) {
                 //enableTooltips(table);
             }, 0);
         },
+        gridComplete: function() {
+            var ids = $(grid_selector).getDataIDs();
+            var datos = $(grid_selector).getGridParam();
+            //console.log($(grid_selector));
+            for (var i = 0; i < ids.length; i++) {               
+                var cl = ids[i];                
+                var dato = $(grid_selector).jqGrid('getRowData', cl);
+                console.log(dato.estado);
+                if(dato.estado === "PROCESO_VENTA"){
+                    $(grid_selector).jqGrid('setSelection',cl);
+                    $('#jqg_grid_'+cl).prop('checked',true); 
+                }       
+            }
+        },
         editurl: CONTEXT_ROOT + '/ventas/editar', //nothing is saved
         caption: "Detalle del venta",
         subGrid: false,

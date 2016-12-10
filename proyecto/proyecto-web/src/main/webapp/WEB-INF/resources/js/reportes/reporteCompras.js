@@ -5,6 +5,15 @@ $(document).ready(function(data) {
         data: CONTEXT_ROOT + "/proveedores/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc",
         converter: function(sol, rawDataFromUrl) {
             var solData = [];
+            var aSingleOptionItem = {
+                // required attributes
+                "type": "option",
+                "label": "Todos",
+                "value": "",
+                // optional attributes
+                "selected": false
+            };
+            solData.push(aSingleOptionItem);
             $.each(rawDataFromUrl.retorno, function() {
 
                 var aSingleOptionItem = {
@@ -311,13 +320,13 @@ function filtrarReporte() {
         });
 
         var postData = $("#grid").jqGrid("getGridParam", "postData");
-        
+
         postData.filters = JSON.stringify({
             groupOp: "AND",
             rules: rules,
             data: $('#idProveedor').val().toString()
         });
-        
+
         postData.fechaInicio = $('#date-timeDesde').val().toString();
         postData.fechaFin = $('#date-timeHasta').val().toString();
 

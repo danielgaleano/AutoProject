@@ -28,6 +28,8 @@ public class PagoDTO {
     
     private Long cantidadCuotas;
     
+    private Long diasGracia;
+    
     private String monto;
     
     private String montoTotalCuotas;
@@ -272,6 +274,14 @@ public class PagoDTO {
 
     public void setCancelado(Boolean cancelado) {
         this.cancelado = cancelado;
+    }
+
+    public Long getDiasGracia() {
+        return diasGracia;
+    }
+
+    public void setDiasGracia(Long diasGracia) {
+        this.diasGracia = diasGracia;
     }
     
     

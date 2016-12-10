@@ -7,16 +7,20 @@ package com.sistem.proyecto.managerImpl;
 
 import com.sistem.proyecto.entity.Compra;
 import com.sistem.proyecto.entity.DetalleCompra;
+import com.sistem.proyecto.entity.DocumentoCobrar;
 import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Movimiento;
 import com.sistem.proyecto.entity.Usuario;
 import com.sistem.proyecto.entity.Vehiculo;
+import com.sistem.proyecto.entity.Venta;
 import com.sistem.proyecto.manager.CompraManager;
 import com.sistem.proyecto.manager.DetalleCompraManager;
+import com.sistem.proyecto.manager.DocumentoCobrarManager;
 import com.sistem.proyecto.manager.DocumentoPagarManager;
 import com.sistem.proyecto.manager.MovimientoManager;
 import com.sistem.proyecto.manager.VehiculoManager;
+import com.sistem.proyecto.manager.VentaManager;
 import com.sistem.proyecto.manager.utils.DTORetorno;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
 import com.sistem.proyecto.manager.utils.PagoDTO;
@@ -35,6 +39,9 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
     @EJB(mappedName = "java:app/proyecto-ejb/CompraManagerImpl")
     private CompraManager compraManager;
+    
+    @EJB(mappedName = "java:app/proyecto-ejb/VentaManagerImpl")
+    private VentaManager ventaManager;
 
     @EJB(mappedName = "java:app/proyecto-ejb/VehiculoManagerImpl")
     private VehiculoManager vehiculoManager;
@@ -44,6 +51,9 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
     @EJB(mappedName = "java:app/proyecto-ejb/DocumentoPagarManagerImpl")
     private DocumentoPagarManager documentoPagarManager;
+    
+    @EJB(mappedName = "java:app/proyecto-ejb/DocumentoCobrarManagerImpl")
+    private DocumentoCobrarManager documentoCobrarManager;
 
     @Override
     protected Class<Movimiento> getEntityBeanType() {
@@ -671,5 +681,136 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
     public MensajeDTO rechazar(Long idDetalle, Long idPedido, Long idEmpresa, Long idUsuario) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public DTORetorno<PagoDTO> obtenerDatosCobro(Long idVenta) throws Exception {
+        DTORetorno<PagoDTO> retorno = new DTORetorno<PagoDTO>();
+        Venta ejVenta = new Venta();
+
+        PagoDTO pago = new PagoDTO();
+        try {
+
+            if (idVenta == null || idVenta != null
+                    && idVenta.toString().compareToIgnoreCase("") == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("Debe Ingresar una venta para el detalle.");
+                return retorno;
+            }
+
+            ejVenta = ventaManager.get(idVenta);
+
+            pago.setIdCompra(ejVenta.getId());
+            pago.setIdProveedor(ejVenta.getCliente().getId());
+
+            pago.setNroFactura(ejVenta.getNroFactura());
+            pago.setNeto(ejVenta.getNeto());
+            pago.setFormaPago(ejVenta.getFormaPago());
+            //pago.setSaldo(Double.parseDouble(ejCompra.getSaldo()));
+
+            if (ejVenta.getEstadoVenta().compareToIgnoreCase(Compra.COMPRA_REALIZADA) == 0) {
+                pago.setCancelado(true);
+                retorno.setError(false);
+                retorno.setMensaje("La cuenta ya se encuentra cancelada.");
+                return retorno;
+            }
+
+            if (ejVenta.getFormaPago().compareToIgnoreCase("CREDITO") == 0) {
+
+                pago.setCantidadCuotas(ejVenta.getCantidadCuotas());
+
+                DocumentoCobrar docPagar = new DocumentoCobrar();
+                docPagar.setEstado(DocumentoPagar.ENTREGA);
+                docPagar.setVenta(ejVenta);
+
+                List<DocumentoCobrar> entrega = documentoCobrarManager.list(docPagar, "fecha", "asc");
+                
+                if (entrega != null && !entrega.isEmpty()) {
+                    for (DocumentoCobrar rpm : entrega) {
+
+                        pago.setMonto(Math.round(rpm.getMonto()) + "");
+                        pago.setCuota(rpm.getNroCuota());
+                        pago.setFechaCuota(rpm.getFecha());
+                        pago.setIdDocPagar(rpm.getId());
+
+                        System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
+                    }
+                    
+                    pago.setImportePagar(Double.parseDouble(pago.getMonto()));
+                } else {
+
+                    docPagar = new DocumentoCobrar();
+                    docPagar.setEstado(DocumentoPagar.PENDIENTE);
+                    docPagar.setVenta(ejVenta);
+
+                    List<DocumentoCobrar> documentos = documentoCobrarManager.list(docPagar, "fecha", "asc");
+
+                    boolean tieneDeuda = true;
+                    Long deudaTotal = Long.parseLong("0");
+
+                    for (DocumentoCobrar rpm : documentos) {
+                        if (tieneDeuda) {
+                            deudaTotal = Math.round(deudaTotal + rpm.getMonto());
+
+                            pago.setMonto(Math.round(rpm.getMonto()) + "");
+                            pago.setCuota(rpm.getNroCuota());
+                            pago.setFechaCuota(rpm.getFecha());
+                            pago.setIdDocPagar(rpm.getId());
+
+                            tieneDeuda = false;
+                            System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
+                        }
+                    }
+                    docPagar = new DocumentoCobrar();
+                    docPagar.setEstado(DocumentoPagar.PARCIAL);
+                    docPagar.setVenta(ejVenta);
+
+                    List<DocumentoCobrar> documentosParcial = documentoCobrarManager.list(docPagar, "fecha", "asc");
+
+                    for (DocumentoCobrar rpm : documentosParcial) {
+                        Long saldo = Math.round(rpm.getSaldo());
+
+                        deudaTotal = deudaTotal + saldo;
+
+                        pago.setSaldo(Double.parseDouble(rpm.getSaldo().toString()));
+                        System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
+
+                    }
+                    pago.setImportePagar(Double.parseDouble(deudaTotal.toString()));
+                }
+
+                retorno.setData(pago);
+
+                retorno.setError(false);
+                retorno.setMensaje("La venta se obtuvo exitosamente.");
+
+            } else {
+
+                if (ejVenta.getSaldo() != null && ejVenta.getSaldo().compareToIgnoreCase("") != 0) {
+                    pago.setSaldo(Double.parseDouble(ejVenta.getSaldo()));
+                    pago.setImportePagar(Double.parseDouble(ejVenta.getNeto().toString()));
+                    pago.setMonto(Math.round(ejVenta.getNeto()) + "");
+                } else {
+                    pago.setImportePagar(Double.parseDouble(ejVenta.getNeto().toString()));
+                    pago.setMonto(Math.round(ejVenta.getNeto()) + "");
+                }
+
+                retorno.setData(pago);
+
+                retorno.setError(false);
+                retorno.setMensaje("La venta se obtuvo exitosamente.");
+
+            }
+            return retorno;
+
+        } catch (Exception e) {
+            System.err.println(e);
+            retorno.setError(true);
+            retorno.setMensaje("Error al obtener la venta");
+        }
+        //To change body of generated methods, choose Tools | Templates.
+        return retorno; //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
 
 }

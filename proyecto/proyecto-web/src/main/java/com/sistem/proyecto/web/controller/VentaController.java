@@ -7,7 +7,11 @@
 package com.sistem.proyecto.web.controller;
 
 import com.google.gson.Gson;
+import com.sistem.proyecto.entity.Cliente;
+import com.sistem.proyecto.entity.Compra;
 import com.sistem.proyecto.entity.DetalleVenta;
+import com.sistem.proyecto.entity.DocumentoCobrar;
+import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Vehiculo;
 import com.sistem.proyecto.entity.Venta;
@@ -17,6 +21,7 @@ import com.sistem.proyecto.manager.utils.MensajeDTO;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
 import static com.sistem.proyecto.web.controller.BaseController.logger;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +54,7 @@ public class VentaController extends BaseController {
     String atributosVentas = "id,estadoVenta,nroFactura,fechaCuota,fechaVenta,tipoVenta,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
             + "tipoMoraInteres,moraInteres,cantidadCuotas,montoCuotas,cliente.nombre,activo,"
             + "entrega,saldo,tipoDescuento,descuento,monto,montoDescuento,neto,"
-            + "cliente.id,cliente.documento,cliente.nombre,cliente.direccion,cliente.telefono";
+            + "cliente.id,cliente.documento,cliente.nombre,cliente.direccion,cliente.telefono,diasGracia";
 
     
     @RequestMapping(method = RequestMethod.GET)
@@ -315,6 +320,7 @@ public class VentaController extends BaseController {
         try {
 
             inicializarVehiculoManager();
+            inicializarDetalleVentaManager();
 
             Gson gson = new Gson();
             String camposFiltros = null;
@@ -341,7 +347,10 @@ public class VentaController extends BaseController {
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
 
+            Integer totalValor = 0;
+            
             if(idVenta != null && idVenta.compareToIgnoreCase("") != 0){
+                
                 DetalleVenta ejDetalle = new DetalleVenta();
                 ejDetalle.setVenta(new Venta(Long.parseLong(idVenta)));
                 List<Map<String, Object>> listDetalle = detalleVentaManager.listAtributos(ejDetalle, "vehiculo.id".split(","));
@@ -350,10 +359,17 @@ public class VentaController extends BaseController {
                 for(Map<String, Object> rpm : listDetalle){
                     idVehiculos.add(Long.parseLong(rpm.get("vehiculo.id").toString()));
                 }
+                Vehiculo vehiculo = new Vehiculo();
+                vehiculo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
                 
+                listMapVenta = vehiculoManager.listAtributos(vehiculo, atributosVehiculo.split(","), true , null, null,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    "id", idVehiculos, "OP_IN", null, null, null, null, null, true);
+                
+                totalValor = listMapVenta.size();
             }
             if (!todos) {
-                total = vehiculoManager.list(ejVehiculo, true).size();
+                total = vehiculoManager.list(ejVehiculo, true).size() + totalValor;
             }
 
             Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
@@ -366,7 +382,11 @@ public class VentaController extends BaseController {
             listMapGrupos = vehiculoManager.listAtributos(ejVehiculo, atributosVehiculo.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
-
+           
+            if(listMapVenta != null){
+               listMapGrupos.addAll(listMapVenta);
+           }
+ 
             if (todos) {
                 total = listMapGrupos.size();
             }
@@ -435,6 +455,182 @@ public class VentaController extends BaseController {
         }
 
         return mensaje;
+    }
+    
+    @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    MensajeDTO desactivar(@PathVariable("id") Long id) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        MensajeDTO retorno = new MensajeDTO();
+        String nombre = "";
+        Venta ejVenta = new Venta();
+        ejVenta.setId(id);
+        ejVenta.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+        
+        try {
+
+            inicializarVentaManager();
+
+            ejVenta = ventaManager.get(ejVenta);
+
+            if (ejVenta != null) {
+                nombre = ejVenta.getNroFactura().toString();
+            }
+
+            if (ejVenta != null && ejVenta.getEstadoVenta()
+                    .compareToIgnoreCase(Venta.VENTA_RECHAZADA) == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("La venta " + nombre + " ya se encuentra rechazada.");
+            }
+            ejVenta.setEstadoVenta(Venta.VENTA_RECHAZADA);
+            ejVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejVenta.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
+
+            ventaManager.update(ejVenta);
+
+            retorno.setError(false);
+            retorno.setMensaje("La venta " + nombre + " ya se  rechazo exitosamente.");
+
+        } catch (Exception ex) {
+            retorno.setError(true);
+            retorno.setMensaje("Error al tratar de rechazar la venta.");
+            logger.error("Error al tratar de rechazar la venta.", ex);
+        }
+
+        return retorno;
+
+    }
+
+    @RequestMapping(value = "/activar/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    MensajeDTO activar(@PathVariable("id") Long id) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        MensajeDTO retorno = new MensajeDTO();
+        String nombre = "";
+
+        Venta ejVenta = new Venta();
+        ejVenta.setId(id);
+        ejVenta.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+        try {
+
+            inicializarVentaManager();
+
+            ejVenta = ventaManager.get(ejVenta);
+
+            if (ejVenta != null) {
+                nombre = ejVenta.getNroFactura().toString();
+            }
+
+            if (ejVenta != null && ejVenta.getEstadoVenta()
+                    .compareToIgnoreCase(Venta.VENTA_APROBADA) == 0) {
+                retorno.setError(true);
+                retorno.setMensaje("La venta " + nombre + " ya se encuentra aprobada.");
+            }
+            ejVenta.setEstadoVenta(Venta.VENTA_APROBADA);
+            ejVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejVenta.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
+
+            ventaManager.update(ejVenta);
+
+            retorno.setError(false);
+            retorno.setMensaje("La venta " + nombre + " ya se  aprobo exitosamente.");
+
+        } catch (Exception ex) {
+            retorno.setError(true);
+            retorno.setMensaje("Error al tratar de aprobar la venta.");
+            logger.debug("Error al tratar de aprobar la venta", ex);
+        }
+
+        return retorno;
+
+    }
+    
+    @RequestMapping(value = "/docApagar/listar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno listarApagar(@ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filtros,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("idVenta") String idVenta,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos) {
+
+        DTORetorno retorno = new DTORetorno();
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        DocumentoCobrar ejemplo = new DocumentoCobrar();
+        ejemplo.setVenta(new Venta(Long.parseLong(idVenta)));
+
+        List<Map<String, Object>> listMapGrupos = null;
+
+        try {
+
+            inicializarDocumentoCobrarManager();
+
+            Gson gson = new Gson();
+            String camposFiltros = null;
+            String valorFiltro = null;
+
+            if (filtrar) {
+                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
+                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
+                    for (ReglaDTO regla : filtro.getRules()) {
+                        if (camposFiltros == null) {
+                            camposFiltros = regla.getField();
+                            valorFiltro = regla.getData();
+                        } else {
+                            camposFiltros += "," + regla.getField();
+                        }
+                    }
+                } else {
+                    //ejemplo = generarEjemplo(filtro, ejemplo);
+                }
+
+            }
+            // ejemplo.setActivo("S");
+            if (ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0) {
+                ordenarPor = "numeroPedido";
+            }
+
+            pagina = pagina != null ? pagina : 1;
+            Integer total = 0;
+
+            if (!todos) {
+                total = documentoCobrarManager.list(ejemplo, true).size();
+            }
+
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+
+            if (total < inicio) {
+                inicio = total - total % cantidad;
+                pagina = total / cantidad;
+            }
+
+            listMapGrupos = documentoCobrarManager.listAtributos(ejemplo, atributosAcobrar.split(","), todos, inicio, cantidad,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    null, null, null, null, null, null, null, null, true);
+
+            if (todos) {
+                total = listMapGrupos.size();
+            }
+            Integer totalPaginas = total / cantidad;
+
+            retorno.setTotal(totalPaginas + 1);
+            retorno.setRetorno(listMapGrupos);
+            retorno.setPage(pagina);
+
+        } catch (Exception e) {
+            retorno.setError(true);
+            retorno.setMensaje("Error al optener pedidos");
+            logger.error("Error al listar", e);
+        }
+
+        return retorno;
     }
     
 }

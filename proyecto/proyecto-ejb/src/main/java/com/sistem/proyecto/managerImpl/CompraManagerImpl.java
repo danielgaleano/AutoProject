@@ -388,10 +388,10 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     Double montoCuota = saldo / compra.getCantidadCuotas();
 
                     ejCompraUp.setEntrega(entrega + "");
-                    ejCompraUp.setMontoInteres(montoInteres + "");
-                    ejCompraUp.setSaldo(saldo + "");
+                    ejCompraUp.setMontoInteres(Math.round(montoInteres) + "");
+                    ejCompraUp.setSaldo(Math.round(saldo) + "");
                     ejCompraUp.setNeto(saldo);
-                    ejCompraUp.setMontoCuotas(montoCuota + "");
+                    ejCompraUp.setMontoCuotas(Math.round(montoCuota) + "");
                     ejCompraUp.setMoraInteres(compra.getMoraInteres());
 
                     Date fecha = new Date();
@@ -425,6 +425,10 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     
                     int contador = 1;
                     boolean tieneFecha = true;
+                    
+                    Calendar date = Calendar.getInstance();
+                    date.set(Calendar.YEAR, fecha.getYear()+1900);
+                    
                     for (int i = 1; i <= compra.getCantidadCuotas(); i++) {
 
                         ejAPagar = new DocumentoPagar();
@@ -437,13 +441,15 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                         if (compra.getCuotaFecha() != null
                                 && compra.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                            Calendar date = Calendar.getInstance();
+                            
                             if (tieneFecha) {
                                 date.set(Calendar.MONTH, fecha.getMonth());
+                                
                                 tieneFecha = false;
 
                             } else {
                                 date.set(Calendar.MONTH, fecha.getMonth() + contador);
+
                                 contador++;
                             }
 
@@ -453,7 +459,6 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                         } else {
 
-                            Calendar date = Calendar.getInstance();
                             date.set(Calendar.DATE, 5);
                             date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
@@ -473,10 +478,10 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                     Double montoCuota = saldo / compra.getCantidadCuotas();
 
-                    ejCompraUp.setMontoInteres(montoInteres + "");
-                    ejCompraUp.setSaldo(saldo + "");
+                    ejCompraUp.setMontoInteres(Math.round(montoInteres) + "");
+                    ejCompraUp.setSaldo(Math.round(saldo) + "");
                     ejCompraUp.setNeto(saldo);
-                    ejCompraUp.setMontoCuotas(montoCuota + "");
+                    ejCompraUp.setMontoCuotas(Math.round(montoCuota) + "");
                     ejCompraUp.setMoraInteres(compra.getMoraInteres());
 
                     Date fecha = new Date();
@@ -502,7 +507,10 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                     int contador = 1;
                     boolean tieneFecha = true;
-
+                    
+                    Calendar date = Calendar.getInstance();
+                    date.set(Calendar.YEAR, fecha.getYear()+1900);
+                    
                     for (int i = 1; i <= compra.getCantidadCuotas(); i++) {
 
                         ejAPagar = new DocumentoPagar();
@@ -515,7 +523,7 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                         if (compra.getCuotaFecha() != null
                                 && compra.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                            Calendar date = Calendar.getInstance();
+                            
                             if (tieneFecha) {
                                 date.set(Calendar.MONTH, fecha.getMonth());
                                 tieneFecha = false;
@@ -531,7 +539,6 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                         } else {
 
-                            Calendar date = Calendar.getInstance();
                             date.set(Calendar.DATE, 5);
                             date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
@@ -565,8 +572,8 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                     ejCompraUp.setSaldo("");
                     ejCompraUp.setTipoDescuento("GENERAL");
-                    ejCompraUp.setDescuento(interes + "");
-                    ejCompraUp.setMontoDescuento(montoInteres + "");
+                    ejCompraUp.setDescuento(Math.round(interes) + "");
+                    ejCompraUp.setMontoDescuento(Math.round(montoInteres) + "");
                     ejCompraUp.setNeto(saldo);
 
                 } else {

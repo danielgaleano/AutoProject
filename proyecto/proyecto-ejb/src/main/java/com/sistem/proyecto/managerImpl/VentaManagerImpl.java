@@ -155,6 +155,10 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                     int contador = 1;
                     boolean tieneFecha = true;
+                    
+                    Calendar date = Calendar.getInstance();
+                    date.set(Calendar.YEAR, fecha.getYear()+1900);
+                    
                     for (int i = 1; i <= venta.getCantidadCuotas(); i++) {
 
                         ejACobrar = new DocumentoCobrar();
@@ -167,7 +171,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         if (venta.getCuotaFecha() != null
                                 && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                            Calendar date = Calendar.getInstance();
+                            
                             if (tieneFecha) {
                                 date.set(Calendar.MONTH, fecha.getMonth());
                                 tieneFecha = false;
@@ -183,7 +187,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                         } else {
 
-                            Calendar date = Calendar.getInstance();
+                            
                             date.set(Calendar.DATE, 5);
                             date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
@@ -269,7 +273,10 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                     int contador = 1;
                     boolean tieneFecha = true;
-
+                    
+                    Calendar date = Calendar.getInstance();
+                    date.set(Calendar.YEAR, fecha.getYear()+1900);
+                    
                     for (int i = 1; i <= venta.getCantidadCuotas(); i++) {
 
                         ejACobrar = new DocumentoCobrar();
@@ -282,7 +289,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         if (venta.getCuotaFecha() != null
                                 && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                            Calendar date = Calendar.getInstance();
+                                                 
                             if (tieneFecha) {
                                 date.set(Calendar.MONTH, fecha.getMonth());
                                 tieneFecha = false;
@@ -298,7 +305,6 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                         } else {
 
-                            Calendar date = Calendar.getInstance();
                             date.set(Calendar.DATE, 5);
                             date.set(Calendar.MONTH, fecha.getMonth() + contador);
 

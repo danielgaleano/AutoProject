@@ -55,6 +55,12 @@ public class CompraController extends BaseController {
             + "entrega,saldo,tipoDescuento,descuento,monto,montoDescuento,neto,pedido.numeroPedido,pedido.codigo,pedido.fechaEntrega,"
             + "pedido.cantidadAprobados,pedido.cantidadTotal,pedido.total,proveedor.id,proveedor.ruc,proveedor.nombre,proveedor.direccion,proveedor.telefono";
 
+    String atributosVehiculoCompra = "compra.id,compra.nroFactura,compra.fechaCompra,compra.tipoCompra,compra.formaPago,compra.porcentajeInteresCredito,"
+            + "compra.montoInteres,compra.tipoMoraInteres,compra.moraInteres,compra.cantidadCuotas,compra.montoCuotas,"
+            + "compra.montoTotalCuotas,compra.fechaCuota,compra.entrega,compra.saldo,compra.tipoDescuento,"
+            + "compra.descuento,compra.monto,compra.entrega,compra.montoDescuento,compra.neto,"
+            + "compra.proveedor.id,compra.proveedor.nombre,compra.proveedor.ruc";
+    
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listarPermisos(Model model) {
         ModelAndView retorno = new ModelAndView();
@@ -121,6 +127,37 @@ public class CompraController extends BaseController {
 
         return retorno;
     }
+    
+    @RequestMapping(value = "/obtener/{id}", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno obtenerCompraVehiculo(@PathVariable("id") Long id) {
+        DTORetorno<Map<String, Object>> retorno = new DTORetorno<>();
+        List<Map<String, Object>> listMapGrupos = null;
+        try {
+            inicializarDetalleCompraManager();
+            DetalleCompra ejCompra = new DetalleCompra();
+            ejCompra.setVehiculo(new Vehiculo (id));
+
+            Map<String, Object> ejCompraMap = detalleCompraManager.getAtributos(ejCompra, atributosVehiculoCompra.split(","));
+            ejCompraMap.put("montoCuotas", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.montoCuotas").toString())+""));
+            ejCompraMap.put("montoInteres", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.montoInteres").toString())+""));
+            ejCompraMap.put("monto", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.monto").toString())+""));
+            ejCompraMap.put("saldo", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.saldo").toString())+""));
+            
+            
+            retorno.setData(ejCompraMap);
+            retorno.setError(false);
+            retorno.setMensaje("Se obtuvo exitosamente la compra");
+
+        } catch (Exception ex) {
+            logger.error("Error al obtener la compra", ex);
+            retorno.setError(true);
+            retorno.setMensaje("Error al obtener el cliente");
+        }
+
+        return retorno;
+    }
+    
 
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
     public @ResponseBody

@@ -388,10 +388,10 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     Double montoCuota = saldo / compra.getCantidadCuotas();
 
                     ejCompraUp.setEntrega(entrega + "");
-                    ejCompraUp.setMontoInteres(montoInteres + "");
-                    ejCompraUp.setSaldo(saldo + "");
+                    ejCompraUp.setMontoInteres(Math.round(montoInteres) + "");
+                    ejCompraUp.setSaldo(Math.round(saldo) + "");
                     ejCompraUp.setNeto(saldo);
-                    ejCompraUp.setMontoCuotas(montoCuota + "");
+                    ejCompraUp.setMontoCuotas(Math.round(montoCuota) + "");
                     ejCompraUp.setMoraInteres(compra.getMoraInteres());
 
                     Date fecha = new Date();
@@ -478,10 +478,10 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                     Double montoCuota = saldo / compra.getCantidadCuotas();
 
-                    ejCompraUp.setMontoInteres(montoInteres + "");
-                    ejCompraUp.setSaldo(saldo + "");
+                    ejCompraUp.setMontoInteres(Math.round(montoInteres) + "");
+                    ejCompraUp.setSaldo(Math.round(saldo) + "");
                     ejCompraUp.setNeto(saldo);
-                    ejCompraUp.setMontoCuotas(montoCuota + "");
+                    ejCompraUp.setMontoCuotas(Math.round(montoCuota) + "");
                     ejCompraUp.setMoraInteres(compra.getMoraInteres());
 
                     Date fecha = new Date();
@@ -572,8 +572,8 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
 
                     ejCompraUp.setSaldo("");
                     ejCompraUp.setTipoDescuento("GENERAL");
-                    ejCompraUp.setDescuento(interes + "");
-                    ejCompraUp.setMontoDescuento(montoInteres + "");
+                    ejCompraUp.setDescuento(Math.round(interes) + "");
+                    ejCompraUp.setMontoDescuento(Math.round(montoInteres) + "");
                     ejCompraUp.setNeto(saldo);
 
                 } else {

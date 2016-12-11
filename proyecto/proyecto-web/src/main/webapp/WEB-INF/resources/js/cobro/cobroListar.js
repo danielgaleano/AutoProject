@@ -141,6 +141,7 @@ $(document).ready(function(data) {
                     $('#montoTotal').val(pago.neto);
 
                     $('#saldo').val(pago.saldo);
+                    $('#interes').val(pago.montoInteres);
 
                     if (pago.idProveedor !== null && pago.idProveedor !== "") {
 

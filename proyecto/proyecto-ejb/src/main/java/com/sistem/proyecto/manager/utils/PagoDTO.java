@@ -42,6 +42,8 @@ public class PagoDTO {
     
     private Double interes;
     
+    private Double montoInteres;
+    
     private Double saldo;
     
     private Date fechaCuota;
@@ -282,6 +284,14 @@ public class PagoDTO {
 
     public void setDiasGracia(Long diasGracia) {
         this.diasGracia = diasGracia;
+    }
+
+    public Double getMontoInteres() {
+        return montoInteres;
+    }
+
+    public void setMontoInteres(Double montoInteres) {
+        this.montoInteres = montoInteres;
     }
     
     

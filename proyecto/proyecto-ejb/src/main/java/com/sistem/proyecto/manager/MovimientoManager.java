@@ -25,6 +25,8 @@ public interface MovimientoManager extends GenericDao<Movimiento, Long> {
     
     public MensajeDTO realizarCompra(Long idCompra, Double Monto, Double interes, Long idDocPago, Long idEmpresa, Long idUsuario) throws Exception;
     
+    public MensajeDTO realizarPago(Long idVenta, Double Monto, Double interes, Long idDocPago, Long idEmpresa, Long idUsuario) throws Exception;
+    
     public MensajeDTO rechazar(Long idDetalle, Long idPedido, Long idEmpresa, Long idUsuario) throws Exception;
     
 }

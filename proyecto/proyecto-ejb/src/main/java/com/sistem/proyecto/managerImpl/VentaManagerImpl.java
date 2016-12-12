@@ -8,6 +8,7 @@ package com.sistem.proyecto.managerImpl;
 import com.sistem.proyecto.entity.Cliente;
 import com.sistem.proyecto.entity.DetalleVenta;
 import com.sistem.proyecto.entity.DocumentoCobrar;
+import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Marca;
 import com.sistem.proyecto.entity.Modelo;
@@ -86,6 +87,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
             ejVenta.setNroFactura(nroFactura);
             ejVenta.setActivo("S");
             ejVenta.setEstadoVenta(Venta.VENTA_PENDIENTE);
+            ejVenta.setEstadoCobro(DocumentoPagar.PENDIENTE);
             ejVenta.setEmpresa(new Empresa(idEmpresa));
             ejVenta.setFormaPago(formaPgo);
             ejVenta.setCliente(new Cliente(venta.getCliente().getId()));

@@ -7,6 +7,7 @@ package com.sistem.proyecto.managerImpl;
 
 import com.sistem.proyecto.entity.Compra;
 import com.sistem.proyecto.entity.DetalleCompra;
+import com.sistem.proyecto.entity.DetalleVenta;
 import com.sistem.proyecto.entity.DocumentoCobrar;
 import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
@@ -16,6 +17,7 @@ import com.sistem.proyecto.entity.Vehiculo;
 import com.sistem.proyecto.entity.Venta;
 import com.sistem.proyecto.manager.CompraManager;
 import com.sistem.proyecto.manager.DetalleCompraManager;
+import com.sistem.proyecto.manager.DetalleVentaManager;
 import com.sistem.proyecto.manager.DocumentoCobrarManager;
 import com.sistem.proyecto.manager.DocumentoPagarManager;
 import com.sistem.proyecto.manager.MovimientoManager;
@@ -50,6 +52,9 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
     @EJB(mappedName = "java:app/proyecto-ejb/DetalleCompraManagerImpl")
     private DetalleCompraManager detalleCompraManager;
+
+    @EJB(mappedName = "java:app/proyecto-ejb/DetalleVentaManagerImpl")
+    private DetalleVentaManager detalleVentaManager;
 
     @EJB(mappedName = "java:app/proyecto-ejb/DocumentoPagarManagerImpl")
     private DocumentoPagarManager documentoPagarManager;
@@ -282,7 +287,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
                     }
                     if (tieneParcia) {
-                        
+
                         if (Math.round(Monto) > saldo) {
                             docPagar = new DocumentoPagar();
                             docPagar = documentoPagarManager.get(idDocumento);
@@ -352,26 +357,24 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         } else {
                             docPagar = new DocumentoPagar();
                             docPagar = documentoPagarManager.get(idDocumento);
-                            
-                            
-                            
+
                             if (Math.round(interes) > Math.round(Monto)) {
                                 mensaje.setError(true);
                                 mensaje.setMensaje("No se aceptan pagos menores al interes.");
                                 return mensaje;
                             }
-                            
+
                             netoPago = saldo + Math.round(interes);
 
-                            saldo =  netoPago - Math.round(Monto);
-                            
-                            if(saldo > 0){
-                                
-                                docPagar.setSaldo(Double.parseDouble(saldo+""));
+                            saldo = netoPago - Math.round(Monto);
+
+                            if (saldo > 0) {
+
+                                docPagar.setSaldo(Double.parseDouble(saldo + ""));
                                 docPagar.setEstado(DocumentoPagar.PARCIAL);
 
                                 documentoPagarManager.update(docPagar);
-                                
+
                                 ejMovimiento.setCompra(ejCompra);
                                 ejMovimiento.setEmpresa(new Empresa(idEmpresa));
                                 ejMovimiento.setImporte(Monto);
@@ -387,7 +390,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                                 ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                                 ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                                 ejMovimiento.setUsuario(new Usuario(idUsuario));
-                                
+
                             }
 
                         }
@@ -808,11 +811,15 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
                             tieneDeuda = false;
                             System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
+                           
                         }
+                         break;
                     }
 
                     int dias = diferenciaEnDias(fechaActual, date.getTime());
-
+                    
+                    pago.setDiasMoraCuota(Long.parseLong(dias+""));
+                    
                     Double montoInteresPendiente = 0.0;
 
                     Double interes = Double.parseDouble(ejVenta.getMoraInteres()) / 100;
@@ -847,7 +854,9 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
                     }
                     int diasParcial = diferenciaEnDias(fechaActual, date.getTime());
-
+                    
+                    pago.setDiasMoraSaldo(Long.parseLong(diasParcial+""));
+                    
                     Double montoInteresParcial = 0.0;
 
                     Double interesDiasParcial = Double.parseDouble(diasParcial + "") / 360;
@@ -903,6 +912,540 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
         long dias = diferenciaEn_ms / (1000 * 60 * 60 * 24);
 
         return (int) dias;
+    }
+
+    @Override
+    public MensajeDTO realizarPago(Long idVenta, Double Monto, Double interesCobro, Long idDocPago, Long idEmpresa, Long idUsuario) throws Exception {
+
+        MensajeDTO mensaje = new MensajeDTO();
+        Venta ejVenta = new Venta();
+
+        Movimiento ejMovimiento = new Movimiento();
+
+        PagoDTO pago = new PagoDTO();
+
+        Long monto = Long.parseLong("0");
+        Long interesPago = Long.parseLong("0");
+        Long netoPago = Long.parseLong("0");
+        Long saldo = Long.parseLong("0");
+
+        DocumentoCobrar docParcial = new DocumentoCobrar();
+        Date fechaActual = new Date();
+        Calendar date = Calendar.getInstance();
+
+        try {
+
+            if (idVenta == null || idVenta != null
+                    && idVenta.toString().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Error al realizar el pago.");
+                return mensaje;
+            }
+
+            ejVenta = ventaManager.get(idVenta);
+
+            if (ejVenta.getEstadoVenta().compareToIgnoreCase(Venta.VENTA_REALIZADA) == 0) {
+                pago.setCancelado(true);
+                mensaje.setError(false);
+                mensaje.setMensaje("La cuenta ya se encuentra cancelada.");
+                return mensaje;
+            }
+
+            if (ejVenta.getFormaPago().compareToIgnoreCase("CREDITO") == 0) {
+
+                DocumentoCobrar docPagar = new DocumentoCobrar();
+                docPagar.setId(idDocPago);
+
+                docPagar = documentoCobrarManager.get(idDocPago);
+
+                if (docPagar.getEstado().compareToIgnoreCase(DocumentoPagar.ENTREGA) == 0) {
+                    if (Monto < docPagar.getMonto()) {
+
+                        mensaje.setError(true);
+                        mensaje.setMensaje("No se aceptan pagos parciales en la entrega.");
+                        return mensaje;
+
+                    } else {
+                        docPagar = new DocumentoCobrar();
+                        docPagar = documentoCobrarManager.get(idDocPago);
+
+                        docPagar.setSaldo(0.0);
+                        docPagar.setEstado(DocumentoCobrar.CANCELADO);
+                        documentoCobrarManager.update(docPagar);
+
+                        ejMovimiento.setVenta(ejVenta);
+                        ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                        ejMovimiento.setImporte(Monto);
+                        ejMovimiento.setNeto(Monto);
+                        ejMovimiento.setInteres(0.0);
+                        ejMovimiento.setSaldo(0.0);
+                        ejMovimiento.setCuota(Long.parseLong(docPagar.getNroCuota()));
+                        ejMovimiento.setActivo("S");
+                        ejMovimiento.setCliente(ejVenta.getCliente());
+                        ejMovimiento.setTipoTransaccion("I");
+                        ejMovimiento.setVuelto(0.0);
+                        ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                        ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                        ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                        ejMovimiento.setUsuario(new Usuario(idUsuario));
+                    }
+                } else {
+
+                    Long deudaTotal = Math.round(docPagar.getMonto());
+
+                    Double interes = Double.parseDouble(ejVenta.getMoraInteres()) / 100;
+
+                    date.set(Calendar.YEAR, docPagar.getFecha().getYear() + 1900);
+                    date.set(Calendar.MONTH, docPagar.getFecha().getMonth());
+                    date.set(Calendar.DATE, docPagar.getFecha().getDate() + Integer.parseInt(ejVenta.getDiasGracia() + ""));
+
+                    int diasPendiente = diferenciaEnDias(fechaActual, date.getTime());
+
+                    Double montoInteresPendiente = 0.0;
+
+                    Double interesDiasPendiente = Double.parseDouble(diasPendiente + "") / 360;
+
+                    if (diasPendiente > 0) {
+                        montoInteresPendiente = interesDiasPendiente * interes * deudaTotal;
+
+                    }
+
+                    docParcial.setEstado(DocumentoCobrar.PARCIAL);
+                    docParcial.setVenta(ejVenta);
+
+                    List<DocumentoCobrar> documentosParcial = documentoCobrarManager.list(docParcial, "fecha", "asc");
+
+                    Long idDocumento = null;
+                    boolean tieneParcia = false;
+                    date = Calendar.getInstance();
+
+                    for (DocumentoCobrar rpm : documentosParcial) {
+                        tieneParcia = true;
+
+                        saldo = Math.round(rpm.getSaldo());
+                        idDocumento = rpm.getId();
+
+                        date.set(Calendar.YEAR, rpm.getFecha().getYear() + 1900);
+                        date.set(Calendar.MONTH, rpm.getFecha().getMonth());
+                        date.set(Calendar.DATE, rpm.getFecha().getDate() + Integer.parseInt(ejVenta.getDiasGracia() + ""));
+
+                        System.out.println(rpm.getNroCuota() + " " + rpm.getFecha());
+                        break;
+                    }
+                    if (tieneParcia) {
+
+                        int diasParcial = diferenciaEnDias(fechaActual, date.getTime());
+
+                        Double montoInteresParcial = 0.0;
+
+                        Double interesDiasParcial = Double.parseDouble(diasParcial + "") / 360;
+
+                        if (diasParcial > 0) {
+                            montoInteresParcial = interesDiasParcial * interes * saldo;
+
+                        }
+
+                        Long saldoInteres = saldo + Math.round(montoInteresParcial);
+
+                        deudaTotal = deudaTotal + saldoInteres + Math.round(montoInteresPendiente);
+
+                        if (Math.round(Monto) > saldoInteres) {
+
+                            docPagar = new DocumentoCobrar();
+                            docPagar = documentoCobrarManager.get(idDocumento);
+
+                            docPagar.setSaldo(0.0);
+                            docPagar.setEstado(DocumentoCobrar.CANCELADO);
+                            documentoCobrarManager.update(docPagar);
+
+                            netoPago = deudaTotal - saldoInteres;
+
+                            saldo = Math.round(Monto) - netoPago;
+
+                            if (saldo < 0) {
+                                Long netoSaldo = netoPago - Math.round(Monto);
+
+                                docPagar = new DocumentoCobrar();
+
+                                docPagar = documentoCobrarManager.get(idDocPago);
+
+                                docPagar.setSaldo(Double.parseDouble(netoSaldo.toString()));
+                                docPagar.setEstado(DocumentoPagar.PARCIAL);
+
+                                documentoCobrarManager.update(docPagar);
+
+                                ejMovimiento.setVenta(ejVenta);
+                                ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                                ejMovimiento.setImporte(Monto);
+                                ejMovimiento.setNeto(Monto);
+                                ejMovimiento.setInteres(montoInteresParcial);
+                                ejMovimiento.setCuota(Long.parseLong(docPagar.getNroCuota()));
+                                ejMovimiento.setSaldo(Double.parseDouble(netoSaldo.toString()));
+                                ejMovimiento.setActivo("S");
+                                ejMovimiento.setCliente(ejVenta.getCliente());
+                                ejMovimiento.setTipoTransaccion("I");
+                                ejMovimiento.setVuelto(0.0);
+                                ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                                ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                                ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                                ejMovimiento.setUsuario(new Usuario(idUsuario));
+
+                            } else {
+                                docPagar = new DocumentoCobrar();
+
+                                docPagar = documentoCobrarManager.get(idDocPago);
+
+                                docPagar.setSaldo(0.0);
+                                docPagar.setEstado(DocumentoCobrar.CANCELADO);
+
+                                documentoCobrarManager.update(docPagar);
+
+                                ejMovimiento.setVenta(ejVenta);
+                                ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                                ejMovimiento.setImporte(Monto);
+                                ejMovimiento.setInteres(montoInteresParcial);
+                                ejMovimiento.setCuota(Long.parseLong(docPagar.getNroCuota()));
+                                ejMovimiento.setNeto(Monto - Double.parseDouble(saldo.toString()));
+                                ejMovimiento.setSaldo(0.0);
+                                ejMovimiento.setActivo("S");
+                                ejMovimiento.setCliente(ejVenta.getCliente());
+                                ejMovimiento.setTipoTransaccion("I");
+                                ejMovimiento.setVuelto(Double.parseDouble(saldo.toString()));
+                                ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                                ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                                ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                                ejMovimiento.setUsuario(new Usuario(idUsuario));
+                            }
+                        } else {
+                            docPagar = new DocumentoCobrar();
+                            docPagar = documentoCobrarManager.get(idDocumento);
+
+                            if (Math.round(montoInteresParcial) > Math.round(Monto)) {
+                                mensaje.setError(true);
+                                mensaje.setMensaje("No se aceptan pagos menores al interes.");
+                                return mensaje;
+                            }
+
+                            netoPago = saldo + Math.round(montoInteresParcial);
+
+                            saldo = netoPago - Math.round(Monto);
+
+                            if (saldo > 0) {
+
+                                docPagar.setSaldo(Double.parseDouble(saldo + ""));
+                                docPagar.setEstado(DocumentoPagar.PARCIAL);
+
+                                documentoCobrarManager.update(docPagar);
+
+                                ejMovimiento.setVenta(ejVenta);
+                                ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                                ejMovimiento.setImporte(Monto);
+                                ejMovimiento.setNeto(Monto);
+                                ejMovimiento.setInteres(montoInteresParcial);
+                                ejMovimiento.setCuota(Long.parseLong(docPagar.getNroCuota()));
+                                ejMovimiento.setSaldo(Double.parseDouble(saldo.toString()));
+                                ejMovimiento.setActivo("S");
+                                ejMovimiento.setCliente(ejVenta.getCliente());
+                                ejMovimiento.setTipoTransaccion("I");
+                                ejMovimiento.setVuelto(0.0);
+                                ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                                ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                                ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                                ejMovimiento.setUsuario(new Usuario(idUsuario));
+
+                            }
+
+                        }
+                    } else {
+
+                        netoPago = deudaTotal + Math.round(montoInteresPendiente);
+
+                        saldo = Math.round(Monto) - netoPago;
+
+                        docPagar = new DocumentoCobrar();
+                        docPagar = documentoCobrarManager.get(idDocPago);
+
+                        if (saldo < 0) {
+
+                            saldo = netoPago - Math.round(Monto);
+
+                            docPagar.setEstado(DocumentoCobrar.PARCIAL);
+                            docPagar.setSaldo(Double.parseDouble(saldo.toString()));
+                            documentoCobrarManager.update(docPagar);
+
+                            ejMovimiento.setVenta(ejVenta);
+                            ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                            ejMovimiento.setImporte(Monto);
+                            ejMovimiento.setNeto(Monto);
+                            ejMovimiento.setInteres(montoInteresPendiente);
+                            ejMovimiento.setCuota(Long.parseLong(docPagar.getNroCuota()));
+                            ejMovimiento.setSaldo(Double.parseDouble(saldo.toString()));
+                            ejMovimiento.setActivo("S");
+                            ejMovimiento.setCliente(ejVenta.getCliente());
+                            ejMovimiento.setTipoTransaccion("I");
+                            ejMovimiento.setVuelto(0.0);
+                            ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setUsuario(new Usuario(idUsuario));
+
+                        } else {
+
+                            docPagar.setSaldo(0.0);
+                            docPagar.setEstado(DocumentoCobrar.CANCELADO);
+                            documentoCobrarManager.update(docPagar);
+
+                            ejMovimiento.setVenta(ejVenta);
+                            ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                            ejMovimiento.setImporte(Monto);
+                            ejMovimiento.setCuota(Long.parseLong(docPagar.getNroCuota()));
+                            ejMovimiento.setNeto(Monto - Double.parseDouble(saldo.toString()));
+                            ejMovimiento.setInteres(montoInteresPendiente);
+                            ejMovimiento.setSaldo(0.0);
+                            ejMovimiento.setActivo("S");
+                            ejMovimiento.setCliente(ejVenta.getCliente());
+                            ejMovimiento.setTipoTransaccion("I");
+                            ejMovimiento.setVuelto(Double.parseDouble(saldo.toString()));
+                            ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setUsuario(new Usuario(idUsuario));
+                        }
+                    }
+                }
+
+                this.save(ejMovimiento);
+
+                Vehiculo ejVehiculo = new Vehiculo();
+                ejVehiculo.setEstado(Vehiculo.PROVESO_VENTA);
+
+                DetalleVenta ejDetalle = new DetalleVenta();
+                ejDetalle.setVenta(ejVenta);
+                ejDetalle.setVehiculo(ejVehiculo);
+
+                List<DetalleVenta> listDetalle = detalleVentaManager.list(ejDetalle);
+
+                for (DetalleVenta rpm : listDetalle) {
+
+                    rpm.getVehiculo().setEstado(Vehiculo.VENDIDA);
+                    vehiculoManager.update(rpm.getVehiculo());
+
+                }
+
+                docParcial = new DocumentoCobrar();
+                docParcial.setEstado(DocumentoCobrar.PENDIENTE);
+                docParcial.setVenta(ejVenta);
+
+                int documentosPendientes = documentoCobrarManager.list(docParcial, "fecha", "asc").size();
+
+                if (documentosPendientes <= 0) {
+                    ejVenta.setEstadoCobro(DocumentoPagar.CANCELADO);
+                    ejVenta.setEstadoVenta(Venta.VENTA_REALIZADA);
+
+                    ventaManager.update(ejVenta);
+                }
+
+            } else {
+
+                if (ejVenta.getEstadoCobro().compareToIgnoreCase(DocumentoPagar.PENDIENTE) == 0) {
+
+//                    Date fechaVenta = ejVenta.getFechaVenta();
+//
+//                    int diasParcial = diferenciaEnDias(fechaActual, fechaVenta);
+//
+//                    Double montoInteresDirecta = 0.0;
+//
+//                    Double interesDiasDirecta = Double.parseDouble(diasParcial + "") / 360;
+                    netoPago = Math.round(ejVenta.getNeto());
+
+                    saldo = Math.round(Monto) - netoPago;
+
+                    if (saldo < 0) {
+                        Long netoSaldo = netoPago - Math.round(Monto);
+
+                        ejVenta.setSaldo(netoSaldo.toString());
+                        ejVenta.setEstadoVenta(DocumentoPagar.PARCIAL);
+
+                        ventaManager.update(ejVenta);
+
+                        ejMovimiento.setVenta(ejVenta);
+                        ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                        ejMovimiento.setImporte(Monto);
+                        ejMovimiento.setNeto(Monto);
+                        ejMovimiento.setInteres(0.0);
+                        ejMovimiento.setSaldo(Double.parseDouble(netoSaldo.toString()));
+                        ejMovimiento.setActivo("S");
+                        ejMovimiento.setCliente(ejVenta.getCliente());
+                        ejMovimiento.setTipoTransaccion("I");
+                        ejMovimiento.setVuelto(0.0);
+                        ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                        ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                        ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                        ejMovimiento.setUsuario(new Usuario(idUsuario));
+
+                        this.save(ejMovimiento);
+                    } else {
+                        if (saldo > 0) {
+
+                            ejVenta.setEstadoCobro(DocumentoPagar.CANCELADO);
+                            ejVenta.setEstadoVenta(Venta.VENTA_REALIZADA);
+
+                            ventaManager.update(ejVenta);
+
+                            ejMovimiento.setVenta(ejVenta);
+                            ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                            ejMovimiento.setImporte(Monto);
+                            ejMovimiento.setNeto(Monto - Double.parseDouble(saldo.toString()));
+                            ejMovimiento.setInteres(0.0);
+                            ejMovimiento.setSaldo(0.0);
+                            ejMovimiento.setActivo("S");
+                            ejMovimiento.setCliente(ejVenta.getCliente());
+                            ejMovimiento.setTipoTransaccion("I");
+                            ejMovimiento.setVuelto(Double.parseDouble(saldo.toString()));
+                            ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setUsuario(new Usuario(idUsuario));
+
+                            this.save(ejMovimiento);
+
+                        } else if (saldo == 0) {
+
+                            ejVenta.setEstadoCobro(DocumentoPagar.CANCELADO);
+                            ejVenta.setEstadoVenta(Venta.VENTA_REALIZADA);
+
+                            ventaManager.update(ejVenta);
+
+                            ejMovimiento.setVenta(ejVenta);
+                            ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                            ejMovimiento.setImporte(Monto);
+                            ejMovimiento.setNeto(Monto);
+                            ejMovimiento.setInteres(0.0);
+                            ejMovimiento.setSaldo(0.0);
+                            ejMovimiento.setActivo("S");
+                            ejMovimiento.setCliente(ejVenta.getCliente());
+                            ejMovimiento.setTipoTransaccion("I");
+                            ejMovimiento.setVuelto(0.0);
+                            ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setUsuario(new Usuario(idUsuario));
+
+                            this.save(ejMovimiento);
+
+                        }
+                    }
+                } else if (ejVenta.getEstadoCobro().compareToIgnoreCase(DocumentoPagar.PARCIAL) == 0) {
+
+                    netoPago = Long.parseLong(ejVenta.getSaldo());
+
+                    saldo = Math.round(Monto) - netoPago;
+
+                    if (saldo < 0) {
+                        Long netoSaldo = netoPago - Math.round(Monto);
+
+                        ejVenta.setSaldo(netoSaldo.toString());
+                        ejVenta.setEstadoVenta(DocumentoPagar.PARCIAL);
+
+                        ventaManager.update(ejVenta);
+
+                        ejMovimiento.setVenta(ejVenta);
+                        ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                        ejMovimiento.setImporte(Monto);
+                        ejMovimiento.setNeto(Monto);
+                        ejMovimiento.setInteres(0.0);
+                        ejMovimiento.setSaldo(Double.parseDouble(netoSaldo.toString()));
+                        ejMovimiento.setActivo("S");
+                        ejMovimiento.setCliente(ejVenta.getCliente());
+                        ejMovimiento.setTipoTransaccion("I");
+                        ejMovimiento.setVuelto(0.0);
+                        ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                        ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                        ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                        ejMovimiento.setUsuario(new Usuario(idUsuario));
+
+                        this.save(ejMovimiento);
+                    } else {
+                        if (saldo > 0) {
+                            ejVenta.setSaldo("0");
+                            ejVenta.setEstadoVenta(Venta.VENTA_REALIZADA);
+                            ejVenta.setEstadoCobro(DocumentoPagar.CANCELADO);
+                            ventaManager.update(ejVenta);
+
+                            ejMovimiento.setVenta(ejVenta);
+                            ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                            ejMovimiento.setImporte(Monto);
+                            ejMovimiento.setInteres(0.0);
+                            ejMovimiento.setSaldo(0.0);
+                            ejMovimiento.setNeto(Monto - Double.parseDouble(saldo.toString()));
+                            ejMovimiento.setActivo("S");
+                            ejMovimiento.setCliente(ejVenta.getCliente());
+                            ejMovimiento.setTipoTransaccion("I");
+                            ejMovimiento.setVuelto(Double.parseDouble(saldo.toString()));
+                            ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setUsuario(new Usuario(idUsuario));
+
+                            this.save(ejMovimiento);
+
+                        } else if (saldo == 0) {
+                            ejVenta.setSaldo("0");
+                            ejVenta.setEstadoVenta(Venta.VENTA_REALIZADA);
+                            ejVenta.setEstadoCobro(DocumentoPagar.CANCELADO);
+                            ventaManager.update(ejVenta);
+
+                            ejMovimiento.setVenta(ejVenta);
+                            ejMovimiento.setEmpresa(new Empresa(idEmpresa));
+                            ejMovimiento.setImporte(Monto);
+                            ejMovimiento.setInteres(0.0);
+                            ejMovimiento.setSaldo(0.0);
+                            ejMovimiento.setNeto(Monto);
+                            ejMovimiento.setActivo("S");
+                            ejMovimiento.setCliente(ejVenta.getCliente());
+                            ejMovimiento.setTipoTransaccion("I");
+                            ejMovimiento.setVuelto(0.0);
+                            ejMovimiento.setFechaIngreso(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                            ejMovimiento.setUsuario(new Usuario(idUsuario));
+
+                            this.save(ejMovimiento);
+
+                        }
+                    }
+                }
+                Vehiculo ejVehiculo = new Vehiculo();
+                ejVehiculo.setEstado("PENDIENTE");
+
+                DetalleVenta ejDetalle = new DetalleVenta();
+                ejDetalle.setVenta(ejVenta);
+                ejDetalle.setVehiculo(ejVehiculo);
+                
+                List<DetalleVenta> listDetalle = detalleVentaManager.list(ejDetalle);
+                
+                for (DetalleVenta rpm : listDetalle) {
+
+                    rpm.getVehiculo().setEstado(Vehiculo.VENDIDA);
+
+                    vehiculoManager.update(rpm.getVehiculo());
+
+                }
+                
+
+            }
+
+            mensaje.setId(idVenta);
+            mensaje.setError(false);
+            mensaje.setMensaje("La venta se realizo exitosamente.");
+            return mensaje;
+        } catch (Exception e) {
+            System.err.println(e);
+            mensaje.setError(true);
+            mensaje.setMensaje("Error al realizar el pago.");
+        }
+        //To change body of generated methods, choose Tools | Templates.
+        return mensaje;//To change body of generated methods, choose Tools | Templates.
     }
 
 }

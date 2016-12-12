@@ -117,6 +117,14 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/compras/desactivar/*").hasAnyAuthority("Compra.Desactivar")
                 .antMatchers("/compras/visualizar/**").hasAnyAuthority("Compra.Visualizar")
                 .antMatchers("/compras/detalles/agregar/**").hasAnyAuthority("Compra.Visualizar")
+                //------Ventas----//
+                .antMatchers("/ventas**").hasAnyAuthority("Venta.Listar")
+                .antMatchers("/ventas/crear**").hasAnyAuthority("Venta.Realizar")
+                .antMatchers("/ventas/guardar**").hasAnyAuthority("Venta.Crear")
+                .antMatchers("/ventas/realizar/*").hasAnyAuthority("Venta.Realizar")
+                .antMatchers("/compras/desactivar/*").hasAnyAuthority("Venta.Desactivar")
+                .antMatchers("/ventas/visualizar/**").hasAnyAuthority("Venta.Visualizar")
+                .antMatchers("/ventas/editar/**").hasAnyAuthority("Venta.Editar")
                 //------Compras----//
                 .antMatchers("/compras**").hasAnyAuthority("Compra.Listar")
                 .antMatchers("/compras/registros**").hasAnyAuthority("Compra.Listar")
@@ -132,6 +140,9 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 //------Pagos----//
                 .antMatchers("/pagos**").hasAnyAuthority("Pago.Listar")
                 .antMatchers("/pagos/realizar/*").hasAnyAuthority("Pago.Realizar")
+                //------Cobros----//
+                .antMatchers("/cobros**").hasAnyAuthority("Cobro.Listar")
+                .antMatchers("/cobros/realizar/*").hasAnyAuthority("Cobro.Realizar")
                 //------ventas----//
                 .antMatchers("/ventas**").hasAnyAuthority("Venta.Listar")
                 .antMatchers("/ventas/realizar/*").hasAnyAuthority("Venta.Realizar")

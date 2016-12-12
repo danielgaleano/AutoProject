@@ -5,15 +5,11 @@ $(document).ready(function(data) {
         errorClass: 'help-inline',
         focusInvalid: false,
         rules: {
-            interes: {
-                required: true
-            },
             importePagar: {
                 required: true
             }
         },
         messages: {
-            interes: "Debe ingresar interes cobrado!",
             importePagar: "Debe ingresar importe a pagar!"
         },
         invalidHandler: function(event, validator) { //display error alert on form submit   
@@ -53,7 +49,7 @@ $(document).ready(function(data) {
             var idCompra = $('#idCompra').val();
 
             if (idCompra !== null || idCompra !== '') {
-                var jqXHR = $.post(CONTEXT_ROOT + '/pagos/realizar', serialize, function(data, textStatus, jqXHR) {
+                var jqXHR = $.post(CONTEXT_ROOT + '/cobros/realizar', serialize, function(data, textStatus, jqXHR) {
                     if (data.error) {
                         $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                 + '<button class="close" data-dismiss="alert" type="button"'

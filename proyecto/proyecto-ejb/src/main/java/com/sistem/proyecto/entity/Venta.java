@@ -104,6 +104,9 @@ public class Venta extends Base {
     @Column(name = "estado")
     private String estadoVenta;
     
+    @Column(name = "estado_cobro")
+    private String estadoCobro;
+    
     @Transient
     private String cuotaFecha;
     
@@ -477,6 +480,14 @@ public class Venta extends Base {
 
     public void setDiasGracia(Long diasGracia) {
         this.diasGracia = diasGracia;
+    }
+
+    public String getEstadoCobro() {
+        return estadoCobro;
+    }
+
+    public void setEstadoCobro(String estadoCobro) {
+        this.estadoCobro = estadoCobro;
     }
     
     

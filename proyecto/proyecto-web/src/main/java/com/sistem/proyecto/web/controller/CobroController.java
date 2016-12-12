@@ -246,21 +246,10 @@ public class CobroController extends BaseController {
                 mensaje.setMensaje("Debe ingresar el importe a Pagar.");
                 return mensaje;
             }
+            
 
-            if (pagoRecibido.getInteres() == null || pagoRecibido.getInteres() != null
-                    && pagoRecibido.getInteres().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("Debe ingresar el interes a Pagar.");
-                return mensaje;
-            }
 
-            if (pagoRecibido.getInteres() > pagoRecibido.getImportePagar()) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El interes no puede ser mayor al importe a pagar.");
-                return mensaje;
-            }
-
-            mensaje = movimientoManager.realizarCompra(pagoRecibido.getIdCompra(), pagoRecibido.getImportePagar(), pagoRecibido.getInteres(),
+            mensaje = movimientoManager.realizarPago(pagoRecibido.getIdCompra(), pagoRecibido.getImportePagar(), null,
                     pagoRecibido.getIdDocPagar(), userDetail.getIdEmpresa(), userDetail.getId());
 
         } catch (Exception ex) {

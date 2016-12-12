@@ -22,6 +22,10 @@ public class PagoDTO {
     
     private Long idDocPagar;
     
+    private Long diasMoraSaldo;
+    
+    private Long diasMoraCuota;
+    
     private String nroFactura;
     
     private String formaPago;
@@ -292,6 +296,22 @@ public class PagoDTO {
 
     public void setMontoInteres(Double montoInteres) {
         this.montoInteres = montoInteres;
+    }
+
+    public Long getDiasMoraSaldo() {
+        return diasMoraSaldo;
+    }
+
+    public void setDiasMoraSaldo(Long diasMoraSaldo) {
+        this.diasMoraSaldo = diasMoraSaldo;
+    }
+
+    public Long getDiasMoraCuota() {
+        return diasMoraCuota;
+    }
+
+    public void setDiasMoraCuota(Long diasMoraCuota) {
+        this.diasMoraCuota = diasMoraCuota;
     }
     
     

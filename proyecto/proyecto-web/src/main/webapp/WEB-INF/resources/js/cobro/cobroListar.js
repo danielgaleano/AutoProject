@@ -140,6 +140,9 @@ $(document).ready(function(data) {
                     $('#nroFactura').val(pago.nroFactura);
                     $('#montoTotal').val(pago.neto);
 
+                    $('#diasMoraSaldo').val(pago.diasMoraSaldo);
+                    $('#diasMoraCuota').val(pago.diasMoraCuota);
+
                     $('#saldo').val(pago.saldo);
                     $('#interes').val(pago.montoInteres);
 
@@ -205,7 +208,7 @@ $(document).ready(function(data) {
                                     + '</div>');
                         });
                     }
-                    
+
                     $('#formaPago').val(pago.formaPago);
                     $('#formaPagoCred').val(pago.formaPago);
                     if (pago.formaPago === "CONTADO") {

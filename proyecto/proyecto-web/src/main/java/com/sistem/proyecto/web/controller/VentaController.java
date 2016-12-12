@@ -297,11 +297,12 @@ public class VentaController extends BaseController {
     
     @RequestMapping(value = "/vehiculos/listar", method = RequestMethod.GET)
     public @ResponseBody
-    DTORetorno listar(@ModelAttribute("_search") boolean filtrar,
+    DTORetorno listarVehiculoVenta(@ModelAttribute("_search") boolean filtrar,
             @ModelAttribute("filters") String filtros,
             @ModelAttribute("page") Integer pagina,
             @ModelAttribute("rows") Integer cantidad,
             @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("action") String action,
             @ModelAttribute("idVenta") String idVenta,
             @ModelAttribute("sord") String sentidoOrdenamiento,
             @ModelAttribute("todos") boolean todos) {
@@ -393,7 +394,13 @@ public class VentaController extends BaseController {
             Integer totalPaginas = total / cantidad;
 
             retorno.setTotal(totalPaginas + 1);
-            retorno.setRetorno(listMapGrupos);
+            
+            if(action != null && action.compareToIgnoreCase("VISUALIZAR") == 0){
+                retorno.setRetorno(listMapVenta);
+            }else{
+                retorno.setRetorno(listMapGrupos);
+            }
+            
             retorno.setPage(pagina);
 
         } catch (Exception e) {

@@ -24,6 +24,30 @@ $(document).ready(function(data) {
     if (id !== null) {
         cargarDatos(id);
     } else {
+        $('#cliente').searchableOptionList({
+            data: CONTEXT_ROOT + "/clientes/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc",
+            converter: function(sol, rawDataFromUrl) {
+                var solData = [];
+                $.each(rawDataFromUrl.retorno, function() {
+                    var aSingleOptionItem = {
+                        // required attributes
+                        "type": "option",
+                        "label": this['nombre'],
+                        "value": this['id'],
+                        // optional attributes
+                        "selected": false
+                    };
+                    solData.push(aSingleOptionItem);
+                });
+                return solData;
+            },
+            maxHeight: '220px',
+            events: {
+                onChange: function(a) {
+                    $('#idCliente').val(a.getSelection()[0].value);
+                }
+            }
+        });
         var jqXHR = $.get(CONTEXT_ROOT + "/facturas/optener", function(response, textStatus, jqXHR) {
             if (response.error) {
                 $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
@@ -39,38 +63,7 @@ $(document).ready(function(data) {
         });
     }
 
-    $('#cliente').searchableOptionList({
-        data: CONTEXT_ROOT + "/clientes/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc",
-        converter: function(sol, rawDataFromUrl) {
-            var solData = [];
-            $.each(rawDataFromUrl.retorno, function() {
 
-                var select = false;
-                if (this['id'] === $('#idCliente').val()) {
-                    select = true; // label and value are returned from Java layer
-                } else {
-                    select = false; // label and value are returned from Java layer
-                }
-
-                var aSingleOptionItem = {
-                    // required attributes
-                    "type": "option",
-                    "label": this['nombre'],
-                    "value": this['id'],
-                    // optional attributes
-                    "selected": select
-                };
-                solData.push(aSingleOptionItem);
-            });
-            return solData;
-        },
-        maxHeight: '220px',
-        events: {
-            onChange: function(a) {
-                $('#idCliente').val(a.getSelection()[0].value);
-            }
-        }
-    });
 
 });
 
@@ -96,7 +89,7 @@ function cargarDatos(id) {
             }
             $('#nroFactura').val(venta.nroFactura);
             $('#diasGracia').val(venta.diasGracia);
-            
+
             if (venta.nroFactura !== null && venta.nroFactura !== " "
                     && action !== 'VISUALIZAR') {
                 $('#botonAprobar').show();
@@ -144,6 +137,40 @@ function cargarDatos(id) {
             $('#neto').val(venta.neto);
             $('#idCliente').val(venta['cliente.id']);
             if (venta['cliente.id'] !== null && venta['cliente.id'] !== "") {
+
+                $('#cliente').searchableOptionList({
+                    data: CONTEXT_ROOT + "/clientes/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc",
+                    converter: function(sol, rawDataFromUrl) {
+                        var solData = [];
+                        $.each(rawDataFromUrl.retorno, function() {
+
+                            var select = false;
+                            if (this['id'] === venta['cliente.id']) {
+                                select = true; // label and value are returned from Java layer
+                            } else {
+                                select = false; // label and value are returned from Java layer
+                            }
+
+                            var aSingleOptionItem = {
+                                // required attributes
+                                "type": "option",
+                                "label": this['nombre'],
+                                "value": this['id'],
+                                // optional attributes
+                                "selected": select
+                            };
+                            solData.push(aSingleOptionItem);
+                        });
+                        return solData;
+                    },
+                    maxHeight: '220px',
+                    events: {
+                        onChange: function(a) {
+                            $('#idCliente').val(a.getSelection()[0].value);
+                        }
+                    }
+                });
+
                 $('#idCliente').val(venta['cliente.id']);
                 $('#validation-form').find('.tableusuario-input').attr("disabled", true);
                 $('#buttonOption').hide();

@@ -64,7 +64,7 @@ $(document).ready(function(data) {
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'nroFactura', index: 'nroFactura', width: 90, editable: false},
             {name: 'formaPago', index: 'formaPago', width: 90, editable: false},
-            {name: 'cuota', index: 'cuota', formatter: 'int', width: 90, editable: false},
+            {name: 'cuota', index: 'cuota', formatter: 'integer', width: 90, editable: false},
             {name: 'montoCuota', index: 'montoCuota', formatter: 'number', width: 90, editable: false},
             {name: 'tipoDescuento', index: 'tipoDescuento', width: 150, editable: true},
             {name: 'neto', index: 'neto', width: 90, formatter: 'number', sortable: false},

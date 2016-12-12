@@ -10,7 +10,7 @@ $(document).ready(function(data) {
         var permisoVisualizar = false;
         var permisoEditar = false;
         var permisoAgegar = false;
-        
+
         $('#botonAprobar').hide();
         $('#aceptar').hide();
         $('#validation-formVenta').find('.tableusuario-input').attr("disabled", true);
@@ -50,7 +50,7 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'ID_VEHICULO', 'CHASIS', 'KILOMETRAJE', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRASMISION', 'PRECIO COSTO', 'PRECIO VENTA', 'PROVEEDOR', 'CARACTERISTICA',''],
+        colNames: ['ID', 'ID_VEHICULO', 'CHASIS', 'KILOMETRAJE', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRASMISION', 'PRECIO COSTO', 'PRECIO VENTA', 'PROVEEDOR', 'CARACTERISTICA', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'codigo', index: 'codigo', key: true, width: 100, editable: false},
@@ -86,6 +86,7 @@ $(document).ready(function(data) {
             atributos: "id,nombre",
             filters: null,
             estado: 'APROBADO',
+            action: action,
             todos: false,
             idVenta: function() {
                 return $("#idVenta").val();
@@ -122,7 +123,7 @@ $(document).ready(function(data) {
                     console.log(isSelect);
                     console.log("neto");
                     neto = neto + parseInt(data.precioVenta);
-                    console.log(neto+"netooo");
+                    console.log(neto + "netooo");
 
 
                 }
@@ -159,14 +160,21 @@ $(document).ready(function(data) {
             var ids = $(grid_selector).getDataIDs();
             var datos = $(grid_selector).getGridParam();
             //console.log($(grid_selector));
-            for (var i = 0; i < ids.length; i++) {               
-                var cl = ids[i];                
+            for (var i = 0; i < ids.length; i++) {
+                var cl = ids[i];
                 var dato = $(grid_selector).jqGrid('getRowData', cl);
                 console.log(dato.estado);
-                if(dato.estado === "PROCESO_VENTA"){
-                    $(grid_selector).jqGrid('setSelection',cl);
-                    $('#jqg_grid_'+cl).prop('checked',true); 
-                }       
+                if (action === "VISUALIZAR") {
+                    $(grid_selector).jqGrid('setSelection', cl);
+                    $('#jqg_grid_' + cl).prop('checked', true);
+                    $('#jqg_grid_' + cl).attr("disabled", true);
+                } else {
+                    if (dato.estado === "PROCESO_VENTA" || dato.estado === "VENDIDA") {
+                        $(grid_selector).jqGrid('setSelection', cl);
+                        $('#jqg_grid_' + cl).prop('checked', true);
+                    }
+                }
+
             }
         },
         editurl: CONTEXT_ROOT + '/ventas/editar', //nothing is saved

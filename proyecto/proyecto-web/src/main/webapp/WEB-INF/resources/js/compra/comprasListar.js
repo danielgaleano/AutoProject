@@ -203,7 +203,7 @@ $(document).ready(function(data) {
                 mtype: 'GET',
                 colNames: ['CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'TRASMISION', 'MONEDA', 'PRECIO', 'NETO'],
                 colModel: [
-                    {name: "vehiculo.codigo", index: "vehiculo.codigo", width: 80, key: true},
+                    {name: "vehiculo.codigo", index: "vehiculo.codigo", hidden: true, width: 80, key: true},
                     {name: "vehiculo.tipo.nombre", index: "vehiculo.tipo.nombre", width: 130},
                     {name: "vehiculo.marca.nombre", index: "vehiculo.marca.nombre", width: 80, align: "right"},
                     {name: "vehiculo.modelo.nombre", index: "vehiculo.modelo.nombre", width: 80, align: "right"},

@@ -31,7 +31,7 @@ $(document).ready(function(data) {
         colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRANSMISION', 'PRECIO DE VENTA', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'codigo', index: 'codigo', width: 60, editable: false},
+            {name: 'codigo', index: 'codigo', hidden: true, width: 60, editable: false},
             {name: 'tipo.nombre', index: 'tipo.nombre', width: 100, editable: false},
             {name: 'marca.nombre', index: 'marca.nombre', width: 100, editable: false},
             {name: 'modelo.nombre', index: 'modelo.nombre', width: 100, editable: false},

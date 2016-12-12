@@ -46,7 +46,7 @@ $(document).ready(function(data) {
         colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'CARACTERISTICA', 'ANHO', 'COLOR', 'TRASMISION', 'MONEDA', 'COTIZACION', 'PRECIO', 'NETO', '', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'vehiculo.codigo', index: 'vehiculo.codigo', key: true, width: 100, editable: false},
+            {name: 'vehiculo.codigo', index: 'vehiculo.codigo', hidden: true, key: true, width: 100, editable: false},
             {name: 'vehiculo.tipo.nombre', index: 'vehiculo.tipo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage},
                 editoptions: {
                     dataUrl: CONTEXT_ROOT + '/tipos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc',

@@ -32,7 +32,7 @@ $(document).ready(function(data) {
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'numeroPedido', index: 'numeroPedido', width: 90, editable: false},
-            {name: 'codigo', index: 'codigo', width: 90, editable: false},
+            {name: 'codigo', index: 'codigo', hidden: true, width: 90, editable: false},
             {name: 'fechaEntrega', index: 'fechaEntrega', width: 100, formatter: 'date', editable: true,unformat: pickDate
 //            formatoptions: {
 //                srcformat:'yyyy-mm-dd',
@@ -218,7 +218,7 @@ $(document).ready(function(data) {
                 mtype: 'GET',
                 colNames: ['CODIGO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'TRASMISION', 'MONEDA', 'PRECIO', 'NETO', 'CONFIRMADO'],
                 colModel: [
-                    {name: "vehiculo.codigo", index: "vehiculo.codigo", width: 80, key: true},
+                    {name: "vehiculo.codigo", index: "vehiculo.codigo", hidden: true, width: 80, key: true},
                     {name: "vehiculo.tipo.nombre", index: "vehiculo.tipo.nombre", width: 130},
                     {name: "vehiculo.marca.nombre", index: "vehiculo.marca.nombre", width: 80, align: "right"},
                     {name: "vehiculo.modelo.nombre", index: "vehiculo.modelo.nombre", width: 80, align: "right"},

@@ -139,10 +139,10 @@ public class CompraController extends BaseController {
             ejCompra.setVehiculo(new Vehiculo (id));
 
             Map<String, Object> ejCompraMap = detalleCompraManager.getAtributos(ejCompra, atributosVehiculoCompra.split(","));
-            ejCompraMap.put("montoCuotas", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.montoCuotas").toString())+""));
-            ejCompraMap.put("montoInteres", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.montoInteres").toString())+""));
-            ejCompraMap.put("monto", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.monto").toString())+""));
-            ejCompraMap.put("saldo", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.saldo").toString())+""));
+//            ejCompraMap.put("montoCuotas", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.montoCuotas").toString())+""));
+//            ejCompraMap.put("montoInteres", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.montoInteres").toString())+""));
+//            ejCompraMap.put("monto", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.monto").toString())+""));
+//            ejCompraMap.put("saldo", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.saldo").toString())+""));
             
             
             retorno.setData(ejCompraMap);

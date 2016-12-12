@@ -250,6 +250,7 @@ function popCompra(id_vehiculo) {
                         $("#detallado").attr("disabled", true);
                         $("#tipo-descuento").hide();
                         $("#formCredito").show();
+                        $("#formDescuento").hide();
                     }
 
                     if (compra['compra.tipoDescuento'] === 'GENERAL') {
@@ -257,6 +258,10 @@ function popCompra(id_vehiculo) {
                         $("#formDescuento").show();
                     } else if (compra['compra.tipoDescuento'] === 'DETALLADO') {
                         $('#detallado').prop("checked", true);
+                        $("#formDescuento").hide();
+                    }
+                    
+                    if (compra['compra.descuento'] == 0 || compra['compra.descuento'] == "" || compra['compra.descuento'] == "0" ) {
                         $("#formDescuento").hide();
                     }
                     
@@ -269,8 +274,8 @@ function popCompra(id_vehiculo) {
                     $('#saldo').val(compra['compra.saldo']);
                     $('#neto').val(compra['compra.neto']);
                     
-                    var a = document.getElementById('yourlinkId');
-                    a.href = CONTEXT_ROOT + "/registros/visualizar/" + compra['compra.id'];
+                    var a = document.getElementById('irCompraButton');
+                    a.href = CONTEXT_ROOT + "/compras/registros/visualizar/" + compra['compra.id'];
                     
                     
                 }

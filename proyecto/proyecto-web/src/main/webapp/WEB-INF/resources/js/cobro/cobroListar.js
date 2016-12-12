@@ -209,7 +209,8 @@ $(document).ready(function(data) {
                         });
                     }
 
-                                        
+                
+                    
                     if (pago.idcompra !== null && pago.idCompra !== "") {
 
                         $('#idVenta').val(pago.idCompra);

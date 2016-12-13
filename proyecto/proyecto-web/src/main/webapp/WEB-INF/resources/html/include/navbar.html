@@ -121,7 +121,7 @@ and open the template in the editor.
                     <ul class="treeview-menu">
                       <li><a th:href="@{/pagos}">Pago Pendientes</a></li>
                       <li><a th:href="@{/cobros}">Cobro Pendientes</a></li>
-                      <li><a th:href="@{/ventas}">Movimientos</a></li>
+                      
                     </ul>
                   </li>
                   <li class="treeview">
@@ -134,14 +134,22 @@ and open the template in the editor.
                     </ul>
                   </li>
                   <li class="treeview">
-                    <a  href="#"><i class="fa fa-newspaper-o"></i> <span>Reportes</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    <a  href="#"><i class="fa fa-newspaper-o"></i> <span>Reportes de Compras</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
-                      <li><a th:href="@{/reportes/compras}">Reporte de Compras</a></li>
-                      <li><a href="#">Reporte de Ventas</a></li>
-                      <li><a th:href="@{/reportes/movimiento}">Reporte de Movimientos</a></li>
-                      
+                      <li><a href="#">Compras Realizadas</a></li>
+                      <li><a href="#">Compras Pendientes</a></li>
+                      <li><a th:href="@{/reportes/compras}">Transacciones de compra</a></li>                
                     </ul>
                   </li>
+                  <li class="treeview">
+                    <a  href="#"><i class="fa fa-book"></i> <span>Reportes de Ventas</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    <ul class="treeview-menu">
+                      <li><a href="#">Ventas Realizadas</a></li>
+                      <li><a href="#">Ventas Pendientes</a></li>
+                      <li><a href="#">Transacciones de Venta</a></li>  
+                    </ul>
+                  </li>
+                  <li><a th:href="@{/reportes/movimiento}"><i class="fa fa-pie-chart"></i> <span>Reporte de Transacciones</span></a></li>
                   <li class="treeview">
                     <a sec:authorize="hasRole('Configurar.Sistema')" href="#"><i class="fa fa-cog"></i> <span>Datos del Sistema</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">

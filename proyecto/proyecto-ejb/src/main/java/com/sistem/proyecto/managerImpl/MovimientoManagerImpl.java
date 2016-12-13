@@ -792,7 +792,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                     boolean tieneDeuda = true;
                     Long deudaTotal = Long.parseLong("0");
 
-                    Date fechaActual = new Date();
+                    Date fechaActual = new Timestamp(System.currentTimeMillis());
 
                     Calendar date = Calendar.getInstance();
 
@@ -930,7 +930,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
         Long saldo = Long.parseLong("0");
 
         DocumentoCobrar docParcial = new DocumentoCobrar();
-        Date fechaActual = new Date();
+        Date fechaActual = new Timestamp(System.currentTimeMillis());
         Calendar date = Calendar.getInstance();
 
         try {

@@ -42,7 +42,7 @@ public class VehiculoController extends BaseController {
 
     String atributos = "id,codigo,activo,marca.id,precioCosto,precioVenta,marca.nombre,modelo.id,modelo.nombre,empresa.id,empresa.nombre,"
             + "tipo.id,tipo.nombre,transmision,color,anho,caracteristica,proveedor.id,proveedor.nombre";
-    
+
     SimpleDateFormat sdfSimple = new SimpleDateFormat("yyyy-MM-dd");
 
     @RequestMapping(method = RequestMethod.GET)
@@ -70,7 +70,7 @@ public class VehiculoController extends BaseController {
         model.addAttribute("id", id);
         return retorno;
     }
-   
+
     @RequestMapping(value = "/listar", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno listar(@ModelAttribute("_search") boolean filtrar,
@@ -84,12 +84,14 @@ public class VehiculoController extends BaseController {
         DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         ordenarPor = "marca.nombre";
-        
+
         Vehiculo ejVehiculo = new Vehiculo();
         ejVehiculo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
         ejVehiculo.setEstado(Vehiculo.STOCK);
-        
+
         List<Map<String, Object>> listMapGrupos = null;
+        
+        List<Map<String, Object>> listMapGruposProceso = null;
         try {
 
             inicializarVehiculoManager();
@@ -119,8 +121,16 @@ public class VehiculoController extends BaseController {
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
 
+            Vehiculo ejVehiculoProceso = new Vehiculo();
+            ejVehiculoProceso.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            ejVehiculoProceso.setEstado(Vehiculo.PROVESO_VENTA);
+            
+            int totalVentas = vehiculoManager.list(ejVehiculoProceso, true).size();
+            
+            
+
             if (!todos) {
-                total = vehiculoManager.list(ejVehiculo, true).size();
+                total = vehiculoManager.list(ejVehiculo, true).size() + totalVentas;
             }
 
             Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
@@ -133,9 +143,17 @@ public class VehiculoController extends BaseController {
             listMapGrupos = vehiculoManager.listAtributos(ejVehiculo, atributos.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
-
+            
+            listMapGruposProceso = vehiculoManager.listAtributos(ejVehiculoProceso, atributos.split(","), todos, inicio, cantidad,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    null, null, null, null, null, null, null, null, true);
+            
+            if(listMapGruposProceso != null){
+                listMapGrupos.addAll(listMapGruposProceso);
+            }
+            
             if (todos) {
-                total = listMapGrupos.size();
+                total = listMapGrupos.size() ;
             }
             Integer totalPaginas = total / cantidad;
 
@@ -240,13 +258,9 @@ public class VehiculoController extends BaseController {
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO retorno = new MensajeDTO();
         Vehiculo ejVehiculo = new Vehiculo();
-        
-         
-        
-        
+
         try {
             inicializarVehiculoManager();
-
 
             if (vehiculoRecibido.getTipo() == null || vehiculoRecibido.getTipo() != null
                     && vehiculoRecibido.getTipo().getId() == 0) {
@@ -254,7 +268,7 @@ public class VehiculoController extends BaseController {
                 retorno.setMensaje("El tipo del vehiculo no puede estar vacio.");
                 return retorno;
             }
-            
+
             if (vehiculoRecibido.getMarca() == null || vehiculoRecibido.getMarca() != null
                     && vehiculoRecibido.getMarca().getId() == 0) {
                 retorno.setError(true);
@@ -313,14 +327,12 @@ public class VehiculoController extends BaseController {
                     retorno.setMensaje("El precio de venta no puede ser menor al precio de costo.");
                     return retorno;
                 }
-                if(vehiculoRecibido.getMantenimientoFecha() != null && vehiculoRecibido.getMantenimientoFecha().compareToIgnoreCase("")!= 0){
+                if (vehiculoRecibido.getMantenimientoFecha() != null && vehiculoRecibido.getMantenimientoFecha().compareToIgnoreCase("") != 0) {
                     Date fechaMan = sdfSimple.parse(vehiculoRecibido.getMantenimientoFecha());
                     modelo.setFechaMantenimiento(fechaMan);
                     modelo.setPrecioMantenimiento(vehiculoRecibido.getPrecioMantenimiento());
                 }
-                
-               
-                
+
                 modelo.setTipo(vehiculoRecibido.getTipo());
                 modelo.setMarca(vehiculoRecibido.getMarca());
                 modelo.setModelo(vehiculoRecibido.getModelo());
@@ -333,13 +345,12 @@ public class VehiculoController extends BaseController {
                 modelo.setKilometraje(vehiculoRecibido.getKilometraje());
                 modelo.setMotor(vehiculoRecibido.getMotor());
                 modelo.setPrecioVenta(vehiculoRecibido.getPrecioVenta());
-                
-                
+
                 modelo.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                 modelo.setIdUsuarioModificacion(userDetail.getId());
-                
+
                 modelo.setEstado(Vehiculo.STOCK);
-                
+
                 vehiculoManager.update(modelo);
 
                 retorno.setError(false);

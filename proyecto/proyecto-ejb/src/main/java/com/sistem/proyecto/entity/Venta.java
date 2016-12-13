@@ -32,6 +32,9 @@ public class Venta extends Base {
     @Column(name = "nro_factura", nullable = false)
     private String nroFactura;
     
+    @Column(name = "timbrado")
+    private String timbrado;
+    
     @Column(name = "fechaVenta")
     private Timestamp fechaVenta;
     
@@ -488,6 +491,14 @@ public class Venta extends Base {
 
     public void setEstadoCobro(String estadoCobro) {
         this.estadoCobro = estadoCobro;
+    }
+
+    public String getTimbrado() {
+        return timbrado;
+    }
+
+    public void setTimbrado(String timbrado) {
+        this.timbrado = timbrado;
     }
     
     

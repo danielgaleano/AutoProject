@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.sistem.proyecto.web.controller;
 
 import com.google.gson.Gson;
+import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.NumeracionFactura;
+import com.sistem.proyecto.entity.Venta;
 import com.sistem.proyecto.manager.utils.DTORetorno;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
 import com.sistem.proyecto.userDetail.UserDetail;
@@ -37,10 +38,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping(value = "/facturas")
 public class NumeracionFacturaController extends BaseController {
-    
+
     String atributos = "id,nombre,empresa.id,empresa.nombre,valor";
-    
-    
+
     SimpleDateFormat sdfSimple = new SimpleDateFormat("yyyy-MM-dd");
 
     @RequestMapping(method = RequestMethod.GET)
@@ -146,7 +146,7 @@ public class NumeracionFacturaController extends BaseController {
                 return retorno;
             }
 
-            if (numeracionFacturaRecibido.getValor()== null || numeracionFacturaRecibido.getValor() != null
+            if (numeracionFacturaRecibido.getValor() == null || numeracionFacturaRecibido.getValor() != null
                     && numeracionFacturaRecibido.getValor().compareToIgnoreCase("") == 0) {
                 retorno.setError(true);
                 retorno.setMensaje("El campo valor no puede estar vacio.");
@@ -155,7 +155,6 @@ public class NumeracionFacturaController extends BaseController {
 
             NumeracionFactura numeracion = numeracionFacturaManager.get(numeracionFacturaRecibido.getId());
             numeracion.setValor(numeracionFacturaRecibido.getValor());
-            
 
             numeracionFacturaManager.update(numeracion);
 
@@ -171,7 +170,7 @@ public class NumeracionFacturaController extends BaseController {
         }
         return retorno;
     }
-    
+
     @RequestMapping(value = "/optener", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno optenerFactura() {
@@ -180,43 +179,109 @@ public class NumeracionFacturaController extends BaseController {
         List<Map<String, Object>> listMapGrupos = null;
         try {
             inicializarNumeracionFacturaManager();
+            inicializarVentaManager();
 
             NumeracionFactura ejNumeracion = new NumeracionFactura();
             ejNumeracion.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-            List<NumeracionFactura> ejFactura = numeracionFacturaManager.list(ejNumeracion,false);
+
+            List<NumeracionFactura> ejFactura = numeracionFacturaManager.list(ejNumeracion, false);
+
+            Venta ejVenta = new Venta();
+            ejVenta.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+            List<Venta> nroFactura = ventaManager.list(ejVenta, "id", "desc");
+
+            String timbrado = "";
+            String facturaVenta = "";
+            String valor = "";
+
+            for (Venta fac : nroFactura) {
+
+                timbrado = fac.getTimbrado();
+
+                String factura = fac.getNroFactura();
+
+                String[] arrayFac = factura.split("-");
+
+                Long numeracion = Long.parseLong(arrayFac[2]) + 1;
+
+                if (numeracion.toString().length() > 1) {
+                    valor = "0000" + numeracion.toString();
+                } else if (numeracion.toString().length() > 2) {
+                    valor = "000" + numeracion.toString();
+                } else if (numeracion.toString().length() > 3) {
+                    valor = "00" + numeracion.toString();
+                } else if (numeracion.toString().length() > 4) {
+                    valor = "0" + numeracion.toString();
+                } else if (numeracion.toString().length() > 5) {
+                    valor = numeracion.toString();
+                } else if (numeracion.toString().length() < 2) {
+                    valor = "00000" + numeracion.toString();
+                }
+
+                facturaVenta = arrayFac[0] + "-" + arrayFac[1] + "-" + valor;
+
+                break;
+            }
+
             Long contador = Long.parseLong("0");
             String inicio = "";
             String medio = "";
-            for(NumeracionFactura rpm : ejFactura){
+
+            NumeracionFactura ejTimbrado = new NumeracionFactura();
+            ejTimbrado.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            ejTimbrado.setNombre("TIMBRADO");
+
+            ejTimbrado = numeracionFacturaManager.get(ejTimbrado);
+
+            if (ejTimbrado != null && ejTimbrado.getValor().compareToIgnoreCase(timbrado) == 0) {
                 
-                if(rpm.getNombre().compareToIgnoreCase("FINAL") == 0){
-                    contador = Long.parseLong(rpm.getValor()) + 1;
+                ejTimbrado = new NumeracionFactura();
+                ejTimbrado.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+                ejTimbrado.setNombre("FINAL");
+
+                ejTimbrado = numeracionFacturaManager.get(ejTimbrado);
+                
+                ejTimbrado.setValor(valor);
+                
+                numeracionFacturaManager.update(ejTimbrado);
+                
+            } else {
+                for (NumeracionFactura rpm : ejFactura) {
+
+                    if (rpm.getNombre().compareToIgnoreCase("FINAL") == 0) {
+                        contador = Long.parseLong(rpm.getValor()) + 1;
+
+                    } else if (rpm.getNombre().compareToIgnoreCase("INICIO") == 0) {
+                        inicio = rpm.getValor();
+                    } else if (rpm.getNombre().compareToIgnoreCase("MEDIO") == 0) {
+                        medio = rpm.getValor();
+                    }
+
+                    if (contador.toString().length() > 1) {
+                        valor = "0000" + contador.toString();
+                    } else if (contador.toString().length() > 2) {
+                        valor = "000" + contador.toString();
+                    } else if (contador.toString().length() > 3) {
+                        valor = "00" + contador.toString();
+                    } else if (contador.toString().length() > 4) {
+                        valor = "0" + contador.toString();
+                    } else if (contador.toString().length() > 5) {
+                        valor = contador.toString();
+                    } else if (contador.toString().length() < 2) {
+                        valor = "00000" + contador.toString();
+                    }
+
                     rpm.setValor(contador.toString());
                     numeracionFacturaManager.update(rpm);
-                }else if(rpm.getNombre().compareToIgnoreCase("INICIO") == 0){
-                    inicio = rpm.getValor();
-                }else if(rpm.getNombre().compareToIgnoreCase("MEDIO") == 0){
-                    medio = rpm.getValor();
+
+                    break;
                 }
+
+                facturaVenta = inicio + "-" + medio + "-" + valor;
             }
-            
-            String valor = "";
-            if(contador.toString().length() > 1){
-                valor = "0000"+ contador.toString();
-            }else if(contador.toString().length() > 2){
-                valor = "000"+ contador.toString();
-            }else if(contador.toString().length() > 3){
-                valor = "00"+ contador.toString();
-            }else if(contador.toString().length() > 4){
-                valor = "0"+ contador.toString();
-            }else if(contador.toString().length() > 5){
-                valor = contador.toString();
-            }else if(contador.toString().length() < 2){
-                valor = "00000"+ contador.toString();
-            }
-            
-            String factura = inicio +"-"+medio+"-"+valor;
-            retorno.setData(factura);
+
+            retorno.setData(facturaVenta);
             retorno.setError(false);
             retorno.setMensaje("El numero de factura se genero exitosamente.");
 
@@ -228,5 +293,5 @@ public class NumeracionFacturaController extends BaseController {
 
         return retorno;
     }
-    
+
 }

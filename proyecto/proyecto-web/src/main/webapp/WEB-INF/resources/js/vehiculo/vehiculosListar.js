@@ -39,6 +39,7 @@ $(document).ready(function(data) {
             {name: 'color', index: 'color', width: 70, sortable: false},
             {name: 'transmision', index: 'transmision', width: 90, sortable: false},
             {name: 'precioVenta', index: 'precioVenta', width: 90, sortable: false},
+            {name: 'estado', index: 'estado', width: 90, sortable: false},
             {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {

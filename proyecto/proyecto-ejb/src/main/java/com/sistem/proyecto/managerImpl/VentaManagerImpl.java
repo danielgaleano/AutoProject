@@ -13,12 +13,14 @@ import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Marca;
 import com.sistem.proyecto.entity.Modelo;
 import com.sistem.proyecto.entity.Moneda;
+import com.sistem.proyecto.entity.NumeracionFactura;
 import com.sistem.proyecto.entity.Tipo;
 import com.sistem.proyecto.entity.Vehiculo;
 import com.sistem.proyecto.entity.Venta;
 import com.sistem.proyecto.manager.DetalleVentaManager;
 import com.sistem.proyecto.manager.DocumentoCobrarManager;
 import com.sistem.proyecto.manager.MonedaManager;
+import com.sistem.proyecto.manager.NumeracionFacturaManager;
 import com.sistem.proyecto.manager.VehiculoManager;
 import com.sistem.proyecto.manager.VentaManager;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
@@ -45,6 +47,9 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
     @EJB(mappedName = "java:app/proyecto-ejb/DocumentoCobrarManagerImpl")
     private DocumentoCobrarManager documentoCobrarManager;
+    
+    @EJB(mappedName = "java:app/proyecto-ejb/NumeracionFacturaManagerImpl")
+    private NumeracionFacturaManager numeracionFacturaManager;
 
     @EJB(mappedName = "java:app/proyecto-ejb/DetalleVentaManagerImpl")
     private DetalleVentaManager detalleVentaManager;
@@ -84,11 +89,19 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                 montoTotal = montoTotal + ejVehiculo.getPrecioVenta();
             }
+            NumeracionFactura ejTimbrado = new NumeracionFactura();
+            ejTimbrado.setEmpresa(new Empresa(idEmpresa));
+            ejTimbrado.setNombre("TIMBRADO");
+            
+            ejTimbrado = numeracionFacturaManager.get(ejTimbrado);
+            
+            ejVenta.setTimbrado(ejTimbrado.getValor());
             ejVenta.setNroFactura(nroFactura);
             ejVenta.setActivo("S");
             ejVenta.setEstadoVenta(Venta.VENTA_PENDIENTE);
             ejVenta.setEstadoCobro(DocumentoPagar.PENDIENTE);
             ejVenta.setEmpresa(new Empresa(idEmpresa));
+            ejVenta.setMonto(Math.round(montoTotal) +"");
             ejVenta.setFormaPago(formaPgo);
             ejVenta.setCliente(new Cliente(venta.getCliente().getId()));
             ejVenta.setTipoDescuento(tipoDescuento);
@@ -128,9 +141,9 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                     Double montoCuota = saldo / venta.getCantidadCuotas();
 
-                    ejVenta.setEntrega(entrega + "");
-                    ejVenta.setMontoInteres(montoInteres + "");
-                    ejVenta.setSaldo(saldo + "");
+                    ejVenta.setEntrega(Math.round(entrega) + "");
+                    ejVenta.setMontoInteres(Math.round(montoInteres) + "");
+                    ejVenta.setSaldo(Math.round(saldo) + "");
                     ejVenta.setNeto(saldo);
                     ejVenta.setMontoCuotas(montoCuota + "");
 
@@ -154,6 +167,14 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                     }
 
                     ejACobrar = new DocumentoCobrar();
+                    ejACobrar.setActivo("S");
+                    ejACobrar.setNroCuota("0");
+                    ejACobrar.setVenta(ejVenta);
+                    ejACobrar.setMonto(entrega);
+                    ejACobrar.setEstado(DocumentoPagar.ENTREGA);
+                    ejACobrar.setFecha(new Timestamp(System.currentTimeMillis()));
+                    
+                    documentoCobrarManager.save(ejACobrar);
 
                     int contador = 1;
                     boolean tieneFecha = true;
@@ -247,7 +268,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                     Double montoCuota = saldo / venta.getCantidadCuotas();
 
                     ejVenta.setMontoInteres(montoInteres + "");
-                    ejVenta.setSaldo(saldo + "");
+                    ejVenta.setSaldo(Math.round(saldo) + "");
                     ejVenta.setNeto(saldo);
                     ejVenta.setMontoCuotas(montoCuota + "");
                     ejVenta.setMoraInteres(venta.getMoraInteres());
@@ -443,8 +464,8 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                     Double montoCuota = saldo / venta.getCantidadCuotas();
 
                     ejVentaUp.setEntrega(entrega + "");
-                    ejVentaUp.setMontoInteres(montoInteres + "");
-                    ejVentaUp.setSaldo(saldo + "");
+                    ejVentaUp.setMontoInteres(Math.round(montoInteres) + "");
+                    ejVentaUp.setSaldo(Math.round(saldo) + "");
                     ejVentaUp.setNeto(saldo);
                     ejVentaUp.setMontoCuotas(montoCuota + "");
                     ejVentaUp.setMoraInteres(venta.getMoraInteres());
@@ -520,8 +541,8 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                     Double montoCuota = saldo / venta.getCantidadCuotas();
 
-                    ejVentaUp.setMontoInteres(montoInteres + "");
-                    ejVentaUp.setSaldo(saldo + "");
+                    ejVentaUp.setMontoInteres(Math.round(montoInteres) + "");
+                    ejVentaUp.setSaldo(Math.round(saldo) + "");
                     ejVentaUp.setNeto(saldo);
                     ejVentaUp.setMontoCuotas(montoCuota + "");
                     ejVentaUp.setMoraInteres(venta.getMoraInteres());

@@ -516,22 +516,20 @@ public class ReportesController extends BaseController {
                 Long totalEgreso = Long.parseLong("0");
 
                 for (Map<String, Object> rpm : listMapGrupos) {
-                   
-                    if (rpm.get("estadoPago").toString().compareToIgnoreCase("CANCELADO") == 0) {
-                        if (rpm.get("formaPago").toString().compareToIgnoreCase("CREDITO") == 0) {
-                            DocumentoPagar docPagar = new DocumentoPagar();
-                            docPagar.setCompra(new Compra(Long.parseLong(rpm.get("id").toString())));
 
-                            List<DocumentoPagar> aPagar = documentoPagarManager.list(docPagar);
+                    if (rpm.get("formaPago").toString().compareToIgnoreCase("CREDITO") == 0) {
+                        DocumentoPagar docPagar = new DocumentoPagar();
+                        docPagar.setCompra(new Compra(Long.parseLong(rpm.get("id").toString())));
 
-                            for (DocumentoPagar pagar : aPagar) {
-                                if (pagar.getEstado().compareToIgnoreCase(DocumentoPagar.CANCELADO) == 0) {
-                                    totalEgreso = totalEgreso + Math.round(pagar.getSaldo());
-                                }
+                        List<DocumentoPagar> aPagar = documentoPagarManager.list(docPagar);
+
+                        for (DocumentoPagar pagar : aPagar) {
+                            if (pagar.getEstado().compareToIgnoreCase(DocumentoPagar.CANCELADO) == 0) {
+                                totalEgreso = totalEgreso + Math.round(pagar.getMonto());
                             }
-                        } else {
-                            totalEgreso = totalEgreso + Math.round(Double.parseDouble(rpm.get("neto").toString()));
                         }
+                    } else {
+                        totalEgreso = totalEgreso + Math.round(Double.parseDouble(rpm.get("neto").toString()));
                     }
 
                 }

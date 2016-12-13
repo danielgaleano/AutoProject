@@ -93,7 +93,7 @@ $(document).ready(function(data) {
         }, 0);
     });
     $(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/reportes/movimientos/listar',
+        url: CONTEXT_ROOT + '/reportes/compras/pendientes/listar',
         datatype: 'json',
         mtype: 'GET',
         height: 150,
@@ -101,19 +101,18 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['NRO. FACTURA', 'FORMA PAGO', 'CANT. CUOTAS', 'PROVEEDOR', 'FECHA', 'CUOTA', 'IMPORTE', 'SALDO', 'VUELTO', 'INTERES', 'NETO'],
+        colNames: ['NRO. FACTURA', 'FORMA PAGO', 'CANT. CUOTAS', 'PROVEEDOR', 'FECHA COMPRA', 'CUOTA PENDIENTE', 'IMPORTE', 'SALDO', 'NETO','ESTADO'],
         colModel: [
-            {name: 'compra.nroFactura', index: 'compra.nroFactura', width: 100},
-            {name: 'compra.formaPago', index: 'compra.formaPago', width: 100},
-            {name: 'compra.cantidadCuotas', index: 'compra.cantidadCuotas', width: 100, editable: true},
-            {name: 'proveedor.nombre', index: 'proveedor.nombre', width: 60},
-            {name: 'fechaIngreso', index: 'fechaIngreso', width: 90},
+            {name: 'nroFactura', index: 'nroFactura', width: 100},
+            {name: 'formaPago', index: 'formaPago', width: 100},
+            {name: 'cantidadCuotas', index: 'cantidadCuotas', width: 100, editable: true},
+            {name: 'proveedor.nombre', index: 'proveedor.nombre', width: 100},
+            {name: 'fechaCompra', index: 'fechaCompra', width: 90},
             {name: 'cuota', index: 'cuota', width: 90, sortable: false},
             {name: 'importe', index: 'importe', formatter: 'number', width: 90, sortable: false},
             {name: 'saldo', index: 'saldo', formatter: 'number', width: 90, sortable: false},
-            {name: 'vuelto', index: 'vuelto', formatter: 'number', width: 90, sortable: false},
-            {name: 'interes', index: 'interes', formatter: 'number', width: 90, sortable: false},
-            {name: 'neto', index: 'neto', formatter: 'number', width: 90, sortable: false}
+            {name: 'neto', index: 'neto', formatter: 'number', width: 90, sortable: false},
+            {name: 'estadoPago', index: 'estadoPago', width: 90, sortable: false}
         ],
         viewrecords: true,
         rowNum: 10,
@@ -126,7 +125,9 @@ $(document).ready(function(data) {
         postData: {
             atributos: "id,nombre",
             filters: null,
-            estado: "O",
+            fechaInicio : $('#date-timeDesde').val().toString(),
+            fechaFin : $('#date-timeHasta').val().toString(),
+            estado: "CANCELADO",
             todos: false
         },
         jsonReader: {
@@ -291,7 +292,7 @@ function filtrarReporte() {
             {
                 theme: "theme2",
                 title: {
-                    text: "Reporte Transacciones"
+                    text: "Compras Realizadas"
                 },
                 data: [
                     {

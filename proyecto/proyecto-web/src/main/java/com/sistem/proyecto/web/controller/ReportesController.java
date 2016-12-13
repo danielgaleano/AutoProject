@@ -85,6 +85,14 @@ public class ReportesController extends BaseController {
 
     }
 
+    @RequestMapping(value = "/compras/realizadas", method = RequestMethod.GET)
+    public ModelAndView comprasRealizadas(Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("reporteComprasRealizadas");
+        return retorno;
+
+    }
+
     @RequestMapping(value = "/editar/{id}", method = RequestMethod.GET)
     public ModelAndView formEdit(@PathVariable("id") Long id, Model model) {
         ModelAndView retorno = new ModelAndView();
@@ -429,7 +437,7 @@ public class ReportesController extends BaseController {
 
         return retorno;
     }
-    
+
     @RequestMapping(value = "/grafico/compras/realizadas", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno reporteComprasRealizadas(@ModelAttribute("fechaInicio") String fechaInicio,
@@ -508,20 +516,22 @@ public class ReportesController extends BaseController {
                 Long totalEgreso = Long.parseLong("0");
 
                 for (Map<String, Object> rpm : listMapGrupos) {
+                   
+                    if (rpm.get("estadoPago").toString().compareToIgnoreCase("CANCELADO") == 0) {
+                        if (rpm.get("formaPago").toString().compareToIgnoreCase("CREDITO") == 0) {
+                            DocumentoPagar docPagar = new DocumentoPagar();
+                            docPagar.setCompra(new Compra(Long.parseLong(rpm.get("id").toString())));
 
-                    if (rpm.get("formaPago").toString().compareToIgnoreCase("CREDITO") == 0) {
-                        DocumentoPagar docPagar = new DocumentoPagar();
-                        docPagar.setCompra(new Compra(Long.parseLong(rpm.get("id").toString())));
+                            List<DocumentoPagar> aPagar = documentoPagarManager.list(docPagar);
 
-                        List<DocumentoPagar> aPagar = documentoPagarManager.list(docPagar);
-
-                        for (DocumentoPagar pagar : aPagar) {
-                            if (pagar.getEstado().compareToIgnoreCase(DocumentoPagar.CANCELADO) == 0) {
-                                totalEgreso = totalEgreso + Math.round(pagar.getSaldo());
-                            } 
+                            for (DocumentoPagar pagar : aPagar) {
+                                if (pagar.getEstado().compareToIgnoreCase(DocumentoPagar.CANCELADO) == 0) {
+                                    totalEgreso = totalEgreso + Math.round(pagar.getSaldo());
+                                }
+                            }
+                        } else {
+                            totalEgreso = totalEgreso + Math.round(Double.parseDouble(rpm.get("neto").toString()));
                         }
-                    } else {
-                        totalEgreso = totalEgreso + Math.round(Double.parseDouble(rpm.get("neto").toString()));
                     }
 
                 }
@@ -940,33 +950,33 @@ public class ReportesController extends BaseController {
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, atributoInicio, valorInicio, atributoFin,
                     valorFin, null, true);
-            
+
             for (Map<String, Object> rpm : listMapGrupos) {
                 Long totalEgreso = Long.parseLong("0");
                 if (rpm.get("formaPago").toString().compareToIgnoreCase("CREDITO") == 0) {
-                    
+
                     DocumentoPagar docPagar = new DocumentoPagar();
                     docPagar.setCompra(new Compra(Long.parseLong(rpm.get("id").toString())));
 
-                    List<DocumentoPagar> aPagar = documentoPagarManager.list(docPagar,"nroCuota","asc");
+                    List<DocumentoPagar> aPagar = documentoPagarManager.list(docPagar, "nroCuota", "asc");
                     Double importeCuota = 0.0;
                     boolean primeraCuota = true;
-                    
+
                     String cuotaPendiente = "";
-                    
+
                     for (DocumentoPagar pagar : aPagar) {
                         if (pagar.getEstado().compareToIgnoreCase(DocumentoPagar.PARCIAL) == 0) {
                             totalEgreso = totalEgreso + Math.round(pagar.getSaldo());
                         } else if (pagar.getEstado().compareToIgnoreCase(DocumentoPagar.PENDIENTE) == 0) {
                             totalEgreso = totalEgreso + Math.round(pagar.getMonto());
                             importeCuota = pagar.getMonto();
-                            if(primeraCuota){
+                            if (primeraCuota) {
                                 primeraCuota = false;
                                 cuotaPendiente = pagar.getNroCuota();
                             }
                         } else if (pagar.getEstado().compareToIgnoreCase(DocumentoPagar.ENTREGA) == 0) {
                             totalEgreso = totalEgreso + Math.round(pagar.getMonto());
-                            if(primeraCuota){
+                            if (primeraCuota) {
                                 primeraCuota = false;
                                 cuotaPendiente = pagar.getNroCuota();
                             }
@@ -975,7 +985,7 @@ public class ReportesController extends BaseController {
                     rpm.put("saldo", totalEgreso);
                     rpm.put("importe", importeCuota);
                     rpm.put("cuota", cuotaPendiente);
-                } 
+                }
             }
 
             if (todos) {

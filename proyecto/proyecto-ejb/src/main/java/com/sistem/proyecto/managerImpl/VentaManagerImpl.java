@@ -443,7 +443,18 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
             ejVenta.setTipoDescuento(tipoDescuento);
             ejVenta.setFechaVenta(new Timestamp(System.currentTimeMillis()));
             ejVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-
+            
+            
+            
+            DetalleVenta ejDetVentaElimi = new DetalleVenta();
+            ejDetVentaElimi.setVenta(ejVenta);
+            
+            List<DetalleVenta> ventaDetalle = detalleVentaManager.list(ejDetVentaElimi);
+            
+            for(DetalleVenta rpm : ventaDetalle){
+                detalleVentaManager.delete(rpm.getId());
+            }
+            
             if (formaPgo != null
                     && formaPgo.compareToIgnoreCase("CREDITO") == 0) {
                

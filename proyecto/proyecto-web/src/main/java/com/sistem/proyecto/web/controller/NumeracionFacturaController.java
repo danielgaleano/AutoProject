@@ -235,47 +235,56 @@ public class NumeracionFacturaController extends BaseController {
             ejTimbrado = numeracionFacturaManager.get(ejTimbrado);
 
             if (ejTimbrado != null && ejTimbrado.getValor().compareToIgnoreCase(timbrado) == 0) {
-                
+
                 ejTimbrado = new NumeracionFactura();
                 ejTimbrado.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
                 ejTimbrado.setNombre("FINAL");
 
                 ejTimbrado = numeracionFacturaManager.get(ejTimbrado);
-                
+
                 ejTimbrado.setValor(valor);
-                
+
                 numeracionFacturaManager.update(ejTimbrado);
-                
+
             } else {
                 for (NumeracionFactura rpm : ejFactura) {
 
                     if (rpm.getNombre().compareToIgnoreCase("FINAL") == 0) {
                         contador = Long.parseLong(rpm.getValor()) + 1;
 
+                        if (contador.toString().length() > 1) {
+                            valor = "0000" + contador.toString();
+                            rpm.setValor(valor.toString());
+                            numeracionFacturaManager.update(rpm);
+                        } else if (contador.toString().length() > 2) {
+                            valor = "000" + contador.toString();
+                            rpm.setValor(valor.toString());
+                            numeracionFacturaManager.update(rpm);
+                        } else if (contador.toString().length() > 3) {
+                            valor = "00" + contador.toString();
+                            rpm.setValor(valor.toString());
+                            numeracionFacturaManager.update(rpm);
+                        } else if (contador.toString().length() > 4) {
+                            valor = "0" + contador.toString();
+                            rpm.setValor(valor.toString());
+                            numeracionFacturaManager.update(rpm);
+                        } else if (contador.toString().length() > 5) {
+                            valor = contador.toString();
+                            rpm.setValor(valor.toString());
+                            numeracionFacturaManager.update(rpm);
+                        } else if (contador.toString().length() < 2) {
+                            valor = "00000" + contador.toString();
+                            rpm.setValor(valor.toString());
+                            numeracionFacturaManager.update(rpm);
+                        }
+
                     } else if (rpm.getNombre().compareToIgnoreCase("INICIO") == 0) {
                         inicio = rpm.getValor();
                     } else if (rpm.getNombre().compareToIgnoreCase("MEDIO") == 0) {
                         medio = rpm.getValor();
                     }
+                    
 
-                    if (contador.toString().length() > 1) {
-                        valor = "0000" + contador.toString();
-                    } else if (contador.toString().length() > 2) {
-                        valor = "000" + contador.toString();
-                    } else if (contador.toString().length() > 3) {
-                        valor = "00" + contador.toString();
-                    } else if (contador.toString().length() > 4) {
-                        valor = "0" + contador.toString();
-                    } else if (contador.toString().length() > 5) {
-                        valor = contador.toString();
-                    } else if (contador.toString().length() < 2) {
-                        valor = "00000" + contador.toString();
-                    }
-
-                    rpm.setValor(contador.toString());
-                    numeracionFacturaManager.update(rpm);
-
-                    break;
                 }
 
                 facturaVenta = inicio + "-" + medio + "-" + valor;

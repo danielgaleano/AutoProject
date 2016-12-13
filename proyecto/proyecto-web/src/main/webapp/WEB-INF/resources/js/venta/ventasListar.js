@@ -209,7 +209,7 @@ $(document).ready(function(data) {
                 mtype: 'GET',
                 colNames: ['CODIGO','CHASIS', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'TRASMISION', 'PRECIO COSTO', 'PRECIO VENTA', 'NETO VENTA'],
                 colModel: [
-                    {name: "vehiculo.codigo", index: "vehiculo.codigo", width: 80, key: true},
+                    {name: "vehiculo.codigo", index: "vehiculo.codigo", hidden: true, width: 80, key: true},
                     {name: "vehiculo.chasis", index: "vehiculo.chasis", width: 80},
                     {name: "vehiculo.tipo.nombre", index: "vehiculo.tipo.nombre", width: 130},
                     {name: "vehiculo.marca.nombre", index: "vehiculo.marca.nombre", width: 80, align: "right"},

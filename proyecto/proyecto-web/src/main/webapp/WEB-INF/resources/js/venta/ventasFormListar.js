@@ -53,7 +53,7 @@ $(document).ready(function(data) {
         colNames: ['ID', 'ID_VEHICULO', 'CHASIS', 'KILOMETRAJE', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRASMISION', 'PRECIO COSTO', 'PRECIO VENTA', 'PROVEEDOR', 'CARACTERISTICA', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
-            {name: 'codigo', index: 'codigo', key: true, width: 100, editable: false},
+            {name: 'codigo', index: 'codigo', hidden: true, key: true, width: 100, editable: false},
             {name: 'chasis', index: 'chasis', key: true, width: 100, editable: false},
             {name: 'kilometraje', index: 'kilometraje', width: 100, editable: false},
             {name: 'tipo.nombre', index: 'tipo.nombre', width: 100, editable: true, edittype: 'select', editrules: {edithidden: true, custom: true, custom_func: customValidationMessage}},

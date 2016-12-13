@@ -168,7 +168,7 @@ $(document).ready(function(data) {
                                 $('#idCliente').val(cliente.id);
                                 $('#idEmpleo').val(cliente['empleo.id']);
                                 $('#idContacto').val(cliente['contacto.id']);
-                                $('#documento').val(cliente.documento);
+                                $('#ruc').val(cliente.documento);
                                 $('#nombre').val(cliente.nombre);
                                 $('#id-date-picker-cliente').val(cliente.fechaNacimiento);
                                 $('#sexo').val(cliente.sexo);
@@ -209,6 +209,73 @@ $(document).ready(function(data) {
                         });
                     }
 
+                
+                    
+                    if (pago.idcompra !== null && pago.idCompra !== "") {
+
+                        $('#idVenta').val(pago.idCompra);
+                        $('#validation-formProvee').find('.tableusuario-input').attr("disabled", true);
+                        $('#buttonOption').hide();
+
+                        var jqXHR = $.get(CONTEXT_ROOT + "/ventas/" + pago.idCompra, function(response, textStatus, jqXHR) {
+
+                            if (response.error) {
+                                $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                                        + '<button class="close" data-dismiss="alert" type="button"'
+                                        + '><i class="fa  fa-remove"></i></button>'
+                                        + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                                        + response.mensaje
+                                        + '</div>');
+                            } else {
+
+                                var venta = response.data;
+
+                                $('#idVentaPago').val(venta['id']);
+                                $('#nroFacturaPago').val(venta['nroFactura']);
+                                $('#id-date-pickerPago').val(pago['fechaCuota']);
+                                $('#descuentoPago').val(venta['montoDescuento']);
+                                $('#interesPago').val(venta['porcentajeInteresCredito']);
+                                $('#montoInteresPago').val(venta['montoInteres']);
+                                $('#moraInteresPago').val(venta['moraInteres']);
+                                $('#cuotasPago').val(venta['cantidadCuotas']);
+                                $('#montoCuotaPago').val(venta['montoCuotas']);
+                                $('#montoTotalPago').val(venta['monto']);
+                                $('#entregaPago').val(venta['entrega']);
+                                $('#montoDescuentoPago').val(venta['montoDescuento']);
+                                $('#saldoPago').val(venta['saldo']);
+                                $('#netoPago').val(venta['neto']);
+                                $('#diasGraciaPago').val(venta['diasGracia']);
+                                
+                                if (venta['formaPago'] === 'CONTADO') {
+                                    $('#contadoPago').prop("checked", true);
+                                    $("#formCredito").hide();
+                                    $("#tipo-descuento").show();
+                                } else if (venta['formaPago'] === 'CREDITO') {
+                                    $('#creditoPago').prop("checked", true);
+                                    $("#generalPago").attr("disabled", true);
+                                    $("#detalladoPago").attr("disabled", true);
+                                    $("#tipo-descuento").hide();
+                                    $("#formCredito").show();
+                                    $("#formDescuento").hide();
+                                }
+
+
+
+                            }
+
+                        });
+
+                        jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
+                            $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+                                    + '<button class="close" data-dismiss="alert" type="button"'
+                                    + '><i class="fa  fa-remove"></i></button>'
+                                    + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
+                                    + 'Error! Favor comunicarse con el Administrador'
+                                    + '</div>');
+                        });
+                    }
+                    
+                    
                     $('#formaPago').val(pago.formaPago);
                     $('#formaPagoCred').val(pago.formaPago);
                     if (pago.formaPago === "CONTADO") {

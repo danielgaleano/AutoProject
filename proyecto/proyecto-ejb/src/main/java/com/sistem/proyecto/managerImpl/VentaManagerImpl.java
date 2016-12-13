@@ -404,51 +404,53 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
     }
 
     @Override
-    public MensajeDTO editarVenta(Long idVenta, Venta venta, String formaPgo, String tipoPago, Long idEmpresa, Long idUsuario) throws Exception {
+    public MensajeDTO editarVenta(List<Long> itemVentas, Venta venta,Long idVenta, String formaPgo, String tipoDescuento, Long idEmpresa, Long idUsuario) throws Exception {
         MensajeDTO mensaje = new MensajeDTO();
+
         Venta ejVenta = new Venta();
         try {
 
             if (idVenta == null || idVenta != null
                     && idVenta.toString().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
-                mensaje.setMensaje("Debe Ingresar  la venta.");
+                mensaje.setMensaje("La venta no puede estar vacia.");
                 return mensaje;
             }
 
-            if (venta.getNroFactura() == null || venta.getNroFactura() != null
-                    && venta.getNroFactura().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("El Nro. Factura no puede estar vacio.");
-                return mensaje;
+            Double montoTotal = 0.0;
+
+            for (Long rpm : itemVentas) {
+                Vehiculo ejVehiculo = vehiculoManager.get(rpm);
+
+                montoTotal = montoTotal + ejVehiculo.getPrecioVenta();
             }
+            NumeracionFactura ejTimbrado = new NumeracionFactura();
+            ejTimbrado.setEmpresa(new Empresa(idEmpresa));
+            ejTimbrado.setNombre("TIMBRADO");
+            
+            ejTimbrado = numeracionFacturaManager.get(ejTimbrado);
+            
+            ejVenta = this.get(idVenta);
+            
 
-            if (venta.getCliente() == null || venta.getCliente().getId() == null
-                    || venta.getCliente().getId() != null
-                    && venta.getCliente().getId().toString().compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("Debe ingresar un cliente para realizar la venta.");
-                return mensaje;
-            }
+            ejVenta.setActivo("S");
+            ejVenta.setEstadoVenta(Venta.VENTA_PENDIENTE);
+            ejVenta.setEstadoCobro(DocumentoPagar.PENDIENTE);
+            ejVenta.setEmpresa(new Empresa(idEmpresa));
+            ejVenta.setMonto(Math.round(montoTotal) +"");
+            ejVenta.setFormaPago(formaPgo);
+            ejVenta.setCliente(new Cliente(venta.getCliente().getId()));
+            ejVenta.setTipoDescuento(tipoDescuento);
+            ejVenta.setFechaVenta(new Timestamp(System.currentTimeMillis()));
+            ejVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
 
-            if (formaPgo == null || formaPgo != null
-                    && formaPgo.compareToIgnoreCase("") == 0) {
-                mensaje.setError(true);
-                mensaje.setMensaje("Debe Ingresar una forma de pago para relizar la venta.");
-                return mensaje;
-            }
-
-            Venta ejVentaUp = this.get(idVenta);
-            ejVentaUp.setNroFactura(venta.getNroFactura());
-            ejVentaUp.setFormaPago(venta.getFormaPago());
-            ejVentaUp.setCliente(new Cliente(venta.getCliente().getId()));
-
-            if (venta.getFormaPago() != null
-                    && venta.getFormaPago().compareToIgnoreCase("CREDITO") == 0) {
-
-                ejVentaUp.setCantidadCuotas(venta.getCantidadCuotas());
-                ejVentaUp.setPorcentajeInteresCredito(venta.getPorcentajeInteresCredito());
-                ejVentaUp.setMoraInteres(venta.getMoraInteres());
+            if (formaPgo != null
+                    && formaPgo.compareToIgnoreCase("CREDITO") == 0) {
+               
+                ejVenta.setCantidadCuotas(venta.getCantidadCuotas());
+                ejVenta.setPorcentajeInteresCredito(venta.getPorcentajeInteresCredito());
+                ejVenta.setMoraInteres(venta.getMoraInteres());
+                ejVenta.setDiasGracia(venta.getDiasGracia());
 
                 Double interes = Double.parseDouble(venta.getPorcentajeInteresCredito());
 
@@ -457,18 +459,17 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                     Double entrega = Double.parseDouble(venta.getEntrega());
 
-                    Double montoInteres = ((Double.parseDouble(ejVentaUp.getMonto()) - entrega) * interes) / 100;
+                    Double montoInteres = ((montoTotal - entrega) * interes) / 100;
 
-                    Double saldo = (Double.parseDouble(ejVentaUp.getMonto()) - entrega) + montoInteres;
+                    Double saldo = (montoTotal - entrega) + montoInteres;
 
                     Double montoCuota = saldo / venta.getCantidadCuotas();
 
-                    ejVentaUp.setEntrega(entrega + "");
-                    ejVentaUp.setMontoInteres(Math.round(montoInteres) + "");
-                    ejVentaUp.setSaldo(Math.round(saldo) + "");
-                    ejVentaUp.setNeto(saldo);
-                    ejVentaUp.setMontoCuotas(montoCuota + "");
-                    ejVentaUp.setMoraInteres(venta.getMoraInteres());
+                    ejVenta.setEntrega(Math.round(entrega) + "");
+                    ejVenta.setMontoInteres(Math.round(montoInteres) + "");
+                    ejVenta.setSaldo(Math.round(saldo) + "");
+                    ejVenta.setNeto(saldo);
+                    ejVenta.setMontoCuotas(montoCuota + "");
 
                     Date fecha = new Date();
 
@@ -476,12 +477,12 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         fecha = sdfSimple.parse(venta.getCuotaFecha());
                     }
 
-                    ejVentaUp.setFechaCuota(fecha);
+                    ejVenta.setFechaCuota(fecha);
 
-                    this.update(ejVentaUp);
+                    this.update(ejVenta);
 
                     DocumentoCobrar ejACobrar = new DocumentoCobrar();
-                    ejACobrar.setVenta(new Venta(idVenta));
+                    ejACobrar.setVenta(ejVenta);
 
                     List<DocumentoCobrar> aCobrar = documentoCobrarManager.list(ejACobrar);
 
@@ -490,13 +491,25 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                     }
 
                     ejACobrar = new DocumentoCobrar();
+                    ejACobrar.setActivo("S");
+                    ejACobrar.setNroCuota("0");
+                    ejACobrar.setVenta(ejVenta);
+                    ejACobrar.setMonto(entrega);
+                    ejACobrar.setEstado(DocumentoPagar.ENTREGA);
+                    ejACobrar.setFecha(new Timestamp(System.currentTimeMillis()));
+                    
+                    documentoCobrarManager.save(ejACobrar);
 
                     int contador = 1;
                     boolean tieneFecha = true;
+                    
+                    Calendar date = Calendar.getInstance();
+                    date.set(Calendar.YEAR, fecha.getYear()+1900);
+                    
                     for (int i = 1; i <= venta.getCantidadCuotas(); i++) {
 
                         ejACobrar = new DocumentoCobrar();
-                        ejACobrar.setVenta(ejVentaUp);
+                        ejACobrar.setVenta(ejVenta);
                         ejACobrar.setActivo("S");
                         ejACobrar.setNroCuota(i + "");
                         ejACobrar.setMonto(montoCuota);
@@ -505,7 +518,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         if (venta.getCuotaFecha() != null
                                 && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                            Calendar date = Calendar.getInstance();
+                            
                             if (tieneFecha) {
                                 date.set(Calendar.MONTH, fecha.getMonth());
                                 tieneFecha = false;
@@ -521,7 +534,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                         } else {
 
-                            Calendar date = Calendar.getInstance();
+                            
                             date.set(Calendar.DATE, 5);
                             date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
@@ -533,19 +546,56 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                     }
 
+                    Long montoTotalImteres = Long.parseLong("0");
+
+                    if (ejVenta.getEntrega() != null && ejVenta.getEntrega().compareToIgnoreCase("") != 0) {
+                        montoTotalImteres = Long.parseLong(Math.round(Double.parseDouble(ejVenta.getEntrega())) + "") + Math.round(ejVenta.getNeto());
+                    } else {
+                        montoTotalImteres = Math.round(ejVenta.getNeto());
+                    }
+
+                    for (Long rpm : itemVentas) {
+
+                        Vehiculo ejVehiculo = vehiculoManager.get(rpm);
+
+                        Double porcentajeVehiculo = ejVehiculo.getPrecioVenta() / montoTotal;
+
+                        Double costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
+
+                        Double costoVeh =   costoInteresVeh - Math.round(ejVehiculo.getPrecioVenta());
+
+                        DetalleVenta ejDetVenta = new DetalleVenta();
+                        ejDetVenta.setActivo("S");
+                        ejDetVenta.setEmpresa(new Empresa(idEmpresa));
+                        ejDetVenta.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                        ejDetVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                        ejDetVenta.setVehiculo(new Vehiculo(rpm));
+                        ejDetVenta.setNeto(costoInteresVeh);
+                        ejDetVenta.setMontoDescuento(costoVeh);
+                        ejDetVenta.setPorcentajeDescuento(porcentajeVehiculo + "");
+                        ejDetVenta.setVenta(ejVenta);
+
+                        detalleVentaManager.save(ejDetVenta);
+
+                        ejVehiculo.setEstado(Vehiculo.PROVESO_VENTA);
+
+                        vehiculoManager.update(ejVehiculo);
+
+                    }
+
                 } else {
 
-                    Double montoInteres = ((Double.parseDouble(ejVentaUp.getMonto())) * interes) / 100;
+                    Double montoInteres = (montoTotal * interes) / 100;
 
-                    Double saldo = (Double.parseDouble(ejVentaUp.getMonto())) + montoInteres;
+                    Double saldo = montoTotal + montoInteres;
 
                     Double montoCuota = saldo / venta.getCantidadCuotas();
 
-                    ejVentaUp.setMontoInteres(Math.round(montoInteres) + "");
-                    ejVentaUp.setSaldo(Math.round(saldo) + "");
-                    ejVentaUp.setNeto(saldo);
-                    ejVentaUp.setMontoCuotas(montoCuota + "");
-                    ejVentaUp.setMoraInteres(venta.getMoraInteres());
+                    ejVenta.setMontoInteres(montoInteres + "");
+                    ejVenta.setSaldo(Math.round(saldo) + "");
+                    ejVenta.setNeto(saldo);
+                    ejVenta.setMontoCuotas(montoCuota + "");
+                    ejVenta.setMoraInteres(venta.getMoraInteres());
 
                     Date fecha = new Date();
 
@@ -553,12 +603,12 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         fecha = sdfSimple.parse(venta.getCuotaFecha());
                     }
 
-                    ejVentaUp.setFechaCuota(fecha);
+                    ejVenta.setFechaCuota(fecha);
 
-                    this.update(ejVentaUp);
+                    this.update(ejVenta);
 
                     DocumentoCobrar ejACobrar = new DocumentoCobrar();
-                    ejACobrar.setVenta(new Venta(idVenta));
+                    ejACobrar.setVenta(ejVenta);
 
                     List<DocumentoCobrar> aCobrar = documentoCobrarManager.list(ejACobrar);
 
@@ -570,11 +620,14 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                     int contador = 1;
                     boolean tieneFecha = true;
-
+                    
+                    Calendar date = Calendar.getInstance();
+                    date.set(Calendar.YEAR, fecha.getYear()+1900);
+                    
                     for (int i = 1; i <= venta.getCantidadCuotas(); i++) {
 
                         ejACobrar = new DocumentoCobrar();
-                        ejACobrar.setVenta(ejVentaUp);
+                        ejACobrar.setVenta(ejVenta);
                         ejACobrar.setActivo("S");
                         ejACobrar.setNroCuota(i + "");
                         ejACobrar.setMonto(montoCuota);
@@ -583,7 +636,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         if (venta.getCuotaFecha() != null
                                 && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                            Calendar date = Calendar.getInstance();
+                                                 
                             if (tieneFecha) {
                                 date.set(Calendar.MONTH, fecha.getMonth());
                                 tieneFecha = false;
@@ -599,7 +652,6 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                         } else {
 
-                            Calendar date = Calendar.getInstance();
                             date.set(Calendar.DATE, 5);
                             date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
@@ -614,42 +666,61 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
             } else {
 
-                ejVentaUp.setEntrega("");
-                ejVentaUp.setMontoInteres("");
-                ejVentaUp.setSaldo("");
-                ejVentaUp.setMontoCuotas("");
-                ejVentaUp.setFechaCuota(null);
-                ejVentaUp.setCantidadCuotas(null);
-                ejVentaUp.setMoraInteres("");
+                Double interes = Double.parseDouble(venta.getDescuento());
 
-                if (venta.getTipoDescuento() != null
-                        && venta.getTipoDescuento().compareToIgnoreCase("GENERAL") == 0) {
+                Double montoInteres = (montoTotal * interes) / 100;
 
-                    Double interes = Double.parseDouble(venta.getDescuento());
+                Double saldo = montoTotal - montoInteres;
 
-                    Double montoInteres = (Double.parseDouble(ejVentaUp.getMonto()) * interes) / 100;
+                ejVenta.setDescuento(Math.round(interes) + "");
+                ejVenta.setMontoDescuento(Math.round(montoInteres) + "");
+                ejVenta.setNeto(saldo);
 
-                    Double saldo = Double.parseDouble(ejVentaUp.getMonto()) - montoInteres;
+                this.update(ejVenta);
 
-                    ejVentaUp.setSaldo("");
-                    ejVentaUp.setDescuento(interes + "");
-                    ejVentaUp.setMontoDescuento(montoInteres + "");
-                    ejVentaUp.setNeto(saldo);
+                Long montoTotalImteres = Long.parseLong("0");
 
-                } else {
-                    ejVentaUp.setNeto(Double.parseDouble(ejVentaUp.getMonto()));
+                if (ejVenta.getMontoDescuento() != null && ejVenta.getMontoDescuento().compareToIgnoreCase("") != 0) {
+                    montoTotalImteres = Long.parseLong(Math.round(Double.parseDouble(ejVenta.getMontoDescuento())) + "");
                 }
 
-                this.update(ejVentaUp);
+                for (Long rpm : itemVentas) {
+
+                    Vehiculo ejVehiculo = vehiculoManager.get(rpm);
+
+                    Double porcentajeVehiculo = ejVehiculo.getPrecioVenta() / montoTotal;
+
+                    Double costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
+
+                    Double costoVeh = Math.round(ejVehiculo.getPrecioVenta()) - costoInteresVeh;
+
+                    DetalleVenta ejDetVenta = new DetalleVenta();
+                    ejDetVenta.setActivo("S");
+                    ejDetVenta.setEmpresa(new Empresa(idEmpresa));
+                    ejDetVenta.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
+                    ejDetVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+                    ejDetVenta.setVehiculo(new Vehiculo(rpm));
+                    ejDetVenta.setNeto(costoVeh);
+                    ejDetVenta.setPrecio(ejVehiculo.getPrecioVenta());
+                    ejDetVenta.setMontoDescuento(costoInteresVeh);
+                    ejDetVenta.setPorcentajeDescuento(porcentajeVehiculo.toString());
+                    ejDetVenta.setVenta(ejVenta);
+
+                    detalleVentaManager.save(ejDetVenta);
+
+                    ejVehiculo.setEstado(Vehiculo.PROVESO_VENTA);
+
+                    vehiculoManager.update(ejVehiculo);
+                }
             }
 
             mensaje.setError(false);
             mensaje.setId(ejVenta.getId());
-            mensaje.setMensaje("La venta se registro exitosamente.");
+            mensaje.setMensaje("La venta se modifico exitosamente.");
 
         } catch (Exception e) {
             mensaje.setError(true);
-            mensaje.setMensaje("Error  al guardar la venta.");
+            mensaje.setMensaje("Error  al modificar la venta.");
             return mensaje;
         }
         return mensaje;

@@ -4,7 +4,7 @@ $(document).ready(function(data) {
 
     if (action === 'VISUALIZAR') {
         $('#botonAprobar').hide();
-        $('#aceptar').hide();
+        $('#venta_guardar').hide();
         $('#buttonOption').hide();
         $('#validation-formCompra').find('.tableusuario-input').attr("disabled", true);
         $('#validation-form').find('.tableusuario-input').attr("disabled", true);

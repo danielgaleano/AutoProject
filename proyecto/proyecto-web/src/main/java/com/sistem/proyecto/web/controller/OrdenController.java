@@ -94,8 +94,9 @@ public class OrdenController extends BaseController {
             inicializarCompraManager();
 
             Compra ejCompra = compraManager.get(id);
-            
+            ejCompra.setFechaCompra(new Timestamp(System.currentTimeMillis()));
             ejCompra.setEstadoCompra(Compra.COMPRA_APROBADA);
+            
             compraManager.update(ejCompra);
             
             retorno.setError(false);

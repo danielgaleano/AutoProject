@@ -137,7 +137,7 @@ $(document).ready(function(data) {
                 if ($("#idCliente").val() === null || $("#idCliente").val() === "") {
                     $.messager.confirm('Error', 'Debe cargar los Datos del Cliente!');
                 } else {
-                    var jqXHR = $.post(CONTEXT_ROOT + '/ventas/' + 1 + '/editar', serialize, function(data, textStatus, jqXHR) {
+                    var jqXHR = $.post(CONTEXT_ROOT + '/ventas/editar', serialize, function(data, textStatus, jqXHR) {
                         if (data.error) {
                             $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
                                     + '<button class="close" data-dismiss="alert" type="button"'

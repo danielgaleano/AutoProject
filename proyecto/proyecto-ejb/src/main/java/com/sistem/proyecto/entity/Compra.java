@@ -36,7 +36,8 @@ public class Compra extends Base{
     private String nroFactura;
     
     @Column(name = "fechaCompra")
-    private Timestamp fechaCompra;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date fechaCompra;
     
     @Column(name = "tipo_compra")
     private String tipoCompra;
@@ -144,7 +145,7 @@ public class Compra extends Base{
     /**
      * @return the fechaCompra
      */
-    public Timestamp getFechaCompra() {
+    public Date getFechaCompra() {
         return fechaCompra;
     }
 

@@ -464,6 +464,59 @@ public class VentaController extends BaseController {
         return mensaje;
     }
     
+    @RequestMapping(value = "/editar", method = RequestMethod.POST)
+    public @ResponseBody
+    MensajeDTO editar(@ModelAttribute("Venta") Venta ventaRecibido) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        MensajeDTO mensaje = new MensajeDTO();
+        Venta ejVenta = new Venta();
+        try {
+            inicializarVentaManager();
+
+            if (ventaRecibido.getNroFactura() == null || ventaRecibido.getNroFactura() != null
+                    && ventaRecibido.getNroFactura().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("El numero de factura no puede estar vacia.");
+                return mensaje;
+            }
+
+            if (ventaRecibido.getCliente() == null ||
+                        ventaRecibido.getCliente().getId() == null
+                        || ventaRecibido.getCliente().getId() != null
+                        && ventaRecibido.getCliente().getId().toString().compareToIgnoreCase("") == 0) {
+                    mensaje.setError(true);
+                    mensaje.setMensaje("Se debe ingresar un cliente para realizar la venta.");
+                    return mensaje;
+                }
+
+            if (ventaRecibido.getFormaPago() == null || ventaRecibido.getFormaPago() != null
+                    && ventaRecibido.getFormaPago().compareToIgnoreCase("") == 0) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe seleccionar una forma de pago.");
+                return mensaje;
+            }
+            
+            if (ventaRecibido.getItemsVenta() == null || ventaRecibido.getItemsVenta() != null
+                    && ventaRecibido.getItemsVenta().isEmpty()) {
+                mensaje.setError(true);
+                mensaje.setMensaje("Debe seleccionar un vehiculo para realizar la venta.");
+                return mensaje;
+            }
+
+            mensaje = ventaManager.editarVenta(ventaRecibido.getItemsVenta(), ventaRecibido
+                    , ventaRecibido.getId(), ventaRecibido.getFormaPago(), "GENERAL", userDetail.getIdEmpresa(), userDetail.getId());
+
+
+        } catch (Exception e) {
+            mensaje.setError(true);
+            mensaje.setMensaje("Error a guardar el usuario");
+            System.out.println("Error" + e);
+        }
+
+        return mensaje;
+    }
+    
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO desactivar(@PathVariable("id") Long id) {

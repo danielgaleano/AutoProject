@@ -21,6 +21,6 @@ public interface VentaManager extends GenericDao<Venta, Long> {
     
     public MensajeDTO guardarVenta(List<Long> itemVentas, Venta venta, String nroFactura, String formaPgo, String tipoPago, Long idEmpresa, Long idUsuario) throws Exception;
     
-    public MensajeDTO editarVenta(Long idCompra, Venta venta, String formaPgo, String tipoPago, Long idEmpresa, Long idUsuario) throws Exception;
+    public MensajeDTO editarVenta(List<Long> itemVentas, Venta venta, Long idVenta, String formaPgo, String tipoPago, Long idEmpresa, Long idUsuario) throws Exception;
     
 }

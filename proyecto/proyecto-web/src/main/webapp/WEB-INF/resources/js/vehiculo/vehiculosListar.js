@@ -28,7 +28,7 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRANSMISION', 'PRECIO DE VENTA', ''],
+        colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRANSMISION', 'PRECIO DE VENTA', 'ESTADO', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'codigo', index: 'codigo', hidden: true, width: 60, editable: false},
@@ -137,17 +137,26 @@ $(document).ready(function(data) {
                 if (isStatus) {
                     var content = window.location.href;
                     var compraContent = window.location.hostname + 'proyecto';
-                    if (permisoEditar) {
-                        editForm = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
-                                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + content + '/editar/' + cl + '"'
-                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Editar Stock">'
-                                + ' <span class="fa fa-fw fa-wrench"></span></a>';
-                    }
-                    asignar = "";
-                    compra = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                    
+                    if (dato.estado === "STOCK") {
+                        if (permisoEditar) {
+                            editForm = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                                    + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + content + '/editar/' + cl + '"'
+                                    + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Editar Stock">'
+                                    + ' <span class="fa fa-fw fa-wrench"></span></a>';
+                        }
+                        asignar = "";
+                        compra = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
                                 + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" onclick=popCompra(' + cl + ');'
                                 + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Ver compra">'
                                 + ' <span class="fa fa-fw fa-cart-plus"></span></a>';
+                    } else {
+                        compra = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" onclick=popCompra(' + cl + ');'
+                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Ver compra">'
+                                + ' <span class="fa fa-fw fa-cart-plus"></span></a>';
+                    }
+
                     //visuali = visualizarButton(cl, permisoVisualizar,null);
                     //editForm = editFormButton(cl, permisoEditar);
                     //desact = desactivarButton(cl, permisoDesactivar);
@@ -211,76 +220,76 @@ function parseBolean(val) {
 }
 
 function popCompra(id_vehiculo) {
-    $('#compra-modal').modal('show'); 
-    
+    $('#compra-modal').modal('show');
+
     var jqXHR = $.get(CONTEXT_ROOT + "/compras/obtener/" + id_vehiculo, function(data, textStatus, jqXHR) {
-                if (data.error === true) {
-                    $('#mensaje').append('<div class="alert alert-error">'
-                            + '<button class="close" data-dismiss="alert" type="button"'
-                            + '><i class="fa  fa-remove"></i></button>'
-                            + '<strong>Error! </strong>'
-                            + data.mensaje
-                            + '</div>');
+        if (data.error === true) {
+            $('#mensaje').append('<div class="alert alert-error">'
+                    + '<button class="close" data-dismiss="alert" type="button"'
+                    + '><i class="fa  fa-remove"></i></button>'
+                    + '<strong>Error! </strong>'
+                    + data.mensaje
+                    + '</div>');
 
-                } else {
-                    var compra = data.data;
-                    
-                    //console.log(compra);
-                    //console.log(compra['compra.nroFactura']);
-                    console.log(compra['compra.proveedor.nombre']);
-                    //Agregar modal que trae los datos de la compra
-                    
-                    $('#idCompra').val(compra['compra.id']);
-                    $('#nroFactura').val(compra['compra.nroFactura']);
-                    //$('#ruc').val(compra['compra.proveedor.ruc']);
-                    $('#nombre').val(compra['compra.proveedor.nombre']);
-                    
-                    $('#date-timeDesde').val(compra['compra.fechaCuota']);
-                    $('#descuento').val(compra['compra.descuento']);
-                    $('#interes').val(compra['compra.porcentajeInteresCredito']);
-                    $('#montoInteres').val(compra['compra.montoInteres']);
-                    $('#id-date-picker').val(compra['compra.fechaCuota']);
-                    
-                    if (compra['compra.formaPago'] === 'CONTADO') {
-                        $('#contado').prop("checked", true);
-                        $("#formCredito").hide();
-                        $("#tipo-descuento").show();
-                    } else if (compra['compra.formaPago'] === 'CREDITO') {
-                        $('#credito').prop("checked", true);
-                        $("#general").attr("disabled", true);
-                        $("#detallado").attr("disabled", true);
-                        $("#tipo-descuento").hide();
-                        $("#formCredito").show();
-                        $("#formDescuento").hide();
-                    }
+        } else {
+            var compra = data.data;
 
-                    if (compra['compra.tipoDescuento'] === 'GENERAL') {
-                        $('#general').prop("checked", true);
-                        $("#formDescuento").show();
-                    } else if (compra['compra.tipoDescuento'] === 'DETALLADO') {
-                        $('#detallado').prop("checked", true);
-                        $("#formDescuento").hide();
-                    }
-                    
-                    if (compra['compra.descuento'] == 0 || compra['compra.descuento'] == "" || compra['compra.descuento'] == "0" ) {
-                        $("#formDescuento").hide();
-                    }
-                    
-                    $('#moraInteres').val(compra['compra.moraInteres']);
-                    $('#cuotas').val(compra['compra.cantidadCuotas']);
-                    $('#montoCuota').val(compra['compra.montoCuotas']);
-                    $('#montoTotal').val(compra['compra.monto']);
-                    $('#entrega').val(compra['compra.entrega']);
-                    $('#montoDescuento').val(compra['compra.montoDescuento']);
-                    $('#saldo').val(compra['compra.saldo']);
-                    $('#neto').val(compra['compra.neto']);
-                    
-                    var a = document.getElementById('irCompraButton');
-                    a.href = CONTEXT_ROOT + "/compras/registros/visualizar/" + compra['compra.id'];
-                    
-                    
-                }
-            });
-    
+            //console.log(compra);
+            //console.log(compra['compra.nroFactura']);
+            console.log(compra['compra.proveedor.nombre']);
+            //Agregar modal que trae los datos de la compra
+
+            $('#idCompra').val(compra['compra.id']);
+            $('#nroFactura').val(compra['compra.nroFactura']);
+            //$('#ruc').val(compra['compra.proveedor.ruc']);
+            $('#nombre').val(compra['compra.proveedor.nombre']);
+
+            $('#date-timeDesde').val(compra['compra.fechaCuota']);
+            $('#descuento').val(compra['compra.descuento']);
+            $('#interes').val(compra['compra.porcentajeInteresCredito']);
+            $('#montoInteres').val(compra['compra.montoInteres']);
+            $('#id-date-picker').val(compra['compra.fechaCuota']);
+
+            if (compra['compra.formaPago'] === 'CONTADO') {
+                $('#contado').prop("checked", true);
+                $("#formCredito").hide();
+                $("#tipo-descuento").show();
+            } else if (compra['compra.formaPago'] === 'CREDITO') {
+                $('#credito').prop("checked", true);
+                $("#general").attr("disabled", true);
+                $("#detallado").attr("disabled", true);
+                $("#tipo-descuento").hide();
+                $("#formCredito").show();
+                $("#formDescuento").hide();
+            }
+
+            if (compra['compra.tipoDescuento'] === 'GENERAL') {
+                $('#general').prop("checked", true);
+                $("#formDescuento").show();
+            } else if (compra['compra.tipoDescuento'] === 'DETALLADO') {
+                $('#detallado').prop("checked", true);
+                $("#formDescuento").hide();
+            }
+
+            if (compra['compra.descuento'] == 0 || compra['compra.descuento'] == "" || compra['compra.descuento'] == "0") {
+                $("#formDescuento").hide();
+            }
+
+            $('#moraInteres').val(compra['compra.moraInteres']);
+            $('#cuotas').val(compra['compra.cantidadCuotas']);
+            $('#montoCuota').val(compra['compra.montoCuotas']);
+            $('#montoTotal').val(compra['compra.monto']);
+            $('#entrega').val(compra['compra.entrega']);
+            $('#montoDescuento').val(compra['compra.montoDescuento']);
+            $('#saldo').val(compra['compra.saldo']);
+            $('#neto').val(compra['compra.neto']);
+
+            var a = document.getElementById('irCompraButton');
+            a.href = CONTEXT_ROOT + "/compras/registros/visualizar/" + compra['compra.id'];
+
+
+        }
+    });
+
 }
 

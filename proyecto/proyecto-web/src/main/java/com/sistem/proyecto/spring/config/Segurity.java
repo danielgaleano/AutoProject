@@ -120,7 +120,7 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 //------Ventas----//
                 .antMatchers("/ventas**").hasAnyAuthority("Venta.Listar")
                 .antMatchers("/ventas/crear**").hasAnyAuthority("Venta.Realizar")
-                .antMatchers("/ventas/guardar**").hasAnyAuthority("Venta.Crear")
+                .antMatchers("/ventas/guardar**").permitAll()
                 .antMatchers("/ventas/realizar/*").hasAnyAuthority("Venta.Realizar")
                 .antMatchers("/compras/desactivar/*").hasAnyAuthority("Venta.Desactivar")
                 .antMatchers("/ventas/visualizar/**").hasAnyAuthority("Venta.Visualizar")

@@ -336,7 +336,7 @@ function filtrarReporte() {
 
     }, 0);
 
-    var jqXHR = $.get(CONTEXT_ROOT + '/reportes/grafico/compras', enviar, function(data, textStatus, jqXHR) {
+    var jqXHR = $.get(CONTEXT_ROOT + '/reportes/grafico/compras/realizadas', enviar, function(data, textStatus, jqXHR) {
         if (data.error) {
             $('#mensaje').append('<div class="alert alert-error">'
                     + '<button class="close" data-dismiss="alert" type="button"'

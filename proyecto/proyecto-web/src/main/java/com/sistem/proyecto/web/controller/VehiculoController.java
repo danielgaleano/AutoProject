@@ -177,7 +177,18 @@ public class VehiculoController extends BaseController {
         return retorno;
     }
     
-        @RequestMapping(value = "/vendidos/listar", method = RequestMethod.GET)
+    
+    @RequestMapping(value = "/vendidos/visualizar/{id}", method = RequestMethod.GET)
+    public ModelAndView formVer(@PathVariable("id") Long id, Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("vendidoForm");
+        model.addAttribute("action", "VISUALIZAR");
+        model.addAttribute("id", id);
+        return retorno;
+    }
+    
+    
+    @RequestMapping(value = "/vendidos/listar", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno listarVendidos(@ModelAttribute("_search") boolean filtrar,
             @ModelAttribute("filters") String filtros,

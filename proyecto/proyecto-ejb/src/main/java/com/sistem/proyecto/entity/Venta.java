@@ -36,7 +36,8 @@ public class Venta extends Base {
     private String timbrado;
     
     @Column(name = "fechaVenta")
-    private Timestamp fechaVenta;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date fechaVenta;
     
     @Column(name = "tipo_venta")
     private String tipoVenta;
@@ -143,14 +144,14 @@ public class Venta extends Base {
     /**
      * @return the fechaVenta
      */
-    public Timestamp getFechaVenta() {
+    public Date getFechaVenta() {
         return fechaVenta;
     }
 
     /**
      * @param fechaVenta the fechaVenta to set
      */
-    public void setFechaVenta(Timestamp fechaVenta) {
+    public void setFechaVenta(Date fechaVenta) {
         this.fechaVenta = fechaVenta;
     }
 

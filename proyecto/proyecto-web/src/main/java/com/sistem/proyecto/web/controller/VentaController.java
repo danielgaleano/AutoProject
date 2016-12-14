@@ -49,7 +49,7 @@ public class VentaController extends BaseController {
     String atributosAcobrar = "id,nroCuota,monto,saldo,montoInteres,fecha,estado";
     
     String atributosVehiculo = "id,codigo,estado,activo,marca.id,precioCosto,precioVenta,marca.nombre,modelo.id,modelo.nombre,empresa.id,empresa.nombre,"
-            + "tipo.id,tipo.nombre,transmision,color,anho,caracteristica,proveedor.id,proveedor.nombre";
+            + "tipo.id,tipo.nombre,transmision,color,anho,caracteristica,proveedor.id,proveedor.nombre,chasis,kilometraje";
 
     String atributosVentas = "id,estadoVenta,nroFactura,fechaCuota,fechaVenta,tipoVenta,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
             + "tipoMoraInteres,moraInteres,cantidadCuotas,montoCuotas,cliente.nombre,activo,"

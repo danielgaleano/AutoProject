@@ -101,7 +101,7 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['NRO. FACTURA', 'FORMA PAGO', 'CANT. CUOTAS', 'CLIENTE', 'FECHA Venta', 'CUOTA PENDIENTE', 'IMPORTE', 'SALDO', 'NETO','ESTADO'],
+        colNames: ['NRO. FACTURA', 'FORMA PAGO', 'CANT. CUOTAS', 'CLIENTE', 'FECHA Venta', 'CUOTA PENDIENTE', 'IMPORTE', 'SALDO', 'NETO','TOTAL GENERAL' ,'ESTADO'],
         colModel: [
             {name: 'nroFactura', index: 'nroFactura', width: 100},
             {name: 'formaPago', index: 'formaPago', width: 100},
@@ -112,6 +112,7 @@ $(document).ready(function(data) {
             {name: 'importe', index: 'importe', formatter: 'number', width: 90, sortable: false},
             {name: 'saldo', index: 'saldo', formatter: 'number', width: 90, sortable: false},
             {name: 'neto', index: 'neto', formatter: 'number', width: 90, sortable: false},
+            {name: 'totalGeneral', index: 'totalGeneral', formatter: 'number', width: 90, sortable: false},
             {name: 'estadoCobro', index: 'estadoCobro', width: 90, sortable: false}
         ],
         viewrecords: true,

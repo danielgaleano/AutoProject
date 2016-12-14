@@ -342,7 +342,7 @@ $(document).ready(function(data) {
     $(grid_selector).jqGrid('inlineNav', pager_selector,
             {
                 edit: false,
-                add: permisoAgegar,
+                add: false,
                 addtext: 'Agregar',
                 addicon: "ui-icon ace-icon fa fa-plus-circle purple",
                 save: true,

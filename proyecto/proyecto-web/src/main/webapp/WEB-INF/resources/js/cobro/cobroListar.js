@@ -508,7 +508,7 @@ $(document).ready(function(data) {
             }
         },
         editurl: "/editar", //nothing is saved
-        caption: "Compras Pendientes",
+        caption: "Ventas Pendientes",
         subGrid: true,
         subGridOptions: {
             plusicon: 'fa fa-fw fa-sort-amount-asc',

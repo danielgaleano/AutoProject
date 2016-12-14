@@ -141,8 +141,8 @@ $(document).ready(function(data) {
                     var ventaContent = window.location.hostname + 'proyecto';
                     if (permisoEditar) {
                         editForm = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
-                                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + content + '/editar/' + cl + '"'
-                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Editar Stock">'
+                                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="' + content + '/visualizar/' + cl + '"'
+                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Ver datos">'
                                 + ' <span class="fa fa-fw fa-wrench"></span></a>';
                     }
                     asignar = "";

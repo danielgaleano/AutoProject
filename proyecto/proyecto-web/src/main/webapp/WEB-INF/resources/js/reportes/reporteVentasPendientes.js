@@ -101,18 +101,18 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['NRO. FACTURA', 'FORMA PAGO', 'CANT. CUOTAS', 'PROVEEDOR', 'FECHA COMPRA', 'CUOTA PENDIENTE', 'IMPORTE', 'SALDO', 'NETO','ESTADO'],
+        colNames: ['NRO. FACTURA', 'FORMA PAGO', 'CANT. CUOTAS', 'CLIENTE', 'FECHA COMPRA', 'CUOTA PENDIENTE', 'IMPORTE', 'SALDO', 'NETO','ESTADO'],
         colModel: [
             {name: 'nroFactura', index: 'nroFactura', width: 100},
             {name: 'formaPago', index: 'formaPago', width: 100},
             {name: 'cantidadCuotas', index: 'cantidadCuotas', width: 100, editable: true},
-            {name: 'proveedor.nombre', index: 'proveedor.nombre', width: 100},
+            {name: 'cliente.nombre', index: 'proveedor.nombre', width: 100},
             {name: 'fechaCompra', index: 'fechaCompra', width: 90},
             {name: 'cuota', index: 'cuota', width: 90, sortable: false},
             {name: 'importe', index: 'importe', formatter: 'number', width: 90, sortable: false},
             {name: 'saldo', index: 'saldo', formatter: 'number', width: 90, sortable: false},
             {name: 'neto', index: 'neto', formatter: 'number', width: 90, sortable: false},
-            {name: 'estadoPago', index: 'estadoPago', width: 90, sortable: false}
+            {name: 'estadoCobro', index: 'estadoCobro', width: 90, sortable: false}
         ],
         viewrecords: true,
         rowNum: 10,

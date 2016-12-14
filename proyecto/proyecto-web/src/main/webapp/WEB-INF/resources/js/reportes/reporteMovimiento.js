@@ -369,7 +369,24 @@ function filtrarReporte() {
                     + '</div>');
         } else {
             console.log(chart);
+            $.each(data.data, function(e){
+                console.log(e);
+            });
+            if(data.data[0].label === "Egreso"){
+                data.data[0]['color'] = 'red';
+            }else{
+                data.data[0]['color'] = 'green';
+            }
+            if(data.data[1].label === "Egreso"){
+                data.data[1]['color'] = 'red';
+            }else{
+                data.data[1]['color'] = 'green';
+            }
+            
+            console.log(data.data);
+            
             chart.options.data[0].dataPoints = data.data;
+            
             chart.render();
         }
 

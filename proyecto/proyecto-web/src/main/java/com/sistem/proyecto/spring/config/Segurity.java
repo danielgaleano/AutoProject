@@ -175,6 +175,14 @@ public class Segurity extends WebSecurityConfigurerAdapter{
                 .antMatchers("/modelos/editar/**").hasAnyAuthority("Modelo.Editar")
                 .antMatchers("/modelos/visualizar/**").hasAnyAuthority("Modelo.Visualizar")
                 .antMatchers("/modelos/agregar/**").hasAnyAuthority("Modelo.Crear")
+				//------Reportes----//
+                .antMatchers("/reportes**").hasAnyAuthority("Modelo.Listar")
+                .antMatchers("/reportes/compras**").hasAnyAuthority("Reporte.Compra")
+                .antMatchers("/reportes/compras/pendientes**").hasAnyAuthority("Reporte.Compra")
+                .antMatchers("/reportes/compras/realizadas*").hasAnyAuthority("Reporte.Compra")
+				.antMatchers("/reportes/ventas**").hasAnyAuthority("Reporte.Venta")
+                .antMatchers("/reportes/ventas/pendientes**").hasAnyAuthority("Reporte.Venta")
+                .antMatchers("/reportes/ventas/realizadas*").hasAnyAuthority("Reporte.Venta")               
                //------Movil----//
                 .antMatchers("/movil/guardarImagen**").permitAll()
                 .antMatchers("/obtenerImagen/*/*").permitAll()

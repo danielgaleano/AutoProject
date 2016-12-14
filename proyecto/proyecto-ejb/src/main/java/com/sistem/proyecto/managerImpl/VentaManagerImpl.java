@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -194,25 +195,28 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         if (venta.getCuotaFecha() != null
                                 && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                            if (tieneFecha) {
-                                date.set(Calendar.MONTH, fecha.getMonth());
-                                tieneFecha = false;
-
-                            } else {
-                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
-                                contador++;
-                            }
-
-                            date.set(Calendar.DATE, fecha.getDate());
-
-                            ejACobrar.setFecha(date.getTime());
+//                            if (tieneFecha) {
+//                                date.set(Calendar.MONTH, fecha.getMonth());
+//                                tieneFecha = false;
+//
+//                            } else {
+//                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
+//                                contador++;
+//                            }
+//
+//                            date.set(Calendar.DATE, fecha.getDate());
+                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), fecha.getDate(), i-1);
+                            
+                            
+                            ejACobrar.setFecha(pruebaDate);
 
                         } else {
 
-                            date.set(Calendar.DATE, 5);
-                            date.set(Calendar.MONTH, fecha.getMonth() + contador);
+                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), 5, i-1);
+                            //date.set(Calendar.DATE, 5);
+                            //date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
-                            ejACobrar.setFecha(date.getTime());
+                            ejACobrar.setFecha(pruebaDate);
                             contador++;
                         }
 
@@ -310,25 +314,26 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         if (venta.getCuotaFecha() != null
                                 && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                            if (tieneFecha) {
-                                date.set(Calendar.MONTH, fecha.getMonth());
-                                tieneFecha = false;
-
-                            } else {
-                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
-                                contador++;
-                            }
-
-                            date.set(Calendar.DATE, fecha.getDate());
-
-                            ejACobrar.setFecha(date.getTime());
+//                            if (tieneFecha) {
+//                                date.set(Calendar.MONTH, fecha.getMonth());
+//                                tieneFecha = false;
+//
+//                            } else {
+//                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
+//                                contador++;
+//                            }
+//
+//                            date.set(Calendar.DATE, fecha.getDate());
+                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), fecha.getDate(), i-1);
+                            ejACobrar.setFecha(pruebaDate);
 
                         } else {
 
-                            date.set(Calendar.DATE, 5);
-                            date.set(Calendar.MONTH, fecha.getMonth() + contador);
+                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), 5, i-1);
+                            //date.set(Calendar.DATE, 5);
+                            //date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
-                            ejACobrar.setFecha(date.getTime());
+                            ejACobrar.setFecha(pruebaDate);
                             contador++;
                         }
 
@@ -514,25 +519,26 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         if (venta.getCuotaFecha() != null
                                 && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                            if (tieneFecha) {
-                                date.set(Calendar.MONTH, fecha.getMonth());
-                                tieneFecha = false;
+//                            if (tieneFecha) {
+//                                date.set(Calendar.MONTH, fecha.getMonth());
+//                                tieneFecha = false;
+//
+//                            } else {
+//                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
+//                                contador++;
+//                            }
+//
+//                            date.set(Calendar.DATE, fecha.getDate());
+                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), fecha.getDate(), i-1);
 
-                            } else {
-                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
-                                contador++;
-                            }
-
-                            date.set(Calendar.DATE, fecha.getDate());
-
-                            ejACobrar.setFecha(date.getTime());
+                            ejACobrar.setFecha(pruebaDate);
 
                         } else {
+                              Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), 5, i-1);
+//                            date.set(Calendar.DATE, 5);
+//                            date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
-                            date.set(Calendar.DATE, 5);
-                            date.set(Calendar.MONTH, fecha.getMonth() + contador);
-
-                            ejACobrar.setFecha(date.getTime());
+                            ejACobrar.setFecha(pruebaDate);
                             contador++;
                         }
 
@@ -630,25 +636,25 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         if (venta.getCuotaFecha() != null
                                 && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                            if (tieneFecha) {
-                                date.set(Calendar.MONTH, fecha.getMonth());
-                                tieneFecha = false;
-
-                            } else {
-                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
-                                contador++;
-                            }
-
-                            date.set(Calendar.DATE, fecha.getDate());
-
-                            ejACobrar.setFecha(date.getTime());
+//                            if (tieneFecha) {
+//                                date.set(Calendar.MONTH, fecha.getMonth());
+//                                tieneFecha = false;
+//
+//                            } else {
+//                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
+//                                contador++;
+//                            }
+//
+//                            date.set(Calendar.DATE, fecha.getDate());
+                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), fecha.getDate(), i-1);
+                            ejACobrar.setFecha(pruebaDate);
 
                         } else {
+                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), 5, i-1);
+//                            date.set(Calendar.DATE, 5);
+//                            date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
-                            date.set(Calendar.DATE, 5);
-                            date.set(Calendar.MONTH, fecha.getMonth() + contador);
-
-                            ejACobrar.setFecha(date.getTime());
+                            ejACobrar.setFecha(pruebaDate);
                             contador++;
                         }
 
@@ -727,4 +733,20 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
         }
         return sb.toString();
     }
+    
+    Date getDataVencimento(Integer anho, Integer mes, Integer dia, Integer planoPagamento){
+        //monta data para JodaTime
+        DateTime data = new DateTime();//pega data de hoje        
+        DateTime d = data.plusMonths(planoPagamento);//adiciona plano de pagamento
+        
+        //cria data de vencimento
+        DateTime vencimento = new DateTime(anho, mes+1, dia, 0, 0, 0, 0);
+        DateTime venc = vencimento.plusMonths(planoPagamento);
+        //convert o datetime para date
+        Date dtVencimento = vencimento.toDate();
+        Date dtVenc = venc.toDate(); 
+        //retorna a proxima data vencimento
+        return dtVenc;
+    }
+    
 }

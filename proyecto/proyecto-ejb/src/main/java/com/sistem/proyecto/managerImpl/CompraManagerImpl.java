@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -427,7 +428,18 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                     boolean tieneFecha = true;
                     
                     Calendar date = Calendar.getInstance();
-                    date.set(Calendar.YEAR, fecha.getYear()+1900);
+                    
+                    //java.util.Date juDate = new Date();
+                    //DateTime dt = new DateTime(juDate);
+                    
+                    //DateTime dt = new DateTime();
+                    
+                    
+                    
+                    
+                    //if(fecha.getYear() > date.getTime().getYear()){
+                    //    date.set(Calendar.YEAR, fecha.getYear()+1900);
+                    //}
                     
                     for (int i = 1; i <= compra.getCantidadCuotas(); i++) {
 
@@ -442,30 +454,40 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                                 && compra.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
                             
-                            if (tieneFecha) {
-                                date.set(Calendar.MONTH, fecha.getMonth());
-                                
-                                tieneFecha = false;
-
-                            } else {
-                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
-
-                                contador++;
-                            }
-
-                            date.set(Calendar.DATE, fecha.getDate());
-
-                            ejAPagar.setFecha(date.getTime());
+//                            if (tieneFecha) {
+//                                date.set(Calendar.MONTH, fecha.getMonth());
+//                                
+//                                tieneFecha = false;
+//
+//                            } else {
+//                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
+//
+//                                contador++;
+//                            }
+//
+//                            date.set(Calendar.DATE, fecha.getDate());
+                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), fecha.getDate(), i-1);
+                            
+                            ejAPagar.setFecha(pruebaDate);
 
                         } else {
+                            
+                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), 5, i-1);
+                            //date.set(Calendar.DATE, 5);
+                            //date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
-                            date.set(Calendar.DATE, 5);
-                            date.set(Calendar.MONTH, fecha.getMonth() + contador);
-
-                            ejAPagar.setFecha(date.getTime());
+                            ejAPagar.setFecha(pruebaDate);
                             contador++;
                         }
-
+                        
+                        
+                        
+                        
+                        
+                        //System.out.println("anho: " + fecha.getYear()+1900 + " mes: " + fecha.getMonth() +" dia: " +fecha.getDate() + " i: " +(i-1));
+                        
+                        //System.out.println("pruebaDate: " + pruebaDate);
+                        
                         documentoPagarManager.save(ejAPagar);
 
                     }
@@ -524,25 +546,27 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
                                 && compra.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
                             
-                            if (tieneFecha) {
-                                date.set(Calendar.MONTH, fecha.getMonth());
-                                tieneFecha = false;
+//                            if (tieneFecha) {
+//                                date.set(Calendar.MONTH, fecha.getMonth());
+//                                tieneFecha = false;
+//
+//                            } else {
+//                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
+//                                contador++;
+//                            }
+//                            date.set(Calendar.DATE, fecha.getDate());
+                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), fecha.getDate(), i-1);
+                            
 
-                            } else {
-                                date.set(Calendar.MONTH, fecha.getMonth() + contador);
-                                contador++;
-                            }
-
-                            date.set(Calendar.DATE, fecha.getDate());
-
-                            ejAPagar.setFecha(date.getTime());
+                            ejAPagar.setFecha(pruebaDate);
 
                         } else {
 
-                            date.set(Calendar.DATE, 5);
-                            date.set(Calendar.MONTH, fecha.getMonth() + contador);
+                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), 5, i-1);
+                            //date.set(Calendar.DATE, 5);
+                            //date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
-                            ejAPagar.setFecha(date.getTime());
+                            ejAPagar.setFecha(pruebaDate);
                             contador++;
                         }
 
@@ -589,12 +613,15 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
             mensaje.setMensaje("La compra se registro exitosamente.");
 
         } catch (Exception e) {
+            System.out.println("excepcion: " + e);
             mensaje.setError(true);
             mensaje.setMensaje("Error  al guardar la compra.");
             return mensaje;
         }
         return mensaje;
     }
+    
+    
 
     String randomString(int len, String variable) {
         StringBuilder sb = new StringBuilder(len);
@@ -603,5 +630,20 @@ public class CompraManagerImpl extends GenericDaoImpl<Compra, Long>
             sb.append(rand.charAt(rnd.nextInt(AB.length())));
         }
         return sb.toString();
+    }
+    
+     Date getDataVencimento(Integer anho, Integer mes, Integer dia, Integer planoPagamento){
+        //monta data para JodaTime
+        DateTime data = new DateTime();//pega data de hoje        
+        DateTime d = data.plusMonths(planoPagamento);//adiciona plano de pagamento
+        
+        //cria data de vencimento
+        DateTime vencimento = new DateTime(anho, mes+1, dia, 0, 0, 0, 0);
+        DateTime venc = vencimento.plusMonths(planoPagamento);
+        //convert o datetime para date
+        Date dtVencimento = vencimento.toDate();
+        Date dtVenc = venc.toDate(); 
+        //retorna a proxima data vencimento
+        return dtVenc;
     }
 }

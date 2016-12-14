@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
     <div th:include="include/head :: head" th:remove="tag"></div>
-    <title>Pedidos</title>
+    <title>Reporte de Transacciones de Compra</title>
     <link th:href="@{/resources/css/datepicker.min.css}" rel="stylesheet" />
     <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
     <link th:href="@{/resources/css/icon.css}" rel="stylesheet" />
@@ -26,7 +26,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Reporte Compras
+                Reporte de Transacciones de Compra
 
             </h1>
         </section>
@@ -43,7 +43,7 @@
                         <div class="widget-header widget-header-flat widget-header-small">
                             <h5 class="widget-title">
                                 <i class="ace-icon fa fa-signal"></i>
-                                Reporte de Transacciones
+                                Reporte de Transacciones de Compra
                             </h5>
                             <div th:include="include/scripts :: [id='filterButton']" th:remove="tag"></div>
                             <div id="filtroReporteTiempo" class="row" style="display: none;">

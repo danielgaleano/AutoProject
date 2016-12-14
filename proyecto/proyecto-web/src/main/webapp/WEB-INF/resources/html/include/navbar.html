@@ -134,7 +134,7 @@ and open the template in the editor.
                     </ul>
                   </li>
                   <li class="treeview">
-                    <a  href="#"><i class="fa fa-newspaper-o"></i> <span>Reportes de Compras</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    <a  sec:authorize="hasRole('Reporte.Compra')" href="#"><i class="fa fa-newspaper-o"></i> <span>Reportes de Compras</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                       <li><a th:href="@{/reportes/compras/realizadas}">Compras Realizadas</a></li>
                       <li><a th:href="@{/reportes/compras/pendientes}">Compras Pendientes</a></li>
@@ -142,7 +142,7 @@ and open the template in the editor.
                     </ul>
                   </li>
                   <li class="treeview">
-                    <a  href="#"><i class="fa fa-book"></i> <span>Reportes de Ventas</span> <i class="fa fa-angle-left pull-right"></i></a>
+                    <a sec:authorize="hasRole('Reporte.Venta')" href="#"><i class="fa fa-book"></i> <span>Reportes de Ventas</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                       <li><a th:href="@{/reportes/ventas/realizadas}">Ventas Realizadas</a></li>
                       <li><a th:href="@{/reportes/ventas/pendientes}">Ventas Pendientes</a></li>

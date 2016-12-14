@@ -13,7 +13,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"nombre"})})
+    @UniqueConstraint(columnNames = {"documento"})})
 public class Contacto extends Base {
 
     /**

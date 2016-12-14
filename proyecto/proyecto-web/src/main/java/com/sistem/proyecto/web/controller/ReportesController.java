@@ -974,8 +974,10 @@ public class ReportesController extends BaseController {
 
             for (Map<String, Object> rpm : listMapGrupos) {
                 Long totalEgreso = Long.parseLong("0");
+                Long totalGeneral = Long.parseLong("0");
                 if (rpm.get("formaPago").toString().compareToIgnoreCase("CREDITO") == 0) {
-
+                    
+                    totalGeneral = Math.round(Double.parseDouble(rpm.get("neto").toString())) + Math.round(Double.parseDouble(rpm.get("entrega").toString()));
                     DocumentoPagar docPagar = new DocumentoPagar();
                     docPagar.setCompra(new Compra(Long.parseLong(rpm.get("id").toString())));
 
@@ -1002,13 +1004,19 @@ public class ReportesController extends BaseController {
                                 cuotaPendiente = pagar.getNroCuota();
                             }
                         }
-                    }
+                    }       
                     rpm.put("saldo", totalEgreso);
                     rpm.put("importe", importeCuota);
                     rpm.put("cuota", cuotaPendiente);
+                    rpm.put("totalGeneral", totalGeneral);
+                }
+                else {
+                    totalGeneral = Math.round(Double.parseDouble(rpm.get("neto").toString()));
+                    
+                    rpm.put("totalGeneral", totalGeneral);
                 }
             }
-
+            
             if (todos) {
                 total = listMapGrupos.size();
             }

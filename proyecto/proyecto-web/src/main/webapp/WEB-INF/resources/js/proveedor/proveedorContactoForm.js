@@ -1,6 +1,10 @@
 
 $(document).ready(function (data) {
     
+    $.validator.addMethod("regxx", function (value, element, regexpr) {
+        return regexpr.test(value);
+    }, "Debe ingresar un número de documento válido!");
+    
     $('#validation-formContacto').validate({
         errorElement: 'span',
         errorClass: 'help-inline',
@@ -9,7 +13,7 @@ $(document).ready(function (data) {
             documento: {
                 required: true,
                 //expresion regular para validar el documento
-                regx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$/,
+                regxx: /^[0-9]{5}([0-9])?([0-9])?([0-9])?([0-9])?$/,
                 minlength: 5,
                 maxlength: 10
             },

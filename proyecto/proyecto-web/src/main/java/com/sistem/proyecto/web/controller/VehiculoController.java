@@ -52,6 +52,14 @@ public class VehiculoController extends BaseController {
         return retorno;
 
     }
+    
+    @RequestMapping(value = "/vendidos", method = RequestMethod.GET)
+    public ModelAndView listaVehiculosVendidos(Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("vendidosListar");
+        return retorno;
+
+    }
 
     @RequestMapping(value = "/visualizar/{id}", method = RequestMethod.GET)
     public ModelAndView formView(@PathVariable("id") Long id, Model model) {
@@ -168,7 +176,88 @@ public class VehiculoController extends BaseController {
 
         return retorno;
     }
+    
+        @RequestMapping(value = "/vendidos/listar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno listarVendidos(@ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filtros,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos) {
 
+        DTORetorno retorno = new DTORetorno();
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        ordenarPor = "marca.nombre";
+        
+        Vehiculo ejVehiculo = new Vehiculo();
+        ejVehiculo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+        ejVehiculo.setEstado(Vehiculo.VENDIDA);
+        
+        List<Map<String, Object>> listMapGrupos = null;
+        try {
+
+            inicializarVehiculoManager();
+
+            Gson gson = new Gson();
+            String camposFiltros = null;
+            String valorFiltro = null;
+
+            if (filtrar) {
+                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
+                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
+                    for (ReglaDTO regla : filtro.getRules()) {
+                        if (camposFiltros == null) {
+                            camposFiltros = regla.getField();
+                            valorFiltro = regla.getData();
+                        } else {
+                            camposFiltros += "," + regla.getField();
+                        }
+                    }
+                } else {
+                    //ejemplo = generarEjemplo(filtro, ejemplo);
+                }
+
+            }
+            // ejemplo.setActivo("S");
+
+            pagina = pagina != null ? pagina : 1;
+            Integer total = 0;
+
+            if (!todos) {
+                total = vehiculoManager.list(ejVehiculo, true).size();
+            }
+
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+
+            if (total < inicio) {
+                inicio = total - total % cantidad;
+                pagina = total / cantidad;
+            }
+
+            listMapGrupos = vehiculoManager.listAtributos(ejVehiculo, atributos.split(","), todos, inicio, cantidad,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    null, null, null, null, null, null, null, null, true);
+
+            if (todos) {
+                total = listMapGrupos.size();
+            }
+            Integer totalPaginas = total / cantidad;
+
+            retorno.setTotal(totalPaginas + 1);
+            retorno.setRetorno(listMapGrupos);
+            retorno.setPage(pagina);
+
+        } catch (Exception e) {
+
+            logger.error("Error al listar", e);
+        }
+
+        return retorno;
+    }
+
+    
     @RequestMapping(value = "/crear", method = RequestMethod.GET)
     public ModelAndView crear(Model model) {
 

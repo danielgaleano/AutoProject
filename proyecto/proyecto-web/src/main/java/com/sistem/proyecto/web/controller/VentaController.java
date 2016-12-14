@@ -511,7 +511,9 @@ public class VentaController extends BaseController {
         Venta ejVenta = new Venta();
         try {
             inicializarVentaManager();
-
+            inicializarDetalleVentaManager();
+            inicializarVehiculoManager();
+            
             if (ventaRecibido.getNroFactura() == null || ventaRecibido.getNroFactura() != null
                     && ventaRecibido.getNroFactura().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
@@ -540,6 +542,19 @@ public class VentaController extends BaseController {
                 mensaje.setError(true);
                 mensaje.setMensaje("Debe seleccionar un vehiculo para realizar la venta.");
                 return mensaje;
+            }
+            
+            DetalleVenta ejDetVentaElimi = new DetalleVenta();
+            ejDetVentaElimi.setVenta(new Venta(ventaRecibido.getId()));
+
+            List<DetalleVenta> ventaDetalle = detalleVentaManager.list(ejDetVentaElimi);
+
+            for (DetalleVenta rpm : ventaDetalle) {
+                
+                rpm.getVehiculo().setEstado(Vehiculo.STOCK);
+                vehiculoManager.update(rpm.getVehiculo());
+                
+                detalleVentaManager.delete(rpm.getId());
             }
 
             mensaje = ventaManager.editarVenta(ventaRecibido.getItemsVenta(), ventaRecibido

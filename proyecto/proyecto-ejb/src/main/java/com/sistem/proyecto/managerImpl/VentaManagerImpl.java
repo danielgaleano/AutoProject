@@ -47,7 +47,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
     @EJB(mappedName = "java:app/proyecto-ejb/DocumentoCobrarManagerImpl")
     private DocumentoCobrarManager documentoCobrarManager;
-    
+
     @EJB(mappedName = "java:app/proyecto-ejb/NumeracionFacturaManagerImpl")
     private NumeracionFacturaManager numeracionFacturaManager;
 
@@ -92,16 +92,16 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
             NumeracionFactura ejTimbrado = new NumeracionFactura();
             ejTimbrado.setEmpresa(new Empresa(idEmpresa));
             ejTimbrado.setNombre("TIMBRADO");
-            
+
             ejTimbrado = numeracionFacturaManager.get(ejTimbrado);
-            
+
             ejVenta.setTimbrado(ejTimbrado.getValor());
             ejVenta.setNroFactura(nroFactura);
             ejVenta.setActivo("S");
             ejVenta.setEstadoVenta(Venta.VENTA_PENDIENTE);
             ejVenta.setEstadoCobro(DocumentoPagar.PENDIENTE);
             ejVenta.setEmpresa(new Empresa(idEmpresa));
-            ejVenta.setMonto(Math.round(montoTotal) +"");
+            ejVenta.setMonto(Math.round(montoTotal) + "");
             ejVenta.setFormaPago(formaPgo);
             ejVenta.setCliente(new Cliente(venta.getCliente().getId()));
             ejVenta.setTipoDescuento(tipoDescuento);
@@ -173,15 +173,15 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                     ejACobrar.setMonto(entrega);
                     ejACobrar.setEstado(DocumentoPagar.ENTREGA);
                     ejACobrar.setFecha(new Timestamp(System.currentTimeMillis()));
-                    
+
                     documentoCobrarManager.save(ejACobrar);
 
                     int contador = 1;
                     boolean tieneFecha = true;
-                    
+
                     Calendar date = Calendar.getInstance();
-                    date.set(Calendar.YEAR, fecha.getYear()+1900);
-                    
+                    date.set(Calendar.YEAR, fecha.getYear() + 1900);
+
                     for (int i = 1; i <= venta.getCantidadCuotas(); i++) {
 
                         ejACobrar = new DocumentoCobrar();
@@ -194,7 +194,6 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         if (venta.getCuotaFecha() != null
                                 && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                            
                             if (tieneFecha) {
                                 date.set(Calendar.MONTH, fecha.getMonth());
                                 tieneFecha = false;
@@ -210,7 +209,6 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                         } else {
 
-                            
                             date.set(Calendar.DATE, 5);
                             date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
@@ -238,7 +236,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                         Double costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
 
-                        Double costoVeh =   costoInteresVeh - Math.round(ejVehiculo.getPrecioVenta());
+                        Double costoVeh = costoInteresVeh - Math.round(ejVehiculo.getPrecioVenta());
 
                         DetalleVenta ejDetVenta = new DetalleVenta();
                         ejDetVenta.setActivo("S");
@@ -296,10 +294,10 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                     int contador = 1;
                     boolean tieneFecha = true;
-                    
+
                     Calendar date = Calendar.getInstance();
-                    date.set(Calendar.YEAR, fecha.getYear()+1900);
-                    
+                    date.set(Calendar.YEAR, fecha.getYear() + 1900);
+
                     for (int i = 1; i <= venta.getCantidadCuotas(); i++) {
 
                         ejACobrar = new DocumentoCobrar();
@@ -312,7 +310,6 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         if (venta.getCuotaFecha() != null
                                 && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                                                 
                             if (tieneFecha) {
                                 date.set(Calendar.MONTH, fecha.getMonth());
                                 tieneFecha = false;
@@ -404,7 +401,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
     }
 
     @Override
-    public MensajeDTO editarVenta(List<Long> itemVentas, Venta venta,Long idVenta, String formaPgo, String tipoDescuento, Long idEmpresa, Long idUsuario) throws Exception {
+    public MensajeDTO editarVenta(List<Long> itemVentas, Venta venta, Long idVenta, String formaPgo, String tipoDescuento, Long idEmpresa, Long idUsuario) throws Exception {
         MensajeDTO mensaje = new MensajeDTO();
 
         Venta ejVenta = new Venta();
@@ -415,7 +412,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                 mensaje.setError(true);
                 mensaje.setMensaje("La venta no puede estar vacia.");
                 return mensaje;
-            }
+            }            
 
             Double montoTotal = 0.0;
 
@@ -427,37 +424,25 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
             NumeracionFactura ejTimbrado = new NumeracionFactura();
             ejTimbrado.setEmpresa(new Empresa(idEmpresa));
             ejTimbrado.setNombre("TIMBRADO");
-            
+
             ejTimbrado = numeracionFacturaManager.get(ejTimbrado);
-            
+
             ejVenta = this.get(idVenta);
-            
 
             ejVenta.setActivo("S");
             ejVenta.setEstadoVenta(Venta.VENTA_PENDIENTE);
             ejVenta.setEstadoCobro(DocumentoPagar.PENDIENTE);
             ejVenta.setEmpresa(new Empresa(idEmpresa));
-            ejVenta.setMonto(Math.round(montoTotal) +"");
+            ejVenta.setMonto(Math.round(montoTotal) + "");
             ejVenta.setFormaPago(formaPgo);
             ejVenta.setCliente(new Cliente(venta.getCliente().getId()));
             ejVenta.setTipoDescuento(tipoDescuento);
             ejVenta.setFechaVenta(new Timestamp(System.currentTimeMillis()));
             ejVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-            
-            
-            
-            DetalleVenta ejDetVentaElimi = new DetalleVenta();
-            ejDetVentaElimi.setVenta(ejVenta);
-            
-            List<DetalleVenta> ventaDetalle = detalleVentaManager.list(ejDetVentaElimi);
-            
-            for(DetalleVenta rpm : ventaDetalle){
-                detalleVentaManager.delete(rpm.getId());
-            }
-            
+
             if (formaPgo != null
                     && formaPgo.compareToIgnoreCase("CREDITO") == 0) {
-               
+
                 ejVenta.setCantidadCuotas(venta.getCantidadCuotas());
                 ejVenta.setPorcentajeInteresCredito(venta.getPorcentajeInteresCredito());
                 ejVenta.setMoraInteres(venta.getMoraInteres());
@@ -508,15 +493,15 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                     ejACobrar.setMonto(entrega);
                     ejACobrar.setEstado(DocumentoPagar.ENTREGA);
                     ejACobrar.setFecha(new Timestamp(System.currentTimeMillis()));
-                    
+
                     documentoCobrarManager.save(ejACobrar);
 
                     int contador = 1;
                     boolean tieneFecha = true;
-                    
+
                     Calendar date = Calendar.getInstance();
-                    date.set(Calendar.YEAR, fecha.getYear()+1900);
-                    
+                    date.set(Calendar.YEAR, fecha.getYear() + 1900);
+
                     for (int i = 1; i <= venta.getCantidadCuotas(); i++) {
 
                         ejACobrar = new DocumentoCobrar();
@@ -529,7 +514,6 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         if (venta.getCuotaFecha() != null
                                 && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                            
                             if (tieneFecha) {
                                 date.set(Calendar.MONTH, fecha.getMonth());
                                 tieneFecha = false;
@@ -545,7 +529,6 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                         } else {
 
-                            
                             date.set(Calendar.DATE, 5);
                             date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
@@ -573,7 +556,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                         Double costoInteresVeh = porcentajeVehiculo * montoTotalImteres;
 
-                        Double costoVeh =   costoInteresVeh - Math.round(ejVehiculo.getPrecioVenta());
+                        Double costoVeh = costoInteresVeh - Math.round(ejVehiculo.getPrecioVenta());
 
                         DetalleVenta ejDetVenta = new DetalleVenta();
                         ejDetVenta.setActivo("S");
@@ -631,10 +614,10 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 
                     int contador = 1;
                     boolean tieneFecha = true;
-                    
+
                     Calendar date = Calendar.getInstance();
-                    date.set(Calendar.YEAR, fecha.getYear()+1900);
-                    
+                    date.set(Calendar.YEAR, fecha.getYear() + 1900);
+
                     for (int i = 1; i <= venta.getCantidadCuotas(); i++) {
 
                         ejACobrar = new DocumentoCobrar();
@@ -647,7 +630,6 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         if (venta.getCuotaFecha() != null
                                 && venta.getCuotaFecha().compareToIgnoreCase("") != 0) {
 
-                                                 
                             if (tieneFecha) {
                                 date.set(Calendar.MONTH, fecha.getMonth());
                                 tieneFecha = false;

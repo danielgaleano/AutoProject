@@ -116,10 +116,7 @@ public class Venta extends Base {
     @Transient
     private List<Long> itemsVenta;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "venta")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private Collection<DetalleVenta> detalleVentaCollection;
-
+    
     
     public Venta() {
     }
@@ -433,19 +430,7 @@ public class Venta extends Base {
         this.tipoDescuento = tipoDescuento;
     }
 
-    /**
-     * @return the detalleVentaCollection
-     */
-    public Collection<DetalleVenta> getDetalleVentaCollection() {
-        return detalleVentaCollection;
-    }
-
-    /**
-     * @param detalleVentaCollection the detalleVentaCollection to set
-     */
-    public void setDetalleVentaCollection(Collection<DetalleVenta> detalleVentaCollection) {
-        this.detalleVentaCollection = detalleVentaCollection;
-    }
+    
 
     public String getEstadoVenta() {
         return estadoVenta;

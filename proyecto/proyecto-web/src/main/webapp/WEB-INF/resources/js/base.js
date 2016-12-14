@@ -20,7 +20,7 @@ $("#globalSearch").button({
     for (i = 0; i < l; i++) {
         cm = colModel[i];
         if (cm.search !== false && (cm.stype === undefined || cm.stype === "text")
-                && cm.name !== "id" && cm.name !== "act" && cm.name !== "confirmado") {
+                && cm.name !== "id" && cm.name !== "act" && cm.name !== "confirmado" && cm.name !== "activo") {
             if (cm.formatter !== 'number' && cm.formatter !== 'integer' && cm.formatter !== 'date') {
 
                 rules.push({

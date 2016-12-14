@@ -93,21 +93,22 @@ $(document).ready(function(data) {
             }
         },
         onSelectRow: function(row, isSelected) {
-            var data = $(grid_selector).jqGrid('getRowData', row);
-            setTimeout(function() {
-                var neto = parseInt($('#montoTotal').val());
-                console.log(neto);
-                if ($.isNumeric(neto) !== true) {
-                    neto = 0;
-                }
-                console.log(neto);
-                if (isSelected) {
-                    neto = neto + parseInt(data.precioVenta);
-                } else {
-                    neto = neto - parseInt(data.precioVenta);
-                }
-                $('#montoTotal').val(neto);
-            }, 0);
+            if (action !== "VISUALIZAR" && action !== "EDITAR") {
+                var data = $(grid_selector).jqGrid('getRowData', row);
+                setTimeout(function() {
+                    var neto = parseInt($('#montoTotal').val());
+                    if ($.isNumeric(neto) !== true) {
+                        neto = 0;
+                    }
+                    if (isSelected) {
+                        neto = neto + parseInt(data.precioVenta);
+                    } else {
+                        neto = neto - parseInt(data.precioVenta);
+                    }
+                    $('#montoTotal').val(neto);
+                }, 0);
+            }
+
         },
         onSelectAll: function(aRowids, status) {
             console.log(aRowids);

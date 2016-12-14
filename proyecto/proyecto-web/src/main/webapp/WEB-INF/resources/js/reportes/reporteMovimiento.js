@@ -330,6 +330,7 @@ function filtrarReporte() {
                 title: {
                     text: "Reporte Transacciones"
                 },
+				exportEnabled: true,
                 data: [
                     {
                         type: "pie",

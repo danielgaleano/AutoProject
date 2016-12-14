@@ -294,6 +294,7 @@ function filtrarReporte() {
                 title: {
                     text: "Ventas Realizadas"
                 },
+				exportEnabled: true,
                 data: [
                     {
                         type: "pie",

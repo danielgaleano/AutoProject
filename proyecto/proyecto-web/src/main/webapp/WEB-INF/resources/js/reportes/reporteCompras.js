@@ -293,6 +293,8 @@ function filtrarReporte() {
                 title: {
                     text: "Reporte Transacciones"
                 },
+				exportFileName: "Reporte Compras",
+				exportEnabled: true,
                 data: [
                     {
                         type: "pie",

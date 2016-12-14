@@ -294,6 +294,7 @@ function filtrarReporte() {
                 title: {
                     text: "Ventas Pendientes"
                 },
+				exportEnabled: true,
                 data: [
                     {
                         type: "pie",

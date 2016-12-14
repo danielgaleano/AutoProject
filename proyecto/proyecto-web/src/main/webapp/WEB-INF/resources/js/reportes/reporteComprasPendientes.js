@@ -294,6 +294,8 @@ function filtrarReporte() {
                 title: {
                     text: "Compras Pendientes"
                 },
+				exportFileName: "Compras Pendientes",
+				exportEnabled: true,
                 data: [
                     {
                         type: "pie",

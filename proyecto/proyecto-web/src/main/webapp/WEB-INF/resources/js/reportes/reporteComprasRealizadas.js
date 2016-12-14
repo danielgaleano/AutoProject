@@ -294,6 +294,7 @@ function filtrarReporte() {
                 title: {
                     text: "Compras Realizadas"
                 },
+				exportEnabled: true,
                 data: [
                     {
                         type: "pie",

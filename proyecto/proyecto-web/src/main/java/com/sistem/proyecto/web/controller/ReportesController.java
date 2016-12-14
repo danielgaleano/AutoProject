@@ -6,8 +6,10 @@
 package com.sistem.proyecto.web.controller;
 
 import com.google.gson.Gson;
+import com.sistem.proyecto.entity.Cliente;
 import com.sistem.proyecto.entity.Compra;
 import com.sistem.proyecto.entity.DetalleVenta;
+import com.sistem.proyecto.entity.DocumentoCobrar;
 import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Movimiento;
@@ -48,6 +50,11 @@ public class ReportesController extends BaseController {
             + "entrega,saldo,tipoDescuento,descuento,monto,montoDescuento,neto,pedido.numeroPedido,pedido.codigo,pedido.fechaEntrega,"
             + "pedido.cantidadAprobados,pedido.cantidadTotal,pedido.total,proveedor.id,proveedor.ruc,proveedor.nombre,proveedor.direccion,proveedor.telefono";
 
+    String atributosVentas = "id,estadoVenta,nroFactura,fechaCuota,fechaVenta,tipoVenta,formaPago,descripcion,porcentajeInteresCredito,montoInteres,"
+            + "tipoMoraInteres,moraInteres,cantidadCuotas,montoCuotas,cliente.nombre,activo,"
+            + "entrega,saldo,tipoDescuento,descuento,monto,montoDescuento,neto,"
+            + "cliente.id,cliente.documento,cliente.nombre,cliente.direccion,cliente.telefono,diasGracia";
+    
     String atributos = "id,proveedor.nombre,proveedor.ruc,proveedor.email,proveedor.telefono,proveedor.telefonoMovil,"
             + "cliente.nombre,cliente.documento,cliente.email,cliente.telefono,cliente.telefonoMovil,"
             + "fechaIngreso,tipoTransaccion,importe,neto,saldo,vuelto,fechaVencimiento,venta.nroFactura,"
@@ -89,6 +96,22 @@ public class ReportesController extends BaseController {
     public ModelAndView comprasRealizadas(Model model) {
         ModelAndView retorno = new ModelAndView();
         retorno.setViewName("reporteComprasRealizadas");
+        return retorno;
+
+    }
+    
+    @RequestMapping(value = "/ventas/pendientes", method = RequestMethod.GET)
+    public ModelAndView ventasPendientes(Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("reporteVentasPendientes");
+        return retorno;
+
+    }
+
+    @RequestMapping(value = "/ventas/realizadas", method = RequestMethod.GET)
+    public ModelAndView ventasRealizadas(Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("reporteVentasRealizadas");
         return retorno;
 
     }
@@ -963,6 +986,428 @@ public class ReportesController extends BaseController {
                     String cuotaPendiente = "";
 
                     for (DocumentoPagar pagar : aPagar) {
+                        if (pagar.getEstado().compareToIgnoreCase(DocumentoPagar.PARCIAL) == 0) {
+                            totalEgreso = totalEgreso + Math.round(pagar.getSaldo());
+                        } else if (pagar.getEstado().compareToIgnoreCase(DocumentoPagar.PENDIENTE) == 0) {
+                            totalEgreso = totalEgreso + Math.round(pagar.getMonto());
+                            importeCuota = pagar.getMonto();
+                            if (primeraCuota) {
+                                primeraCuota = false;
+                                cuotaPendiente = pagar.getNroCuota();
+                            }
+                        } else if (pagar.getEstado().compareToIgnoreCase(DocumentoPagar.ENTREGA) == 0) {
+                            totalEgreso = totalEgreso + Math.round(pagar.getMonto());
+                            if (primeraCuota) {
+                                primeraCuota = false;
+                                cuotaPendiente = pagar.getNroCuota();
+                            }
+                        }
+                    }
+                    rpm.put("saldo", totalEgreso);
+                    rpm.put("importe", importeCuota);
+                    rpm.put("cuota", cuotaPendiente);
+                }
+            }
+
+            if (todos) {
+                total = listMapGrupos.size();
+            }
+
+            Integer totalPaginas = total / cantidad;
+
+            retorno.setTotal(totalPaginas + 1);
+            retorno.setRetorno(listMapGrupos);
+            retorno.setPage(pagina);
+
+        } catch (Exception e) {
+            retorno.setError(true);
+            retorno.setMensaje("Error al optener ventas");
+            logger.error("Error al listar", e);
+        }
+
+        return retorno;
+    }
+    
+    
+    @RequestMapping(value = "/grafico/ventas/pendientes", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno reporteVentasPendientes(@ModelAttribute("fechaInicio") String fechaInicio,
+            @ModelAttribute("fechaFin") String fechaFin,
+            @ModelAttribute("estado") String estado) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        DTORetorno<List<DetalleCanvas>> retorno = new DTORetorno<>();
+
+        List<DetalleCanvas> reporte = new ArrayList<DetalleCanvas>();
+        List<Map<String, Object>> listMapGrupos = null;
+        List<Object> valorInicio = new ArrayList<>();
+        List<Object> valorFin = new ArrayList<>();
+
+        List<String> atributoInicio = new ArrayList<>();
+        atributoInicio.add("fechaVenta");
+        List<String> atributoFin = new ArrayList<>();
+        atributoFin.add("fechaVenta");
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        Date resultFechaInicio = null;
+        Date resultFechaFin = null;
+
+        Venta ejemplo = new Venta();
+        ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+        ejemplo.setEstadoCobro("PENDIENTE");
+
+        try {
+            inicializarVentaManager();
+            inicializarClienteManager();
+            inicializarDocumentoCobrarManager();
+            
+            if (fechaInicio != null && fechaInicio.compareToIgnoreCase("") != 0
+                    && fechaFin != null && fechaFin.compareToIgnoreCase("") != 0) {
+
+                resultFechaInicio = dateFormat.parse(fechaInicio);
+                resultFechaFin = dateFormat.parse(fechaFin);
+
+            } else {
+
+                Date date = new Date();
+                date.setHours(00);
+                date.setMinutes(00);
+
+                resultFechaInicio = date;
+
+                date.setHours(23);
+                date.setMinutes(59);
+
+                resultFechaFin = date;
+            }
+
+            valorInicio.add(resultFechaInicio);
+            valorFin.add(resultFechaFin);
+
+            Cliente ejCliente = new Cliente();
+            ejCliente.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+            if (estado != null && estado.compareToIgnoreCase("") != 0) {
+                ejCliente.setId(Long.parseLong(estado));
+            }
+
+            List<Map<String, Object>> listMapCliente = clienteManager.listAtributos(ejCliente, "id,nombre".split(","));
+
+            Long total = Long.parseLong("0");
+
+            for (Map<String, Object> pro : listMapCliente) {
+
+                ejemplo.setCliente(new Cliente(Long.parseLong(pro.get("id").toString())));
+
+                listMapGrupos = ventaManager.listAtributos(ejemplo, atributosVentas.split(","), true, null, null,
+                        "fechaVenta".split(","), "asd".split(","), true, true, null, null,
+                        null, null, null, atributoInicio, valorInicio, atributoFin,
+                        valorFin, null, true);
+
+                Long totalEgreso = Long.parseLong("0");
+
+                for (Map<String, Object> rpm : listMapGrupos) {
+
+                    if (rpm.get("formaPago").toString().compareToIgnoreCase("CREDITO") == 0) {
+                        DocumentoCobrar docPagar = new DocumentoCobrar();
+                        docPagar.setVenta(new Venta(Long.parseLong(rpm.get("id").toString())));
+
+                        List<DocumentoCobrar> aPagar = documentoCobrarManager.list(docPagar);
+
+                        for (DocumentoCobrar pagar : aPagar) {
+                            if (pagar.getEstado().compareToIgnoreCase(DocumentoCobrar.PARCIAL) == 0) {
+                                totalEgreso = totalEgreso + Math.round(pagar.getSaldo());
+                            } else if (pagar.getEstado().compareToIgnoreCase(DocumentoCobrar.PENDIENTE) == 0) {
+                                totalEgreso = totalEgreso + Math.round(pagar.getMonto());
+                            } else if (pagar.getEstado().compareToIgnoreCase(DocumentoPagar.ENTREGA) == 0) {
+                                totalEgreso = totalEgreso + Math.round(pagar.getMonto());
+                            }
+                        }
+                    } else {
+                        totalEgreso = totalEgreso + Math.round(Double.parseDouble(rpm.get("neto").toString()));
+                    }
+
+                }
+
+                total = total + totalEgreso;
+
+                if (totalEgreso > 0) {
+                    DetalleCanvas ejEgreso = new DetalleCanvas();
+                    ejEgreso.setLabel(pro.get("nombre").toString());
+                    ejEgreso.setY(totalEgreso);
+
+                    reporte.add(ejEgreso);
+                }
+
+            }
+
+            retorno.setData(reporte);
+
+            retorno.setError(false);
+            retorno.setMensaje("Se obtuvo exitosamente el reporte venta");
+
+        } catch (Exception ex) {
+            logger.error("Error al obtener el reporte venta", ex);
+            retorno.setError(true);
+            retorno.setMensaje("Error al obtener la venta");
+        }
+
+        return retorno;
+    }
+
+    @RequestMapping(value = "/grafico/ventas/realizadas", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno reporteVentasRealizadas(@ModelAttribute("fechaInicio") String fechaInicio,
+            @ModelAttribute("fechaFin") String fechaFin,
+            @ModelAttribute("estado") String estado) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        DTORetorno<List<DetalleCanvas>> retorno = new DTORetorno<>();
+
+        List<DetalleCanvas> reporte = new ArrayList<DetalleCanvas>();
+        List<Map<String, Object>> listMapGrupos = null;
+        List<Object> valorInicio = new ArrayList<>();
+        List<Object> valorFin = new ArrayList<>();
+
+        List<String> atributoInicio = new ArrayList<>();
+        atributoInicio.add("fechaVenta");
+        List<String> atributoFin = new ArrayList<>();
+        atributoFin.add("fechaVenta");
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        Date resultFechaInicio = null;
+        Date resultFechaFin = null;
+
+        Venta ejemplo = new Venta();
+        ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+        ejemplo.setEstadoCobro("CANCELADO");
+
+        try {
+            inicializarVentaManager();
+            inicializarClienteManager();
+            inicializarDocumentoCobrarManager();
+            
+            
+            if (fechaInicio != null && fechaInicio.compareToIgnoreCase("") != 0
+                    && fechaFin != null && fechaFin.compareToIgnoreCase("") != 0) {
+
+                resultFechaInicio = dateFormat.parse(fechaInicio);
+                resultFechaFin = dateFormat.parse(fechaFin);
+
+            } else {
+
+                Date date = new Date();
+                date.setHours(00);
+                date.setMinutes(00);
+
+                resultFechaInicio = date;
+
+                date.setHours(23);
+                date.setMinutes(59);
+
+                resultFechaFin = date;
+            }
+
+            valorInicio.add(resultFechaInicio);
+            valorFin.add(resultFechaFin);
+
+            Cliente ejCliente = new Cliente();
+            ejCliente.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+            if (estado != null && estado.compareToIgnoreCase("") != 0) {
+                ejCliente.setId(Long.parseLong(estado));
+            }
+
+            List<Map<String, Object>> listMapCliente = clienteManager.listAtributos(ejCliente, "id,nombre".split(","));
+
+            Long total = Long.parseLong("0");
+
+            for (Map<String, Object> pro : listMapCliente) {
+
+                ejemplo.setCliente(new Cliente(Long.parseLong(pro.get("id").toString())));
+
+                listMapGrupos = ventaManager.listAtributos(ejemplo, atributosVentas.split(","), true, null, null,
+                        "fechaVenta".split(","), "asd".split(","), true, true, null, null,
+                        null, null, null, atributoInicio, valorInicio, atributoFin,
+                        valorFin, null, true);
+
+                Long totalEgreso = Long.parseLong("0");
+
+                for (Map<String, Object> rpm : listMapGrupos) {
+
+                    if (rpm.get("formaPago").toString().compareToIgnoreCase("CREDITO") == 0) {
+                        DocumentoCobrar docPagar = new DocumentoCobrar();
+                        docPagar.setVenta(new Venta(Long.parseLong(rpm.get("id").toString())));
+
+                        List<DocumentoCobrar> aPagar = documentoCobrarManager.list(docPagar);
+
+                        for (DocumentoCobrar pagar : aPagar) {
+                            if (pagar.getEstado().compareToIgnoreCase(DocumentoCobrar.CANCELADO) == 0) {
+                                totalEgreso = totalEgreso + Math.round(pagar.getMonto());
+                            }
+                        }
+                    } else {
+                        totalEgreso = totalEgreso + Math.round(Double.parseDouble(rpm.get("neto").toString()));
+                    }
+
+                }
+
+                total = total + totalEgreso;
+
+                if (totalEgreso > 0) {
+                    DetalleCanvas ejEgreso = new DetalleCanvas();
+                    ejEgreso.setLabel(pro.get("nombre").toString());
+                    ejEgreso.setY(totalEgreso);
+
+                    reporte.add(ejEgreso);
+                }
+
+            }
+
+            retorno.setData(reporte);
+
+            retorno.setError(false);
+            retorno.setMensaje("Se obtuvo exitosamente el reporte compra");
+
+        } catch (Exception ex) {
+            logger.error("Error al obtener el reporte compra", ex);
+            retorno.setError(true);
+            retorno.setMensaje("Error al obtener la venta");
+        }
+
+        return retorno;
+    }
+    
+    @RequestMapping(value = "/ventas/pendientes/listar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno listarVentasPendientes(@ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filtros,
+            @ModelAttribute("fechaInicio") String fechaInicio,
+            @ModelAttribute("fechaFin") String fechaFin,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("estado") String estado,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos) {
+
+        DTORetorno retorno = new DTORetorno();
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        Venta ejemplo = new Venta();
+        ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+        List<Map<String, Object>> listMapGrupos = null;
+        List<Map<String, Object>> listVentasMap = null;
+        List<Object> valorInicio = new ArrayList<>();
+        List<Object> valorFin = new ArrayList<>();
+
+        List<String> atributoInicio = new ArrayList<>();
+        atributoInicio.add("fechaVenta");
+        List<String> atributoFin = new ArrayList<>();
+        atributoFin.add("fechaVenta");
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        Date resultFechaInicio = null;
+        Date resultFechaFin = null;
+
+        try {
+
+            inicializarVentaManager();
+
+            Gson gson = new Gson();
+            String camposFiltros = null;
+            String valorFiltro = null;
+
+            if (filtrar) {
+                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
+                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
+                    for (ReglaDTO regla : filtro.getRules()) {
+                        if (camposFiltros == null) {
+                            camposFiltros = regla.getField();
+                            valorFiltro = regla.getData();
+                        } else {
+                            camposFiltros += "," + regla.getField();
+                        }
+                    }
+
+                } else {
+                    if (filtro.getData() != null && filtro.getData().compareToIgnoreCase("") != 0) {
+                        ejemplo.setCliente(new Cliente(Long.parseLong(filtro.getData())));
+                    }//ejemplo = generarEjemplo(filtro, ejemplo);
+                }
+
+            }
+            if (estado != null && estado.compareToIgnoreCase("") != 0) {
+                ejemplo.setEstadoCobro(estado);
+            }
+
+            if (fechaInicio != null && fechaInicio.compareToIgnoreCase("") != 0
+                    && fechaFin != null && fechaFin.compareToIgnoreCase("") != 0) {
+
+                resultFechaInicio = dateFormat.parse(fechaInicio);
+                resultFechaFin = dateFormat.parse(fechaFin);
+
+            } else {
+
+                Date date = new Date();
+                date.setHours(00);
+                date.setMinutes(00);
+
+                resultFechaInicio = date;
+
+                date.setHours(23);
+                date.setMinutes(59);
+
+                resultFechaFin = date;
+            }
+
+            valorInicio.add(resultFechaInicio);
+            valorFin.add(resultFechaFin);
+
+            // ejemplo.setActivo("S");
+            if (ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0) {
+                ordenarPor = "nroFactura";
+            }
+
+            pagina = pagina != null ? pagina : 1;
+            Integer total = 0;
+
+            if (!todos) {
+                total = ventaManager.listAtributos(ejemplo, atributosVentas.split(","), true, null, null,
+                        ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                        null, null, null, atributoInicio, valorInicio, atributoFin,
+                        valorFin, null, true).size();
+            }
+
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+
+            if (total < inicio) {
+                inicio = total - total % cantidad;
+                pagina = total / cantidad;
+            }
+
+            listMapGrupos = ventaManager.listAtributos(ejemplo, atributosVentas.split(","), todos, inicio, cantidad,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    null, null, null, atributoInicio, valorInicio, atributoFin,
+                    valorFin, null, true);
+
+            for (Map<String, Object> rpm : listMapGrupos) {
+                Long totalEgreso = Long.parseLong("0");
+                if (rpm.get("formaPago").toString().compareToIgnoreCase("CREDITO") == 0) {
+
+                    DocumentoCobrar docPagar = new DocumentoCobrar();
+                    docPagar.setVenta(new Venta(Long.parseLong(rpm.get("id").toString())));
+
+                    List<DocumentoCobrar> aPagar = documentoCobrarManager.list(docPagar, "nroCuota", "asc");
+                    Double importeCuota = 0.0;
+                    boolean primeraCuota = true;
+
+                    String cuotaPendiente = "";
+
+                    for (DocumentoCobrar pagar : aPagar) {
                         if (pagar.getEstado().compareToIgnoreCase(DocumentoPagar.PARCIAL) == 0) {
                             totalEgreso = totalEgreso + Math.round(pagar.getSaldo());
                         } else if (pagar.getEstado().compareToIgnoreCase(DocumentoPagar.PENDIENTE) == 0) {

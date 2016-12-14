@@ -532,7 +532,9 @@ public class VentaController extends BaseController {
         try {
 
             inicializarVentaManager();
-
+            inicializarDetalleVentaManager();
+            inicializarVehiculoManager();
+            
             ejVenta = ventaManager.get(ejVenta);
 
             if (ejVenta != null) {
@@ -549,7 +551,18 @@ public class VentaController extends BaseController {
             ejVenta.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
 
             ventaManager.update(ejVenta);
-
+           
+            DetalleVenta ejDetalle = new DetalleVenta();
+            ejDetalle.setVenta(ejVenta);
+            
+            List<DetalleVenta> ventaDetalle = detalleVentaManager.list(ejDetalle);
+            
+            for(DetalleVenta rpm : ventaDetalle){
+                
+                rpm.getVehiculo().setEstado(Vehiculo.STOCK);
+                
+                vehiculoManager.update(rpm.getVehiculo());
+            }
             retorno.setError(false);
             retorno.setMensaje("La venta " + nombre + " ya se  rechazo exitosamente.");
 

@@ -59,6 +59,7 @@ $(document).ready(function(data) {
                                 + '</div>');
                     } else {
                         $('#interes').val("0");
+						$('#vuelto').val("0");
                         $('#importePagar').val("");
                         cargarDatos(data.id);
                         $("#grid").trigger("reloadGrid", [{page: 1, current: true}]);

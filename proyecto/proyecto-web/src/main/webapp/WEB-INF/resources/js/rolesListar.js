@@ -38,7 +38,7 @@ $(document).ready(function(data) {
                     }
                 }
             },
-            {name: 'empresa.id', index: 'empresa.id', width: 90, editable: true, hidden: true, editrules: {edithidden: false, custom: true, custom_func: customValidationMessage}, clearSearch: true,
+            {name: 'empresa.id', index: 'empresa.id', formatter: 'integer', width: 90, editable: true, hidden: true, editrules: {edithidden: false, custom: true, custom_func: customValidationMessage}, clearSearch: true,
                 cellattr: function(rowid, tv, rawObject, cm, rdata) {
                     if ($.isNumeric(rowid) !== true) {
                         return 'class="tableedit-combo"';

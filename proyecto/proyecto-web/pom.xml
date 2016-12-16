@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-    <artifactId>proyecto</artifactId>
-    <groupId>com.sistem</groupId>
-    <version>1</version>
-  </parent>
+        <artifactId>proyecto</artifactId>
+        <groupId>com.sistem</groupId>
+        <version>1</version>
+    </parent>
 
     <artifactId>proyecto-web</artifactId>
     <packaging>war</packaging>
@@ -29,70 +29,70 @@
     </properties>
     <dependencyManagement>
         <dependencies>
-                <!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any 
-                        dependencies from org.jboss.spec will have their version defined by this 
-                        BOM -->
-                <!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill 
-                        of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection) 
-                        of artifacts. We use this here so that we always get the correct versions 
-                        of artifacts. Here we use the jboss-javaee-web-6.0 stack (you can read this 
-                        as the JBoss stack of the Java EE Web Profile 6 APIs), and we use version 
-                        3.0.0.Final which is the latest release of the stack. You can actually use 
-                        this stack with any version of JBoss AS that implements Java EE 6, not just 
-                        JBoss AS 7! -->
-                <dependency>
-                        <groupId>org.jboss.bom</groupId>
-                        <artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
-                        <version>${version.jboss.bom}</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                </dependency>
+            <!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any 
+            dependencies from org.jboss.spec will have their version defined by this 
+            BOM -->
+            <!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill 
+            of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection) 
+            of artifacts. We use this here so that we always get the correct versions 
+            of artifacts. Here we use the jboss-javaee-web-6.0 stack (you can read this 
+            as the JBoss stack of the Java EE Web Profile 6 APIs), and we use version 
+            3.0.0.Final which is the latest release of the stack. You can actually use 
+            this stack with any version of JBoss AS that implements Java EE 6, not just 
+            JBoss AS 7! -->
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-hibernate</artifactId>
+                <version>${version.jboss.bom}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
-                <dependency>
-                        <groupId>org.jboss.bom</groupId>
-                        <artifactId>jboss-javaee-6.0-with-spring</artifactId>
-                        <version>${version.jboss.bom}</version>
-                        <type>pom</type>
-                        <scope>import</scope>
-                </dependency>
+            <dependency>
+                <groupId>org.jboss.bom</groupId>
+                <artifactId>jboss-javaee-6.0-with-spring</artifactId>
+                <version>${version.jboss.bom}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
                 
-                <dependency>
-                    <groupId>joda-time</groupId>
-                    <artifactId>joda-time</artifactId>
-                    <version>2.9.6</version>
-                  </dependency>
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.9.6</version>
+            </dependency>
 
-                <dependency>
-                        <groupId>taglibs</groupId>
-                        <artifactId>standard</artifactId>
-                        <version>${version.standard.taglibs}</version>
-                </dependency>
+            <dependency>
+                <groupId>taglibs</groupId>
+                <artifactId>standard</artifactId>
+                <version>${version.standard.taglibs}</version>
+            </dependency>
 
-                <dependency>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                        <version>${version.commons.logging}</version>
-                </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${version.commons.logging}</version>
+            </dependency>
         </dependencies>
-</dependencyManagement>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
-                <groupId>com.sistem</groupId>
-                <artifactId>proyecto-ejb</artifactId>
-                <type>ejb</type>
-                <scope>provided</scope>
+            <groupId>com.sistem</groupId>
+            <artifactId>proyecto-ejb</artifactId>
+            <type>ejb</type>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <scope>provided</scope>
-                <exclusions>
-                        <!-- <exclusion> -->
-                        <!-- <groupId>org.slf4j</groupId> -->
-                        <!-- <artifactId>slf4j-api</artifactId> -->
-                        <!-- </exclusion> -->
-                </exclusions>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <scope>provided</scope>
+            <exclusions>
+                <!-- <exclusion> -->
+                <!-- <groupId>org.slf4j</groupId> -->
+                <!-- <artifactId>slf4j-api</artifactId> -->
+                <!-- </exclusion> -->
+            </exclusions>
         </dependency>
 
         <!-- <dependency> -->
@@ -102,32 +102,32 @@
         <!-- </dependency> -->
 
         <!-- Annotation processor that raising compilation errors whenever constraint 
-                annotations are incorrectly used. -->
+        annotations are incorrectly used. -->
         <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator-annotation-processor</artifactId>
-                <scope>provided</scope>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <scope>provided</scope>
         </dependency>
         <!-- Spring -->
         <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-                <version>${spring.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>${spring.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${spring.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${spring.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -173,7 +173,17 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
             <version>${spring.security.version}</version>
-        </dependency>        
+        </dependency> 
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.1</version>
+        </dependency>       
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
@@ -181,40 +191,99 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-mapper-asl</artifactId>
-                <version>1.9.3</version>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.3</version>
         </dependency>
 
         <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-core-asl</artifactId>
-                <version>1.9.3</version>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.9.3</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>5.6.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>5.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.3</version>
+        </dependency>
+
+        <!-- Apache Commons Upload -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.13</version>
         </dependency>
  
         <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>4.1.3</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.1.3</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-core</artifactId>
+            <version>2.7.12</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.11</version>
         </dependency>
 
         <dependency>
-                <groupId>jstl</groupId>
-                <artifactId>jstl</artifactId>
-                <version>1.2</version>
-                <scope>provided</scope>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-                <version>4.1.4</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.1.4</version>
         </dependency>
 
         <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpmime</artifactId>
-                <version>4.1.3</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.6.2-jaxb-1.0.6</version>
         </dependency>
         
         <dependency>
@@ -228,36 +297,51 @@
             <version>2.1.4.RELEASE</version>
         </dependency>
         <dependency>
-                <groupId>org.thymeleaf</groupId>
-                <artifactId>thymeleaf-spring3</artifactId>
-                <version>2.1.0.RELEASE</version>
-                <exclusions>
-                        <exclusion>
-                                <artifactId>slf4j-api</artifactId>
-                                <groupId>org.slf4j</groupId>
-                        </exclusion>
-                </exclusions>
+            <groupId>org.jboss.ws.cxf</groupId>
+            <artifactId>jbossws-cxf-client</artifactId>
+            <version>4.1.0.Final</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>httpserver</artifactId>
+                    <groupId>org.jboss.com.sun.httpserver</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>getopt</artifactId>
+                    <groupId>gnu-getopt</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-                <groupId>org.thymeleaf.extras</groupId>
-                <artifactId>thymeleaf-extras-springsecurity3</artifactId>
-                <version>2.1.0.RELEASE</version>
-                <exclusions>
-                        <exclusion>
-                                <artifactId>slf4j-api</artifactId>
-                                <groupId>org.slf4j</groupId>
-                        </exclusion>
-                </exclusions>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf-spring3</artifactId>
+            <version>2.1.0.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-                <groupId>nz.net.ultraq.thymeleaf</groupId>
-                <artifactId>thymeleaf-layout-dialect</artifactId>
-                <version>1.2</version>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity3</artifactId>
+            <version>2.1.0.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-                <groupId>net.sourceforge.nekohtml</groupId>
-                <artifactId>nekohtml</artifactId>
-                <version>1.9.19</version>
+            <groupId>nz.net.ultraq.thymeleaf</groupId>
+            <artifactId>thymeleaf-layout-dialect</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.nekohtml</groupId>
+            <artifactId>nekohtml</artifactId>
+            <version>1.9.19</version>
         </dependency>
 
     </dependencies>
@@ -266,33 +350,33 @@
         <finalName>${project.artifactId}</finalName>
         <plugins>
 
-                <plugin>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>${version.war.plugin}</version>
-                        <configuration>
-                                <!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
-                                <failOnMissingWebXml>false</failOnMissingWebXml>
-                        </configuration>
-                </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${version.war.plugin}</version>
+                <configuration>
+                    <!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
 
-                <!-- Force Java 6 -->
-                <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>2.5</version>
-                        <configuration>
-                                <source>1.7</source>
-                                <target>1.7</target>
-                        </configuration>
-                </plugin>
-                <!-- Deployent on AS from console -->
-                <plugin>
-                        <groupId>org.jboss.as.plugins</groupId>
-                        <artifactId>jboss-as-maven-plugin</artifactId>
-                        <version>${version.jboss.as.maven.plugin}</version>
-                </plugin>
+            <!-- Force Java 6 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <!-- Deployent on AS from console -->
+            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <version>${version.jboss.as.maven.plugin}</version>
+            </plugin>
 
         </plugins>
-</build>
+    </build>
 
 </project>

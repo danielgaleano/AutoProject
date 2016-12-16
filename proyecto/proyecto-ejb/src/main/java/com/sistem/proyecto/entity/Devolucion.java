@@ -46,6 +46,13 @@ public class Devolucion extends Base {
     @JoinColumn(name = "empresa")
     private Empresa empresa;
     
+    @Column(name = "monto_recepcion")
+    private String montoRecepcion;
+    
+    @Column(name = "estado_vehiculo")
+    private String estadoVehiculo;
+    
+    
     public Devolucion() {
     }
 
@@ -107,6 +114,22 @@ public class Devolucion extends Base {
 
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
+    }
+
+    public String getMontoRecepcion() {
+        return montoRecepcion;
+    }
+
+    public void setMontoRecepcion(String montoRecepcion) {
+        this.montoRecepcion = montoRecepcion;
+    }
+
+    public String getEstadoVehiculo() {
+        return estadoVehiculo;
+    }
+
+    public void setEstadoVehiculo(String estadoVehiculo) {
+        this.estadoVehiculo = estadoVehiculo;
     }
     
     

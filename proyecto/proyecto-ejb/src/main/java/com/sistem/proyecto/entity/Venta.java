@@ -111,6 +111,9 @@ public class Venta extends Base {
     @Column(name = "estado_cobro")
     private String estadoCobro;
     
+    @Column(name = "numero_pagare")
+    private String nroPagare;
+    
     @Transient
     private String cuotaFecha;
     
@@ -485,6 +488,14 @@ public class Venta extends Base {
 
     public void setTimbrado(String timbrado) {
         this.timbrado = timbrado;
+    }
+
+    public String getNroPagare() {
+        return nroPagare;
+    }
+
+    public void setNroPagare(String nroPagare) {
+        this.nroPagare = nroPagare;
     }
     
     

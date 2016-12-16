@@ -1483,16 +1483,16 @@ public class ReportesController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/exportar/factura/{tipo}/{id}", method = RequestMethod.GET)
-    public void exportarDepositos(@PathVariable("tipo") String tipo, @PathVariable("id") Long id,
+    public void exportarFactura(@PathVariable("tipo") String tipo, @PathVariable("id") Long id,
             HttpServletRequest request, HttpServletResponse response) {
-        
+
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        
+
         try {
             inicializarVentaManager();
             inicializarDetalleVentaManager();
             inicializarEmpresaManager();
-            
+
             JasperReport reporte = (JasperReport) JRLoader
                     .loadObjectFromFile(request
                             .getSession()
@@ -1501,37 +1501,36 @@ public class ReportesController extends BaseController {
                                     "WEB-INF/resources/reports/proyecto-factura.jasper"));
 
             Map<String, Object> parametros = new HashMap<String, Object>();
-            
+
             Map<String, Object> cliente = new HashMap<String, Object>();
-            
+
             String dirLogo = servletContext
                     .getRealPath("/WEB-INF/resources/img/empresa.jpg")
                     + "/";
             parametros.put("DIR_LOGO", dirLogo);
             parametros.put("titulo", "Factura Venta");
-            
+
             Empresa ejEmpresa = empresaManager.get(userDetail.getIdEmpresa());
-            
+
             parametros.put("ruc", ejEmpresa.getRuc());
             parametros.put("empresa", ejEmpresa.getNombre());
-            
-            
+
             Venta ejemplo = new Venta();
             ejemplo.setId(id);
             ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-            
+
             ejemplo = ventaManager.get(ejemplo);
-            
+
             parametros.put("nombre", ejemplo.getCliente().getNombre());
             parametros.put("documento", ejemplo.getCliente().getDocumento());
             parametros.put("direccion", ejemplo.getCliente().getDireccion());
             parametros.put("telefono", ejemplo.getCliente().getTelefono());
-            parametros.put("formaPago", ejemplo.getFormaPago());            
-            
+            parametros.put("formaPago", ejemplo.getFormaPago());
+
             parametros.put("factura", ejemplo.getNroFactura());
             parametros.put("timbrado", ejemplo.getTimbrado());
             parametros.put("valido", "2017/08/15");
-                       
+
             List<Object> columnas = new ArrayList<Object>();
             columnas.add("Razon Social");
             columnas.add("Documento/Ruc");
@@ -1556,38 +1555,38 @@ public class ReportesController extends BaseController {
             } else {
                 return;
             }
-            DetalleVenta ejDetalle =  new DetalleVenta();
+            DetalleVenta ejDetalle = new DetalleVenta();
             ejDetalle.setVenta(ejemplo);
-            
+
             List<Map<String, Object>> listMapCategorias = detalleVentaManager
                     .listAtributos(ejDetalle, "vehiculo.tipo.nombre,vehiculo.codigo,vehiculo.marca.nombre,vehiculo.modelo.nombre,vehiculo.anho,neto".split(","),
                             false);
             Long total = Long.parseLong("0");
-            
-            for(Map<String, Object> rpm : listMapCategorias){
-                String descipcion = rpm.get("vehiculo.tipo.nombre").toString() +
-                        " " + rpm.get("vehiculo.marca.nombre").toString() +
-                        " " + rpm.get("vehiculo.modelo.nombre").toString() +
-                        " " + rpm.get("vehiculo.anho").toString();
-                
+
+            for (Map<String, Object> rpm : listMapCategorias) {
+                String descipcion = rpm.get("vehiculo.tipo.nombre").toString()
+                        + " " + rpm.get("vehiculo.marca.nombre").toString()
+                        + " " + rpm.get("vehiculo.modelo.nombre").toString()
+                        + " " + rpm.get("vehiculo.anho").toString();
+
                 rpm.put("CANTIDAD", 1);
                 rpm.put("CODPRODUCTO", rpm.get("vehiculo.codigo").toString());
                 rpm.put("DESCRIPCION", descipcion);
                 rpm.put("PRECIO", Math.round(Double.parseDouble(rpm.get("neto").toString())));
-                
+
                 total = total + Math.round(Double.parseDouble(rpm.get("neto").toString()));
-                
+
                 rpm.put("IVA", Math.round(Double.parseDouble(rpm.get("neto").toString())));
             }
-            
-            parametros.put("subTotal", total+"");
-            parametros.put("totalPagar", total+"");
-            
-            Double iva = Double.parseDouble(total+"") / 11;
-            
-            parametros.put("totalIva", Math.round(iva)+"");
-            parametros.put("iva10", Math.round(iva)+"");
-            
+
+            parametros.put("subTotal", total + "");
+            parametros.put("totalPagar", total + "");
+
+            Double iva = Double.parseDouble(total + "") / 11;
+
+            parametros.put("totalIva", Math.round(iva) + "");
+            parametros.put("iva10", Math.round(iva) + "");
+
             JasperDatasource datasource = new JasperDatasource();
             datasource.addAll(listMapCategorias);
 
@@ -1596,6 +1595,125 @@ public class ReportesController extends BaseController {
 
             response.addHeader("Content-Disposition", "attachment; filename=\""
                     + "export-depositos." + tipo + "\"");
+            exporter.setParameter(JRExporterParameter.CHARACTER_ENCODING,
+                    "Cp1252");
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+            ServletOutputStream output = response.getOutputStream();
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, output);
+            exporter.exportReport();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/exportar/pagare/{tipo}/{id}", method = RequestMethod.GET)
+    public void exportarPagare(@PathVariable("tipo") String tipo, @PathVariable("id") Long id,
+            HttpServletRequest request, HttpServletResponse response) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        try {
+            inicializarVentaManager();
+            inicializarDetalleVentaManager();
+            inicializarEmpresaManager();
+            inicializarDocumentoCobrarManager();
+
+            JasperReport reporte = (JasperReport) JRLoader
+                    .loadObjectFromFile(request
+                            .getSession()
+                            .getServletContext()
+                            .getRealPath(
+                                    "WEB-INF/resources/reports/proyecto-pagare.jasper"));
+
+            Map<String, Object> parametros = new HashMap<String, Object>();
+
+            Map<String, Object> cliente = new HashMap<String, Object>();
+
+            parametros.put("titulo", "Pagare");
+            
+
+            Empresa ejEmpresa = empresaManager.get(userDetail.getIdEmpresa());
+
+            parametros.put("ruc", ejEmpresa.getRuc());
+            parametros.put("nombreEmpresa", ejEmpresa.getNombre());
+
+            Venta ejemplo = new Venta();
+            ejemplo.setId(id);
+            ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+                 
+            ejemplo = ventaManager.get(ejemplo);
+            
+            parametros.put("numero", ejemplo.getNroPagare());
+            parametros.put("cliente", ejemplo.getCliente().getNombre());
+            parametros.put("direccion", ejemplo.getCliente().getDireccion());
+
+            String emision = fecha_español.format(ejemplo.getFechaVenta());
+
+            parametros.put("emision", emision);
+
+            if (ejemplo.getEntrega() != null && ejemplo.getEntrega().compareToIgnoreCase("") != 0) {
+                Long total = Math.round(ejemplo.getNeto()) + Math.round(Double.parseDouble(ejemplo.getEntrega()));
+                parametros.put("montoTotal", total + "");
+            } else {
+                parametros.put("montoTotal", Math.round(ejemplo.getNeto()) + "");
+            }
+
+            if (ejemplo.getFormaPago().compareToIgnoreCase("CREDITO") == 0) {
+                DocumentoCobrar ejCobrar = new DocumentoCobrar();
+                ejCobrar.setVenta(ejemplo);
+
+                List<DocumentoCobrar> ejCobrarList = documentoCobrarManager.list(ejCobrar, "nroCuota", "desc");
+
+                for (DocumentoCobrar cobrar : ejCobrarList) {
+                    parametros.put("vencimiento", fecha.format(cobrar.getFecha()));
+                    parametros.put("fechaVencimiento", fecha_español.format(cobrar.getFecha()));
+                    break;
+                }
+            } else {
+                parametros.put("vencimiento", fecha.format(ejemplo.getFechaVenta()));
+                parametros.put("fechaVencimiento", fecha_español.format(ejemplo.getFechaVenta()));
+            }
+
+            JRExporter exporter;
+            if (tipo.equals("pdf")) {
+                response.setContentType("application/pdf");
+                exporter = new JRPdfExporter();
+            } else if (tipo.equals("xls")) {
+                parametros.put(JRParameter.IS_IGNORE_PAGINATION, true);
+                response.setContentType("application/vnd.ms-excel");
+                exporter = new JRXlsExporter();
+            } else {
+                return;
+            }
+            DetalleVenta ejDetalle = new DetalleVenta();
+            ejDetalle.setVenta(ejemplo);
+
+            List<Map<String, Object>> listMapCategorias = detalleVentaManager
+                    .listAtributos(ejDetalle, "vehiculo.tipo.nombre,vehiculo.codigo,vehiculo.marca.nombre,vehiculo.modelo.nombre,vehiculo.anho,neto".split(","),
+                            false);
+            Long total = Long.parseLong("0");
+            String descipcion = "Venta Vehiculos ,";
+
+            for (Map<String, Object> rpm : listMapCategorias) {
+
+                descipcion = descipcion + "- " + rpm.get("vehiculo.marca.nombre").toString()
+                        + " " + rpm.get("vehiculo.modelo.nombre").toString()
+                        + " " + rpm.get("vehiculo.anho").toString();
+
+            }
+
+            parametros.put("concepto", descipcion);
+
+            JasperDatasource datasource = new JasperDatasource();
+            datasource.addAll(listMapCategorias);
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte,
+                    parametros, datasource);
+
+            response.addHeader("Content-Disposition", "attachment; filename=\""
+                    + "export-pagare." + tipo + "\"");
             exporter.setParameter(JRExporterParameter.CHARACTER_ENCODING,
                     "Cp1252");
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);

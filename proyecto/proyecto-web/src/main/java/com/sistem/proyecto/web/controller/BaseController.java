@@ -32,6 +32,8 @@ import com.sistem.proyecto.manager.PedidoManager;
 import com.sistem.proyecto.manager.UsuarioManager;
 import com.sistem.proyecto.manager.VentaManager;
 import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.naming.Context;
@@ -50,6 +52,9 @@ public class BaseController {
     
     static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     static SecureRandom rnd = new SecureRandom();
+    
+    SimpleDateFormat fecha_español = new SimpleDateFormat("EEE d 'de' MMMM 'de' yyyy", new Locale("es","ES"));
+    SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");
 
     protected UsuarioManager usuarioManager;
 

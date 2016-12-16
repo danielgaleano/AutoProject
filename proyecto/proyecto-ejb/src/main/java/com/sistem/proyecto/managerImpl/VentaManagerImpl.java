@@ -97,6 +97,27 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
             ejTimbrado = numeracionFacturaManager.get(ejTimbrado);
 
             ejVenta.setTimbrado(ejTimbrado.getValor());
+
+            ejTimbrado = new NumeracionFactura();
+            ejTimbrado.setEmpresa(new Empresa(idEmpresa));
+            ejTimbrado.setNombre(NumeracionFactura.NRO_PAGARE);
+
+            ejTimbrado = numeracionFacturaManager.get(ejTimbrado);
+            
+            Long numeracion = Long.parseLong(ejTimbrado.getValor()) + 1;
+            
+            String valor = "";
+            
+            if (numeracion.toString().length() == 1) {
+                valor = "00" + numeracion;
+            }else if (numeracion.toString().length() == 2){
+                valor = "0" + numeracion;
+            }else if (numeracion.toString().length() > 2){
+                valor = "" + numeracion;
+            }
+            
+            ejVenta.setNroPagare(valor);
+            
             ejVenta.setNroFactura(nroFactura);
             ejVenta.setActivo("S");
             ejVenta.setEstadoVenta(Venta.VENTA_PENDIENTE);
@@ -205,14 +226,13 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 //                            }
 //
 //                            date.set(Calendar.DATE, fecha.getDate());
-                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), fecha.getDate(), i-1);
-                            
-                            
+                            Date pruebaDate = getDataVencimento(fecha.getYear() + 1900, fecha.getMonth(), fecha.getDate(), i - 1);
+
                             ejACobrar.setFecha(pruebaDate);
 
                         } else {
 
-                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), 5, i-1);
+                            Date pruebaDate = getDataVencimento(fecha.getYear() + 1900, fecha.getMonth(), 5, i - 1);
                             //date.set(Calendar.DATE, 5);
                             //date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
@@ -324,12 +344,12 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 //                            }
 //
 //                            date.set(Calendar.DATE, fecha.getDate());
-                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), fecha.getDate(), i-1);
+                            Date pruebaDate = getDataVencimento(fecha.getYear() + 1900, fecha.getMonth(), fecha.getDate(), i - 1);
                             ejACobrar.setFecha(pruebaDate);
 
                         } else {
 
-                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), 5, i-1);
+                            Date pruebaDate = getDataVencimento(fecha.getYear() + 1900, fecha.getMonth(), 5, i - 1);
                             //date.set(Calendar.DATE, 5);
                             //date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
@@ -417,7 +437,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                 mensaje.setError(true);
                 mensaje.setMensaje("La venta no puede estar vacia.");
                 return mensaje;
-            }            
+            }
 
             Double montoTotal = 0.0;
 
@@ -529,12 +549,12 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 //                            }
 //
 //                            date.set(Calendar.DATE, fecha.getDate());
-                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), fecha.getDate(), i-1);
+                            Date pruebaDate = getDataVencimento(fecha.getYear() + 1900, fecha.getMonth(), fecha.getDate(), i - 1);
 
                             ejACobrar.setFecha(pruebaDate);
 
                         } else {
-                              Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), 5, i-1);
+                            Date pruebaDate = getDataVencimento(fecha.getYear() + 1900, fecha.getMonth(), 5, i - 1);
 //                            date.set(Calendar.DATE, 5);
 //                            date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
@@ -646,11 +666,11 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
 //                            }
 //
 //                            date.set(Calendar.DATE, fecha.getDate());
-                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), fecha.getDate(), i-1);
+                            Date pruebaDate = getDataVencimento(fecha.getYear() + 1900, fecha.getMonth(), fecha.getDate(), i - 1);
                             ejACobrar.setFecha(pruebaDate);
 
                         } else {
-                            Date pruebaDate = getDataVencimento(fecha.getYear()+1900, fecha.getMonth(), 5, i-1);
+                            Date pruebaDate = getDataVencimento(fecha.getYear() + 1900, fecha.getMonth(), 5, i - 1);
 //                            date.set(Calendar.DATE, 5);
 //                            date.set(Calendar.MONTH, fecha.getMonth() + contador);
 
@@ -733,20 +753,20 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
         }
         return sb.toString();
     }
-    
-    Date getDataVencimento(Integer anho, Integer mes, Integer dia, Integer planoPagamento){
+
+    Date getDataVencimento(Integer anho, Integer mes, Integer dia, Integer planoPagamento) {
         //monta data para JodaTime
         DateTime data = new DateTime();//pega data de hoje        
         DateTime d = data.plusMonths(planoPagamento);//adiciona plano de pagamento
-        
+
         //cria data de vencimento
-        DateTime vencimento = new DateTime(anho, mes+1, dia, 0, 0, 0, 0);
+        DateTime vencimento = new DateTime(anho, mes + 1, dia, 0, 0, 0, 0);
         DateTime venc = vencimento.plusMonths(planoPagamento);
         //convert o datetime para date
         Date dtVencimento = vencimento.toDate();
-        Date dtVenc = venc.toDate(); 
+        Date dtVenc = venc.toDate();
         //retorna a proxima data vencimento
         return dtVenc;
     }
-    
+
 }

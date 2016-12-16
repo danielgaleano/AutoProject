@@ -23,6 +23,12 @@ import javax.persistence.Transient;
  */
 @Entity
 public class NumeracionFactura implements Serializable {
+    
+    public static final String TIMBRADO = "TIMBRADO";
+    public static final String INICIO = "INICIO";
+    public static final String MEDIO = "MEDIO";
+    public static final String FINAL = "FINAL";
+    public static final String NRO_PAGARE = "NRO_PAGARE";
 
     private static final long serialVersionUID = 15465L;
 

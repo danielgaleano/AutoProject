@@ -403,6 +403,142 @@
             </div>
           </div><!-- fin modal venta -->
           
+          
+          <!-- Modal devolucion -->
+        <div class="modal fade" id="devolucion-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Devolución</h4>
+              </div>
+              <div class="modal-body">
+                        
+                            
+                                <form id="validation-formDevolucion" class="form-horizontal dropzone" enctype="multipart/form-data">
+                                    <div class="box-body">
+
+                                        <div class="col-xs-12">
+                                            <div id="mensaje"></div>
+                                            
+                                                <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
+                                                    
+                                                    <input  id="idDevolucion" name="id" type="hidden" class="form-control tableusuario-input" />
+                                                    <input  id="idVehiculoDevolucion" name="vehiculo.id" type="hidden" class="form-control tableusuario-input" />
+                                                    <input  id="idVentaDevolucion" name="venta.id" type="hidden" class="form-control tableusuario-input" />
+                                                    <input  id="idClienteDevolucion" name="cliente.id" type="hidden" class="form-control tableusuario-input" />
+                                                    
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Cliente</label>
+                                                        <div class="col-lg-8">
+                                                            <input id="nombreDevolucion" name="nombreDevolucion" type="text" placeholder="Nombre Cliente" class="form-control tableusuario-input" disabled="disabled"/> 
+                                                            <span class="glyphicon form-control-feedback" id="nombreDevolucion1"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Nro. Factura</label>
+                                                        <div class="col-lg-8">
+                                                            <input id="nroFacturaDevolucion" name="nroFacturaDevolucion" type="text" data-mask="" data-inputmask="'mask': '999-999[-999999]'" placeholder="Nro. de factura" class="form-control tableusuario-input " disabled="disabled"/> 
+                                                            <span class="glyphicon form-control-feedback" id="nroFacturaDevolucion1"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Monto Total</label>
+                                                        <div class="col-lg-8">
+                                                            <input id="montoTotalDevolucion" name="montoTotalDevolucion" type="text" disabled="disabled" placeholder="Monto Total" class="form-control tableusuario-input "/> 
+                                                            <span class="glyphicon form-control-feedback" id="montoTotalDevolucion1"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        
+                                                        <label class="col-lg-4 control-label">Chasis</label>
+                                                        <div class="col-lg-8">
+                                                            <input id="chasisDevolucion" name="chasisDevolucion" type="text" placeholder="Chasis" class="form-control tableusuario-input " disabled="disabled"/> 
+                                                            <span class="glyphicon form-control-feedback" id="chasisDevolucion1"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Costo Vehiculo</label>
+                                                        <div class="col-lg-8">
+                                                            <input  id="costoDevolucion" type="text" name="costoDevolucion" disabled="disabled" placeholder="Costo" class="form-control tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="costoDevolucion1"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        
+                                                    </div>
+                                                    </div>
+                                                    <div class="row">
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Marca</label>
+                                                        <div class="col-lg-8">
+                                                            <input  id="marcaDevolucion" type="text" name="marcaDevolucion" disabled="disabled" placeholder="Marca" class="form-control tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="marcaDevolucion1"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        <label class="col-lg-4 control-label">Modelo</label>
+                                                        <div class="col-lg-8">
+                                                            <input  id="modeloDevolucion" type="text" name="modeloDevolucion" disabled="disabled" placeholder="Modelo" class="form-control tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="modeloDevolucion1"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
+                                                        
+                                                    </div>
+                                                    </div>
+                                                    
+                                                    
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                                        <label class="col-lg-2 control-label">Monto Recepción</label>
+                                                        <div class="col-lg-6">
+                                                            <input  id="montoRecepcion" type="text" name="montoRecepcion" placeholder="Monto Recepcion" class="form-control tableusuario-input " /> 
+                                                            <span class="glyphicon form-control-feedback" id="montoRecepcion1" style="right: 15px"></span>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                   
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                                        <label class="col-lg-2 control-label">Estado del Vehiculo</label>
+                                                        <div class="col-lg-10">
+                                                            <textarea rows="3"   id="estadoVehiculo" name="estadoVehiculo" type="text" placeholder="Estado del Vehiculo"  class="form-control limited tableusuario-input " />
+                                                            <span class="glyphicon form-control-feedback" id="estadoVehiculo1" style="right: 15px"></span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group col-xs-12 col-sm-12 col-lg-12 col-md-12">
+                                                        <label class="col-lg-2 control-label">Motivo Devolución</label>
+                                                        <div class="col-lg-10">
+                                                            <textarea rows="3"   id="motivoDevolucion" name="motivoDevolucion" type="text" placeholder="Motivo"  class="form-control limited tableusuario-input " />
+                                                            <span class="glyphicon form-control-feedback" id="motivoDevolucion1" style="right: 15px"></span>
+                                                        </div>
+                                                    </div>
+
+                                                </div>                           
+                                            
+
+                                        </div>
+                                    </div>
+
+                                </form>
+                                  
+                            
+
+                            
+
+                        
+                    </div><!--fin tab-->
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button id="guardarDevolucion" type="button" class="btn btn-primary">Guardar</button>
+                    
+              </div>
+            </div>
+          </div><!-- fin modal devolucion -->
+          
         
         <!-- Main content -->
         <section class="content">
@@ -434,9 +570,12 @@
     <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
     <script th:src="@{/resources/js/vendidos/vendidosListar.js}"></script>
+    
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.validate.min.js}" charset="UTF-8"></script>
+    <script th:src="@{/resources/js/vendidos/devolucionForm.js}"></script>
     <script th:src="@{~/proyecto/resources/js/lib/jquery.number.min.js}" charset="UTF-8"></script>
     <script type="text/javascript">
-        $('#entrega, #montoTotal, #montoDescuento, #montoCuota, #montoInteres, #saldo, #neto, #interes, #interesMora, #entregaVenta, #montoTotalVenta, #montoDescuentoVenta, #montoCuotaVenta, #montoInteresVenta, #saldoVenta, #netoVenta, #interesVenta, #interesMoraVenta').number(true, 0, ',', '.');
+        $('#entrega, #montoTotal, #montoDescuento, #montoCuota, #montoInteres, #saldo, #neto, #interes, #interesMora, #entregaVenta, #montoTotalVenta, #montoDescuentoVenta, #montoCuotaVenta, #montoInteresVenta, #saldoVenta, #netoVenta, #interesVenta, #interesMoraVenta, #montoRecepcion, #montoTotalDevolucion, #costoDevolucion').number(true, 0, ',', '.');
         //console.log($.number( 5020.2364, 2 )); // Outputs: 5,020.24)
     </script>
 

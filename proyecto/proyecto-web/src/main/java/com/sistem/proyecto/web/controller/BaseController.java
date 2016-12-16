@@ -12,6 +12,7 @@ import com.sistem.proyecto.manager.ContactoManager;
 import com.sistem.proyecto.manager.DetalleCompraManager;
 import com.sistem.proyecto.manager.DetallePedidoManager;
 import com.sistem.proyecto.manager.DetalleVentaManager;
+import com.sistem.proyecto.manager.DevolucionManager;
 import com.sistem.proyecto.manager.DocumentoCobrarManager;
 import com.sistem.proyecto.manager.DocumentoPagarManager;
 import com.sistem.proyecto.manager.EmpleoManager;
@@ -74,6 +75,8 @@ public class BaseController {
     protected ModeloManager modeloManager;
     
     protected VehiculoManager vehiculoManager;
+    
+    protected DevolucionManager devolucionManager;
     
     protected ContactoManager contactoManager;
     
@@ -461,6 +464,24 @@ public class BaseController {
             try {
 
                 vehiculoManager = (VehiculoManager) context.lookup("java:app/proyecto-ejb/VehiculoManagerImpl");
+            } catch (NamingException ne) {
+                throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
+            }
+        }
+    }
+    
+    protected void inicializarDevolucionManager() throws Exception {
+        if (context == null) {
+            try {
+                context = new InitialContext();
+            } catch (NamingException e1) {
+                throw new RuntimeException("No se puede inicializar el contexto", e1);
+            }
+        }
+        if (devolucionManager == null) {
+            try {
+
+                devolucionManager = (DevolucionManager) context.lookup("java:app/proyecto-ejb/DevolucionManagerImpl");
             } catch (NamingException ne) {
                 throw new RuntimeException("No se encuentra EJB valor Manager: ", ne);
             }

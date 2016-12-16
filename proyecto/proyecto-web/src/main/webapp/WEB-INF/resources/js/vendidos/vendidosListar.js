@@ -28,10 +28,11 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'ID_VEHICULO', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRANSMISION', 'PRECIO DE COSTO', 'PRECIO DE VENTA', ''],
+        colNames: ['ID', 'ID_VEHICULO', 'CHASIS', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRANSMISION', 'PRECIO DE COSTO', 'PRECIO DE VENTA', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'codigo', index: 'codigo', hidden: true, width: 60, editable: false},
+            {name: 'chasis', index: 'chasis', hidden: true, width: 60, editable: false},
             {name: 'tipo.nombre', index: 'tipo.nombre', width: 100, editable: false},
             {name: 'marca.nombre', index: 'marca.nombre', width: 100, editable: false},
             {name: 'modelo.nombre', index: 'modelo.nombre', width: 100, editable: false},
@@ -40,7 +41,7 @@ $(document).ready(function(data) {
             {name: 'transmision', index: 'transmision', width: 90, sortable: false},
             {name: 'precioCosto', index: 'precioCosto', formatter: 'number', width: 90, sortable: false},
             {name: 'precioVenta', index: 'precioVenta', width: 90, sortable: false},
-            {name: 'act', index: 'act', fixed: true, sortable: false, resize: false,
+            {name: 'act', index: 'act', width: 180, fixed: true, sortable: false, resize: false,
                 //               formatter: 'actions',
                 formatoptions: {
                     onError: function(jqXHR, textStatus, errorThrwn) {
@@ -135,6 +136,7 @@ $(document).ready(function(data) {
                 var fin = '</div>';
                 var compra = '';
                 var venta = '';
+                var devolucion = '';
                 if (isStatus) {
                     var content = window.location.href;
                     var compraContent = window.location.hostname + 'proyecto';
@@ -155,11 +157,16 @@ $(document).ready(function(data) {
                                 + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" onclick=popVenta(' + cl + ');'
                                 + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Ver venta">'
                                 + ' <span class="fa fa-fw fa-shopping-bag"></span></a>';
+
+                    devolucion = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" onclick=popDevolucion(' + cl + ');'
+                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Registrar devolucion">'
+                                + ' <span class="fa fa-fw fa-exchange"></span></a>';
                     //visuali = visualizarButton(cl, permisoVisualizar,null);
                     //editForm = editFormButton(cl, permisoEditar);
                     //desact = desactivarButton(cl, permisoDesactivar);
                     //$(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
-                    $(grid_selector).setRowData(ids[i], {act: ini + editForm + compra + venta + asignar + visuali + fin});
+                    $(grid_selector).setRowData(ids[i], {act: ini + editForm + compra + venta + devolucion + asignar + visuali + fin});
 
 
 
@@ -173,7 +180,7 @@ $(document).ready(function(data) {
                         //asignar = asigButton(cl, true);
                         visuali = visualizarButton(cl, permisoVisualizar, null);
                         editForm = editFormButton(cl, permisoEditar);
-                        $(grid_selector).setRowData(ids[i], {act: ini + editForm + compra + venta + asignar + visuali + fin});
+                        $(grid_selector).setRowData(ids[i], {act: ini + editForm + compra + venta + devolucion + asignar + visuali + fin});
                     }
                 }
 
@@ -363,4 +370,58 @@ function popVenta(id_vehiculo) {
 }
 
 
+function popDevolucion(id_vehiculo) {
+    $('#devolucion-modal').modal('show'); 
 
+    var dato = $("#grid").jqGrid('getRowData', id_vehiculo);
+    
+    var jqXHR = $.get(CONTEXT_ROOT + "/ventas/obtener/" + id_vehiculo, function(data, textStatus, jqXHR) {
+                if (data.error === true) {
+                    $('#mensaje').append('<div class="alert alert-error">'
+                            + '<button class="close" data-dismiss="alert" type="button"'
+                            + '><i class="fa  fa-remove"></i></button>'
+                            + '<strong>Error! </strong>'
+                            + data.mensaje
+                            + '</div>');
+
+                } else {
+                    var venta = data.data;
+                    
+                    //console.log(compra);
+                    //console.log(compra['compra.nroFactura']);
+                    //console.log(venta['venta.cliente.nombre']);
+                    //Agregar modal que trae los datos de la compra
+                    
+                    $('#idVentaDevolucion').val(venta['venta.id']);
+                    $('#idVehiculoDevolucion').val(dato.id);
+                    $('#idClienteDevolucion').val(venta['venta.cliente.id']);
+
+                    $('#nroFacturaDevolucion').val(venta['venta.nroFactura']);
+                    //$('#ruc').val(venta['venta.proveedor.ruc']);
+                    $('#nombreDevolucion').val(venta['venta.cliente.nombre']);
+                    
+                    $('#montoTotalDevolucion').val(venta['venta.monto']);
+
+                    $('#chasisDevolucion').val(dato.chasis);
+                    $('#marcaDevolucion').val(dato['marca.nombre']);
+                    $('#modeloDevolucion').val(dato['modelo.nombre']);
+                    $('#costoDevolucion').val(dato.precioCosto);
+
+                    
+                    
+                    //var a = document.getElementById('guardarDevolucion');
+                    //a.href = CONTEXT_ROOT + "/guardar/";
+                    
+                    
+                }
+            });
+    
+}
+
+$('#guardarDevolucion').on('click', function() {
+    if($("#validation-formDevolucion").valid()){
+        $("#validation-formDevolucion").submit();
+    }
+    
+    
+});

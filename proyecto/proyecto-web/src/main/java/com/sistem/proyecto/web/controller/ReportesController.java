@@ -1836,7 +1836,7 @@ public class ReportesController extends BaseController {
             parametros.put("columnas", columnas);
 
             DTORetorno<List<Map<String, Object>>> grilla = listarComprasPendientes(filtrar, filters,
-                    fechaInicio, fechaFin, pagina, cantidad, ordenarPor, estado, sentidoOrdenamiento, todos);
+                    fechaInicio, fechaFin, pagina, cantidad, ordenarPor, estado, sentidoOrdenamiento, true);
 
             JasperDatasource datasource = new JasperDatasource();
             datasource.addAll(grilla.getRetorno());
@@ -1949,7 +1949,7 @@ public class ReportesController extends BaseController {
             parametros.put("columnas", columnas);
 
             DTORetorno<List<Map<String, Object>>> grilla = listarVentasPendientes(filtrar, filters,
-                    fechaInicio, fechaFin, pagina, cantidad, ordenarPor, estado, sentidoOrdenamiento, todos);
+                    fechaInicio, fechaFin, pagina, cantidad, ordenarPor, estado, sentidoOrdenamiento, true);
 
             JasperDatasource datasource = new JasperDatasource();
             datasource.addAll(grilla.getRetorno());
@@ -2060,7 +2060,7 @@ public class ReportesController extends BaseController {
             parametros.put("columnas", columnas);
 
             DTORetorno<List<Map<String, Object>>> grilla = listarMovimientos(filtrar, filters,
-                    fechaInicio, fechaFin, pagina, cantidad, ordenarPor, estado, sentidoOrdenamiento, todos);
+                    fechaInicio, fechaFin, pagina, cantidad, ordenarPor, estado, sentidoOrdenamiento, true);
 
             JasperDatasource datasource = new JasperDatasource();
             datasource.addAll(grilla.getRetorno());

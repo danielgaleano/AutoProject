@@ -212,7 +212,19 @@ $(document).ready(function(data) {
     $(window).triggerHandler('resize.jqGrid');
     $(grid_selector).jqGrid('setGridWidth', $(".widget-body").width());
     $(grid_selector).jqGrid('navGrid', pager_selector, {edit: false, add: false, del: false, search: false});
-
+    $(grid_selector).jqGrid('navButtonAdd', pager_selector, {
+        id: 'pager_pdf',
+        caption: '',
+        title: 'Exportar en pdf',
+        onClickButton: function(e) {
+            try {
+                jQuery("#grid").jqGrid('excelExport', {tag: 'pdf', url: CONTEXT_ROOT +'/reportes'});
+            } catch (e) {
+                window.location = 'export.php?oper=pdf';
+            }
+        },
+        buttonicon: 'fa fa-fw fa-download'
+    });
 
 
 

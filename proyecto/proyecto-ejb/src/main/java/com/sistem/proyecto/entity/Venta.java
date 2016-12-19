@@ -28,6 +28,7 @@ public class Venta extends Base {
     public static final String VENTA_APROBADA = "VENTA_APROBADA";
     public static final String VENTA_REALIZADA = "VENTA_REALIZADA";
     public static final String VENTA_RECHAZADA = "VENTA_RECHAZADA";
+    public static final String VENTA_PAGADA = "VENTA_PAGADA";
 
     @Column(name = "nro_factura", nullable = false)
     private String nroFactura;

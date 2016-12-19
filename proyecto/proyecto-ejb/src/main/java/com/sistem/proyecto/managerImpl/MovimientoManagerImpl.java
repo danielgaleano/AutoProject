@@ -943,7 +943,8 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
             }
 
             ejVenta = ventaManager.get(idVenta);
-
+            ejVenta.setEstadoVenta(Venta.VENTA_PAGADA);
+            
             if (ejVenta.getEstadoVenta().compareToIgnoreCase(Venta.VENTA_REALIZADA) == 0) {
                 pago.setCancelado(true);
                 mensaje.setError(false);
@@ -1264,7 +1265,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         Long netoSaldo = netoPago - Math.round(Monto);
 
                         ejVenta.setSaldo(netoSaldo.toString());
-                        ejVenta.setEstadoVenta(DocumentoPagar.PARCIAL);
+                        ejVenta.setEstadoCobro(DocumentoPagar.PARCIAL);
 
                         ventaManager.update(ejVenta);
 
@@ -1345,7 +1346,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                         Long netoSaldo = netoPago - Math.round(Monto);
 
                         ejVenta.setSaldo(netoSaldo.toString());
-                        ejVenta.setEstadoVenta(DocumentoPagar.PARCIAL);
+                        ejVenta.setEstadoCobro(DocumentoPagar.PARCIAL);
 
                         ventaManager.update(ejVenta);
 

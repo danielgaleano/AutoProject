@@ -186,7 +186,7 @@ public class VentaController extends BaseController {
         ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
 
         List<Map<String, Object>> listMapGrupos = null;
-        List<Map<String, Object>> listVentasMap = null;
+        List<Map<String, Object>> listMaPagados = null;
         try {
 
             inicializarVentaManager();
@@ -218,12 +218,24 @@ public class VentaController extends BaseController {
             
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
+            
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+            
+            Venta ejParcial = new Venta();
+            ejParcial.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            ejParcial.setEstadoVenta(Venta.VENTA_PAGADA);
+            
+            listMaPagados = ventaManager.listAtributos(ejParcial, atributosVentas.split(","), todos, inicio, cantidad,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    null, null, null, null, null, null, null, null, true);
+            
+            int pagados = listMaPagados.size();
 
             if (!todos) {
-                total = ventaManager.list(ejemplo, true).size();
+                total = ventaManager.list(ejemplo, true).size() + pagados;
             }
 
-            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+            
 
             if (total < inicio) {
                 inicio = total - total % cantidad;
@@ -233,7 +245,11 @@ public class VentaController extends BaseController {
             listMapGrupos = ventaManager.listAtributos(ejemplo, atributosVentas.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
-
+            
+            if(listMaPagados != null){
+                listMapGrupos.addAll(listMaPagados);
+            }
+            
             if (todos) {
                 total = listMapGrupos.size();
             }

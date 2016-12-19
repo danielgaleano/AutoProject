@@ -130,6 +130,8 @@ public class CobroController extends BaseController {
         ejemplo.setEstadoVenta(Venta.VENTA_APROBADA);
 
         List<Map<String, Object>> listMapGrupos = null;
+        
+        
 
         try {
 
@@ -163,12 +165,15 @@ public class CobroController extends BaseController {
 
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
-
+    
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+                       
+            
             if (!todos) {
                 total = ventaManager.list(ejemplo, true).size();
             }
 
-            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+            
 
             if (total < inicio) {
                 inicio = total - total % cantidad;
@@ -178,6 +183,9 @@ public class CobroController extends BaseController {
             listMapGrupos = ventaManager.listAtributos(ejemplo, atributosVentas.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
+            
+            
+
             for (Map<String, Object> rpm : listMapGrupos) {
 
                 if (rpm.get("formaPago").toString().compareToIgnoreCase("CREDITO") == 0) {
@@ -192,7 +200,7 @@ public class CobroController extends BaseController {
 
                     for (DocumentoCobrar doc : documentos) {
                         if (tieneDeuda) {
-                            rpm.put("cuota",doc.getNroCuota());
+                            rpm.put("cuota", doc.getNroCuota());
                             rpm.put("montoCuota", doc.getMonto());
 
                             tieneDeuda = false;
@@ -246,8 +254,6 @@ public class CobroController extends BaseController {
                 mensaje.setMensaje("Debe ingresar el importe a Pagar.");
                 return mensaje;
             }
-            
-
 
             mensaje = movimientoManager.realizarPago(pagoRecibido.getIdCompra(), pagoRecibido.getImportePagar(), null,
                     pagoRecibido.getIdDocPagar(), userDetail.getIdEmpresa(), userDetail.getId());

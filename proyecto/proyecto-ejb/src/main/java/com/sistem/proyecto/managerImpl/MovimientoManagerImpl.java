@@ -1417,7 +1417,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
                     }
                 }
                 Vehiculo ejVehiculo = new Vehiculo();
-                ejVehiculo.setEstado("PENDIENTE");
+                ejVehiculo.setEstado(Vehiculo.PROVESO_VENTA);
 
                 DetalleVenta ejDetalle = new DetalleVenta();
                 ejDetalle.setVenta(ejVenta);

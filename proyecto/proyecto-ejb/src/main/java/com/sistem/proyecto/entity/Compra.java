@@ -32,6 +32,7 @@ public class Compra extends Base{
     public static final String COMPRA_APROBADA = "COMPRA_APROBADA";
     public static final String COMPRA_REALIZADA = "COMPRA_REALIZADA";
     public static final String COMPRA_RECHAZADA = "COMPRA_RECHAZADA";
+    public static final String COMPRA_PAGADA = "COMPRA_PAGADA";
     
     @Column(name = "nro_factura", nullable = true)
     private String nroFactura;

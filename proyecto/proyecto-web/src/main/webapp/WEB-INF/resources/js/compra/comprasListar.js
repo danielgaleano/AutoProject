@@ -204,6 +204,27 @@ $(document).ready(function(data) {
                         
                         $(grid_selector).setRowData(ids[i], {act: ini + visuali +fin});
                         $(grid_selector).setRowData(ids[i], {estadoCompra: labelInactivo});
+                    }else if (estado === 'COMPRA_PAGADA') {
+                        //se debe agregar and estado_pago== 'INICIADO' y ahi mostrar el desactivar, en caso contario no mostrar desactivar
+                        var labelInactivo = '<span class="table-estado label label-danger"  value="N" >APROBADA</span>';
+                        visuali = visualizarButton(cl, permisoVisualizar, null);
+                        
+                        desact = desactivarButton(cl, permisoDesactivar,"Cancelar Compra");
+                        if(dato.formaPago === 'CREDITO'){
+                            docPagar = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="'+ CONTEXT_ROOT + '/compras/docs/'+ cl +'"' 
+                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Ver Documentos a Pagar">'
+                                + ' <span class="fa fa-fw fa-file"></span></a>';
+                        }else if (dato.formaPago === 'CONTADO'){
+                            pagosContado = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="'+ CONTEXT_ROOT + '/compras/pagos/'+ cl +'"'
+                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Ver Pagos">'
+                                + ' <span class="fa fa-fw fa-money"></span></a>';
+                        }
+                        
+                        
+                        $(grid_selector).setRowData(ids[i], {act: ini + visuali + docPagar + pagosContado  + fin});
+                        $(grid_selector).setRowData(ids[i], {estadoCompra: labelInactivo});
                     }
                 } else {
                     if (isEditarInline) {

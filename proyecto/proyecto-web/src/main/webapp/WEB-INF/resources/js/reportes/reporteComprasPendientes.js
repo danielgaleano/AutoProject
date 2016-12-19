@@ -218,7 +218,31 @@ $(document).ready(function(data) {
         title: 'Exportar en pdf',
         onClickButton: function(e) {
             try {
-                jQuery("#grid").jqGrid('excelExport', {tag: 'pdf', url: CONTEXT_ROOT +'/reportes'});
+                setTimeout(function() {
+                    var rules = [];
+
+                    rules.push({
+                        field: "Proveedor",
+                        op: "cn",
+                        data: $('#idProveedor').val().toString()
+                    });
+
+                    var postData = $("#grid").jqGrid("getGridParam", "postData");
+
+                    postData.filters = JSON.stringify({
+                        groupOp: "AND",
+                        rules: rules,
+                        data: $('#idProveedor').val().toString()
+                    });
+
+                    postData.fechaInicio = $('#date-timeDesde').val().toString();
+                    postData.fechaFin = $('#date-timeHasta').val().toString();
+                    postData.idProveedor = $('#idProveedor').val().toString();
+
+                    jQuery("#grid").jqGrid('excelExport', {tag: 'pdf', url: CONTEXT_ROOT + '/reportes/exportar/compras/pdf'});
+
+                }, 0);
+                
             } catch (e) {
                 window.location = 'export.php?oper=pdf';
             }
@@ -323,7 +347,7 @@ function filtrarReporte() {
     var enviar = {};
     enviar.fechaInicio = $('#date-timeDesde').val().toString();
     enviar.fechaFin = $('#date-timeHasta').val().toString();
-    enviar.estado = $('#idProveedor').val().toString();
+    enviar.idProveedor = $('#idProveedor').val().toString();
 
 
     setTimeout(function() {

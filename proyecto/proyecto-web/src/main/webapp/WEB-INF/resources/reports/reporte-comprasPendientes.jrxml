@@ -89,10 +89,10 @@
 	<field name="fechaCuota" class="java.sql.Date">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="cuotaPendiente" class="java.lang.String">
+	<field name="cuota" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
-	<field name="importe" class="java.lang.Double"/>
+	<field name="importe" class="java.lang.Long"/>
 	<field name="BOOLEANTIPOUNO" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
@@ -106,7 +106,7 @@
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="saldo" class="java.lang.Long"/>
-	<field name="neto" class="java.lang.Double"/>
+	<field name="neto" class="java.lang.Long"/>
 	<field name="totalGeneral" class="java.lang.Long">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
@@ -634,7 +634,7 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textFieldExpression><![CDATA[( $F{cuotaPendiente} != null ? ""+$F{cuotaPendiente} : "" )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[( $F{cuota} != null ? ""+$F{cuota} : "" )]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="615" y="0" width="100" height="20" uuid="0652a796-4db0-48a5-a0cb-96e5ae9cf35d">
@@ -650,7 +650,7 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textFieldExpression><![CDATA[( new java.text.DecimalFormat(" #,##0.00").format($F{importe}) != null ? ""+new java.text.DecimalFormat(" #,##0.00").format($F{importe}) : "" )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[( $F{importe} != null ? ""+new java.text.DecimalFormat(" #,##0.00").format(Double.valueOf($F{importe}+"")) : "" )]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="715" y="0" width="100" height="20" uuid="56ce1768-73c7-4e8c-99a6-df66832b698b">
@@ -666,7 +666,7 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textFieldExpression><![CDATA[( " "+new java.text.DecimalFormat(" #,##0.00").format(Double.valueOf($F{saldo}+"")) != null ? ""+new java.text.DecimalFormat(" #,##0.00").format(Double.valueOf($F{saldo}+"")) : "" )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[( $F{saldo} != null ? ""+new java.text.DecimalFormat(" #,##0.00").format(Double.valueOf($F{saldo}+"")) : "" )]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="815" y="0" width="90" height="20" uuid="896da4bc-046a-4566-95a9-5f7661e4d112">
@@ -682,7 +682,7 @@
 					<bottomPen lineWidth="0.5"/>
 					<rightPen lineWidth="0.5"/>
 				</box>
-				<textFieldExpression><![CDATA[( new java.text.DecimalFormat(" #,##0.00").format($F{neto}) != null ? ""+new java.text.DecimalFormat(" #,##0.00").format($F{neto}) : "" )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[( $F{neto} != null ? ""+new java.text.DecimalFormat(" #,##0.00").format(Double.valueOf($F{neto}+"")) : "" )]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="200" y="0" width="110" height="20" uuid="6356cb06-0316-4d84-9c53-3cd1a445cc54">

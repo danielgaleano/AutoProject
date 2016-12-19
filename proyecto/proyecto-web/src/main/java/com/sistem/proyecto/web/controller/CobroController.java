@@ -131,7 +131,7 @@ public class CobroController extends BaseController {
 
         List<Map<String, Object>> listMapGrupos = null;
         
-        
+        List<Map<String, Object>> listMaPagados = null;
 
         try {
 
@@ -165,12 +165,23 @@ public class CobroController extends BaseController {
 
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
-    
+
+            Venta ejParcial = new Venta();
+            ejParcial.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            ejParcial.setEstadoVenta(Venta.VENTA_PAGADA);
+            
+            
             Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
-                       
+            
+            
+            listMaPagados = ventaManager.listAtributos(ejParcial, atributosVentas.split(","), todos, inicio, cantidad,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    null, null, null, null, null, null, null, null, true);
+            
+            int pagados = listMaPagados.size();
             
             if (!todos) {
-                total = ventaManager.list(ejemplo, true).size();
+                total = ventaManager.list(ejemplo, true).size() + pagados;
             }
 
             
@@ -184,7 +195,9 @@ public class CobroController extends BaseController {
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
             
-            
+            if(listMaPagados != null){
+                listMapGrupos.addAll(listMaPagados);
+            }
 
             for (Map<String, Object> rpm : listMapGrupos) {
 

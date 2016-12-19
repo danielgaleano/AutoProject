@@ -233,7 +233,7 @@ $(document).ready(function(data) {
                                 $('#idVentaPago').val(venta['id']);
                                 $('#nroFacturaPago').val(venta['nroFactura']);
                                 $('#id-date-pickerPago').val(pago['fechaCuota']);
-                                $('#descuentoPago').val(venta['montoDescuento']);
+                                $('#descuentoPago').val(venta['descuento']);
                                 $('#interesPago').val(venta['porcentajeInteresCredito']);
                                 $('#montoInteresPago').val(venta['montoInteres']);
                                 $('#moraInteresPago').val(venta['moraInteres']);

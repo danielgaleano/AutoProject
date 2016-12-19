@@ -28,7 +28,7 @@ $(document).ready(function(data) {
 
     
     $(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/ventas/cobrosrecibidos/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idVenta=' + id_venta,
+        url: CONTEXT_ROOT + '/ventas/cobrosrecibidos/listar?_search=false&todos=true&rows=100&page=1&sidx=&sord=asc&idVenta=' + id_venta,
         datatype: 'json',
         mtype: 'GET',
         autowidth: true, 
@@ -36,6 +36,7 @@ $(document).ready(function(data) {
         height: 300,
         hidegrid: false,
         rownumbers: true,
+        loadonce:true,
         width: 500,
         colNames: ['FECHA', 'NRO. CUOTA', 'IMPORTE', 'SALDO', 'VUELTO', 'INTERES', 'NETO', ''],
         colModel: [

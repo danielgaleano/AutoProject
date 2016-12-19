@@ -23,12 +23,13 @@ $(document).ready(function(data) {
         }, 0);
     });
     $(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/compras/docsPagar/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idCompra=' + id_compra,
+        url: CONTEXT_ROOT + '/compras/docsPagar/listar?_search=false&todos=true&rows=60&page=1&sidx=&sord=asc&idCompra=' + id_compra,
         datatype: 'json',
         mtype: 'GET',
-        height: 300,
+        height: 350,
         hidegrid: false,
         rownumbers: true,
+        loadonce:true,
         width: 1050,
         colNames: ['NRO. CUOTA', 'MONTO', 'SALDO', 'FECHA VENCIMIENTO', 'ESTADO'],
         colModel: [

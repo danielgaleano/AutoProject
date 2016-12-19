@@ -23,12 +23,13 @@ $(document).ready(function(data) {
         }, 0);
     });
     $(grid_selector).jqGrid({
-        url: CONTEXT_ROOT + '/ventas/docsCobrar/listar?_search=false&todos=true&rows=10&page=1&sidx=&sord=asc&idVenta=' + id_venta,
+        url: CONTEXT_ROOT + '/ventas/docsCobrar/listar?_search=false&todos=true&rows=60&page=1&sidx=&sord=asc&idVenta=' + id_venta,
         datatype: 'json',
         mtype: 'GET',
-        height: 300,
+        height: 350,
         hidegrid: false,
         rownumbers: true,
+        loadonce:true,
         width: 1050,
         colNames: ['NRO. CUOTA', 'MONTO', 'SALDO', 'FECHA VENCIMIENTO', 'ESTADO'],
         colModel: [

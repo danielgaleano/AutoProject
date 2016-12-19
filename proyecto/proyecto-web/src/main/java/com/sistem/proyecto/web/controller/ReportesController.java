@@ -358,7 +358,7 @@ public class ReportesController extends BaseController {
     public @ResponseBody
     DTORetorno reporteComprasPendientes(@ModelAttribute("fechaInicio") String fechaInicio,
             @ModelAttribute("fechaFin") String fechaFin,
-            @ModelAttribute("estado") String estado) {
+            @ModelAttribute("idProveedor") String estado) {
 
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
@@ -484,7 +484,7 @@ public class ReportesController extends BaseController {
     public @ResponseBody
     DTORetorno reporteComprasRealizadas(@ModelAttribute("fechaInicio") String fechaInicio,
             @ModelAttribute("fechaFin") String fechaFin,
-            @ModelAttribute("estado") String estado) {
+            @ModelAttribute("idProveedor") String estado) {
 
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
@@ -1025,7 +1025,7 @@ public class ReportesController extends BaseController {
                         }
                     }
                     rpm.put("saldo", totalEgreso);
-                    rpm.put("importe", importeCuota);
+                    rpm.put("importe", Math.round(importeCuota));
                     rpm.put("cuota", cuotaPendiente);
                     rpm.put("totalGeneral", totalGeneral);
                 } else {
@@ -1033,6 +1033,8 @@ public class ReportesController extends BaseController {
 
                     rpm.put("totalGeneral", totalGeneral);
                 }
+                rpm.put("neto", Math.round(Double.parseDouble(rpm.get("neto").toString())));
+                rpm.put("proveedor", rpm.get("proveedor.nombre").toString());
             }
 
             if (todos) {
@@ -1058,7 +1060,7 @@ public class ReportesController extends BaseController {
     public @ResponseBody
     DTORetorno reporteVentasPendientes(@ModelAttribute("fechaInicio") String fechaInicio,
             @ModelAttribute("fechaFin") String fechaFin,
-            @ModelAttribute("estado") String estado) {
+            @ModelAttribute("idCliente") String estado) {
 
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
@@ -1185,7 +1187,7 @@ public class ReportesController extends BaseController {
     public @ResponseBody
     DTORetorno reporteVentasRealizadas(@ModelAttribute("fechaInicio") String fechaInicio,
             @ModelAttribute("fechaFin") String fechaFin,
-            @ModelAttribute("estado") String estado) {
+            @ModelAttribute("idCliente") String estado) {
 
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
@@ -1452,7 +1454,7 @@ public class ReportesController extends BaseController {
                         }
                     }
                     rpm.put("saldo", totalEgreso);
-                    rpm.put("importe", importeCuota);
+                    rpm.put("importe", Math.round(importeCuota));
                     rpm.put("cuota", cuotaPendiente);
                     rpm.put("totalGeneral", totalGeneral);
                 } else {
@@ -1460,6 +1462,9 @@ public class ReportesController extends BaseController {
 
                     rpm.put("totalGeneral", totalGeneral);
                 }
+                rpm.put("neto", Math.round(Double.parseDouble(rpm.get("neto").toString())));
+                rpm.put("proveedor", rpm.get("cliente.nombre").toString());
+                rpm.put("fechaCuota", rpm.get("fechaVenta").toString());
             }
 
             if (todos) {
@@ -1632,7 +1637,6 @@ public class ReportesController extends BaseController {
             Map<String, Object> cliente = new HashMap<String, Object>();
 
             parametros.put("titulo", "Pagare");
-            
 
             Empresa ejEmpresa = empresaManager.get(userDetail.getIdEmpresa());
 
@@ -1642,9 +1646,9 @@ public class ReportesController extends BaseController {
             Venta ejemplo = new Venta();
             ejemplo.setId(id);
             ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-                 
+
             ejemplo = ventaManager.get(ejemplo);
-            
+
             parametros.put("numero", ejemplo.getNroPagare());
             parametros.put("cliente", ejemplo.getCliente().getNombre());
             parametros.put("direccion", ejemplo.getCliente().getDireccion());
@@ -1724,6 +1728,243 @@ public class ReportesController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/exportar/compras/{tipo}", method = RequestMethod.GET)
+    public void exportarReporteCompra(@PathVariable("tipo") String tipo,
+            @ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filters,
+            @ModelAttribute("fechaInicio") String fechaInicio,
+            @ModelAttribute("fechaFin") String fechaFin,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("estado") String estado,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos,
+            @ModelAttribute("idProveedor") String idProveedor,
+            HttpServletRequest request, HttpServletResponse response) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        DTORetorno<List<DetalleCanvas>> nivelActual = new DTORetorno<List<DetalleCanvas>>();
+        try {
+            inicializarProveedorManager();
+
+            JasperReport reporte = (JasperReport) JRLoader
+                    .loadObjectFromFile(request
+                            .getSession()
+                            .getServletContext()
+                            .getRealPath(
+                                    "WEB-INF/resources/reports/reporte-comprasPendientes.jasper"));
+
+            List<Map<String, String>> filtros = new ArrayList<Map<String, String>>();
+
+            cargarFiltros(filtros, "Desde", fechaInicio);
+            cargarFiltros(filtros, "Hasta", fechaFin);
+
+            if (idProveedor == null || idProveedor.isEmpty()) {
+                idProveedor = null;
+            } else {
+                Map<String, Object> clienteMap = proveedorManager.getAtributos(new Proveedor(Long.parseLong(idProveedor)), "nombre".split(","));
+                cargarFiltros(filtros, "Proveedor", (String) clienteMap.get("nombre"));
+            }
+            
+            
+
+            Map<String, Object> parametros = new HashMap<String, Object>();
+
+            parametros.put("titulo", "Reporte Compras");
+            
+            parametros.put("filtros1", filtros.subList(0, (filtros.size() / 2) + 1));
+            parametros.put("filtros2", filtros.subList((filtros.size() / 2) + 1, filtros.size()));
+            
+            if (estado != null && estado.compareToIgnoreCase("PENDIENTE") == 0) {
+                nivelActual = reporteComprasPendientes(fechaInicio, fechaFin, idProveedor);
+                parametros.put("graficos_titulos", "Compras " + estado);
+            }else{
+                nivelActual = reporteComprasRealizadas(fechaInicio, fechaFin, idProveedor);
+                parametros.put("graficos_titulos", "Compras REALIZADAS" );
+            }
+            List<Map<String, Object>> graf = new ArrayList<Map<String, Object>>();
+
+            for (DetalleCanvas rpm : nivelActual.getData()) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("label", rpm.getLabel());
+                map.put("value", rpm.getY());
+                graf.add(map);
+            }
+
+            parametros.put("grafico2", graf);
+
+            JRExporter exporter;
+            if (tipo.equals("pdf")) {
+                response.setContentType("application/pdf");
+                exporter = new JRPdfExporter();
+            } else if (tipo.equals("xls")) {
+                parametros.put(JRParameter.IS_IGNORE_PAGINATION, true);
+                response.setContentType("application/vnd.ms-excel");
+                exporter = new JRXlsExporter();
+            } else {
+                return;
+            }
+
+            List<Object> columnas = new ArrayList<Object>();
+            columnas.add("Nro. Factura");
+            columnas.add("Forma Pago");
+            columnas.add("Cant. Cuotas");
+            columnas.add("Proveedor");
+            columnas.add("Fecha Compra");
+            columnas.add("Cuota Pendiente");
+            columnas.add("Importe Cuota");
+            columnas.add("Saldo");
+            columnas.add("Neto");
+            columnas.add("Total");
+            parametros.put("columnas", columnas);
+
+            DTORetorno<List<Map<String, Object>>> grilla = listarComprasPendientes(filtrar, filters,
+                    fechaInicio, fechaFin, pagina, cantidad, ordenarPor, estado, sentidoOrdenamiento, todos);
+
+            JasperDatasource datasource = new JasperDatasource();
+            datasource.addAll(grilla.getRetorno());
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte,
+                    parametros, datasource);
+
+            response.addHeader("Content-Disposition", "attachment; filename=\""
+                    + "export-pagare." + tipo + "\"");
+            exporter.setParameter(JRExporterParameter.CHARACTER_ENCODING,
+                    "Cp1252");
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+            ServletOutputStream output = response.getOutputStream();
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, output);
+            exporter.exportReport();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = "/exportar/ventas/{tipo}", method = RequestMethod.GET)
+    public void exportarReporteVenta(@PathVariable("tipo") String tipo,
+            @ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filters,
+            @ModelAttribute("fechaInicio") String fechaInicio,
+            @ModelAttribute("fechaFin") String fechaFin,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("estado") String estado,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos,
+            @ModelAttribute("idCliente") String idCliente,
+            HttpServletRequest request, HttpServletResponse response) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        DTORetorno<List<DetalleCanvas>> nivelActual = new DTORetorno<List<DetalleCanvas>>();
+        try {
+            inicializarClienteManager();
+
+            JasperReport reporte = (JasperReport) JRLoader
+                    .loadObjectFromFile(request
+                            .getSession()
+                            .getServletContext()
+                            .getRealPath(
+                                    "WEB-INF/resources/reports/reporte-comprasPendientes.jasper"));
+
+            List<Map<String, String>> filtros = new ArrayList<Map<String, String>>();
+
+            cargarFiltros(filtros, "Desde", fechaInicio);
+            cargarFiltros(filtros, "Hasta", fechaFin);
+
+            if (idCliente == null || idCliente.isEmpty()) {
+                idCliente = null;
+            } else {
+                Map<String, Object> clienteMap = clienteManager.getAtributos(new Cliente(Long.parseLong(idCliente)), "nombre".split(","));
+                cargarFiltros(filtros, "Cliente", (String) clienteMap.get("nombre"));
+            }
+            
+            
+
+            Map<String, Object> parametros = new HashMap<String, Object>();
+
+            parametros.put("titulo", "Reporte Ventas");
+            
+            parametros.put("filtros1", filtros.subList(0, (filtros.size() / 2) + 1));
+            parametros.put("filtros2", filtros.subList((filtros.size() / 2) + 1, filtros.size()));
+            
+            if (estado != null && estado.compareToIgnoreCase("PENDIENTE") == 0) {
+                nivelActual = reporteVentasPendientes(fechaInicio, fechaFin, idCliente);
+                parametros.put("graficos_titulos", "Ventas " + estado);
+            }else{
+                nivelActual = reporteVentasRealizadas(fechaInicio, fechaFin, idCliente);
+                parametros.put("graficos_titulos", "Ventas REALIZADAS" );
+            }
+            List<Map<String, Object>> graf = new ArrayList<Map<String, Object>>();
+
+            for (DetalleCanvas rpm : nivelActual.getData()) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("label", rpm.getLabel());
+                map.put("value", rpm.getY());
+                graf.add(map);
+            }
+
+            parametros.put("grafico2", graf);
+
+            JRExporter exporter;
+            if (tipo.equals("pdf")) {
+                response.setContentType("application/pdf");
+                exporter = new JRPdfExporter();
+            } else if (tipo.equals("xls")) {
+                parametros.put(JRParameter.IS_IGNORE_PAGINATION, true);
+                response.setContentType("application/vnd.ms-excel");
+                exporter = new JRXlsExporter();
+            } else {
+                return;
+            }
+
+            List<Object> columnas = new ArrayList<Object>();
+            columnas.add("Nro. Factura");
+            columnas.add("Forma Pago");
+            columnas.add("Cant. Cuotas");
+            columnas.add("Cliente");
+            columnas.add("Fecha Venta");
+            columnas.add("Cuota Pendiente");
+            columnas.add("Importe Cuota");
+            columnas.add("Saldo");
+            columnas.add("Neto");
+            columnas.add("Total");
+            parametros.put("columnas", columnas);
+
+            DTORetorno<List<Map<String, Object>>> grilla = listarVentasPendientes(filtrar, filters,
+                    fechaInicio, fechaFin, pagina, cantidad, ordenarPor, estado, sentidoOrdenamiento, todos);
+
+            JasperDatasource datasource = new JasperDatasource();
+            datasource.addAll(grilla.getRetorno());
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte,
+                    parametros, datasource);
+
+            response.addHeader("Content-Disposition", "attachment; filename=\""
+                    + "export-pagare." + tipo + "\"");
+            exporter.setParameter(JRExporterParameter.CHARACTER_ENCODING,
+                    "Cp1252");
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+            ServletOutputStream output = response.getOutputStream();
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, output);
+            exporter.exportReport();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void cargarFiltros(List<Map<String, String>> filtros, String label, String value) {
+        Map<String, String> filtro = new HashMap<String, String>();
+        filtro.put("label", label);
+        filtro.put("value", value);
+        filtros.add(filtro);
     }
 
 }

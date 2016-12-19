@@ -101,7 +101,7 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['NRO. FACTURA', 'FORMA PAGO', 'CANT. CUOTAS', 'PROVEEDOR', 'FECHA COMPRA', 'CUOTA PENDIENTE', 'IMPORTE', 'SALDO', 'NETO','TOTAL GENERAL' ,'ESTADO'],
+        colNames: ['NRO. FACTURA', 'FORMA PAGO', 'CANT. CUOTAS', 'PROVEEDOR', 'FECHA COMPRA', 'CUOTA PENDIENTE', 'IMPORTE', 'SALDO', 'NETO', 'TOTAL GENERAL', 'ESTADO'],
         colModel: [
             {name: 'nroFactura', index: 'nroFactura', width: 100},
             {name: 'formaPago', index: 'formaPago', width: 100},
@@ -126,8 +126,8 @@ $(document).ready(function(data) {
         postData: {
             atributos: "id,nombre",
             filters: null,
-            fechaInicio : $('#date-timeDesde').val().toString(),
-            fechaFin : $('#date-timeHasta').val().toString(),
+            fechaInicio: $('#date-timeDesde').val().toString(),
+            fechaFin: $('#date-timeHasta').val().toString(),
             estado: "PENDIENTE",
             todos: false
         },
@@ -212,7 +212,43 @@ $(document).ready(function(data) {
     $(window).triggerHandler('resize.jqGrid');
     $(grid_selector).jqGrid('setGridWidth', $(".widget-body").width());
     $(grid_selector).jqGrid('navGrid', pager_selector, {edit: false, add: false, del: false, search: false});
+    $(grid_selector).jqGrid('navButtonAdd', pager_selector, {
+        id: 'pager_pdf',
+        caption: '',
+        title: 'Exportar en pdf',
+        onClickButton: function(e) {
+            try {
+                setTimeout(function() {
+                    var rules = [];
 
+                    rules.push({
+                        field: "Proveedor",
+                        op: "cn",
+                        data: $('#idProveedor').val().toString()
+                    });
+
+                    var postData = $("#grid").jqGrid("getGridParam", "postData");
+
+                    postData.filters = JSON.stringify({
+                        groupOp: "AND",
+                        rules: rules,
+                        data: $('#idProveedor').val().toString()
+                    });
+
+                    postData.fechaInicio = $('#date-timeDesde').val().toString();
+                    postData.fechaFin = $('#date-timeHasta').val().toString();
+                    postData.idProveedor = $('#idProveedor').val().toString();
+
+                    jQuery("#grid").jqGrid('excelExport', {tag: 'pdf', url: CONTEXT_ROOT + '/reportes/exportar/compras/pdf'});
+
+                }, 0);
+                
+            } catch (e) {
+                window.location = 'export.php?oper=pdf';
+            }
+        },
+        buttonicon: 'fa fa-fw fa-download'
+    });
 
 
 
@@ -295,8 +331,8 @@ function filtrarReporte() {
                 title: {
                     text: "Compras Pendientes"
                 },
-				exportFileName: "Compras Pendientes",
-				exportEnabled: true,
+                exportFileName: "Compras Pendientes",
+                exportEnabled: true,
                 data: [
                     {
                         type: "pie",
@@ -311,7 +347,7 @@ function filtrarReporte() {
     var enviar = {};
     enviar.fechaInicio = $('#date-timeDesde').val().toString();
     enviar.fechaFin = $('#date-timeHasta').val().toString();
-    enviar.estado = $('#idProveedor').val().toString();
+    enviar.idProveedor = $('#idProveedor').val().toString();
 
 
     setTimeout(function() {

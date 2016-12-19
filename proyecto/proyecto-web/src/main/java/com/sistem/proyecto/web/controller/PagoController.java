@@ -92,7 +92,6 @@ public class PagoController extends BaseController {
         try {
             inicializarMovimientoManager();
             PagoDTO ejPago = new PagoDTO();
-        
 
             DTORetorno<PagoDTO> ejPagoMap = movimientoManager.obtenerDatosPago(id);
 
@@ -128,7 +127,7 @@ public class PagoController extends BaseController {
         ejemplo.setEstadoCompra(Compra.COMPRA_APROBADA);
 
         List<Map<String, Object>> listMapGrupos = null;
-
+        List<Map<String, Object>> listMaPagados = null;
         try {
 
             inicializarCompraManager();
@@ -160,12 +159,22 @@ public class PagoController extends BaseController {
 
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
+            
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
 
+            Compra ejPagado = new Compra();
+            ejPagado.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            ejPagado.setEstadoCompra(Compra.COMPRA_PAGADA);
+            
+            listMaPagados = compraManager.listAtributos(ejPagado, atributosCompras.split(","), todos, inicio, cantidad,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    null, null, null, null, null, null, null, null, true);
+                    
             if (!todos) {
                 total = compraManager.list(ejemplo, true).size();
             }
 
-            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+            
 
             if (total < inicio) {
                 inicio = total - total % cantidad;
@@ -175,7 +184,11 @@ public class PagoController extends BaseController {
             listMapGrupos = compraManager.listAtributos(ejemplo, atributosCompras.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
-
+            
+            if(listMaPagados != null){
+                listMapGrupos.addAll(listMaPagados);
+            }
+            
             if (todos) {
                 total = listMapGrupos.size();
             }
@@ -193,14 +206,14 @@ public class PagoController extends BaseController {
 
         return retorno;
     }
-    
+
     @RequestMapping(value = "/realizar", method = RequestMethod.POST)
     public @ResponseBody
     MensajeDTO guardar(@ModelAttribute("PagoDTO") PagoDTO pagoRecibido) {
 
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO mensaje = new MensajeDTO();
-        
+
         try {
             inicializarMovimientoManager();
 
@@ -212,29 +225,27 @@ public class PagoController extends BaseController {
             }
 
             if (pagoRecibido.getImportePagar() == null || pagoRecibido.getImportePagar() != null
-                    && pagoRecibido.getImportePagar()  == 0) {
+                    && pagoRecibido.getImportePagar() == 0) {
                 mensaje.setError(true);
                 mensaje.setMensaje("Debe ingresar el importe a Pagar.");
                 return mensaje;
             }
-            
-            if (pagoRecibido.getInteres()== null || pagoRecibido.getInteres() != null
-                    && pagoRecibido.getInteres().toString().compareToIgnoreCase("")  == 0) {
+
+            if (pagoRecibido.getInteres() == null || pagoRecibido.getInteres() != null
+                    && pagoRecibido.getInteres().toString().compareToIgnoreCase("") == 0) {
                 mensaje.setError(true);
                 mensaje.setMensaje("Debe ingresar el interes a Pagar.");
                 return mensaje;
             }
-            
-            if (pagoRecibido.getInteres() > pagoRecibido.getImportePagar() ) {
+
+            if (pagoRecibido.getInteres() > pagoRecibido.getImportePagar()) {
                 mensaje.setError(true);
                 mensaje.setMensaje("El interes no puede ser mayor al importe a pagar.");
                 return mensaje;
             }
-            
-           mensaje = movimientoManager.realizarCompra(pagoRecibido.getIdCompra(), pagoRecibido.getImportePagar(), pagoRecibido.getInteres(),
-                   pagoRecibido.getIdDocPagar(), userDetail.getIdEmpresa(), userDetail.getId());
 
-
+            mensaje = movimientoManager.realizarCompra(pagoRecibido.getIdCompra(), pagoRecibido.getImportePagar(), pagoRecibido.getInteres(),
+                    pagoRecibido.getIdDocPagar(), userDetail.getIdEmpresa(), userDetail.getId());
 
         } catch (Exception ex) {
             mensaje.setError(true);
@@ -245,7 +256,6 @@ public class PagoController extends BaseController {
         return mensaje;
     }
 
-    
     @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO desactivar(@PathVariable("id") Long id) {

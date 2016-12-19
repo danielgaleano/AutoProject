@@ -9,13 +9,16 @@ import com.google.gson.Gson;
 import com.sistem.proyecto.entity.Cliente;
 import com.sistem.proyecto.entity.Compra;
 import com.sistem.proyecto.entity.DetalleCompra;
+import com.sistem.proyecto.entity.DocumentoCobrar;
 import com.sistem.proyecto.entity.DocumentoPagar;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.entity.Moneda;
+import com.sistem.proyecto.entity.Movimiento;
 import com.sistem.proyecto.entity.Pedido;
 import com.sistem.proyecto.entity.Permiso;
 import com.sistem.proyecto.entity.Proveedor;
 import com.sistem.proyecto.entity.Vehiculo;
+import com.sistem.proyecto.entity.Venta;
 import com.sistem.proyecto.userDetail.UserDetail;
 import com.sistem.proyecto.utils.FilterDTO;
 import com.sistem.proyecto.utils.ReglaDTO;
@@ -35,8 +38,11 @@ import com.sistem.proyecto.manager.utils.DTORetorno;
 import com.sistem.proyecto.manager.utils.MensajeDTO;
 import static com.sistem.proyecto.web.controller.BaseController.logger;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -61,6 +67,13 @@ public class CompraController extends BaseController {
             + "compra.descuento,compra.monto,compra.entrega,compra.montoDescuento,compra.neto,"
             + "compra.proveedor.id,compra.proveedor.nombre,compra.proveedor.ruc";
     
+    String atributosPagosRealizados = "id,proveedor.nombre,proveedor.ruc,proveedor.email,proveedor.telefono,proveedor.telefonoMovil,"
+            + "cliente.nombre,cliente.documento,cliente.email,cliente.telefono,cliente.telefonoMovil,"
+            + "fechaIngreso,tipoTransaccion,importe,neto,saldo,vuelto,fechaVencimiento,venta.nroFactura,"
+            + "cuota,interes,compra.estadoCompra,compra.nroFactura,compra.formaPago,compra.cantidadCuotas,compra.fechaCuota,compra.fechaCompra";
+
+    
+    
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView listarPermisos(Model model) {
         ModelAndView retorno = new ModelAndView();
@@ -72,7 +85,7 @@ public class CompraController extends BaseController {
     public ModelAndView listarRegistros(Model model) {
         ModelAndView retorno = new ModelAndView();
         retorno.setViewName("comprasListar");
-        model.addAttribute("action", "PENDIENTE");
+        //model.addAttribute("action", "PENDIENTE");
         return retorno;
     }
 
@@ -662,7 +675,7 @@ public class CompraController extends BaseController {
         return mensaje;
     }
 
-    @RequestMapping(value = "/desactivar/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/registros/desactivar/{id}", method = RequestMethod.GET)
     public @ResponseBody
     MensajeDTO desactivar(@PathVariable("id") Long id) {
 
@@ -670,37 +683,51 @@ public class CompraController extends BaseController {
 
         MensajeDTO retorno = new MensajeDTO();
         String nombre = "";
-        Pedido ejPedido = new Pedido();
-        ejPedido.setId(id);
-        ejPedido.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+        Compra ejCompra = new Compra();
+        ejCompra.setId(id);
+        ejCompra.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+        
         try {
 
-            inicializarPedidoManager();
+            inicializarCompraManager();
+            inicializarDetalleCompraManager();
+            inicializarVehiculoManager();
 
-            ejPedido = pedidoManager.get(ejPedido);
+            ejCompra = compraManager.get(ejCompra);
 
-            if (ejPedido != null) {
-                nombre = ejPedido.getCodigo().toString();
+            if (ejCompra != null) {
+                nombre = ejCompra.getNroFactura().toString();
             }
 
-            if (ejPedido != null && ejPedido.getActivo()
-                    .compareToIgnoreCase("N") == 0) {
+            if (ejCompra != null && ejCompra.getEstadoCompra()
+                    .compareToIgnoreCase(Compra.COMPRA_RECHAZADA) == 0) {
                 retorno.setError(true);
-                retorno.setMensaje("El pedido " + nombre + " ya se encuentra desactivado.");
+                retorno.setMensaje("La compra " + nombre + " ya se encuentra rechazada.");
             }
-            ejPedido.setActivo("N");
-            ejPedido.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
-            ejPedido.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
+            ejCompra.setEstadoCompra(Compra.COMPRA_RECHAZADA);
+            ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            ejCompra.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
 
-            pedidoManager.update(ejPedido);
+            compraManager.update(ejCompra);
 
+            DetalleCompra ejDetalle = new DetalleCompra();
+            ejDetalle.setCompra(ejCompra);
+            
+            List<DetalleCompra> compraDetalle = detalleCompraManager.list(ejDetalle);
+            
+            for(DetalleCompra rpm : compraDetalle){
+                
+                rpm.getVehiculo().setEstado(Vehiculo.PENDIENTE);
+                
+                vehiculoManager.update(rpm.getVehiculo());
+            }
             retorno.setError(false);
-            retorno.setMensaje("El pedido " + nombre + " se desactivo exitosamente.");
+            retorno.setMensaje("La compra " + nombre + " ya se  rechazo exitosamente.");
 
         } catch (Exception ex) {
             retorno.setError(true);
-            retorno.setMensaje("Error al tratar de desactivar el pedido.");
-            logger.error("Error al tratar de desactivar el pedido ", ex);
+            retorno.setMensaje("Error al tratar de rechazar la compra.");
+            logger.error("Error al tratar de rechazar la compra.", ex);
         }
 
         return retorno;
@@ -752,4 +779,246 @@ public class CompraController extends BaseController {
         return retorno;
 
     }
+    
+    
+    @RequestMapping(value = "/docs/{id}", method = RequestMethod.GET)
+    public ModelAndView listaDocsPagar(@PathVariable("id") Long id, Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("documentosPagarListar");
+        model.addAttribute("id", id);
+        return retorno;
+
+    }
+    
+    @RequestMapping(value = "/docsPagar/listar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno listarDocumentosPagar(@ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filtros,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("idCompra") String idCompra,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos) {
+
+        DTORetorno retorno = new DTORetorno();
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        DocumentoPagar ejemplo = new DocumentoPagar();
+        ejemplo.setCompra(new Compra(Long.parseLong(idCompra)));
+
+        List<Map<String, Object>> listMapGrupos = null;
+
+        try {
+
+            inicializarDocumentoPagarManager();
+
+            Gson gson = new Gson();
+            String camposFiltros = null;
+            String valorFiltro = null;
+
+            if (filtrar) {
+                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
+                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
+                    for (ReglaDTO regla : filtro.getRules()) {
+                        if (camposFiltros == null) {
+                            camposFiltros = regla.getField();
+                            valorFiltro = regla.getData();
+                        } else {
+                            camposFiltros += "," + regla.getField();
+                        }
+                    }
+                } else {
+                    //ejemplo = generarEjemplo(filtro, ejemplo);
+                }
+
+            }
+            // ejemplo.setActivo("S");
+            if (ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0) {
+                ordenarPor = "numeroPedido";
+            }
+
+            pagina = pagina != null ? pagina : 1;
+            Integer total = 0;
+
+            if (!todos) {
+                total = documentoPagarManager.list(ejemplo, true).size();
+            }
+
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+
+            if (total < inicio) {
+                inicio = total - total % cantidad;
+                pagina = total / cantidad;
+            }
+
+            listMapGrupos = documentoPagarManager.listAtributos(ejemplo, atributosApagar.split(","), todos, inicio, cantidad,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    null, null, null, null, null, null, null, null, true);
+
+            if (todos) {
+                total = listMapGrupos.size();
+            }
+            Integer totalPaginas = total / cantidad;
+
+            retorno.setTotal(totalPaginas + 1);
+            retorno.setRetorno(listMapGrupos);
+            retorno.setPage(pagina);
+
+        } catch (Exception e) {
+            retorno.setError(true);
+            retorno.setMensaje("Error al obtener lista de documentos a pagar");
+            logger.error("Error al listar", e);
+        }
+
+        return retorno;
+    }
+    
+    @RequestMapping(value = "/pagos/{id}", method = RequestMethod.GET)
+    public ModelAndView listaPagos(@PathVariable("id") Long id, Model model) {
+        ModelAndView retorno = new ModelAndView();
+        retorno.setViewName("pagosContadoListar");
+        model.addAttribute("id", id);
+        return retorno;
+
+    }
+    
+    @RequestMapping(value = "/pagosrealizados/listar", method = RequestMethod.GET)
+    public @ResponseBody
+    DTORetorno listarPagosRealizados(@ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filtros,
+            @ModelAttribute("fechaInicio") String fechaInicio,
+            @ModelAttribute("fechaFin") String fechaFin,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("estado") String estado,
+            @ModelAttribute("idCompra") String idCompra,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos) {
+
+        DTORetorno retorno = new DTORetorno();
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        Movimiento ejemplo = new Movimiento();
+        ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+        ejemplo.setCompra(new Compra(Long.parseLong(idCompra)));
+
+        List<Map<String, Object>> listMapGrupos = null;
+        List<Map<String, Object>> listComprasMap = null;
+        List<Object> valorInicio = new ArrayList<>();
+        List<Object> valorFin = new ArrayList<>();
+
+        List<String> atributoInicio = new ArrayList<>();
+        atributoInicio.add("fechaIngreso");
+        List<String> atributoFin = new ArrayList<>();
+        atributoFin.add("fechaIngreso");
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        Date resultFechaInicio = null;
+        Date resultFechaFin = null;
+
+        try {
+
+            inicializarMovimientoManager();
+
+            Gson gson = new Gson();
+            String camposFiltros = null;
+            String valorFiltro = null;
+
+            if (filtrar) {
+                FilterDTO filtro = gson.fromJson(filtros, FilterDTO.class);
+                if (filtro.getGroupOp().compareToIgnoreCase("OR") == 0) {
+                    for (ReglaDTO regla : filtro.getRules()) {
+                        if (camposFiltros == null) {
+                            camposFiltros = regla.getField();
+                            valorFiltro = regla.getData();
+                        } else {
+                            camposFiltros += "," + regla.getField();
+                        }
+                    }
+
+                } else {
+                    if (filtro.getData() != null && filtro.getData().compareToIgnoreCase("") != 0) {
+                        ejemplo.setProveedor(new Proveedor(Long.parseLong(filtro.getData())));
+                    }//ejemplo = generarEjemplo(filtro, ejemplo);
+                }
+
+            }
+            if (estado != null && estado.compareToIgnoreCase("") != 0) {
+                ejemplo.setTipoTransaccion(estado);
+            }
+
+            if (fechaInicio != null && fechaInicio.compareToIgnoreCase("") != 0
+                    && fechaFin != null && fechaFin.compareToIgnoreCase("") != 0) {
+
+                resultFechaInicio = dateFormat.parse(fechaInicio);
+                resultFechaFin = dateFormat.parse(fechaFin);
+
+            } else {
+
+                Date date = new Date();
+                date.setHours(00);
+                date.setMinutes(00);
+
+                resultFechaInicio = date;
+
+                date.setHours(23);
+                date.setMinutes(59);
+
+                resultFechaFin = date;
+            }
+
+            valorInicio.add(resultFechaInicio);
+            valorFin.add(resultFechaFin);
+
+            // ejemplo.setActivo("S");
+            if (ordenarPor == null || ordenarPor != null && ordenarPor.compareToIgnoreCase(" ") == 0) {
+                ordenarPor = "nroFactura";
+            }
+
+            pagina = pagina != null ? pagina : 1;
+            Integer total = 0;
+
+            
+            
+            if (!todos) {
+                total = movimientoManager.listAtributos(ejemplo, atributosPagosRealizados.split(","), true, null, null,
+                        ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                        null, null, null, null, null, null,
+                        null, null, true).size();
+            }
+
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+
+            if (total < inicio) {
+                inicio = total - total % cantidad;
+                pagina = total / cantidad;
+            }
+
+            listMapGrupos = movimientoManager.listAtributos(ejemplo, atributosPagosRealizados.split(","), todos, inicio, cantidad,
+                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                    null, null, null, null, null, null,
+                    null, null, true);
+
+            if (todos) {
+                total = listMapGrupos.size();
+            }
+
+            Integer totalPaginas = total / cantidad;
+
+            retorno.setTotal(totalPaginas + 1);
+            retorno.setRetorno(listMapGrupos);
+            retorno.setPage(pagina);
+
+        } catch (Exception e) {
+            retorno.setError(true);
+            retorno.setMensaje("Error al obtener compras");
+            logger.error("Error al listar", e);
+        }
+
+        return retorno;
+    }
+    
+    
 }

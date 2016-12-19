@@ -35,11 +35,11 @@
                     </h3>
 
                     <div class="widget-toolbar no-border">
-                        <a th:if="${id} != null" th:href="@{'/reportes/exportar/factura/pdf/'+ ${id}}" class="btn btn-warning " role="button">
+                        <a id="expFactura" th:if="${id} != null" th:href="@{'/reportes/exportar/factura/pdf/'+ ${id}}" class="btn btn-warning " role="button">
                             <i class="fa fa-fw fa-cloud-download"></i>
                             Exportar Factura
                         </a>
-                        <a th:if="${id} != null" th:href="@{'/reportes/exportar/pagare/pdf/'+ ${id}}" class="btn btn-info " role="button">
+                        <a id="expPagare" th:if="${id} != null" th:href="@{'/reportes/exportar/pagare/pdf/'+ ${id}}" class="btn btn-info " role="button">
                             <i class="fa fa-fw fa-cloud-download"></i>
                             Exportar Pagare
                         </a>

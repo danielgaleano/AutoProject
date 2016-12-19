@@ -388,6 +388,18 @@ function filtrarReporte() {
             chart.options.data[0].dataPoints = data.data;
             
             chart.render();
+            
+            var tot_egresos = data.data[0]['y'];
+            var tot_ingresos = data.data[1]['y'];
+            
+            var diferencia = tot_ingresos - tot_egresos;
+            
+            if(diferencia >= 0){
+                $("#gain-or-lose").html("Ganancia: Gs. <p id='numero' style='display: inline;'>" + diferencia +"</p>");
+            }else {
+                $("#gain-or-lose").html("P&#233;rdida: Gs. <p id='numero' style='display: inline;'>" + diferencia +"</p>");
+            }
+            $('#numero').number(true, 0, ',', '.');
         }
 
     });

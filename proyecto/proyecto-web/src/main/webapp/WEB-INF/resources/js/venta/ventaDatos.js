@@ -82,10 +82,15 @@ function cargarDatos(id) {
             if (venta.estadoVenta === 'VENTA_PENDIENTE') {
                 $('#botonAprobar').hide();
                 $('#aceptar').show();
+                $('#expFactura').hide();
+                $('#expPagare').hide();
             } else if (venta.estadoVenta === 'VENTA_REALIZADA') {
                 $('#botonAprobar').hide();
                 $('#validation-formCompra').find('.tableusuario-input').attr("disabled", true);
                 $("#aceptar").hide();
+            }else if (venta.estadoVenta === 'VENTA_RECHAZADA'){
+                $('#expFactura').hide();
+                $('#expPagare').hide();
             }
             $('#nroFactura').val(venta.nroFactura);
             $('#diasGracia').val(venta.diasGracia);

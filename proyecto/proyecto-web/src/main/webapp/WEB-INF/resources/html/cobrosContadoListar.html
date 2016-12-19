@@ -4,8 +4,9 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
     <div th:include="include/head :: head" th:remove="tag"></div>
-    <title>Compras</title>
+    <title>Cobros</title>
     <script th:inline="javascript">
+        var id = /*[[${id}]]*/'';
         var action = /*[[${action}]]*/'';
     </script>
     <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
@@ -17,25 +18,32 @@
     <nav th:replace="include/navbar :: navbar"></nav>
     <div class="content-wrapper">
 
-        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Realizar'')')}"/>
-        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Editar'')')}"/>
-        <div class="tablactivate-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Activar'')')}"/>
-        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Desactivar'')')}"/>
-        <div class="tabldetalle-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Editar'')')}"/>
-        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Compra.Visualizar'')')}"/>
+        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Realizar'')')}"/>
+        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Editar'')')}"/>
+        <div class="tablaprobar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Activar'')')}"/>
+        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Desactivar'')')}"/>
+        <div class="tabldetalle-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Detalle'')')}"/>
+        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Visualizar'')')}"/>
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                Compras
-                <small>Lista de compras de la empresa.</small>
+                Cobros
+                <small>Lista de cobros realizados.</small>
             </h1>
-<!--            <ol class="breadcrumb">
-                <a sec:authorize="hasRole('Compra.Realizar')" th:href="@{/compras/directa/crear}" class="btn btn-primary" role="button">
-                    Compra Directa
+
+                <a th:href="@{/ventas}" class="btn btn-primary btn-light bigger pull-right" role="button">
+                    <i class="ace-icon fa fa-arrow-left"></i>
+                    Volver
                 </a>
-            </ol>-->
+                
+                
+                
+             
         </section>
         <hr/>
+        
+
+        
         <!-- Main content -->
         <section class="content">
             <div class="row">
@@ -65,10 +73,14 @@
     <script th:src="@{/resources/js/base.js}"></script>
     <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
     <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
-    <script th:src="@{/resources/js/compra/comprasListar.js}"></script>
-    
+    <script th:src="@{/resources/js/venta/cobrosContadoListar.js}"></script>
+
 
 
 
 </body>
 </html>
+
+
+
+

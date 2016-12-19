@@ -29,6 +29,12 @@
                 Reporte de Transacciones
 
             </h1>
+            
+            <h3 id="gain-or-lose" class="pull-right">
+                
+
+            </h3>
+            
         </section>
         <!-- Main content -->
         <section class="content">
@@ -176,6 +182,11 @@
     <script th:src="@{~/proyecto/resources/js/lib/jquery.flot.min.js}"></script>
     <script th:src="@{~/proyecto/resources/js/lib/jquery.flot.pie.min.js}"></script>
     <script th:src="@{~/proyecto/resources/js/lib/jquery.flot.resize.min.js}"></script>
+    <script th:src="@{~/proyecto/resources/js/lib/jquery.number.min.js}" charset="UTF-8"></script>
+    <script type="text/javascript">
+        $('#numero').number(true, 0, ',', '.');
+        //console.log($.number( 5020.2364, 2 )); // Outputs: 5,020.24)
+    </script>
 
 
 </body>

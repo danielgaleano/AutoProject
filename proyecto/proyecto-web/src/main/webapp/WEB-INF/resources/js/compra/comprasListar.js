@@ -6,10 +6,12 @@ $(document).ready(function(data) {
     if (action === "VISUALIZAR") {
         var permisoVisualizar = false;
         var permisoEditar = false;
+        var permisoDesactivar = false;
     } else {
         var permisoEditar = parseBolean($(this).find('.tabledit-permiso').text());
         var permisoVisualizar = parseBolean($(this).find('.tablvisualizar-permiso').text());
         var permisoDetalle = parseBolean($(this).find('.tabladd-permiso').text());
+        var permisoDesactivar = parseBolean($(this).find('.tabldelete-permiso').text());
     }
 
 
@@ -92,6 +94,7 @@ $(document).ready(function(data) {
             atributos: "id,nombre",
             filters: null,
             estado: action,
+            idCompra: action,
             todos: false
         },
         jsonReader: {
@@ -133,6 +136,8 @@ $(document).ready(function(data) {
                 var activar = '';
                 var ini = '<div style="float: none;" class="btn-group btn-group-sm">';
                 var fin = '</div>';
+                var docPagar = '';
+                var pagosContado = '';
                 if (isStatus) {
                     var estado = dato.estadoCompra;
                     if (estado === 'COMPRA_PENDIENTE') {
@@ -148,19 +153,56 @@ $(document).ready(function(data) {
                             visuali = visualizarButton(cl, permisoVisualizar, null);
                             //edit = editInlineButton(cl, permisoEditar);
                             editForm = detalleButton(cl, permisoDetalle, 'Realizar Compra', 'compras/editar');
-                            //desact = desactivarButton(cl, permisoDesactivar);
+                            desact = desactivarButton(cl, permisoDesactivar,"Cancelar Compra");
                             $(grid_selector).setRowData(ids[i], {act: ini + visuali + editForm + desact + fin});
                         }
                         $(grid_selector).setRowData(ids[i], {estadoCompra: labelActivo});
                     } else if (estado === 'COMPRA_APROBADA') {
+                        //se debe agregar and estado_pago== 'INICIADO' y ahi mostrar el desactivar, en caso contario no mostrar desactivar
                         var labelInactivo = '<span class="table-estado label label-danger"  value="N" >APROBADA</span>';
                         visuali = visualizarButton(cl, permisoVisualizar, null);
-                        $(grid_selector).setRowData(ids[i], {act: ini + visuali + fin});
+                        
+                        desact = desactivarButton(cl, permisoDesactivar,"Cancelar Compra");
+                        if(dato.formaPago === 'CREDITO'){
+                            docPagar = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="'+ CONTEXT_ROOT + '/compras/docs/'+ cl +'"' 
+                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Ver Documentos a Pagar">'
+                                + ' <span class="fa fa-fw fa-file"></span></a>';
+                        }else if (dato.formaPago === 'CONTADO'){
+                            pagosContado = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="'+ CONTEXT_ROOT + '/compras/pagos/'+ cl +'"'
+                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Ver Pagos">'
+                                + ' <span class="fa fa-fw fa-money"></span></a>';
+                        }
+                        
+                        
+                        $(grid_selector).setRowData(ids[i], {act: ini + visuali + docPagar + pagosContado + desact + fin});
                         $(grid_selector).setRowData(ids[i], {estadoCompra: labelInactivo});
                     } else if (estado === 'COMPRA_REALIZADA') {
                         var labelInactivo = '<span class="table-estado label label-danger"  value="N" >REALIZADA</span>';
                         visuali = visualizarButton(cl, permisoVisualizar, null);
-                        $(grid_selector).setRowData(ids[i], {act: ini + visuali + fin});
+                        
+                        if(dato.formaPago === 'CREDITO'){
+                            docPagar = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="'+ CONTEXT_ROOT + '/compras/docs/'+ cl +'"' 
+                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Ver Documentos a Pagar">'
+                                + ' <span class="fa fa-fw fa-file"></span></a>';
+                        }else if (dato.formaPago === 'CONTADO'){
+                            pagosContado = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                                + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" href="'+ CONTEXT_ROOT + '/compras/pagos/'+ cl +'"' 
+                                + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Ver Pagos">'
+                                + ' <span class="fa fa-fw fa-money"></span></a>';
+                        
+                        }
+                        
+                        
+                        $(grid_selector).setRowData(ids[i], {act: ini + visuali + docPagar + pagosContado +fin});
+                        $(grid_selector).setRowData(ids[i], {estadoCompra: labelInactivo});
+                    }else if(estado === 'COMPRA_RECHAZADA'){
+                        var labelInactivo = '<span class="table-estado label label-danger"  value="N" >RECHAZADA</span>';
+                        visuali = visualizarButton(cl, permisoVisualizar, null);
+                        
+                        $(grid_selector).setRowData(ids[i], {act: ini + visuali +fin});
                         $(grid_selector).setRowData(ids[i], {estadoCompra: labelInactivo});
                     }
                 } else {
@@ -266,4 +308,4 @@ function parseBolean(val) {
     }
 
 }
-            
+

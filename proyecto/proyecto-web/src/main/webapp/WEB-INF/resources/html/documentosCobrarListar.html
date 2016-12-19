@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+    <div th:include="include/head :: head" th:remove="tag"></div>
+    <title>Documentos a cobrar</title>
+    <script th:inline="javascript">
+        var id = /*[[${id}]]*/'';
+        var action = /*[[${action}]]*/'';
+    </script>
+    <link th:href="@{/resources/css/easyui.css}" rel="stylesheet" />
+    <link th:href="@{/resources/css/icon.css}" rel="stylesheet" />
+
+
+</head>
+<body>
+    <nav th:replace="include/navbar :: navbar"></nav>
+    <div class="content-wrapper">
+
+        <div class="tabladd-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Realizar'')')}"/>
+        <div class="tabledit-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Editar'')')}"/>
+        <div class="tablaprobar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Activar'')')}"/>
+        <div class="tabldelete-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Desactivar'')')}"/>
+        <div class="tabldetalle-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Detalle'')')}"/>
+        <div class="tablvisualizar-permiso" style="display: none;" th:text ="${#authorization.expression('hasAnyAuthority(''Venta.Visualizar'')')}"/>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Documentos a Cobrar
+                <small>Lista de documentos a cobrar.</small>
+            </h1>
+
+                <a th:href="@{/ventas}" class="btn btn-primary btn-light bigger pull-right" role="button">
+                    <i class="ace-icon fa fa-arrow-left"></i>
+                    Volver
+                </a>
+                
+                <button id="verPagos" type="button" class="btn btn-primary pull-left">
+                    <i class="ace-icon fa fa-money"></i>
+                    Ver cobros
+                </button>
+                
+             
+        </section>
+        <hr/>
+        
+        
+        
+                <!-- Modal -->
+        <div class="modal fade" id="pagos-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Cobros</h4>
+              </div>
+              <div class="modal-body">
+                      
+                <div class="grid-container" style="width: 870px">       
+                    <table id="grid-modal" ></table>
+                    <div id="grid-pager-modal"></div>                                      
+                            
+                </div>
+                            
+
+                        
+                    
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                
+                    
+              </div>
+            </div>
+          </div><!-- fin modal -->
+        </div>
+        
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <div id="mensaje"></div>
+                    <form class="form-search">
+                        <span class="input-icon">
+                            <input id="globalSearchText" placeholder="Buscar ..." class="nav-search-input"  autocomplete="off" type="text"/>
+                            <i class="ace-icon fa fa-search nav-search-icon"></i>
+                        </span>
+                        <button id="globalSearch" type="button" class="btn btn-info btn-sm">
+                            <i class="ace-icon fa fa-search nav-search-icon"></i>
+                        </button>
+                    </form>
+                    <table id="grid" style="width: 100%;"></table>
+                    <div id="grid-pager"></div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>    
+    <!-- /.content -->
+    <div th:include="include/scripts :: [id='scripts']" th:remove="tag"></div>
+    <script th:src="@{/resources/js/base.js}"></script>
+    <script src="/proyecto/resources/dist/js/jquery.jqGrid.min.js"></script>
+    <script src="/proyecto/resources/dist/js/grid.locale-en.js"></script>
+    <script th:src="@{/resources/js/venta/documentosCobrarListar.js}"></script>
+    <script th:src="@{/resources/js/venta/modalCobrosListar.js}"></script>
+
+
+
+
+</body>
+</html>
+

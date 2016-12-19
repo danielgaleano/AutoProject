@@ -1464,7 +1464,7 @@ public class ReportesController extends BaseController {
                 }
                 rpm.put("neto", Math.round(Double.parseDouble(rpm.get("neto").toString())));
                 rpm.put("proveedor", rpm.get("cliente.nombre").toString());
-                rpm.put("fechaCuota", rpm.get("fechaVenta").toString());
+                rpm.put("fechaCuota", rpm.get("fechaVenta"));
             }
 
             if (todos) {

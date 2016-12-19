@@ -220,22 +220,11 @@ public class VentaController extends BaseController {
             Integer total = 0;
             
             Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
-            
-            Venta ejParcial = new Venta();
-            ejParcial.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
-            ejParcial.setEstadoVenta(Venta.VENTA_PAGADA);
-            
-            listMaPagados = ventaManager.listAtributos(ejParcial, atributosVentas.split(","), todos, inicio, cantidad,
-                    ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
-                    null, null, null, null, null, null, null, null, true);
-            
-            int pagados = listMaPagados.size();
+                       
 
             if (!todos) {
-                total = ventaManager.list(ejemplo, true).size() + pagados;
-            }
-
-            
+                total = ventaManager.list(ejemplo, true).size();
+            }           
 
             if (total < inicio) {
                 inicio = total - total % cantidad;
@@ -246,9 +235,6 @@ public class VentaController extends BaseController {
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
             
-            if(listMaPagados != null){
-                listMapGrupos.addAll(listMaPagados);
-            }
             
             if (todos) {
                 total = listMapGrupos.size();

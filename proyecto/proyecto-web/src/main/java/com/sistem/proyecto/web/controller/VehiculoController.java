@@ -6,6 +6,7 @@
 package com.sistem.proyecto.web.controller;
 
 import com.google.gson.Gson;
+import com.sistem.proyecto.entity.DetalleVenta;
 import com.sistem.proyecto.entity.Vehiculo;
 import com.sistem.proyecto.entity.Empresa;
 import com.sistem.proyecto.userDetail.UserDetail;
@@ -52,7 +53,7 @@ public class VehiculoController extends BaseController {
         return retorno;
 
     }
-    
+
     @RequestMapping(value = "/vendidos", method = RequestMethod.GET)
     public ModelAndView listaVehiculosVendidos(Model model) {
         ModelAndView retorno = new ModelAndView();
@@ -98,7 +99,7 @@ public class VehiculoController extends BaseController {
         ejVehiculo.setEstado(Vehiculo.STOCK);
 
         List<Map<String, Object>> listMapGrupos = null;
-        
+
         List<Map<String, Object>> listMapGruposProceso = null;
         try {
 
@@ -132,10 +133,8 @@ public class VehiculoController extends BaseController {
             Vehiculo ejVehiculoProceso = new Vehiculo();
             ejVehiculoProceso.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
             ejVehiculoProceso.setEstado(Vehiculo.PROVESO_VENTA);
-            
+
             int totalVentas = vehiculoManager.list(ejVehiculoProceso, true).size();
-            
-            
 
             if (!todos) {
                 total = vehiculoManager.list(ejVehiculo, true).size() + totalVentas;
@@ -151,17 +150,17 @@ public class VehiculoController extends BaseController {
             listMapGrupos = vehiculoManager.listAtributos(ejVehiculo, atributos.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
-            
+
             listMapGruposProceso = vehiculoManager.listAtributos(ejVehiculoProceso, atributos.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
-            
-            if(listMapGruposProceso != null){
+
+            if (listMapGruposProceso != null) {
                 listMapGrupos.addAll(listMapGruposProceso);
             }
-            
+
             if (todos) {
-                total = listMapGrupos.size() ;
+                total = listMapGrupos.size();
             }
             Integer totalPaginas = total / cantidad;
 
@@ -176,8 +175,7 @@ public class VehiculoController extends BaseController {
 
         return retorno;
     }
-    
-    
+
     @RequestMapping(value = "/vendidos/visualizar/{id}", method = RequestMethod.GET)
     public ModelAndView formVer(@PathVariable("id") Long id, Model model) {
         ModelAndView retorno = new ModelAndView();
@@ -186,8 +184,7 @@ public class VehiculoController extends BaseController {
         model.addAttribute("id", id);
         return retorno;
     }
-    
-    
+
     @RequestMapping(value = "/vendidos/listar", method = RequestMethod.GET)
     public @ResponseBody
     DTORetorno listarVendidos(@ModelAttribute("_search") boolean filtrar,
@@ -201,16 +198,17 @@ public class VehiculoController extends BaseController {
         DTORetorno retorno = new DTORetorno();
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         ordenarPor = "marca.nombre";
-        
+
         Vehiculo ejVehiculo = new Vehiculo();
         ejVehiculo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
         ejVehiculo.setEstado(Vehiculo.VENDIDA);
-        
+
         List<Map<String, Object>> listMapGrupos = null;
         try {
 
             inicializarVehiculoManager();
-
+            inicializarDetalleVentaManager();
+            
             Gson gson = new Gson();
             String camposFiltros = null;
             String valorFiltro = null;
@@ -250,6 +248,22 @@ public class VehiculoController extends BaseController {
             listMapGrupos = vehiculoManager.listAtributos(ejVehiculo, atributos.split(","), todos, inicio, cantidad,
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, null, null, null, null, null, true);
+            
+            for (Map<String, Object> rpm : listMapGrupos) {
+                
+                DetalleVenta ejVenta = new DetalleVenta();
+                ejVenta.setVehiculo(new Vehiculo(Long.parseLong(rpm.get("id").toString())));
+                ejVenta.setDevuelto(false);
+
+                ejVenta  = detalleVentaManager.get(ejVenta);
+                
+                if(ejVenta.getVenta().getEstadoCobro().compareToIgnoreCase("CANCELADO") == 0){
+                    rpm.put("cancelado", true);
+                }else{
+                    rpm.put("cancelado", false);
+                }
+
+            }
 
             if (todos) {
                 total = listMapGrupos.size();
@@ -268,7 +282,6 @@ public class VehiculoController extends BaseController {
         return retorno;
     }
 
-    
     @RequestMapping(value = "/crear", method = RequestMethod.GET)
     public ModelAndView crear(Model model) {
 

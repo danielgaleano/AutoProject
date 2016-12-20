@@ -28,11 +28,12 @@ $(document).ready(function(data) {
         hidegrid: false,
         rownumbers: true,
         //width: $(".content").width(),
-        colNames: ['ID', 'ID_VEHICULO', 'CHASIS', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRANSMISION', 'PRECIO DE COSTO', 'PRECIO DE VENTA', ''],
+        colNames: ['ID', 'ID_VEHICULO', 'CHASIS','', 'TIPO VEHICULO', 'MARCA', 'MODELO', 'ANHO', 'COLOR', 'TRANSMISION', 'PRECIO DE COSTO', 'PRECIO DE VENTA', ''],
         colModel: [
             {name: 'id', index: 'id', key: true, hidden: true, width: 60, sorttype: "int", editable: false},
             {name: 'codigo', index: 'codigo', hidden: true, width: 60, editable: false},
             {name: 'chasis', index: 'chasis', hidden: true, width: 60, editable: false},
+            {name: 'cancelado', index: 'cancelado', hidden: true, width: 60, editable: false},
             {name: 'tipo.nombre', index: 'tipo.nombre', width: 100, editable: false},
             {name: 'marca.nombre', index: 'marca.nombre', width: 100, editable: false},
             {name: 'modelo.nombre', index: 'modelo.nombre', width: 100, editable: false},
@@ -157,11 +158,16 @@ $(document).ready(function(data) {
                                 + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" onclick=popVenta(' + cl + ');'
                                 + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Ver venta">'
                                 + ' <span class="fa fa-fw fa-shopping-bag"></span></a>';
-
-                    devolucion = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
+                    
+                    if(dato.cancelado === false || dato.cancelado === 'false'){  
+                       
+                        devolucion = '<a onmouseout="jQuery(this).removeClass(' + "'ui-state-hover'" + ')"'
                                 + ' onmouseover="jQuery(this).addClass(' + "'i-state-hover'" + ');" onclick=popDevolucion(' + cl + ');'
                                 + '  class=" btn btn-xs btn-info" style="float:left;cursor:pointer;" title="Registrar devolucion">'
                                 + ' <span class="fa fa-fw fa-exchange"></span></a>';
+                        
+                    }  
+                    
                     //visuali = visualizarButton(cl, permisoVisualizar,null);
                     //editForm = editFormButton(cl, permisoEditar);
                     //desact = desactivarButton(cl, permisoDesactivar);

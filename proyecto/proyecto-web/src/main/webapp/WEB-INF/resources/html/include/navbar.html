@@ -150,7 +150,7 @@ and open the template in the editor.
                       <!--<li><a th:href="@{/reportes/ventas}">Transacciones de Venta</a></li> --> 
                     </ul>
                   </li>
-                  <li><a th:href="@{/reportes/movimiento}"><i class="fa fa-pie-chart"></i> <span>Reporte de Transacciones</span></a></li>
+                  <li><a sec:authorize="hasRole('Reporte.Transacciones')" th:href="@{/reportes/movimiento}"><i class="fa fa-pie-chart"></i> <span>Reporte de Transacciones</span></a></li>
                   <li class="treeview">
                     <a sec:authorize="hasRole('Configurar.Sistema')" href="#"><i class="fa fa-cog"></i> <span>Datos del Sistema</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">

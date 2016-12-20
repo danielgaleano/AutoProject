@@ -329,7 +329,7 @@ function popVenta(id_vehiculo) {
                     $('#nroFacturaVenta').val(venta['venta.nroFactura']);
                     //$('#ruc').val(venta['venta.proveedor.ruc']);
                     $('#nombreVenta').val(venta['venta.cliente.nombre']);
-                    
+                    $('#deudaPendiente').val(venta.deudaPendiente);
                     $('#date-timeDesdeVenta').val(venta['venta.fechaCuota']);
                     $('#descuentoVenta').val(venta['venta.descuento']);
                     $('#interesVenta').val(venta['venta.porcentajeInteresCredito']);

@@ -65,7 +65,7 @@ public class VentaController extends BaseController {
             + "venta.montoInteres,venta.tipoMoraInteres,venta.moraInteres,venta.cantidadCuotas,venta.montoCuotas,"
             + "venta.montoTotalCuotas,venta.fechaCuota,venta.entrega,venta.saldo,venta.tipoDescuento,"
             + "venta.descuento,venta.monto,venta.entrega,venta.montoDescuento,venta.neto,"
-            + "venta.cliente.id,venta.cliente.nombre,venta.cliente.documento,venta.moraInteres,venta.diasGracia";
+            + "venta.cliente.id,venta.cliente.nombre,venta.cliente.documento,venta.moraInteres,venta.diasGracia,venta.estadoCobro";
     
      String atributosPagosRecibidos = "id,proveedor.nombre,proveedor.ruc,proveedor.email,proveedor.telefono,proveedor.telefonoMovil,"
             + "cliente.nombre,cliente.documento,cliente.email,cliente.telefono,cliente.telefonoMovil,"
@@ -143,18 +143,38 @@ public class VentaController extends BaseController {
         List<Map<String, Object>> listMapGrupos = null;
         try {
             inicializarDetalleVentaManager();
+            inicializarDocumentoCobrarManager();
             
             DetalleVenta ejVenta = new DetalleVenta();
             ejVenta.setVehiculo(new Vehiculo (id));
             ejVenta.setDevuelto(false);
             
             Map<String, Object> ejVentaMap = detalleVentaManager.getAtributos(ejVenta, atributosVehiculoVenta.split(","));
-//            ejCompraMap.put("montoCuotas", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.montoCuotas").toString())+""));
-//            ejCompraMap.put("montoInteres", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.montoInteres").toString())+""));
-//            ejCompraMap.put("monto", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.monto").toString())+""));
-//            ejCompraMap.put("saldo", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.saldo").toString())+""));
-            
-            
+        
+            if(ejVentaMap.get("venta.estadoCobro").toString().compareToIgnoreCase("CANCELADO") != 0){
+                if(ejVentaMap.get("venta.formaPago").toString().compareToIgnoreCase("CREDITO") != 0){
+                    DocumentoCobrar aPagar = new DocumentoCobrar();
+                    aPagar.setVenta(new Venta(Long.parseLong(ejVentaMap.get("venta.id").toString())));
+                
+                    List<DocumentoCobrar> aPagarList = documentoCobrarManager.list(aPagar);
+                    
+                    Long deuda = Long.parseLong("0");
+                    for(DocumentoCobrar rpm : aPagarList){
+                        if(rpm.getEstado().compareToIgnoreCase(DocumentoCobrar.PENDIENTE) == 0){
+                            deuda = deuda + Math.round(rpm.getMonto());
+                        }else if(rpm.getEstado().compareToIgnoreCase(DocumentoCobrar.PARCIAL) == 0){
+                            deuda = deuda + Math.round(rpm.getSaldo());
+                        }
+                    }
+                    ejVentaMap.put("deudaPendiente", deuda);
+                }else{
+                    if(ejVentaMap.get("venta.estadoCobro").toString().compareToIgnoreCase(DocumentoCobrar.PARCIAL) == 0){
+                       ejVentaMap.put("deudaPendiente", ejVentaMap.get("venta.saldo")); 
+                    }else{
+                        ejVentaMap.put("deudaPendiente", ejVentaMap.get("venta.neto"));
+                    }
+                }
+            }
             retorno.setData(ejVentaMap);
             retorno.setError(false);
             retorno.setMensaje("Se obtuvo exitosamente la venta");

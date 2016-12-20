@@ -473,7 +473,11 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-xs-12 col-sm-12 col-lg-4 col-md-4">
-                                                        
+                                                        <label class="col-lg-4 control-label">Deuda Pendiente</label>
+                                                        <div class="col-lg-8">
+                                                            <input id="deudaPendienteDevolucion" name="nombre" type="text" placeholder="Deuda" class="form-control tableusuario-input " disabled="disabled"/> 
+                                                            <span class="glyphicon form-control-feedback" id="nombre1"></span>
+                                                        </div>
                                                     </div>
                                                     </div>
                                                     <div class="row">
@@ -582,7 +586,7 @@
     <script th:src="@{/resources/js/vendidos/devolucionForm.js}"></script>
     <script th:src="@{~/proyecto/resources/js/lib/jquery.number.min.js}" charset="UTF-8"></script>
     <script type="text/javascript">
-        $('#entrega, #montoTotal, #montoDescuento, #montoCuota, #montoInteres, #saldo, #neto, #interes, #interesMora, #entregaVenta, #montoTotalVenta, #montoDescuentoVenta, #montoCuotaVenta, #montoInteresVenta, #saldoVenta, #netoVenta, #interesVenta, #interesMoraVenta, #montoRecepcion, #montoTotalDevolucion, #costoDevolucion').number(true, 0, ',', '.');
+        $('#entrega, #montoTotal, #montoDescuento, #montoCuota, #montoInteres, #saldo, #neto, #interes, #interesMora, #entregaVenta, #montoTotalVenta, #montoDescuentoVenta, #montoCuotaVenta, #montoInteresVenta, #saldoVenta, #netoVenta, #interesVenta, #interesMoraVenta, #montoRecepcion, #montoTotalDevolucion, #costoDevolucion, #deudaPendiente, #deudaPendienteDevolucion').number(true, 0, ',', '.');
         //console.log($.number( 5020.2364, 2 )); // Outputs: 5,020.24)
     </script>
 

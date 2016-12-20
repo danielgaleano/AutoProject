@@ -405,7 +405,7 @@ function popDevolucion(id_vehiculo) {
                     $('#nroFacturaDevolucion').val(venta['venta.nroFactura']);
                     //$('#ruc').val(venta['venta.proveedor.ruc']);
                     $('#nombreDevolucion').val(venta['venta.cliente.nombre']);
-                    
+                    $('#deudaPendienteDevolucion').val(venta.deudaPendiente);
                     $('#montoTotalDevolucion').val(venta['venta.monto']);
 
                     $('#chasisDevolucion').val(dato.chasis);

@@ -59,8 +59,13 @@ $(document).ready(function(data) {
                                 + '</div>');
                     } else {
                         $('#interes').val("0");
-						$('#vuelto').val("0");
+			$('#vuelto').val("0");
                         $('#importePagar').val("");
+//                        $.get(CONTEXT_ROOT + '/reportes/exportar/recibo/pdf/' + data.idMovimiento, function(response, textStatus, jqXHR) {
+//                            
+//                        }
+                        window.location.href = CONTEXT_ROOT +'/reportes/exportar/recibo/pdf/' + data.idMovimiento;
+                        
                         cargarDatos(data.id);
                         $("#grid").trigger("reloadGrid", [{page: 1, current: true}]);
                         $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'

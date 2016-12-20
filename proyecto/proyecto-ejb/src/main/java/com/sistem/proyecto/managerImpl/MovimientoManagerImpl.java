@@ -1437,6 +1437,7 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
             }
 
             mensaje.setId(idVenta);
+            mensaje.setIdMovimiento(ejMovimiento.getId());
             mensaje.setError(false);
             mensaje.setMensaje("La venta se realizo exitosamente.");
             return mensaje;

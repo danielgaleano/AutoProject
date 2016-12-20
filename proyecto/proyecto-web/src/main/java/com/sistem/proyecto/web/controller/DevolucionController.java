@@ -147,7 +147,7 @@ public class DevolucionController extends BaseController {
         } catch (Exception ex) {
             mensaje.setError(true);
             mensaje.setMensaje("Error a guardar la devolucion");
-            logger.debug("Error al guardar la devolucion ", ex);
+            logger.error("Error al guardar la devolucion ", ex);
         }
 
         return mensaje;

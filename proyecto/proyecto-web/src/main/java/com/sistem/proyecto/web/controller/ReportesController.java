@@ -2081,6 +2081,103 @@ public class ReportesController extends BaseController {
             e.printStackTrace();
         }
     }
+    
+    @ResponseBody
+    @RequestMapping(value = "/exportar/recibo/{tipo}/{id}", method = RequestMethod.GET)
+    public void exportarRecibo(@PathVariable("tipo") String tipo, @PathVariable("id") Long id,
+            HttpServletRequest request, HttpServletResponse response) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        try {
+            inicializarVentaManager();
+            inicializarMovimientoManager();
+            inicializarDetalleVentaManager();
+            inicializarEmpresaManager();
+            inicializarDocumentoCobrarManager();
+
+            JasperReport reporte = (JasperReport) JRLoader
+                    .loadObjectFromFile(request
+                            .getSession()
+                            .getServletContext()
+                            .getRealPath(
+                                    "WEB-INF/resources/reports/proyecto-recibo.jasper"));
+
+            Map<String, Object> parametros = new HashMap<String, Object>();
+
+            Map<String, Object> cliente = new HashMap<String, Object>();
+
+            parametros.put("titulo", "Recibo");
+
+            Empresa ejEmpresa = empresaManager.get(userDetail.getIdEmpresa());
+
+            parametros.put("nombreEmpresa", ejEmpresa.getNombre());
+
+            Movimiento ejemplo = new Movimiento();
+            ejemplo.setId(id);
+            ejemplo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+
+            ejemplo = movimientoManager.get(ejemplo);
+
+            parametros.put("numero", ejemplo.getId() + "");
+            parametros.put("cliente", ejemplo.getCliente().getNombre());
+
+            String emision = fecha_español.format(ejemplo.getFechaIngreso());
+
+            parametros.put("vencimiento", emision);
+            
+            parametros.put("montoTotal", Math.round(ejemplo.getNeto()) + "");
+            parametros.put("importe", Math.round(ejemplo.getImporte()) + "");
+            parametros.put("interes", Math.round(ejemplo.getInteres()) + "");
+            parametros.put("vuelto", Math.round(ejemplo.getVuelto()) + "");
+            
+            String concepto = "";
+            if(ejemplo.getVenta().getFormaPago().compareToIgnoreCase("CREDITO") == 0){
+                concepto = "Cuo/" + ejemplo.getCuota() +", Importe Cuota " + Math.round(ejemplo.getNeto()) +", Venta Credito " + ejemplo.getVenta().getNroFactura();
+            }else{
+                concepto = "Importe " + Math.round(ejemplo.getNeto()) +", Venta Contado" + ejemplo.getVenta().getNroFactura();
+            }
+           
+            parametros.put("concepto", concepto);
+            
+            JRExporter exporter;
+            if (tipo.equals("pdf")) {
+                response.setContentType("application/pdf");
+                exporter = new JRPdfExporter();
+            } else if (tipo.equals("xls")) {
+                parametros.put(JRParameter.IS_IGNORE_PAGINATION, true);
+                response.setContentType("application/vnd.ms-excel");
+                exporter = new JRXlsExporter();
+            } else {
+                return;
+            }
+            
+            DetalleVenta ejDetalle = new DetalleVenta();
+            ejDetalle.setVenta(ejemplo.getVenta());
+
+            List<Map<String, Object>> listMapCategorias = detalleVentaManager
+                    .listAtributos(ejDetalle, "vehiculo.tipo.nombre,vehiculo.codigo,vehiculo.marca.nombre,vehiculo.modelo.nombre,vehiculo.anho,neto".split(","),
+                            false);
+            
+            JasperDatasource datasource = new JasperDatasource();
+            datasource.addAll(listMapCategorias);
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte,
+                    parametros, datasource);
+
+            response.addHeader("Content-Disposition", "attachment; filename=\""
+                    + "export-recibo." + tipo + "\"");
+            exporter.setParameter(JRExporterParameter.CHARACTER_ENCODING,
+                    "Cp1252");
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+            ServletOutputStream output = response.getOutputStream();
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, output);
+            exporter.exportReport();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void cargarFiltros(List<Map<String, String>> filtros, String label, String value) {
         Map<String, String> filtro = new HashMap<String, String>();

@@ -301,7 +301,7 @@ $(document).ready(function(data) {
 
     }
     function imprimirRecibo(id_pago){
-        console.log(id_pago);
+        window.location.href = CONTEXT_ROOT +'/reportes/exportar/recibo/pdf/' + id_pago;
         //Se genera el pdf del recibo
     }
     

@@ -262,7 +262,7 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
                     ejCompra = new Compra();
                     ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
                     ejCompra.setActivo("S");
-                    ejCompra.setEstadoPago(DocumentoPagar.PENDIENTE);
+                    ejCompra.setEstadoPago(DocumentoPagar.ORDEN_COMPRA);
                     ejCompra.setTipoCompra("INDIRECTA");
                     ejCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                     ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
@@ -423,7 +423,7 @@ public class DetallePedidoManagerImpl extends GenericDaoImpl<DetallePedido, Long
                         ejCompra.setEstadoCompra(Compra.ORDEN_COMPRA);
                         ejCompra.setActivo("S");
                         ejCompra.setTipoCompra("INDIRECTA");
-                        ejCompra.setEstadoPago(DocumentoPagar.PENDIENTE);
+                        ejCompra.setEstadoPago(DocumentoPagar.ORDEN_COMPRA);
                         ejCompra.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
                         ejCompra.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                         ejCompra.setEmpresa(new Empresa(idEmpresa));

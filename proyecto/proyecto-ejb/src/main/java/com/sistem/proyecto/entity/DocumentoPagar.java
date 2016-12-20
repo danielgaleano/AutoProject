@@ -25,6 +25,7 @@ public class DocumentoPagar extends Base {
     public static final String PARCIAL = "PARCIAL";
     public static final String PENDIENTE = "PENDIENTE";
     public static final String CANCELADO = "CANCELADO";
+    public static final String ORDEN_COMPRA = "ORDEN_COMPRA";
     
     private static final long serialVersionUID = 1554546L;
     

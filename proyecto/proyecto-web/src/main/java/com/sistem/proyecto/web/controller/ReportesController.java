@@ -1043,7 +1043,8 @@ public class ReportesController extends BaseController {
                 } else {
                     totalGeneral = Math.round(Double.parseDouble(rpm.get("neto").toString()));
                     
-                    if(rpm.get("saldo") != null){
+                    if(rpm.get("saldo") != null 
+                            && rpm.get("saldo").toString().compareToIgnoreCase("") != 0){
                         rpm.put("saldo", Long.parseLong(rpm.get("saldo").toString()));
                     }else{
                         rpm.put("saldo", Long.parseLong("0"));

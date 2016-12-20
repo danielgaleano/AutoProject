@@ -615,6 +615,7 @@ public class VentaController extends BaseController {
                 retorno.setMensaje("La venta " + nombre + " ya se encuentra rechazada.");
             }
             ejVenta.setEstadoVenta(Venta.VENTA_RECHAZADA);
+            ejVenta.setEstadoCobro("RECHAZADA");
             ejVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
             ejVenta.setFechaEliminacion(new Timestamp(System.currentTimeMillis()));
 

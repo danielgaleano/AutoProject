@@ -222,6 +222,8 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
 
             ejCompra = compraManager.get(idCompra);
             ejCompra.setEstadoCompra(Compra.COMPRA_PAGADA);
+            ejCompra.setEstadoPago(DocumentoPagar.PENDIENTE);
+            
             if (ejCompra.getEstadoCompra().compareToIgnoreCase(Compra.COMPRA_REALIZADA) == 0) {
                 pago.setCancelado(true);
                 mensaje.setError(false);

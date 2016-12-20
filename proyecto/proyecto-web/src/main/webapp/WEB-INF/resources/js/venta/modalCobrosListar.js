@@ -298,6 +298,7 @@ function parseBolean(val) {
 
 }
 function imprimirRecibo(id_pago){
+    window.location.href = CONTEXT_ROOT +'/reportes/exportar/recibo/pdf/' + id_pago;
     console.log(id_pago);
     //Se genera el pdf del recibo
 }

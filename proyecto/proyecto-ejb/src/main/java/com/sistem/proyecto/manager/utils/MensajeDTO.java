@@ -13,6 +13,8 @@ public class MensajeDTO {
     
     private Long id;
     
+    private Long idMovimiento;
+    
     private boolean error;
     
     private String mensaje;
@@ -58,6 +60,14 @@ public class MensajeDTO {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getIdMovimiento() {
+        return idMovimiento;
+    }
+
+    public void setIdMovimiento(Long idMovimiento) {
+        this.idMovimiento = idMovimiento;
     }
 
     

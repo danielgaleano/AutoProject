@@ -193,7 +193,7 @@ public class ModeloController extends BaseController{
         UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         MensajeDTO mensaje = new MensajeDTO();
         Modelo ejModelo = new Modelo();
-        
+        ejModelo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
         try {
             inicializarModeloManager();
 

@@ -166,7 +166,8 @@ public class TipoController extends BaseController {
             }
 
             ejTipo.setNombre(tipoRecibido.getNombre());
-
+            ejTipo.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            
             Map<String, Object> tipoMap = tipoManager.getLike(ejTipo, "id".split(","));
 
             if (tipoMap != null && !tipoMap.isEmpty()) {
@@ -213,7 +214,9 @@ public class TipoController extends BaseController {
                 retorno.setMensaje("El campo nombre no puede estar vacio.");
                 return retorno;
             }
-
+            
+            ejTipo.setId(tipoRecibido.getId());
+            
             Map<String, Object> tipoMap = tipoManager.getLike(ejTipo, "id".split(","));
 
             if (tipoMap != null && !tipoMap.isEmpty() && tipoMap.get("id").toString()

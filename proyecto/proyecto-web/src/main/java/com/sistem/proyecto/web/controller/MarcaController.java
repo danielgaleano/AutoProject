@@ -149,7 +149,8 @@ public class MarcaController extends BaseController {
             }
 
             ejMarca.setNombre(marcaRecibido.getNombre());
-
+            ejMarca.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+            
             Map<String, Object> marcaMap = marcaManager.getLike(ejMarca, "id".split(","));
 
             if (marcaMap != null && !marcaMap.isEmpty()) {
@@ -197,6 +198,7 @@ public class MarcaController extends BaseController {
                 return retorno;
             }
             ejMarca.setNombre(marcaRecibido.getNombre());
+            ejMarca.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
             
             Map<String, Object> marcaMap = marcaManager.getLike(ejMarca, "id".split(","));
 

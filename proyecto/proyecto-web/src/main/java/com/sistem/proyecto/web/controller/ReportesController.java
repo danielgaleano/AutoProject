@@ -986,6 +986,7 @@ public class ReportesController extends BaseController {
             
             Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
             
+            int parcial = 0 ;
             
             if (estado != null && estado.compareToIgnoreCase("") != 0
                     && estado.compareToIgnoreCase("PENDIENTE") == 0) {
@@ -998,9 +999,11 @@ public class ReportesController extends BaseController {
                         ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                         null, null, null, atributoInicio, valorInicio, atributoFin,
                         valorFin, null, true);
+               
+                parcial = listVentasMap.size();
             }
             
-            int parcial = listVentasMap.size();
+             
             
             if (!todos) {
                 total = compraManager.listAtributos(ejemplo, atributosCompras.split(","), true, null, null,

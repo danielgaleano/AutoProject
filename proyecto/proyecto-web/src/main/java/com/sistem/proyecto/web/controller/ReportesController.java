@@ -719,13 +719,13 @@ public class ReportesController extends BaseController {
             if (todos) {
                 total = listMapGrupos.size();
             }
-            
-            for(Map<String, Object> rpm: listMapGrupos){
+
+            for (Map<String, Object> rpm : listMapGrupos) {
                 rpm.put("nroFactura", rpm.get("compra.nroFactura"));
                 rpm.put("formaPago", rpm.get("compra.formaPago"));
-                if(rpm.get("compra.cantidadCuotas") != null){
+                if (rpm.get("compra.cantidadCuotas") != null) {
                     rpm.put("cantidadCuotas", Long.parseLong(rpm.get("compra.cantidadCuotas").toString()));
-                }                
+                }
                 rpm.put("proveedor", rpm.get("proveedor.nombre"));
                 rpm.put("cliente", rpm.get("cliente.nombre"));
                 rpm.put("compra", rpm.get("compra.nroFactura"));
@@ -921,7 +921,7 @@ public class ReportesController extends BaseController {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Date resultFechaInicio = null;
         Date resultFechaFin = null;
-
+        boolean tieneEstado = false;
         try {
 
             inicializarCompraManager();
@@ -983,15 +983,32 @@ public class ReportesController extends BaseController {
 
             pagina = pagina != null ? pagina : 1;
             Integer total = 0;
-
+            
+            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
+            
+            
+            if (estado != null && estado.compareToIgnoreCase("") != 0
+                    && estado.compareToIgnoreCase("PENDIENTE") == 0) {
+                
+                Compra ejParcial = new Compra();
+                ejParcial.setEmpresa(new Empresa(userDetail.getIdEmpresa()));
+                ejParcial.setEstadoPago("PARCIAL");
+                
+                listVentasMap = compraManager.listAtributos(ejParcial, atributosCompras.split(","), todos, inicio, cantidad,
+                        ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
+                        null, null, null, atributoInicio, valorInicio, atributoFin,
+                        valorFin, null, true);
+            }
+            
+            int parcial = listVentasMap.size();
+            
             if (!todos) {
                 total = compraManager.listAtributos(ejemplo, atributosCompras.split(","), true, null, null,
                         ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                         null, null, null, atributoInicio, valorInicio, atributoFin,
-                        valorFin, null, true).size();
+                        valorFin, null, true).size() + parcial;
             }
 
-            Integer inicio = ((pagina - 1) < 0 ? 0 : pagina - 1) * cantidad;
 
             if (total < inicio) {
                 inicio = total - total % cantidad;
@@ -1002,7 +1019,11 @@ public class ReportesController extends BaseController {
                     ordenarPor.split(","), sentidoOrdenamiento.split(","), true, true, camposFiltros, valorFiltro,
                     null, null, null, atributoInicio, valorInicio, atributoFin,
                     valorFin, null, true);
-
+            
+            if(listVentasMap != null){
+                listMapGrupos.addAll(listVentasMap);
+            }
+            
             for (Map<String, Object> rpm : listMapGrupos) {
                 Long totalEgreso = Long.parseLong("0");
                 Long totalGeneral = Long.parseLong("0");
@@ -1042,14 +1063,14 @@ public class ReportesController extends BaseController {
                     rpm.put("totalGeneral", totalGeneral);
                 } else {
                     totalGeneral = Math.round(Double.parseDouble(rpm.get("neto").toString()));
-                    
-                    if(rpm.get("saldo") != null 
-                            && rpm.get("saldo").toString().compareToIgnoreCase("") != 0){
+
+                    if (rpm.get("saldo") != null
+                            && rpm.get("saldo").toString().compareToIgnoreCase("") != 0) {
                         rpm.put("saldo", Long.parseLong(rpm.get("saldo").toString()));
-                    }else{
+                    } else {
                         rpm.put("saldo", Long.parseLong("0"));
                     }
-                    
+
                     rpm.put("totalGeneral", totalGeneral);
                 }
                 rpm.put("neto", Math.round(Double.parseDouble(rpm.get("neto").toString())));
@@ -2018,7 +2039,7 @@ public class ReportesController extends BaseController {
             Map<String, Object> parametros = new HashMap<String, Object>();
 
             parametros.put("titulo", "Reporte Transacciones de Compra");
-            
+
             parametros.put("usuario", userDetail.getNombre());
             parametros.put("filtros1", filtros.subList(0, (filtros.size() / 2) + 1));
             parametros.put("filtros2", filtros.subList((filtros.size() / 2) + 1, filtros.size()));
@@ -2085,7 +2106,7 @@ public class ReportesController extends BaseController {
             e.printStackTrace();
         }
     }
-    
+
     @ResponseBody
     @RequestMapping(value = "/exportar/transacciones/{tipo}", method = RequestMethod.GET)
     public void exportarTransacciones(@PathVariable("tipo") String tipo,
@@ -2129,7 +2150,7 @@ public class ReportesController extends BaseController {
             Map<String, Object> parametros = new HashMap<String, Object>();
 
             parametros.put("titulo", "Reporte Transacciones");
-            
+
             parametros.put("usuario", userDetail.getNombre());
             parametros.put("filtros1", filtros.subList(0, (filtros.size() / 2) + 1));
             parametros.put("filtros2", filtros.subList((filtros.size() / 2) + 1, filtros.size()));
@@ -2165,7 +2186,7 @@ public class ReportesController extends BaseController {
             columnas.add("Cliente");
             columnas.add("Fecha");
             columnas.add("Compra");
-            columnas.add("Venta");            
+            columnas.add("Venta");
             columnas.add("Cuota");
             columnas.add("Importe");
             columnas.add("Saldo");
@@ -2196,7 +2217,7 @@ public class ReportesController extends BaseController {
             e.printStackTrace();
         }
     }
-    
+
     @ResponseBody
     @RequestMapping(value = "/exportar/recibo/{tipo}/{id}", method = RequestMethod.GET)
     public void exportarRecibo(@PathVariable("tipo") String tipo, @PathVariable("id") Long id,
@@ -2240,21 +2261,21 @@ public class ReportesController extends BaseController {
             String emision = fecha_español.format(ejemplo.getFechaIngreso());
 
             parametros.put("vencimiento", emision);
-            
+
             parametros.put("montoTotal", Math.round(ejemplo.getNeto()) + "");
             parametros.put("importe", Math.round(ejemplo.getImporte()) + "");
             parametros.put("interes", Math.round(ejemplo.getInteres()) + "");
             parametros.put("vuelto", Math.round(ejemplo.getVuelto()) + "");
-            
+
             String concepto = "";
-            if(ejemplo.getVenta().getFormaPago().compareToIgnoreCase("CREDITO") == 0){
-                concepto = "Cuo/" + ejemplo.getCuota() +", Importe Cuota " + Math.round(ejemplo.getNeto()) +", Venta Credito " + ejemplo.getVenta().getNroFactura();
-            }else{
-                concepto = "Importe " + Math.round(ejemplo.getNeto()) +", Venta Contado" + ejemplo.getVenta().getNroFactura();
+            if (ejemplo.getVenta().getFormaPago().compareToIgnoreCase("CREDITO") == 0) {
+                concepto = "Cuo/" + ejemplo.getCuota() + ", Importe Cuota " + Math.round(ejemplo.getNeto()) + ", Venta Credito " + ejemplo.getVenta().getNroFactura();
+            } else {
+                concepto = "Importe " + Math.round(ejemplo.getNeto()) + ", Venta Contado" + ejemplo.getVenta().getNroFactura();
             }
-           
+
             parametros.put("concepto", concepto);
-            
+
             JRExporter exporter;
             if (tipo.equals("pdf")) {
                 response.setContentType("application/pdf");
@@ -2266,14 +2287,14 @@ public class ReportesController extends BaseController {
             } else {
                 return;
             }
-            
+
             DetalleVenta ejDetalle = new DetalleVenta();
             ejDetalle.setVenta(ejemplo.getVenta());
 
             List<Map<String, Object>> listMapCategorias = detalleVentaManager
                     .listAtributos(ejDetalle, "vehiculo.tipo.nombre,vehiculo.codigo,vehiculo.marca.nombre,vehiculo.modelo.nombre,vehiculo.anho,neto".split(","),
                             false);
-            
+
             JasperDatasource datasource = new JasperDatasource();
             datasource.addAll(listMapCategorias);
 

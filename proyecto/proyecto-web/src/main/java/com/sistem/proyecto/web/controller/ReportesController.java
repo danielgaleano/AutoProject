@@ -1614,7 +1614,7 @@ public class ReportesController extends BaseController {
                     parametros, datasource);
 
             response.addHeader("Content-Disposition", "attachment; filename=\""
-                    + "export-depositos." + tipo + "\"");
+                    + "Factura de Venta." + tipo + "\"");
             exporter.setParameter(JRExporterParameter.CHARACTER_ENCODING,
                     "Cp1252");
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);

@@ -100,7 +100,7 @@ and open the template in the editor.
 
                 <!-- Sidebar Menu -->
                 <ul class="sidebar-menu">
-                  <li class="header">HEADER</li>
+                  
                   <!-- Optionally, you can add icons to the links -->
                   <li><a sec:authorize="hasRole('SuperUsuario')" th:href="@{/empresas}"><i class="fa fa-suitcase"></i> <span>Empresas</span></a></li>
                   <li><a sec:authorize="hasRole('Usuario.Listar')" th:href="@{/usuarios}"><i class="fa fa-user"></i> <span>Usuarios</span></a></li>
@@ -127,8 +127,8 @@ and open the template in the editor.
                   <li class="treeview">
                     <a sec:authorize="hasRole('Vehiculo.Listar')" href="#"><i class="fa fa-car"></i> <span>Vehículos</span> <i class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
-                      <li><a th:href="@{/vehiculos}">Stock</a></li>
                       <li><a th:href="@{/mantenimiento/vehiculos}">Mantenimiento</a></li>
+                      <li><a th:href="@{/vehiculos}">Stock</a></li>
                       <li><a th:href="@{/vehiculos/vendidos}">Vendidos</a></li>
                       <li><a th:href="@{/tipos}">Tipos</a></li>
                       <li><a th:href="@{/marcas}">Marcas</a></li>

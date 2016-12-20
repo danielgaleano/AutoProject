@@ -244,7 +244,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[" "+new java.text.DecimalFormat("Gs #,##0.00").format(Double.valueOf($P{importe}))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[" "+new java.text.DecimalFormat("Gs #,##0.00").format(Double.valueOf($P{montoTotal}))]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="10" width="130" height="20" uuid="21e5af5d-7dfe-4d10-a8e9-d57d0d9bc0a4"/>

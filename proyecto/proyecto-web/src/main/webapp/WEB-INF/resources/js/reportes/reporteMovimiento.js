@@ -188,25 +188,17 @@ $(document).ready(function(data) {
                 setTimeout(function() {
                     var rules = [];
 
-                    rules.push({
-                        field: "Proveedor",
-                        op: "cn",
-                        data: $('#idProveedor').val().toString()
-                    });
+                   
 
                     var postData = $("#grid").jqGrid("getGridParam", "postData");
 
-                    postData.filters = JSON.stringify({
-                        groupOp: "AND",
-                        rules: rules,
-                        data: $('#idProveedor').val().toString()
-                    });
+                    
 
                     postData.fechaInicio = $('#date-timeDesde').val().toString();
                     postData.fechaFin = $('#date-timeHasta').val().toString();
-                    postData.tipo = $('#idProveedor').val().toString();
+                    postData.tipo = $('#transaccion').val().toString();
 
-                    jQuery("#grid").jqGrid('excelExport', {tag: 'pdf', url: CONTEXT_ROOT + '/reportes/exportar/movimientos/compras/pdf'});
+                    jQuery("#grid").jqGrid('excelExport', {tag: 'pdf', url: CONTEXT_ROOT + '/reportes/exportar/transacciones/pdf'});
 
                 }, 0);
             } catch (e) {

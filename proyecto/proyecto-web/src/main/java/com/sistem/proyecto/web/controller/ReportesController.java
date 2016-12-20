@@ -727,6 +727,9 @@ public class ReportesController extends BaseController {
                     rpm.put("cantidadCuotas", Long.parseLong(rpm.get("compra.cantidadCuotas").toString()));
                 }                
                 rpm.put("proveedor", rpm.get("proveedor.nombre"));
+                rpm.put("cliente", rpm.get("cliente.nombre"));
+                rpm.put("compra", rpm.get("compra.nroFactura"));
+                rpm.put("venta", rpm.get("venta.nroFactura"));
             }
 
             Integer totalPaginas = total / cantidad;
@@ -2051,6 +2054,117 @@ public class ReportesController extends BaseController {
             columnas.add("Cant. Cuotas");
             columnas.add("Proveedor");
             columnas.add("Fecha Venta");
+            columnas.add("Cuota");
+            columnas.add("Importe");
+            columnas.add("Saldo");
+            columnas.add("Vuelto");
+            columnas.add("Interes");
+            columnas.add("neto");
+            parametros.put("columnas", columnas);
+
+            DTORetorno<List<Map<String, Object>>> grilla = listarMovimientos(filtrar, filters,
+                    fechaInicio, fechaFin, pagina, cantidad, ordenarPor, estado, sentidoOrdenamiento, true);
+
+            JasperDatasource datasource = new JasperDatasource();
+            datasource.addAll(grilla.getRetorno());
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(reporte,
+                    parametros, datasource);
+
+            response.addHeader("Content-Disposition", "attachment; filename=\""
+                    + "Reporte de Transacciones." + tipo + "\"");
+            exporter.setParameter(JRExporterParameter.CHARACTER_ENCODING,
+                    "Cp1252");
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+            ServletOutputStream output = response.getOutputStream();
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, output);
+            exporter.exportReport();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = "/exportar/transacciones/{tipo}", method = RequestMethod.GET)
+    public void exportarTransacciones(@PathVariable("tipo") String tipo,
+            @ModelAttribute("_search") boolean filtrar,
+            @ModelAttribute("filters") String filters,
+            @ModelAttribute("fechaInicio") String fechaInicio,
+            @ModelAttribute("fechaFin") String fechaFin,
+            @ModelAttribute("page") Integer pagina,
+            @ModelAttribute("rows") Integer cantidad,
+            @ModelAttribute("sidx") String ordenarPor,
+            @ModelAttribute("estado") String estado,
+            @ModelAttribute("sord") String sentidoOrdenamiento,
+            @ModelAttribute("todos") boolean todos,
+            @ModelAttribute("idProveedor") String idProveedor,
+            HttpServletRequest request, HttpServletResponse response) {
+
+        UserDetail userDetail = ((UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        DTORetorno<List<DetalleCanvas>> nivelActual = new DTORetorno<List<DetalleCanvas>>();
+        try {
+            inicializarProveedorManager();
+
+            JasperReport reporte = (JasperReport) JRLoader
+                    .loadObjectFromFile(request
+                            .getSession()
+                            .getServletContext()
+                            .getRealPath(
+                                    "WEB-INF/resources/reports/reporte-transacciones.jasper"));
+
+            List<Map<String, String>> filtros = new ArrayList<Map<String, String>>();
+
+            cargarFiltros(filtros, "Desde", fechaInicio);
+            cargarFiltros(filtros, "Hasta", fechaFin);
+
+            if (idProveedor == null || idProveedor.isEmpty()) {
+                idProveedor = null;
+            } else {
+                Map<String, Object> clienteMap = proveedorManager.getAtributos(new Proveedor(Long.parseLong(idProveedor)), "nombre".split(","));
+                cargarFiltros(filtros, "Cliente", (String) clienteMap.get("nombre"));
+            }
+
+            Map<String, Object> parametros = new HashMap<String, Object>();
+
+            parametros.put("titulo", "Reporte Transacciones");
+            
+            parametros.put("usuario", userDetail.getNombre());
+            parametros.put("filtros1", filtros.subList(0, (filtros.size() / 2) + 1));
+            parametros.put("filtros2", filtros.subList((filtros.size() / 2) + 1, filtros.size()));
+
+            nivelActual = reporteMovimiento(fechaInicio, fechaFin, idProveedor);
+            parametros.put("graficos_titulos", "Reporte Transacciones");
+
+            List<Map<String, Object>> graf = new ArrayList<Map<String, Object>>();
+
+            for (DetalleCanvas rpm : nivelActual.getData()) {
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("label", rpm.getLabel());
+                map.put("value", rpm.getY());
+                graf.add(map);
+            }
+
+            parametros.put("grafico2", graf);
+
+            JRExporter exporter;
+            if (tipo.equals("pdf")) {
+                response.setContentType("application/pdf");
+                exporter = new JRPdfExporter();
+            } else if (tipo.equals("xls")) {
+                parametros.put(JRParameter.IS_IGNORE_PAGINATION, true);
+                response.setContentType("application/vnd.ms-excel");
+                exporter = new JRXlsExporter();
+            } else {
+                return;
+            }
+
+            List<Object> columnas = new ArrayList<Object>();
+            columnas.add("Proveedor");
+            columnas.add("Cliente");
+            columnas.add("Fecha");
+            columnas.add("Compra");
+            columnas.add("Venta");            
             columnas.add("Cuota");
             columnas.add("Importe");
             columnas.add("Saldo");

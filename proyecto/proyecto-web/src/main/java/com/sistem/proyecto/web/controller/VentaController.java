@@ -155,7 +155,6 @@ public class VentaController extends BaseController {
                 if(ejVentaMap.get("venta.formaPago").toString().compareToIgnoreCase("CREDITO") != 0){
                     DocumentoCobrar aPagar = new DocumentoCobrar();
                     aPagar.setVenta(new Venta(Long.parseLong(ejVentaMap.get("venta.id").toString())));
-                
                     List<DocumentoCobrar> aPagarList = documentoCobrarManager.list(aPagar);
                     
                     Long deuda = Long.parseLong("0");

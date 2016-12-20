@@ -945,9 +945,9 @@ public class MovimientoManagerImpl extends GenericDaoImpl<Movimiento, Long>
             ejVenta = ventaManager.get(idVenta);
             ejVenta.setEstadoVenta(Venta.VENTA_PAGADA);
             
-            if (ejVenta.getEstadoVenta().compareToIgnoreCase(Venta.VENTA_REALIZADA) == 0) {
+            if (ejVenta.getEstadoCobro().compareToIgnoreCase(DocumentoPagar.CANCELADO) == 0) {
                 pago.setCancelado(true);
-                mensaje.setError(false);
+                mensaje.setError(true);
                 mensaje.setMensaje("La cuenta ya se encuentra cancelada.");
                 return mensaje;
             }

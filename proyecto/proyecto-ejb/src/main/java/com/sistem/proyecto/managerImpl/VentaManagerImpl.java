@@ -270,6 +270,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                         ejDetVenta.setVehiculo(new Vehiculo(rpm));
                         ejDetVenta.setNeto(costoInteresVeh);
                         ejDetVenta.setMontoDescuento(costoVeh);
+                        ejDetVenta.setDevuelto(false);
                         ejDetVenta.setPorcentajeDescuento(porcentajeVehiculo + "");
                         ejDetVenta.setVenta(ejVenta);
 
@@ -399,6 +400,7 @@ public class VentaManagerImpl extends GenericDaoImpl<Venta, Long>
                     ejDetVenta.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
                     ejDetVenta.setVehiculo(new Vehiculo(rpm));
                     ejDetVenta.setNeto(costoVeh);
+                    ejDetVenta.setDevuelto(false);
                     ejDetVenta.setPrecio(ejVehiculo.getPrecioVenta());
                     ejDetVenta.setMontoDescuento(costoInteresVeh);
                     ejDetVenta.setPorcentajeDescuento(porcentajeVehiculo.toString());

@@ -20,6 +20,8 @@ public class DetalleVenta extends Base {
     
     private static final long serialVersionUID = 798618560888L;   
     
+    @Column(name = "devuelto")
+    private boolean devuelto;
     
     @Column(name = "precio")
     private Double precio;
@@ -211,6 +213,16 @@ public class DetalleVenta extends Base {
 
     public void setTotal(Double total) {
         this.total = total;
-    }    
+    }
+
+    public boolean isDevuelto() {
+        return devuelto;
+    }
+
+    public void setDevuelto(boolean devuelto) {
+        this.devuelto = devuelto;
+    }
+    
+    
     
 }

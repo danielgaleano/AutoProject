@@ -143,9 +143,11 @@ public class VentaController extends BaseController {
         List<Map<String, Object>> listMapGrupos = null;
         try {
             inicializarDetalleVentaManager();
+            
             DetalleVenta ejVenta = new DetalleVenta();
             ejVenta.setVehiculo(new Vehiculo (id));
-
+            ejVenta.setDevuelto(false);
+            
             Map<String, Object> ejVentaMap = detalleVentaManager.getAtributos(ejVenta, atributosVehiculoVenta.split(","));
 //            ejCompraMap.put("montoCuotas", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.montoCuotas").toString())+""));
 //            ejCompraMap.put("montoInteres", Long.parseLong(Double.parseDouble(ejCompraMap.get("compra.montoInteres").toString())+""));

@@ -57,9 +57,9 @@ $(document).ready(function (data) {
 	            var idDevolucion = $('#idDevolucion').val();
 	            
 	            if (idDevolucion === null || idDevolucion === '') {
-	                var jqXHR = $.post(CONTEXT_ROOT + '/devolucion/guardar', serialize, function (data, textStatus, jqXHR) {
+	                var jqXHR = $.post(CONTEXT_ROOT + '/devoluciones/guardar', serialize, function (data, textStatus, jqXHR) {
 	                    if (data.error) {
-	                        $('#mensaje').append('<div class="alert alert-danger alert-dismissible">'
+	                        $('#mensajeForm').append('<div class="alert alert-danger alert-dismissible">'
 	                                + '<button class="close" data-dismiss="alert" type="button"'
 	                                + '><i class="fa  fa-remove"></i></button>'
 	                                + '<h4><strong><i class="icon fa fa-ban"></i> Error! </strong></h4>'
@@ -68,12 +68,14 @@ $(document).ready(function (data) {
 	                    } else {
 	                        $('#idDevolucion').val(data.id);
 	                       
-	                        $('#mensaje').append('<div class="alert alert-success alert-dismissible fade in">'
+	                        $('#mensajeForm').append('<div class="alert alert-success alert-dismissible fade in">'
 	                                + '<button type="button" class="close" data-dismiss="alert"'
 	                                + 'aria-label="Close"><i class="fa  fa-remove"></i></button>'
 	                                + '<h4><strong><i class="icon fa fa-check"></i> Exito! </strong></h4>'
 	                                + data.mensaje
 	                                + '</div>');
+                                
+                                $("#grid").trigger("reloadGrid", [{page: 1, current: true}]);
 
 
 	                    }

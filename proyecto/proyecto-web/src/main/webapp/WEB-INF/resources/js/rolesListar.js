@@ -163,7 +163,7 @@ $(document).ready(function(data) {
                         if (isEditarInline) {
 
                             edit = editInlineButton(cl, permisoEditar);
-                            desact = desactivarButton(cl, permisoDesactivar);
+                            desact = desactivarButton(cl, permisoDesactivar,"");
                             asignar = asigButton(cl, permisoAsignar);
                             $(grid_selector).setRowData(ids[i], {act: ini + edit + asignar + desact + fin});
 
@@ -172,7 +172,7 @@ $(document).ready(function(data) {
                             asignar = asigButton(cl, true);
                             //visuali = visualizarButton(cl, permisoVisualizar);
                             editForm = editFormButton(cl, permisoEditar);
-                            desact = desactivarButton(cl, permisoDesactivar);
+                            desact = desactivarButton(cl, permisoDesactivar,"");
                             $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
                         }
                         $(grid_selector).setRowData(ids[i], {activo: labelActivo});

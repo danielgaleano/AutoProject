@@ -137,7 +137,7 @@ $(document).ready(function(data) {
                         if (isEditarInline) {
 
                             edit = editInlineButton(cl, permisoEditar);
-                            desact = desactivarButton(cl, permisoDesactivar);
+                            desact = desactivarButton(cl, permisoDesactivar,"");
                             asignar = detalleButton(cl, permisoModeloAgregar,"Agregar Modelos","modelos/agregar");
                             visuali = visualizarButton(cl, permisoVisualizar,"Visualizar Modelos","modelos/visualizar");
                             $(grid_selector).setRowData(ids[i], {act: ini + edit + asignar + desact + fin});

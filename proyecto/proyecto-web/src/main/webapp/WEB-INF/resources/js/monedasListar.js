@@ -144,7 +144,7 @@ $(document).ready(function(data) {
                         if (isEditarInline) {
 
                             if(dato.nombre !== 'MONEDA NACIONAL'){
-                                 desact = desactivarButton(cl, permisoDesactivar);
+                                 desact = desactivarButton(cl, permisoDesactivar,"");
                                  edit = editInlineButton(cl, permisoEditar);
                             }
 

@@ -153,7 +153,7 @@ $(document).ready(function(data) {
                                 visuali = visualizarButton(cl, permisoVisualizar, null);
                                 edit = editInlineButton(cl, permisoEditar);
                                 editForm = detalleButton(cl, permisoDetalle, null);
-                                desact = desactivarButton(cl, permisoDesactivar);
+                                desact = desactivarButton(cl, permisoDesactivar,"");
                                 $(grid_selector).setRowData(ids[i], {act: ini + edit + visuali + editForm + desact + fin});
                             }
                             $(grid_selector).setRowData(ids[i], {activo: labelActivo});

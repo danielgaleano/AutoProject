@@ -148,7 +148,7 @@ $(document).ready(function(data) {
                                  moneda = monedaButton(cl, permisoEditar);
                             }
                             edit = editInlineButton(cl, permisoEditar);
-                            desact = desactivarButton(cl, permisoDesactivar);
+                            desact = desactivarButton(cl, permisoDesactivar,"");
                            
                             $(grid_selector).setRowData(ids[i], {act: ini + edit  + desact + moneda + fin});
 
@@ -157,7 +157,7 @@ $(document).ready(function(data) {
                             //asignar = asigButton(cl, true);
                             //visuali = visualizarButton(cl, permisoVisualizar);
                             editForm = editFormButton(cl, permisoEditar);
-                            desact = desactivarButton(cl, permisoDesactivar);
+                            desact = desactivarButton(cl, permisoDesactivar,"");
                             $(grid_selector).setRowData(ids[i], {act: ini + editForm + asignar + visuali + desact + fin});
                         }
                         $(grid_selector).setRowData(ids[i], {activo: labelActivo});
